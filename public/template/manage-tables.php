@@ -8,7 +8,7 @@ function SIQO_manage_table(){
     do_action( 'siqo_manage_tables_page_head' );
 
     $tavoli = get_posts( array(
-        'numberposts'      => -1,
+        'numberposts'      => 100,
         'orderby'          => 'title',
         'order'            => 'ASC',
         'post_type'        => 'siqo_tables',
@@ -27,7 +27,7 @@ function SIQO_manage_table(){
     // $tavoli_info = FO_get_all_tables_by_status_last();
     // SIQO_debug($tavoli_info);
     if (isset($settings->showQR) && $settings->showQR == 'yes' ) {
-        echo SIQO_create_post_QR_code();//phpcs:ignore
+        echo SIQO_create_post_QR_code();
     }
 
     if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
@@ -57,7 +57,7 @@ function SIQO_manage_table(){
         </style>
     <?php }
 ?>
-<div id="FO_Front_Content">
+<div id="SIQO_Front_Content">
     <?php 
         if (function_exists('FOP_tab_status_bar')){FOP_tab_status_bar();}
 
@@ -151,6 +151,7 @@ function SIQO_manage_table(){
 }
 
 // SIQO_manage_table();
+
 
 
 

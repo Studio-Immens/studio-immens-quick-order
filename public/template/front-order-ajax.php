@@ -27,28 +27,16 @@ $options = array(
 );
 
 $tavoli = get_posts( array(
-    'numberposts'      => -1,
+    'numberposts'      => 100,
     'orderby'          => 'title',
     'order'            => 'ASC',
     'post_type'        => 'siqo_tables',
 ) );
 
-$args = array(
-	'status'            => 'publish',
-	'orderby' 			=> 'title',
-	'order'             => 'DESC',
-	'limit'             => -1,  // -1 for unlimited
-    'offset'            => null,
-    'page'              => 1,
-    'return'            => 'objects',
-	'paginate'          => false,
-);
-$search_products = wc_get_products( $args );
-
 $products = SIQO_get_products_for_loop();
 
 
-if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'FO_check_table_nonce' ) ) {
+if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'SIQO_check_table_nonce' ) ) {
 // get table_id from link
 	if ( isset($_GET['tab_hs']) && sanitize_text_field(wp_unslash($_GET['tab_hs'])) != '' ) {
 		$table_link_hs = sanitize_text_field(wp_unslash($_GET['tab_hs']));
@@ -92,15 +80,15 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 <div class="FOmniContent">
 
 	<?php  if (isset($settings->showQR) && $settings->showQR == 'yes' ) {
-		echo SIQO_create_post_QR_code();//phpcs:ignore
+		echo SIQO_create_post_QR_code();
 	}?>
 	
 	<div style="display:none!important;">
 		<div id="FO_select_variant_alert"><?php esc_html_e( 'Seleziona prima la variante', 'studio-immens-quick-order' );?></div>
-		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non Ã© al momento disponibile', 'studio-immens-quick-order' );?></div>
-		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, Ã© neccessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
+		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile', 'studio-immens-quick-order' );?></div>
+		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
 
-		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto Ã© giÃ  tra i favoriti', 'studio-immens-quick-order' );?></div>
+		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti', 'studio-immens-quick-order' );?></div>
 
 		<div id="FO_home_url"><?php echo esc_attr(get_home_url());?></div>
 
@@ -155,8 +143,10 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 			</div>
 			<div class="FO_search_container">
 				<?php 
-				foreach ($search_products as $key => $value) {
-					FO_product_to_div_loop( $value ); 
+				foreach ($products as $cat_slug => $cat_products) {
+					foreach ($cat_products as $product) {
+						SIQO_product_to_div_loop( $product );
+					}
 				}
 				?>
 			</div>
@@ -182,7 +172,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 
 				?>
 
-			<?php FO_products_for_div_loop( $products ); ?>
+			<?php SIQO_products_for_div_loop( $products ); ?>
 
 		</div>
 
@@ -193,10 +183,10 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 				<?php esc_html_e( 'ORDINE', 'studio-immens-quick-order' ); ?> 
 			</strong>
 			<strong id="FO_order_live_count" class="text_white" style="z-index:99;">0</strong>
-			<img class="FO_img_summary" src="" style="display:none;"><?php //phpcs:ignore ?>
+			<img class="FO_img_summary" src="" style="display:none;"><?php  ?>
 		</div>
 		
-		<?php FO_Advanced_prod_card(); ?>
+		<?php SIQO_Advanced_prod_card(); ?>
 		
 		<div id="FO_Front_Float">
 			<div class="Hide_FO_Front_Float" onclick="Hide_FO_Front_Float()">
@@ -209,7 +199,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 			</div>
 
 <?php 
-	if ( !FO_check_meta_setting('fo_allow_menu_order') ) {
+	if ( !SIQO_get_meta('fo_allow_menu_order') ) {
 		$net_info['is_local'] = false;
 	}
 	$net_info['is_local'] = true;
@@ -267,6 +257,9 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 // 	flash_orders_ordination();
 // }
 }
+
+
+
 
 
 

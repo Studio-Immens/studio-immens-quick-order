@@ -21,7 +21,7 @@ function SIQO_menu_page(){
     $menu_slug = 'si-quick-order';
     $position = (SIQO_get_meta( 'siqo_menu_order') != '')?SIQO_get_meta( 'siqo_menu_order') : '15';
 
-    $link = get_home_url().'/wp-content/plugins/studio-immens-quick-order/includes/img/logo-20.webp';
+    $link = plugins_url( 'includes/img/logo-20.webp', dirname(__FILE__) );
 
    add_menu_page( 'Quick Order', esc_html__( 'Quick Order', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page', $link, $position );
    add_submenu_page( $menu_slug, 'si-quick-order-settings', esc_html__( 'Settings', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_settings' );
@@ -47,23 +47,24 @@ function SIQO_head_menu_page(){
 function SIQO_nav_menu_page(){
     $color1 = 'var(--siqo-main-color)';
     $color2 = 'var(--siqo-bg3-color)';
-    $QuickOrder_color = ( $_REQUEST['page'] == 'si-quick-order' )? $color1 : $color2;
-    $Settings_color = ( $_REQUEST['page'] == 'si-quick-order-settings' )? $color1 : $color2;
-    $Style_color = ( $_REQUEST['page'] == 'si-quick-order-style' )? $color1 : $color2;
-    $Addons_color = ( $_REQUEST['page'] == 'si-quick-order-addons' )? $color1 : $color2;
-    $Pro_color = ( $_REQUEST['page'] == 'si-quick-order-pro' )? $color1 : $color2;
+    $current_page = isset( $_REQUEST['page'] ) ? sanitize_key( $_REQUEST['page'] ) : '';
+    $QuickOrder_color = ( $current_page == 'si-quick-order' )? $color1 : $color2;
+    $Settings_color = ( $current_page == 'si-quick-order_settings' )? $color1 : $color2;
+    $Style_color = ( $current_page == 'si-quick-order_style' )? $color1 : $color2;
+    $Addons_color = ( $current_page == 'si-quick-order_addons' )? $color1 : $color2;
+    $Pro_color = ( $current_page == 'si-quick-order_pro' )? $color1 : $color2;
     SIQO_head_menu_page();
     ?>
     <nav class="SIQOMainNav">
         <a href="admin.php?page=si-quick-order" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($QuickOrder_color); ?>;">
         <?php esc_html_e( 'Quick Order', 'studio-immens-quick-order' ); ?></a>
-        <a href="admin.php?page=si-quick-order-settings" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Settings_color); ?>;">
+        <a href="admin.php?page=si-quick-order_settings" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Settings_color); ?>;">
         <?php esc_html_e( 'Settings', 'studio-immens-quick-order' ); ?></a>
-        <a href="admin.php?page=si-quick-order-style" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Style_color); ?>">
+        <a href="admin.php?page=si-quick-order_style" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Style_color); ?>">
         <?php esc_html_e( 'Style', 'studio-immens-quick-order' ); ?></a>
-        <a href="admin.php?page=si-quick-order-addons" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Addons_color); ?>">
+        <a href="admin.php?page=si-quick-order_addons" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Addons_color); ?>">
         <?php esc_html_e( 'Addons', 'studio-immens-quick-order' ); ?></a>
-        <a href="admin.php?page=si-quick-order-pro" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Pro_color); ?>">
+        <a href="admin.php?page=si-quick-order_pro" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Pro_color); ?>">
         <?php esc_html_e( 'Pro', 'studio-immens-quick-order' ); ?></a>
     </nav>
     <?php
@@ -165,7 +166,7 @@ function SIQO_general_setting( $setting = array() ){
                 <option selected disabled hidden><?php esc_html_e('Seleziona l\'audio...', 'studio-immens-quick-order'); ?></option>
                 <?php if ( count($options) ) { ?>
                     <?php foreach ($options as $option) { ?>
-                        <option value="<?php echo esc_url(get_home_url()).'/wp-content/plugins/studio-immens-quick-order/includes/audio/'.esc_attr($option);?>"><?php echo esc_attr($option);?></option>
+                        <option value="<?php echo esc_url( plugins_url( 'includes/audio/', dirname(__FILE__, 2) ) ) . esc_attr($option);?>"><?php echo esc_attr($option);?></option>
                     <?php } ?>
                 <?php } ?>
             </select>
@@ -311,8 +312,8 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
         } else{
             if (isset($_SERVER['REQUEST_URI'])) {
                 $req_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
-                $url = 'Location: '. $req_uri;
-                header( $url );
+                wp_redirect( $req_uri );
+                exit;
             }
         }
     }
@@ -549,3 +550,4 @@ function SIQO_manage_QR_codes(){
     </div>
     <?php
 }
+

@@ -9,10 +9,7 @@ $style = SIQO_customized_css();
 <form id="" method="post" class="SIQOForm">
     <button name="update" value="update" class="SIQObutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> <?php esc_html_e( 'SALVA', 'studio-immens-quick-order' ); ?> </button>
 
-    <?php
-    $nonce = wp_create_nonce( 'SIQO_save_settings' );
-    echo '<input type="hidden" id="_siqononce_save_settings" name="_siqononce_save_settings" value="'.esc_attr($nonce).'"/>';
-    ?>
+    <?php wp_nonce_field( 'SIQO_save_settings', '_siqononce_save_settings' ); ?>
     <div class="SIQOFormSeparator">
         <b> <?php esc_html_e( 'Colori principali', 'studio-immens-quick-order' ); ?> </b>
     </div>

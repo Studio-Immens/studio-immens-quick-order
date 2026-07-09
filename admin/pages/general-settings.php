@@ -5,24 +5,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $disp_general = 'display:none;';
 
-if ( isset($_GET['sub']) ){
-    if ( $_GET['sub'] == 'general' || $_GET['sub'] == '' ) {
+$sub = isset( $_GET['sub'] ) ? sanitize_key( $_GET['sub'] ) : '';
+if ( $sub ) {
+    if ( $sub == 'general' || $sub == '' ) {
         $disp_general = 'display:flex;';
     }
-    if ( $_GET['sub'] == 'pro' ) {
+    if ( $sub == 'pro' ) {
         $disp_pro = 'display:flex;';
     }
-    if ( $_GET['sub'] == 'WooPrint' ) {
+    if ( $sub == 'WooPrint' ) {
         $disp_WooPrint = 'display:flex;';
     }
-    if ( $_GET['sub'] == 'SIQOWarehouse' ) {
+    if ( $sub == 'SIQOWarehouse' ) {
         $disp_SIQOWarehouse = 'display:flex;';
     }
 } else{
     $disp_general = 'display:flex;';
 }
 
-wp_enqueue_style( 'studio-immens-quick-order-settings-css', get_home_url().'/wp-content/plugins/studio-immens-quick-order/public/css/settings-css.css', array(), '1.0', 'all' );
+wp_enqueue_style( 'studio-immens-quick-order-settings-css', plugins_url( 'public/css/settings-css.css', dirname(__FILE__, 2) ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION, 'all' );
 
 ?>
 
@@ -45,11 +46,9 @@ wp_enqueue_style( 'studio-immens-quick-order-settings-css', get_home_url().'/wp-
 <div class="SIQOSetting_Board" board="global">
 <?php
 
-    $nonce_save = wp_create_nonce( 'SIQO_save_settings' );
-    echo '<input type="hidden" id="_siqononce_save_settings" name="_siqononce_save_settings" value="'.esc_attr($nonce_save).'" />';
+    wp_nonce_field( 'SIQO_save_settings', '_siqononce_save_settings' );
 
-    $nonce = wp_create_nonce( 'SIQO_manage_pages' );
-    echo '<input type="hidden" id="_siqononce_manage_pages" name="_siqononce_manage_pages" value="'.esc_attr($nonce).'" />';
+    wp_nonce_field( 'SIQO_manage_pages', '_siqononce_manage_pages' );
 
 SIQO_manage_pages();
 
@@ -336,9 +335,8 @@ SIQO_general_setting( array( 'name' => 'siqo_posts_category_images',
     'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress', 'studio-immens-quick-order')
 ) );
 
-    $nonce = wp_create_nonce( 'SIQO_save_settings' );
-    echo '<input type="hidden" name="_siqononce_save_settings" value="'.esc_attr($nonce).'" />';
 
+    wp_nonce_field( 'SIQO_save_settings', '_siqononce_save_settings' );
 ?>
 
 </div>

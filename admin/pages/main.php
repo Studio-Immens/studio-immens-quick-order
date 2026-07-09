@@ -3,8 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$nonce = wp_create_nonce( 'SIQO_main_page' );
-echo '<input type="hidden" id="_siqononce_main_page" name="_siqononce_main_page" value="'.esc_attr($nonce).'" />';
+wp_nonce_field( 'SIQO_main_page', '_siqononce_main_page' );
 
 SIQO_manage_QR_codes();
 
