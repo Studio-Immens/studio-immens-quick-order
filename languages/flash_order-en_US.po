@@ -1,0 +1,2051 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: IW Flash Order\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-18 01:41+0000\n"
+"PO-Revision-Date: 2025-01-22 11:51+0000\n"
+"Last-Translator: \n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.14; wp-6.7.1\n"
+"X-Domain: flash_order"
+
+#: public/flash_order-public.php:2749
+msgid " - Seleziona - "
+msgstr "- Select -"
+
+#: admin/flash_order-admin.php:446
+msgid " Clicca QUI "
+msgstr "Click HERE"
+
+#: public/flash_order-public.php:1727 public/flash_order-public.php:1741
+msgid " Clicca qui per Accedere "
+msgstr "Click here to Login"
+
+#: public/flash_order-public.php:741
+msgid " Data di Consegna: "
+msgstr "Delivery Date:"
+
+#: admin/flash_order-admin.php:457
+msgid " Puoi vedere il Plugin Qui: "
+msgstr "You can see the Plugin Here:"
+
+#: admin/flash_order-admin.php:434
+msgid " Visita Questa Pagina "
+msgstr "Visit This Page"
+
+#: public/flash_order-public.php:3659
+msgid "- zona -"
+msgstr "- area -"
+
+#: public/flash_order-public.php:2982
+msgid "-scegli-"
+msgstr "-choose-"
+
+#: admin/flash_order-admin.php:435
+msgid ""
+". Ogni tuo gesto è per noi un prezioso impegno, e siamo lieti di ascoltare "
+"le tue proposte e suggerimenti."
+msgstr ""
+"Every gesture of yours is a precious commitment for us, and we are happy to "
+"listen to your proposals and suggestions."
+
+#: admin/flash_order-admin.php:447
+msgid ""
+". Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, "
+"impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e "
+"dedizione."
+msgstr ""
+". We are always ready to listen to your opinions and suggestions, making "
+"every effort to satisfy your every request with attention and dedication."
+
+#: public/flash_order-public.php:6517
+msgid "[ALTRO]"
+msgstr "[OTHER]"
+
+#: public/flash_order-public.php:6466
+msgid "[DATE]"
+msgstr "[DATE]"
+
+#: public/flash_order-public.php:6486
+msgid "[FATTURAZIONE]"
+msgstr "[BILLING]"
+
+#: public/flash_order-public.php:6507
+msgid "[INFO]"
+msgstr "[INFO]"
+
+#: public/flash_order-public.php:6495
+msgid "[SPEDIZIONE]"
+msgstr "[SHIPPING]"
+
+#: admin/pages/general-settings.php:120
+msgid "abilita l'inserimento ordini dalla pagina del menu ( flash-order-ajax )"
+msgstr "enable order entry from menu page ( flash-order-ajax )"
+
+#: public/flash_order-public.php:678
+msgid "Add New"
+msgstr "Add New"
+
+#: public/flash_order-public.php:677
+msgid "Add New Catering"
+msgstr "Add New Catering"
+
+#: admin/flash_order-admin.php:37 admin/flash_order-admin.php:74
+msgid "Addons"
+msgstr "Addons"
+
+#: public/flash_order-public.php:826
+msgid "Aggiorna Allergene"
+msgstr "Update Allergen"
+
+#: public/flash_order-public.php:1035
+msgid "Aggiorna elemento"
+msgstr "Update item"
+
+#: public/flash_order-public.php:777
+msgid "Aggiorna Ingrediente"
+msgstr "Update Ingredient"
+
+#: public/flash_order-public.php:652
+msgid "Aggiorna la Pagina"
+msgstr "Refresh Page"
+
+#: public/flash_order-public.php:652
+msgid "aggiorna la pagina eludendo la cache"
+msgstr "refresh the page bypassing the cache"
+
+#: public/flash_order-public.php:979
+msgid "Aggiorna Macro Categoria"
+msgstr "Update Macro Category"
+
+#: public/flash_order-public.php:1089
+msgid "Aggiorna Status"
+msgstr "Update Status"
+
+#: public/flash_order-public.php:925
+msgid "Aggiorna Sticker"
+msgstr "Update Stickers"
+
+#: public/flash_order-public.php:875
+msgid "Aggiorna Temperatura"
+msgstr "Update Temperature"
+
+#: admin/flash_order-admin.php:393
+msgid ""
+"Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state "
+"create, le Crea."
+msgstr ""
+"Update all the pages needed by the plugin, and if they have not yet been "
+"created, Create them.Update all the pages needed by the plugin, and if they "
+"haven't been created yet, Create them."
+
+#: public/flash_order-public.php:1132
+msgid "Aggiorna Zona"
+msgstr "Update Zone"
+
+#: public/flash_order-public.php:1046
+msgid "Aggiornato in questo tavolo"
+msgstr "Updated in this table"
+
+#: public/flash_order-public.php:2608 public/flash_order-public.php:4722
+msgid "AGGIUNGI"
+msgstr "ADD"
+
+#: public/flash_order-public.php:398
+msgid "Aggiungi il ruolo (manager) all'utente"
+msgstr "Add role (manager) to user"
+
+#: public/flash_order-public.php:386
+msgid "Aggiungi il ruolo (supervisor) all'utente"
+msgstr "Add role (supervisor) to user"
+
+#: public/flash_order-public.php:374
+msgid "Aggiungi il ruolo (worker) all'utente"
+msgstr "Add role (worker) to user"
+
+#: public/flash_order-public.php:393
+msgid "Aggiungi il ruolo manager"
+msgstr "Add manager role"
+
+#: public/flash_order-public.php:381
+msgid "Aggiungi il ruolo supervisor"
+msgstr "Add supervisor role"
+
+#: public/flash_order-public.php:369
+msgid "Aggiungi il ruolo worker"
+msgstr "Add worker role"
+
+#: public/flash_order-public.php:977
+msgid "Aggiungi Nuova Macro Categoria"
+msgstr ""
+"Add New Macro CategoryAdd New Macro Category\n"
+
+#: public/flash_order-public.php:873
+msgid "Aggiungi Nuova Temperatura"
+msgstr "Add New Temperature"
+
+#: public/flash_order-public.php:1130
+msgid "Aggiungi Nuova Zona"
+msgstr "Add New Zone"
+
+#: public/flash_order-public.php:1032
+msgid "Aggiungi nuovo"
+msgstr "Add new"
+
+#: public/flash_order-public.php:824
+msgid "Aggiungi Nuovo Allergene"
+msgstr "Add New Allergen"
+
+#: public/flash_order-public.php:775
+msgid "Aggiungi Nuovo Ingrediente"
+msgstr "Add New Ingredient"
+
+#: public/flash_order-public.php:1087
+msgid "Aggiungi Nuovo Status"
+msgstr "Add New Status"
+
+#: public/flash_order-public.php:923
+msgid "Aggiungi Nuovo Sticker"
+msgstr "Add New Sticker"
+
+#: public/flash_order-public.php:1031
+msgid "Aggiungi nuovo tavolo"
+msgstr "Add new table"
+
+#: public/flash_order-public.php:829
+msgid "Aggiungi o Rimuovi Allergeni"
+msgstr "Add or Remove Allergens"
+
+#: public/flash_order-public.php:780
+msgid "Aggiungi o Rimuovi Ingredienti"
+msgstr "Add or Remove Ingredients"
+
+#: public/flash_order-public.php:982
+msgid "Aggiungi o Rimuovi Macro Categoria"
+msgstr "Add or Remove Category Macro"
+
+#: public/flash_order-public.php:1092
+msgid "Aggiungi o Rimuovi Status"
+msgstr "Add or Remove Status"
+
+#: public/flash_order-public.php:928
+msgid "Aggiungi o Rimuovi Sticker"
+msgstr "Add or Remove Sticker"
+
+#: public/flash_order-public.php:878
+msgid "Aggiungi o Rimuovi Temperature"
+msgstr "Add or Remove Temperatures"
+
+#: public/flash_order-public.php:1135
+msgid "Aggiungi o Rimuovi Zone"
+msgstr "Add or Remove Zones"
+
+#: admin/pages/general-settings.php:447
+msgid "aggiungi un'immagine alla tassonomia per gli allergeni dei prodotti"
+msgstr "Add an image to the taxonomy for product allergens"
+
+#: admin/pages/general-settings.php:438
+msgid "aggiungi un'immagine alla tassonomia per gli ingredienti dei prodotti"
+msgstr "Add an image to the taxonomy for product ingredients"
+
+#: admin/pages/general-settings.php:465
+msgid "aggiungi un'immagine alla tassonomia per gli sticker dei prodotti"
+msgstr "Add an image to the taxonomy for product stickers"
+
+#: admin/pages/general-settings.php:493
+msgid "aggiungi un'immagine alla tassonomia per i tag dei post"
+msgstr "Add an image to the taxonomy for post tags"
+
+#: admin/pages/general-settings.php:483
+msgid "aggiungi un'immagine alla tassonomia per i tag dei prodotti"
+msgstr "Add an image to the taxonomy for product tags"
+
+#: admin/pages/general-settings.php:503
+msgid "aggiungi un'immagine alla tassonomia per le categorie dei post"
+msgstr "Add an image to the taxonomy for post categories"
+
+#: admin/pages/general-settings.php:474
+msgid ""
+"aggiungi un'immagine alla tassonomia per le macro categorie dei prodotti"
+msgstr "add an image to the taxonomy for product macro categories"
+
+#: admin/pages/general-settings.php:456
+msgid "aggiungi un'immagine alla tassonomia per le temperature dei prodotti"
+msgstr "Add an image to the taxonomy for product temperatures"
+
+#: public/flash_order-public.php:676
+msgid "All Catering"
+msgstr "All Catering"
+
+#: public/flash_order-public.php:818 public/flash_order-public.php:819
+msgid "Allergene"
+msgstr "Allergen"
+
+#: admin/pages/general-settings.php:377 admin/pages/general-settings.php:446
+msgid "ALLERGENI"
+msgstr "ALLERGENS"
+
+#: public/flash_order-public.php:817
+msgid "Allergeni"
+msgstr "Allergens"
+
+#: public/flash_order-public.php:831
+msgid "Allergeni Popolari"
+msgstr "Popular Allergens"
+
+#: public/flash_order-public.php:2897
+msgid "Allergeni:"
+msgstr "Allergens:"
+
+#: public/flash_order-public.php:5407
+msgid "Attesa"
+msgstr "Waiting"
+
+#: admin/pages/general-settings.php:332
+msgid "Avanzate"
+msgstr "Advance"
+
+#: public/flash_order-public.php:4638 public/template/front-order-ajax.php:243
+msgid "AVVIA ORDINE"
+msgstr "START ORDER"
+
+#: admin/pages/general-settings.php:316
+msgid "azioni"
+msgstr "shares"
+
+#: public/flash_order-public.php:6085 public/flash_order-public.php:6102
+#: public/flash_order-public.php:6431 public/flash_order-public.php:6433
+#: public/flash_order-public.php:6434 public/flash_order-public.php:6435
+msgid "cambia lo status dell'ordine"
+msgstr "change the status of the order"
+
+#: public/flash_order-public.php:5242
+msgid "Cancellato"
+msgstr "Deleted"
+
+#: public/flash_order-public.php:6150 public/flash_order-public.php:6433
+msgid "cancellato"
+msgstr "deleted"
+
+#: public/flash_order-public.php:1565 public/flash_order-public.php:1579
+msgid "Carica Immagine"
+msgstr "Load Image"
+
+#: admin/pages/general-settings.php:502
+msgid "CATEGORIE POST"
+msgstr "POST. CATEGORIES"
+
+#: public/flash_order-public.php:2879
+msgid "Categorie:"
+msgstr "Categories:"
+
+#: public/flash_order-public.php:669 public/flash_order-public.php:670
+#: public/flash_order-public.php:671 public/flash_order-public.php:672
+#: public/flash_order-public.php:698
+msgid "Catering"
+msgstr "Catering"
+
+#: public/flash_order-public.php:673
+msgid "Catering Archives"
+msgstr "Catering Archives"
+
+#: public/flash_order-public.php:674
+msgid "Catering Attributes"
+msgstr "Catering Attributes"
+
+#: public/flash_order-public.php:832
+msgid "Cerca Allergeni"
+msgstr "Search Allergens"
+
+#: public/flash_order-public.php:4727
+msgid "Cerca cliente..."
+msgstr "Search for customer..."
+
+#: public/flash_order-public.php:783
+msgid "Cerca Ingredienti"
+msgstr "Search for Ingredients"
+
+#: public/flash_order-public.php:2585
+msgid "Cerca ingredienti da aggiungere..."
+msgstr "Search for ingredients to add..."
+
+#: public/flash_order-public.php:985
+msgid "Cerca Macro Categoria"
+msgstr "Search Macro Category"
+
+#: public/flash_order-public.php:3561
+msgid "Cerca prodotto..."
+msgstr "Search product..."
+
+#: public/flash_order-public.php:1095
+msgid "Cerca Status"
+msgstr "Search Status"
+
+#: public/flash_order-public.php:931
+msgid "Cerca Sticker"
+msgstr "Search Sticker"
+
+#: public/flash_order-public.php:1038
+msgid "Cerca tavolo"
+msgstr "Search table"
+
+#: public/flash_order-public.php:881
+msgid "Cerca Temperature"
+msgstr "Search Temperatures"
+
+#: public/flash_order-public.php:4726
+msgid "Cerca un cliente:"
+msgstr "Search for a customer:"
+
+#: public/flash_order-public.php:1138
+msgid "Cerca Zone"
+msgstr "Search Zones"
+
+#: public/flash_order-public.php:2627
+msgid "Cerca..."
+msgstr "Search..."
+
+#: public/flash_order-public.php:6580
+msgid ""
+"Cercheremo di rispettare questo orario con il massimo dell'impegno, tuttavia "
+"l'orario effettivo potrebbe non corrispondere."
+msgstr ""
+"We will try to respect this time with our best efforts, however the actual "
+"time may not correspond."
+
+#: public/template/front-order-ajax.php:141
+msgid "Cerchi Qualcosa?"
+msgstr "Are you looking for something?"
+
+#: public/flash_order-public.php:2979
+msgid "Che temperatura gradisci? "
+msgstr "What temperature do you like? "
+
+#: public/flash_order-public.php:1187 public/flash_order-public.php:2574
+#: public/flash_order-public.php:2863 public/flash_order-public.php:2977
+#: public/flash_order-public.php:4159 public/flash_order-public.php:4177
+#: public/flash_order-public.php:4708 public/flash_order-public.php:5700
+#: public/flash_order-public.php:5809 public/flash_order-public.php:5961
+#: public/flash_order-public.php:6028 public/flash_order-public.php:6285
+#: public/flash_order-public.php:6373 public/flash_order-public.php:6428
+#: public/flash_order-public.php:6454 public/template/front-order-ajax.php:120
+#: public/template/front-order-ajax.php:203
+msgid "CHIUDI"
+msgstr "CLOSE"
+
+#: public/flash_order-public.php:4713
+msgid "Cliente Esistente ? "
+msgstr "Existing Customer? "
+
+#: public/flash_order-public.php:1279
+msgid "Colore Sfondo "
+msgstr "Background Color "
+
+#: public/flash_order-public.php:1287
+msgid "Colore Testo "
+msgstr "Text Color "
+
+#: admin/pages/style.php:61
+msgid "Colori degli status degli ordini di woocommerce"
+msgstr "Woocommerce order status colors"
+
+#: admin/pages/style.php:88
+msgid "Colori degli status del timer"
+msgstr "Timer status colors"
+
+#: admin/pages/style.php:43
+msgid "Colori dei testi e effetti"
+msgstr "Text colors and effects"
+
+#: admin/pages/style.php:75
+msgid "Colori della gestione tavoli"
+msgstr "Table management colors"
+
+#: admin/pages/style.php:31
+msgid "Colori di Background principali"
+msgstr "Main Background Colors"
+
+#: admin/pages/style.php:17
+msgid "Colori principali"
+msgstr "Main colors"
+
+#: public/flash_order-public.php:5417
+msgid "Completa prima i campi obbligatori contrassegnati da: * ."
+msgstr "First complete the mandatory fields marked with: *."
+
+#: public/flash_order-public.php:5240
+msgid "Completato"
+msgstr "Completed"
+
+#: public/flash_order-public.php:6154 public/flash_order-public.php:6435
+msgid "completato"
+msgstr "completed"
+
+#: public/flash_order-public.php:6481
+msgid "completato: "
+msgstr "completed: "
+
+#: public/flash_order-public.php:5433
+msgid "Confermi di voler creare il Prodotto chiamato: "
+msgstr "You confirm that you want to create the Product called: "
+
+#: public/flash_order-public.php:6060
+msgid "Consegna"
+msgstr "Delivery"
+
+#: public/flash_order-public.php:6598
+msgid "Consegna a Domicilio"
+msgstr "Home delivery"
+
+#: public/flash_order-public.php:6563
+msgid "Consegna a domicilio"
+msgstr "Home delivery"
+
+#: public/flash_order-public.php:5244
+msgid "Consegnato"
+msgstr "Delivered"
+
+#: public/flash_order-public.php:5578
+msgid "CONTATTO"
+msgstr "CONTACT"
+
+#: admin/flash_order-admin.php:394
+msgid "CREA o AGGIORNA pagine"
+msgstr "CREATE or UPDATE pages"
+
+#: public/flash_order-public.php:6508
+msgid "creato da - "
+msgstr "created by - "
+
+#: public/flash_order-public.php:6469
+msgid "creato: "
+msgstr "created: "
+
+#: public/flash_order-public.php:6480
+msgid "data del completamento dell'ordine"
+msgstr "date of order completion"
+
+#: public/flash_order-public.php:6472
+msgid "data dell'ultima modifica dell'ordine"
+msgstr "date of the last modification of the order"
+
+#: public/flash_order-public.php:6476
+msgid "data della fatturazione dell'ordine"
+msgstr "order invoicing date"
+
+#: public/flash_order-public.php:6571
+msgid "Data di consegna"
+msgstr "Delivery date"
+
+#. ID univoco della metabox
+#: public/flash_order-public.php:730
+msgid "Data di Consegna: "
+msgstr "Delivery Date: "
+
+#: public/flash_order-public.php:6468
+msgid "data di creazione dell'ordine"
+msgstr "order creation date"
+
+#: public/flash_order-public.php:6604
+msgid "Data: "
+msgstr "Date: "
+
+#: public/flash_order-public.php:2558 public/flash_order-public.php:2568
+#: public/flash_order-public.php:2648
+msgid "Disponibile"
+msgstr "Available"
+
+#: public/flash_order-public.php:680
+msgid "Edit Catering"
+msgstr "Edit Catering"
+
+#: public/flash_order-public.php:825
+msgid "Edita Allergene"
+msgstr "Edit Allergen"
+
+#: public/flash_order-public.php:776
+msgid "Edita Ingrediente"
+msgstr "Edit Ingredient"
+
+#: public/flash_order-public.php:978
+msgid "Edita Macro Categoria"
+msgstr "Edit Category Macro"
+
+#: public/flash_order-public.php:1088
+msgid "Edita Status"
+msgstr "Edit Status"
+
+#: public/flash_order-public.php:924
+msgid "Edita Sticker"
+msgstr "Edit Sticker"
+
+#: public/flash_order-public.php:874
+msgid "Edita Temperatura"
+msgstr "Edit Temperature"
+
+#: public/flash_order-public.php:1131
+msgid "Edita Zona"
+msgstr "Edit Area"
+
+#: admin/flash_order-admin.php:386
+msgid "ELIMINA pagina"
+msgstr "DELETE page"
+
+#: public/flash_order-public.php:58
+msgid ""
+"ERROR! Flash Order requires Woocommerce Plugin to be installed and active"
+msgstr "ERROR! "
+
+#: public/flash_order-public.php:1271
+msgid "Estendi l'influenza ad altri selettori css"
+msgstr "Extend influence to other css selectors"
+
+#: public/flash_order-public.php:5562
+msgid "FATTURAZIONE"
+msgstr "BILLING"
+
+#: public/flash_order-public.php:6477
+msgid "fatturazione: "
+msgstr "billing: "
+
+#: public/flash_order-public.php:687 public/flash_order-public.php:1041
+msgid "Featured Image"
+msgstr "Featured Image"
+
+#: public/flash_order-public.php:695
+msgid "Filter Catering list"
+msgstr "Filter Catering list"
+
+#: public/flash_order-public.php:1049
+msgid "Filtra lista tavoli"
+msgstr "Filter table list"
+
+#: admin/flash_order-admin.php:33 admin/flash_order-admin.php:68
+msgid "FlashOrder"
+msgstr "FlashOrder"
+
+#: public/flash_order-public.php:821
+msgid "Genitore dell'Allergene"
+msgstr "Allergen Parent"
+
+#: public/flash_order-public.php:822
+msgid "Genitore dell'Allergene:"
+msgstr "Allergen Parent:"
+
+#: public/flash_order-public.php:772
+msgid "Genitore dell'Ingrediente"
+msgstr "Parent of Ingredient"
+
+#: public/flash_order-public.php:773
+msgid "Genitore dell'Ingrediente:"
+msgstr "Parent of Ingredient:"
+
+#: public/flash_order-public.php:975
+msgid "Genitore della Macro Categoria:"
+msgstr "Parent of Macro Category:"
+
+#: public/flash_order-public.php:870
+msgid "Genitore della Temperatura"
+msgstr "Parent of Temperature"
+
+#: public/flash_order-public.php:871
+msgid "Genitore della Temperatura:"
+msgstr "Temperature Parent:"
+
+#: public/flash_order-public.php:1127
+msgid "Genitore della Zona"
+msgstr "Parent of the Zone"
+
+#: public/flash_order-public.php:1128
+msgid "Genitore della Zona:"
+msgstr "Zone Parent:"
+
+#: public/flash_order-public.php:974
+msgid "Genitore delle Macro Categorie"
+msgstr "Parent of Macro Categories"
+
+#: public/flash_order-public.php:1084
+msgid "Genitore dello Status"
+msgstr "Status Parent"
+
+#: public/flash_order-public.php:1085
+msgid "Genitore dello Status:"
+msgstr "Parent Status:"
+
+#: public/flash_order-public.php:920
+msgid "Genitore dello Sticker"
+msgstr "Parent of the Sticker"
+
+#: public/flash_order-public.php:921
+msgid "Genitore dello Sticker:"
+msgstr "Parent of Sticker:"
+
+#: public/flash_order-public.php:1029
+msgid "Genitore tavolo:"
+msgstr "Table parent:"
+
+#: admin/flash_order-admin.php:361
+msgid "Gestione Pagine del Plugin"
+msgstr "Plugin Page Management"
+
+#: public/flash_order-public.php:5711 public/flash_order-public.php:5730
+#: public/flash_order-public.php:5851 public/flash_order-public.php:5876
+#: public/flash_order-public.php:5971 public/flash_order-public.php:5990
+#: public/flash_order-public.php:6295 public/flash_order-public.php:6311
+#: public/flash_order-public.php:6383 public/flash_order-public.php:6399
+msgid "gli ingredienti:"
+msgstr "the ingredients:"
+
+#: public/flash_order-public.php:441
+msgid "Grid View"
+msgstr "Grid View"
+
+#. Author URI of the plugin
+msgid "https://innovazioneweb.com"
+msgstr "https://innovationweb.com"
+
+#. URI of the plugin
+msgid "https://innovazioneweb.com/flash-order"
+msgstr "https://associazioneweb.com/flash-order"
+
+#: admin/pages/general-settings.php:121
+msgid ""
+"i clienti potranno inserire gli ordini direttamente dalla pagina del menu"
+msgstr "Customers will be able to place orders directly from the menu page"
+
+#: admin/pages/general-settings.php:281
+msgid "id"
+msgstr "id"
+
+#: public/flash_order-public.php:1198
+msgid "id pagina: "
+msgstr "page id: "
+
+#: public/flash_order-public.php:5726 public/flash_order-public.php:5872
+#: public/flash_order-public.php:5986 public/flash_order-public.php:6307
+#: public/flash_order-public.php:6395
+msgid "il prodotto non ha nessun ingrediente associato ad esso"
+msgstr "The product does not have any ingredients associated with it"
+
+#: public/template/front-order-ajax.php:103
+msgid "Il prodotto é già tra i favoriti"
+msgstr "The product is already among the favorites"
+
+#: admin/pages/general-settings.php:268
+msgid ""
+"il valore minimo è 500 cioé 0.5 secondi ( 1000 millisecondi = 1 secondo )"
+msgstr ""
+"the minimum value is 500 i.e. 0.5 seconds (1000 milliseconds = 1 second)"
+
+#: public/flash_order-public.php:1564 public/flash_order-public.php:1577
+msgid "Image"
+msgstr "Image"
+
+#: public/flash_order-public.php:1600
+msgid "Immagine"
+msgstr "Image"
+
+#: admin/pages/general-settings.php:428
+msgid "Immagini delle Tassonomie"
+msgstr "Images of Taxonomies"
+
+#: admin/pages/general-settings.php:251
+msgid "imposta a \"-1\" per visualizzare tutti gli ordini"
+msgstr "Set to \"-1\" to view all orders"
+
+#: public/flash_order-public.php:1042
+msgid "Imposta featured image"
+msgstr "Set featured image"
+
+#: admin/pages/general-settings.php:259
+msgid "imposta il numero di ore"
+msgstr "sets the number of hours"
+
+#: public/flash_order-public.php:648
+msgid ""
+"imposta il sito a schermo intero..... clicca nuovamente per uscire dalla "
+"modalità"
+msgstr "set the site to full screen..... click again to exit the mode"
+
+#: admin/flash_order-admin.php:380
+msgid "IMPOSTAZIONI"
+msgstr "SETTINGS"
+
+#: admin/flash_order-admin.php:286
+msgid "Impostazioni di rete"
+msgstr "Network settings"
+
+#: admin/pages/general-settings.php:242
+msgid "impostazioni generali"
+msgstr "general settings"
+
+#: admin/pages/general-settings.php:48
+msgid "Impostazioni Globali"
+msgstr "Global Settings"
+
+#: public/flash_order-public.php:5246
+msgid "In Attesa"
+msgstr "Waiting"
+
+#: public/flash_order-public.php:5238
+msgid "In Lavorazione"
+msgstr "In Process"
+
+#: public/flash_order-public.php:6148 public/flash_order-public.php:6431
+msgid "in lavorazione"
+msgstr "in progress"
+
+#: public/flash_order-public.php:6511
+msgid "indirizzo ip - "
+msgstr "ip address - "
+
+#: public/flash_order-public.php:4324 public/flash_order-public.php:5556
+#: public/flash_order-public.php:6451
+msgid "INFO"
+msgstr "INFO"
+
+#: admin/pages/general-settings.php:302
+msgid "info"
+msgstr "info"
+
+#: public/flash_order-public.php:769 public/flash_order-public.php:770
+msgid "Ingrediente"
+msgstr "Ingredient"
+
+#: admin/pages/general-settings.php:358 admin/pages/general-settings.php:437
+msgid "INGREDIENTI"
+msgstr "INGREDIENTS"
+
+#: public/flash_order-public.php:768
+msgid "Ingredienti"
+msgstr "Ingredients"
+
+#: public/flash_order-public.php:782
+msgid "Ingredienti Popolari"
+msgstr "Popular Ingredients"
+
+#: public/flash_order-public.php:2891
+msgid "Ingredienti:"
+msgstr "Ingredients:"
+
+#. Author of the plugin
+msgid "InnovazioneWeb"
+msgstr "Web Innovation"
+
+#: public/flash_order-public.php:5421
+msgid "Inserisci almeno la mail o il numero di telefono del Cliente!"
+msgstr "Enter at least the customer's email or telephone number!"
+
+#: admin/pages/general-settings.php:258
+msgid ""
+"inserisci fino a quante ore prima verranno visualizzati gli ordini nella "
+"pagina \"manage-order\""
+msgstr ""
+"enter up to how many hours before orders will be displayed on the \"manage-"
+"order\" page"
+
+#: admin/pages/general-settings.php:250
+msgid ""
+"inserisci il numero massimo di ordini da visualizzare nella pagina (manage-"
+"order)"
+msgstr ""
+"enter the maximum number of orders to display on the page (manage-order)"
+
+#: admin/pages/general-settings.php:89
+msgid "inserisci la posizione del pannello menù nel backend"
+msgstr "enter the position of the menu panel in the backend"
+
+#: admin/pages/general-settings.php:343 admin/pages/general-settings.php:344
+msgid ""
+"inserisci lo shortcode per effettuare il login dalla finestra pop up. "
+"(pagina flash-orders-ajax)"
+msgstr "enter the shortcode to log in from the pop up window. "
+
+#: public/flash_order-public.php:1045
+msgid "Inserisci nel tavolo"
+msgstr "Insert into table"
+
+#: admin/pages/general-settings.php:267
+msgid ""
+"inserisci ogni quanti millisecondi si aggiornano gli ordini nella pagina "
+"(manage-order)"
+msgstr ""
+"enter how many milliseconds the orders are updated on the page (manage-order)"
+
+#: public/flash_order-public.php:5420
+msgid "Inserisci prima il Nome del Cliente!"
+msgstr "Enter Customer Name first!"
+
+#: public/flash_order-public.php:5411
+msgid "Inserisci prima il nome del tavolo."
+msgstr "Enter the table name first."
+
+#: public/flash_order-public.php:5427
+msgid "Inserisci prima il nome della categoria."
+msgstr "Enter the category name first."
+
+#: public/flash_order-public.php:5432
+msgid "inserisci prima tutti i campi richiesti e contrassegnati da *"
+msgstr "first enter all the required fields marked with *"
+
+#: public/flash_order-public.php:4718
+msgid "inserisci un nuovo cliente:"
+msgstr "enter a new customer:"
+
+#: public/flash_order-public.php:691
+msgid "Insert into Catering"
+msgstr "Insert into Catering"
+
+#: public/flash_order-public.php:693
+msgid "Items Catering"
+msgstr "Items Catering"
+
+#: public/flash_order-public.php:694
+msgid "Items Catering navigation"
+msgstr "Items Catering navigation"
+
+#: public/flash_order-public.php:1048
+msgid "Items list navigation"
+msgstr "Items list navigation"
+
+#. Name of the plugin
+msgid "IW Flash Order"
+msgstr "IW Flash Order"
+
+#. Description of the plugin
+msgid ""
+"IW Flash Order is the ultimate solution for streamlining restaurant order "
+"management on your WooCommerce-powered website. With this powerful plugin, "
+"you can supercharge your restaurant's online ordering process."
+msgstr ""
+"IW Flash Order is the ultimate solution for streaming restaurant order "
+"management on your WooCommerce-powered website. "
+
+#: admin/flash_order-admin.php:376
+msgid "l'ID della pagina é: "
+msgstr "the page ID is: "
+
+#: admin/flash_order-admin.php:377
+msgid "la versione della pagina é: "
+msgstr "the version of the page is: "
+
+#: public/flash_order-public.php:5822
+msgid "le varianti:"
+msgstr "the variants:"
+
+#: public/flash_order-public.php:4630
+msgid "LIBERA TAVOLO"
+msgstr "CLEAR TABLE"
+
+#: public/flash_order-public.php:5406 public/template/manage-tables.php:98
+#: public/template/manage-tables.php:102
+msgid "Libero"
+msgstr "Free"
+
+#: public/flash_order-public.php:1829
+msgid "Link per Questa Pagina:"
+msgstr "Link to This Page:"
+
+#: public/flash_order-public.php:835
+msgid "lista Allergeni"
+msgstr "Allergen list"
+
+#: public/flash_order-public.php:786
+msgid "lista ingredienti"
+msgstr "list of ingredients"
+
+#: public/flash_order-public.php:988
+msgid "lista Macro Categorie"
+msgstr "Macro Categories list"
+
+#: public/flash_order-public.php:1098
+msgid "lista Status"
+msgstr "Status list"
+
+#: public/flash_order-public.php:934
+msgid "lista Sticker"
+msgstr "Sticker list"
+
+#: public/flash_order-public.php:1047
+msgid "lista tavoli"
+msgstr "table list"
+
+#: public/flash_order-public.php:884
+msgid "lista Temperature"
+msgstr "Temperature list"
+
+#: public/flash_order-public.php:1141
+msgid "lista Zone"
+msgstr "Zone list"
+
+#: public/flash_order-public.php:971
+msgid "Macro Categoria"
+msgstr "Macro Category"
+
+#: admin/pages/general-settings.php:414
+msgid "MACRO CATEGORIE"
+msgstr "MACRO CATEGORIES"
+
+#: public/flash_order-public.php:970 public/flash_order-public.php:972
+msgid "Macro Categorie"
+msgstr "Macro Categories"
+
+#: public/flash_order-public.php:984
+msgid "Macro Categorie Popolari"
+msgstr "Popular Category Macros"
+
+#: admin/pages/general-settings.php:473
+#| msgid "macro_categories"
+msgid "MACRO CATEGORIES"
+msgstr "MACRO CATEGORIES"
+
+#: public/flash_order-public.php:4720
+msgid "mail Cliente"
+msgstr "Customer email"
+
+#: public/flash_order-public.php:1259
+msgid "Modifica i colori globali della pagina"
+msgstr "Modify the global colors of the page"
+
+#: public/flash_order-public.php:2572
+msgid "MODIFICA INGREDIENTI"
+msgstr "EDIT INGREDIENTS"
+
+#: public/flash_order-public.php:1034
+msgid "Modifica tavolo"
+msgstr "Modify table"
+
+#: public/flash_order-public.php:1218 public/flash_order-public.php:1232
+#: public/flash_order-public.php:1246
+msgid "Mostra"
+msgstr "Show"
+
+#: public/flash_order-public.php:1228
+msgid "Mostra o Nascondi footer al caricamento della pagina"
+msgstr "Show or hide footer on page load"
+
+#: public/flash_order-public.php:1214
+msgid "Mostra o Nascondi header al caricamento della pagina"
+msgstr "Show or hide header when page loads"
+
+#: public/flash_order-public.php:1242
+msgid "Mostra o Nascondi QR code della pagina in testa"
+msgstr "Show or hide QR code of the top page"
+
+#: public/flash_order-public.php:654
+msgid "Mostra/Nascondi Header e Footer"
+msgstr "Show/Hide Header and Footer"
+
+#: public/flash_order-public.php:654
+msgid "Mostra/Nascondi header e footer della pagina."
+msgstr "Show/Hide page header and footer."
+
+#: admin/pages/general-settings.php:388
+msgid ""
+"mostrerà la tassonomia degli allergeni di un piatto, nella pagina prodotto "
+"di woocommerce"
+msgstr ""
+"will show the allergen taxonomy of a dish on the woocommerce product page"
+
+#: admin/pages/general-settings.php:369
+msgid ""
+"mostrerà la tassonomia degli ingredienti di cui è composto un piatto, nella "
+"pagina prodotto di woocommerce"
+msgstr ""
+"will show the taxonomy of the ingredients that make up a dish, on the "
+"woocommerce product page"
+
+#: admin/pages/general-settings.php:448
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia degli allergeni, associata ai prodotti di "
+"woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to be associated with "
+"the allergen taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:439
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia degli ingredienti, associata ai prodotti di "
+"woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to be associated with "
+"the ingredient taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:466
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia degli sticker, associata ai prodotti di woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to be associated with "
+"the sticker taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:494
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia dei tag, associata ai post di wordpress"
+msgstr ""
+"will show a new meta box to easily select the image to associate with the "
+"tag taxonomy, associated with WordPress posts"
+
+#: admin/pages/general-settings.php:484
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia dei tag, associata ai prodotti di woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to be associated with "
+"the tag taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:504
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia delle categorie, associate ai post di wordpress"
+msgstr ""
+"will show a new meta box to easily select the image to associate with the "
+"category taxonomy, associated with WordPress posts"
+
+#: admin/pages/general-settings.php:475
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia delle macro categorie, associate ai prodotti di "
+"woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to associate with the "
+"macro category taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:457
+msgid ""
+"mostrerà un nuovo meta box per selezionare facilmente l' immagine da "
+"associare alla tassonomia delle temperature, associata ai prodotti di "
+"woocommerce"
+msgstr ""
+"will show a new meta box to easily select the image to be associated with "
+"the temperature taxonomy, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:379
+msgid ""
+"mostrerà una nuova tassonomia per selezionare facilmente gli allergeni di un "
+"piatto, associata ai prodotti di woocommerce"
+msgstr ""
+"will show a new taxonomy to easily select the allergens of a dish, "
+"associated with woocommerce products"
+
+#: admin/pages/general-settings.php:360
+msgid ""
+"mostrerà una nuova tassonomia per selezionare facilmente gli ingredienti di "
+"cui è composto un piatto, associata ai prodotti di woocommerce"
+msgstr ""
+"will show a new taxonomy to easily select the ingredients that make up a "
+"dish, associated with woocommerce products"
+
+#: admin/pages/general-settings.php:407
+msgid ""
+"mostrerà una nuova tassonomia per selezionare facilmente gli sticker che "
+"possono essere associati ai prodotti di woocommerce"
+msgstr ""
+"will show a new taxonomy to easily select stickers that can be associated "
+"with woocommerce products"
+
+#: admin/pages/general-settings.php:416
+msgid ""
+"mostrerà una nuova tassonomia per selezionare facilmente le macro categorie "
+"che possono essere associate ai prodotti di woocommerce"
+msgstr ""
+"will show a new taxonomy to easily select the macro categories that can be "
+"associated with woocommerce products"
+
+#: admin/pages/general-settings.php:398
+msgid ""
+"mostrerà una nuova tassonomia per selezionare facilmente le temperature di "
+"consegna che possono essere associate ai prodotti di woocommerce"
+msgstr ""
+"will show a new taxonomy to easily select delivery temperatures that can be "
+"associated with woocommerce products"
+
+#: public/flash_order-public.php:1222 public/flash_order-public.php:1236
+#: public/flash_order-public.php:1250
+msgid "Nascondi"
+msgstr "Hide"
+
+#: public/flash_order-public.php:650
+msgid "nascondi tutte le finestre popup della pagina"
+msgstr "Hide all pop-up windows on the page"
+
+#: public/flash_order-public.php:650
+msgid "Nascondi tutti i PopUp"
+msgstr "Hide all PopUps"
+
+#: public/flash_order-public.php:836
+msgid "navigazione lista Allergeni"
+msgstr "Allergen list navigation"
+
+#: public/flash_order-public.php:787
+msgid "navigazione lista ingredienti"
+msgstr "ingredient list navigation"
+
+#: public/flash_order-public.php:989
+msgid "navigazione lista Macro Categorie"
+msgstr "Macro Category list navigation"
+
+#: public/flash_order-public.php:1099
+msgid "navigazione lista Status"
+msgstr "Status list navigation"
+
+#: public/flash_order-public.php:935
+msgid "navigazione lista Sticker"
+msgstr "Sticker list navigation"
+
+#: public/flash_order-public.php:885
+msgid "navigazione lista Temperature"
+msgstr "Temperature list navigation"
+
+#: public/flash_order-public.php:1142
+msgid "navigazione lista Zone"
+msgstr "Zone list navigation"
+
+#: public/flash_order-public.php:834
+msgid "Nessun Allergene"
+msgstr "No Allergen"
+
+#: public/flash_order-public.php:785
+msgid "Nessun Ingrediente"
+msgstr "No Ingredient"
+
+#: public/flash_order-public.php:784 public/flash_order-public.php:833
+#: public/flash_order-public.php:882 public/flash_order-public.php:932
+#: public/flash_order-public.php:986 public/flash_order-public.php:1096
+#: public/flash_order-public.php:1139
+msgid "Nessun risultato"
+msgstr "No results"
+
+#: public/flash_order-public.php:1039
+msgid "Nessun tavolo"
+msgstr "No table"
+
+#: public/flash_order-public.php:1040
+msgid "Nessun tavolo in Trash"
+msgstr "No tables in Trash"
+
+#: public/flash_order-public.php:2867
+msgid "Nessuna immagine di galleria"
+msgstr "No gallery images"
+
+#: public/flash_order-public.php:987
+msgid "Nessuna Macro Categoria"
+msgstr "No Macro Category"
+
+#: public/flash_order-public.php:883
+msgid "Nessuna Temperatura"
+msgstr "No Temperature"
+
+#: public/flash_order-public.php:1140
+msgid "Nessuna Zona"
+msgstr "No Zone"
+
+#: public/flash_order-public.php:1097
+msgid "Nessuno Status"
+msgstr "No Status"
+
+#: public/flash_order-public.php:933
+msgid "Nessuno Sticker"
+msgstr "No Sticker"
+
+#: public/flash_order-public.php:679
+msgid "New Catering"
+msgstr "New Catering"
+
+#: public/flash_order-public.php:1267
+msgid "No"
+msgstr "No"
+
+#: admin/pages/general-settings.php:288
+msgid "nome"
+msgstr "name"
+
+#: public/flash_order-public.php:5282 public/flash_order-public.php:5323
+#: public/flash_order-public.php:5324
+msgid "Nome breve"
+msgstr "Short name"
+
+#: public/flash_order-public.php:4719
+msgid "nome Cliente"
+msgstr "Customer name"
+
+#: admin/flash_order-admin.php:171 admin/flash_order-admin.php:241
+msgid "nome dell'impostazione nel database: ( "
+msgstr "name of setting in database: ( "
+
+#: public/flash_order-public.php:5283 public/flash_order-public.php:5336
+#: public/flash_order-public.php:5337
+msgid "Nome slang"
+msgstr "Slang name"
+
+#: public/flash_order-public.php:2558 public/flash_order-public.php:2648
+msgid "Non Disponibile"
+msgstr "Not Available"
+
+#: public/flash_order-public.php:1726
+msgid "NON Hai il permesso per accedere a questa pagina!"
+msgstr "You do NOT have permission to access this page!"
+
+#: public/flash_order-public.php:685
+msgid "Not found"
+msgstr "Not found"
+
+#: public/flash_order-public.php:686
+msgid "Not found in Trash"
+msgstr "Not found in Trash"
+
+#: public/flash_order-public.php:4476
+msgid "Note"
+msgstr "Notes"
+
+#: public/flash_order-public.php:2571 public/flash_order-public.php:4477
+msgid "Note del prodotto..."
+msgstr "Product notes..."
+
+#: public/flash_order-public.php:6518
+msgid "note dell'ordine: - "
+msgstr "order notes: - "
+
+#: public/flash_order-public.php:5741 public/flash_order-public.php:5896
+#: public/flash_order-public.php:6001 public/flash_order-public.php:6322
+#: public/flash_order-public.php:6410
+msgid "Note prodotto:"
+msgstr "Product notes:"
+
+#: public/flash_order-public.php:976
+msgid "Nuova Macro Categorie"
+msgstr "New Category Macro"
+
+#: public/flash_order-public.php:872
+msgid "Nuova Temperatura"
+msgstr "New Temperature"
+
+#: public/flash_order-public.php:1129
+msgid "Nuova Zona"
+msgstr "New Zone"
+
+#: public/flash_order-public.php:6146
+msgid "nuovo"
+msgstr "new"
+
+#: public/flash_order-public.php:823
+msgid "Nuovo Allergene"
+msgstr "New Allergen"
+
+#: public/flash_order-public.php:774
+msgid "Nuovo Ingrediente"
+msgstr "New Ingredient"
+
+#: public/flash_order-public.php:1086
+msgid "Nuovo Status"
+msgstr "New Status"
+
+#: public/flash_order-public.php:922
+msgid "Nuovo Sticker"
+msgstr "New Sticker"
+
+#: public/flash_order-public.php:1033
+msgid "Nuovo tavolo"
+msgstr "New table"
+
+#: public/flash_order-public.php:4767
+msgid "NUOVO!"
+msgstr "NEW!"
+
+#: public/flash_order-public.php:5408 public/template/manage-tables.php:100
+msgid "Occupato"
+msgstr "Busy"
+
+#: public/flash_order-public.php:3653
+msgid "oppure impostalo"
+msgstr "or set it"
+
+#: public/flash_order-public.php:6582
+msgid "Ora di consegna"
+msgstr "Delivery time"
+
+#: public/template/manage-tables.php:132
+msgid "Ora e data dell'ultima modifica"
+msgstr "Time and date of last modification"
+
+#: public/flash_order-public.php:6604
+msgid "Ora: "
+msgstr "Time: "
+
+#: public/flash_order-public.php:5559 public/flash_order-public.php:6458
+#: public/template/front-order-ajax.php:193
+msgid "ORDINE"
+msgstr "ORDER"
+
+#: public/flash_order-public.php:4832
+msgid "PAGA"
+msgstr "PAY"
+
+#: public/flash_order-public.php:4633
+msgid "PAGA TALOLO"
+msgstr "PAY TOTAL"
+
+#: admin/pages/general-settings.php:234
+msgid "Pagina gestione ordini (manage-orders)"
+msgstr "Manage orders page"
+
+#: public/flash_order-public.php:548
+msgid "Pagine Speciali:"
+msgstr "Special Pages:"
+
+#: public/flash_order-public.php:675
+msgid "Parent Catering:"
+msgstr "Parent Catering:"
+
+#: public/template/front-order-ajax.php:101
+msgid ""
+"Per poter effettuare ordini su questa pagina, é neccessario Effettuare "
+"l'accesso!"
+msgstr "To place orders on this page, you must log in!"
+
+#: public/flash_order-public.php:1740
+msgid ""
+"Per poter effettuare ordini su questa pagina, é necessario effettuare "
+"l'accesso."
+msgstr "To place orders on this page, you must log in."
+
+#: admin/pages/general-settings.php:88
+msgid "posizione del menù admin"
+msgstr "position of the admin menu"
+
+#: public/flash_order-public.php:699
+msgid "Post Type for Catering"
+msgstr "Post Type for Catering"
+
+#: public/flash_order-public.php:4314 public/flash_order-public.php:4825
+msgid "Preconto"
+msgstr "Prepayment"
+
+#: public/flash_order-public.php:3671
+msgid "prezzo / sconto"
+msgstr "price / discount"
+
+#: admin/flash_order-admin.php:38 admin/flash_order-admin.php:76
+msgid "Pro"
+msgstr "Pro"
+
+#: public/flash_order-public.php:4355
+msgid "PRODOTTI"
+msgstr "PRODUCTS"
+
+#: admin/pages/general-settings.php:295
+msgid "prodotti"
+msgstr "products"
+
+#: public/template/front-order-ajax.php:122
+#: public/template/front-order-ajax.php:166
+msgid "Prodotti Preferiti"
+msgstr "Favorite Products"
+
+#: public/flash_order-public.php:3615 public/flash_order-public.php:3623
+msgid "Prodotto Generico"
+msgstr "Generic Product"
+
+#: admin/flash_order-admin.php:409
+msgid ""
+"questa sezione è in costruzione, stiamo lavorando in continuazione e questa "
+"sezione sarà presto disponibile."
+msgstr ""
+"this section is under construction, we are working continuously and this "
+"section will be available soon."
+
+#: admin/flash_order-admin.php:422
+msgid ""
+"Questa sezione é destinata alla versione pro del plugin (Flash Order Pro)"
+msgstr ""
+"This section is intended for the pro version of the plugin (Flash Order Pro)"
+
+#: public/flash_order-public.php:1053
+#| msgid ""
+#| "Questo post type generato dal plug-in: FlashOrderPRO, serve per "
+#| "controllare e gestire i tavoli(o anche le zone speciali come ad es. il "
+#| "bancone, il cortile, il gazebo etc...), del tuo ristorante."
+msgid ""
+"Questo post type generato dal plug-in: IW FlashOrder, serve per controllare "
+"e gestire i tavoli(o anche le zone speciali come ad es. il bancone, il "
+"cortile, il gazebo etc...), del tuo ristorante."
+msgstr ""
+"This post type generated by the plug-in: IW FlashOrder, is used to control "
+"and manage the tables (or even the special areas such as the counter, the "
+"courtyard, the gazebo etc...), of your restaurant."
+
+#: public/flash_order-public.php:689
+msgid "Remove featured image"
+msgstr "Remove featured image"
+
+#: public/flash_order-public.php:4334
+msgid "RIEPILOGO:"
+msgstr "SUMMARY:"
+
+#: public/flash_order-public.php:6152 public/flash_order-public.php:6434
+msgid "rimborsato"
+msgstr "refunded"
+
+#: public/flash_order-public.php:1043
+msgid "Rimuovi la featured image"
+msgstr "Remove featured image"
+
+#: admin/flash_order-admin.php:143 public/flash_order-public.php:1326
+msgid "Ripristina il valore di default"
+msgstr "Restore the default value"
+
+#: public/flash_order-public.php:6058
+msgid "Ritiro"
+msgstr "Withdrawal"
+
+#: public/flash_order-public.php:6560 public/flash_order-public.php:6599
+msgid "Ritiro in Sede"
+msgstr "Collection at headquarters"
+
+#: public/flash_order-public.php:1297 admin/pages/general-settings.php:45
+#: admin/pages/general-settings.php:520 admin/pages/style.php:10
+#: admin/pages/style.php:97
+msgid "SALVA"
+msgstr "UPDATE"
+
+#: public/flash_order-public.php:781 public/flash_order-public.php:830
+#: public/flash_order-public.php:879 public/flash_order-public.php:929
+#: public/flash_order-public.php:1093 public/flash_order-public.php:1136
+msgid "Scegli fra i più usati"
+msgstr "Choose from the most used"
+
+#: public/flash_order-public.php:983
+msgid "Scegli fra le più usate"
+msgstr "Choose from the most used"
+
+#: admin/pages/general-settings.php:95 admin/pages/general-settings.php:96
+msgid "scegli se mostrare la barra admin"
+msgstr "choose whether to show the admin bar"
+
+#: public/flash_order-public.php:648
+msgid "Schermo Intero"
+msgstr "Full Screen"
+
+#: public/flash_order-public.php:4508
+msgid "Sconto"
+msgstr "Discount"
+
+#: admin/flash_order-admin.php:445
+msgid "Se desideri darci un feedback o fare una richiesta, "
+msgstr "If you would like to give us feedback or make a request, "
+
+#: admin/flash_order-admin.php:433
+msgid "Se vuoi sostenerci con una donazione, "
+msgstr "If you want to support us with a donation, "
+
+#: public/flash_order-public.php:684
+msgid "Search Catering"
+msgstr "Search Catering"
+
+#: public/flash_order-public.php:5423
+msgid "Sei sicuro di voler cambiare la categoria di questo prodotto?"
+msgstr "Are you sure you want to change the category of this product?"
+
+#: public/flash_order-public.php:6431 public/flash_order-public.php:6433
+#: public/flash_order-public.php:6434 public/flash_order-public.php:6435
+msgid "Sei sicuro di voler cambiare lo status dell'ordine?`"
+msgstr "Are you sure you want to change the order status?`"
+
+#: public/flash_order-public.php:5436
+msgid "Sei sicuro di voler ELIMINARE il prodotto chiamato:"
+msgstr "Are you sure you want to DELETE the product called:"
+
+#: public/template/front-order-ajax.php:231
+msgid "Seleziona il Tavolo"
+msgstr "Select the Table"
+
+#: admin/flash_order-admin.php:181
+msgid "Seleziona l'audio..."
+msgstr "Select audio..."
+
+#: public/flash_order-public.php:2731
+msgid "Seleziona la variante: "
+msgstr "Select variant: "
+
+#: public/flash_order-public.php:5435
+msgid "Seleziona prima il Prodotto da ELIMINARE"
+msgstr "First select the Product to DELETE"
+
+#: public/flash_order-public.php:5413
+msgid "seleziona prima il tavolo da eliminare."
+msgstr "First select the table to delete."
+
+#: public/flash_order-public.php:5429
+msgid "seleziona prima la categoria da eliminare."
+msgstr "First select the category to delete."
+
+#: public/template/front-order-ajax.php:99
+msgid "Seleziona prima la variante"
+msgstr "Select variant first"
+
+#: public/flash_order-public.php:3647
+msgid "Seleziona Tavolo"
+msgstr "Select Table"
+
+#: public/flash_order-public.php:6613
+msgid "Seleziona un'orario!"
+msgstr "Select a time!"
+
+#: public/flash_order-public.php:6612
+msgid "Seleziona una data!"
+msgstr "Select a date!"
+
+#: public/flash_order-public.php:828
+msgid "Separa gli Allergeni con la virgola"
+msgstr "Separate Allergens with commas"
+
+#: public/flash_order-public.php:779
+msgid "Separa gli Ingredienti con la virgola"
+msgstr "Separate the Ingredients with a comma"
+
+#: public/flash_order-public.php:1091
+msgid "Separa gli Status con la virgola"
+msgstr "Separate Statuses with commas"
+
+#: public/flash_order-public.php:927
+msgid "Separa gli Sticker con la virgola"
+msgstr "Separate Stickers with commas"
+
+#: public/flash_order-public.php:981
+msgid "Separa le Macro Categorie con la virgola"
+msgstr "Separate Macro Categories with commas"
+
+#: public/flash_order-public.php:877
+msgid "Separa le Temperature con la virgola"
+msgstr "Separate Temperatures with commas"
+
+#: public/flash_order-public.php:1134
+msgid "Separa le Zone con la virgola"
+msgstr "Separate Zones with commas"
+
+#: public/flash_order-public.php:688
+msgid "Set featured image"
+msgstr "Set featured image"
+
+#: admin/flash_order-admin.php:34 admin/flash_order-admin.php:70
+msgid "Settings"
+msgstr "Settings"
+
+#: public/flash_order-public.php:1263
+msgid "Si"
+msgstr "Yes"
+
+#: public/template/front-order-ajax.php:100
+msgid "Siamo spiacenti ma il prodotto non é al momento disponibile"
+msgstr "We are sorry but the product is not currently available"
+
+#: public/flash_order-public.php:5404
+msgid "Sicuro di voler LIBERARE il tavolo?"
+msgstr "Are you sure you want to CLEAR the table?"
+
+#: public/flash_order-public.php:5405
+msgid "Sicuro di voler LIBERARE tutti i tavoli?"
+msgstr "Are you sure you want to CLEAR all the tables?"
+
+#: public/flash_order-public.php:5403
+msgid "Sicuro di voler procedere con l'Ordinazione?"
+msgstr "Are you sure you want to proceed with the ordination?"
+
+#: public/flash_order-public.php:6019 public/flash_order-public.php:6034
+msgid "Special"
+msgstr "Special"
+
+#: public/flash_order-public.php:5570
+msgid "SPEDIZIONE"
+msgstr "EXPEDITION"
+
+#: public/flash_order-public.php:5587
+msgid "Stampa scontrino"
+msgstr "Print receipt"
+
+#: admin/pages/general-settings.php:309
+msgid "stato"
+msgstr "state"
+
+#: public/flash_order-public.php:1081 public/flash_order-public.php:1082
+msgid "Status"
+msgstr "Status"
+
+#: public/flash_order-public.php:1080
+msgid "status"
+msgstr "status"
+
+#: public/flash_order-public.php:1203
+msgid "status della pagina: "
+msgstr "page status: "
+
+#: public/flash_order-public.php:1094
+msgid "Status Popolari"
+msgstr "Popular Status"
+
+#: admin/pages/general-settings.php:405 admin/pages/general-settings.php:464
+msgid "STICKER"
+msgstr "STICKER"
+
+#: public/flash_order-public.php:916 public/flash_order-public.php:917
+#: public/flash_order-public.php:918
+msgid "Sticker"
+msgstr "Sticker"
+
+#: public/flash_order-public.php:930
+msgid "Sticker Popolari"
+msgstr "Popular Stickers"
+
+#: public/flash_order-public.php:4198
+msgid "STORICO:"
+msgstr "HISTORY:"
+
+#: public/flash_order-public.php:4203
+msgid "STORY"
+msgstr "STORY"
+
+#: admin/flash_order-admin.php:35 admin/flash_order-admin.php:72
+msgid "Style"
+msgstr "Style"
+
+#: admin/pages/general-settings.php:492
+msgid "TAG POST"
+msgstr "POST TAG"
+
+#: admin/pages/general-settings.php:482
+msgid "TAG PRODOTTI"
+msgstr "PRODUCT TAGS"
+
+#: public/flash_order-public.php:2885
+msgid "Tag:"
+msgstr "Tag:"
+
+#: admin/pages/general-settings.php:349
+msgid "Tassonomie"
+msgstr "Taxonomies"
+
+#: public/flash_order-public.php:1025 public/flash_order-public.php:1026
+#: public/flash_order-public.php:1027 public/flash_order-public.php:1028
+msgid "Tavoli"
+msgstr "Tables"
+
+#: public/flash_order-public.php:1023
+msgid "tavoli"
+msgstr "tables"
+
+#: public/flash_order-public.php:3380
+msgid "TAVOLO"
+msgstr "TABLE"
+
+#: public/flash_order-public.php:3151 public/flash_order-public.php:6054
+msgid "Tavolo"
+msgstr "Table"
+
+#: public/flash_order-public.php:1024 public/flash_order-public.php:1052
+msgid "tavolo"
+msgstr "table"
+
+#: public/flash_order-public.php:4626
+msgid "TAVOLO: "
+msgstr "TABLE: "
+
+#: public/flash_order-public.php:4721
+msgid "telefono Cliente"
+msgstr "Customer telephone"
+
+#: public/flash_order-public.php:867 public/flash_order-public.php:868
+msgid "Temperatura"
+msgstr "Temperature"
+
+#: public/flash_order-public.php:5837
+msgid "Temperatura:"
+msgstr "Temperature:"
+
+#: admin/pages/general-settings.php:396 admin/pages/general-settings.php:455
+msgid "TEMPERATURE"
+msgstr "TEMPERATURES"
+
+#: public/flash_order-public.php:866 public/flash_order-public.php:4461
+msgid "Temperature"
+msgstr "Temperature"
+
+#: public/flash_order-public.php:880
+msgid "Temperature Popolari"
+msgstr "Popular Temperatures"
+
+#: admin/pages/style.php:53
+msgid "Tempi delle animazioni"
+msgstr "Animation times"
+
+#: public/flash_order-public.php:6065 public/flash_order-public.php:6462
+msgid "Tipo di ordine"
+msgstr "Order type"
+
+#: public/flash_order-public.php:6603
+msgid "Tipo Ordine: "
+msgstr "Order Type: "
+
+#: admin/pages/general-settings.php:323
+msgid "totale"
+msgstr "total"
+
+#: public/flash_order-public.php:4815
+msgid "TOTALE: "
+msgstr "TOTAL: "
+
+#: public/flash_order-public.php:973
+msgid "Tutte le Macro Categorie"
+msgstr "All Macro Categories"
+
+#: public/flash_order-public.php:869
+msgid "Tutte le Temperature"
+msgstr "All Temperatures"
+
+#: public/flash_order-public.php:820
+msgid "Tutti gli Allergeni"
+msgstr "All Allergens"
+
+#: public/flash_order-public.php:771
+msgid "Tutti gli Ingredienti"
+msgstr "All Ingredients"
+
+#: public/flash_order-public.php:1083
+msgid "Tutti gli Status"
+msgstr "All Statuses"
+
+#: public/flash_order-public.php:919
+msgid "Tutti gli Sticker"
+msgstr "All Stickers"
+
+#: public/flash_order-public.php:1030
+msgid "Tutti i tavoli"
+msgstr "All tables"
+
+#: public/flash_order-public.php:1126
+msgid "Tutti le Zone"
+msgstr "All Zones"
+
+#: public/flash_order-public.php:4339
+msgid "TUTTO"
+msgstr "ALL"
+
+#: admin/flash_order-admin.php:375
+msgid "Ultima modifica della pagina: "
+msgstr "Last modification of the page: "
+
+#: public/flash_order-public.php:6473
+msgid "ultima modifica: "
+msgstr "last modified: "
+
+#: public/flash_order-public.php:681
+msgid "Update Catering"
+msgstr "Update Catering"
+
+#: public/flash_order-public.php:692
+msgid "Uploaded to this Catering"
+msgstr "Uploaded to this Catering"
+
+#: public/flash_order-public.php:1044
+msgid "Usa come featured image"
+msgstr "Use as featured image"
+
+#: public/flash_order-public.php:690
+msgid "Use as featured image"
+msgstr "Use as featured image"
+
+#: public/flash_order-public.php:6512
+msgid "user agent - "
+msgstr "user agents - "
+
+#: admin/pages/general-settings.php:378
+msgid "utilizza la tassonomia per gli allergeni dei prodotti"
+msgstr "Use taxonomy for product allergens"
+
+#: admin/pages/general-settings.php:359
+msgid "utilizza la tassonomia per gli ingredienti dei prodotti"
+msgstr "Use taxonomy for product ingredients"
+
+#: admin/pages/general-settings.php:406
+msgid "utilizza la tassonomia per gli sticker"
+msgstr "Use taxonomy for stickers"
+
+#: admin/pages/general-settings.php:415
+msgid "utilizza la tassonomia per le macro categorie"
+msgstr "Use taxonomy for macro categories"
+
+#: admin/pages/general-settings.php:397
+msgid "utilizza la tassonomia per le temperature"
+msgstr "Use taxonomy for temperatures"
+
+#: public/template/front-order-ajax.php:224
+msgid "Varianti Prodotti"
+msgstr "Product Variants"
+
+#: public/flash_order-public.php:4405
+msgid "VARIANTI:"
+msgstr "VARIANTS:"
+
+#: public/flash_order-public.php:682 public/flash_order-public.php:683
+msgid "View Catering"
+msgstr "View Catering"
+
+#: admin/flash_order-admin.php:389
+msgid "VISITA pagina"
+msgstr "VISIT page"
+
+#: public/flash_order-public.php:827
+msgid "Visualizza Allergene"
+msgstr "View Allergen"
+
+#: admin/pages/general-settings.php:386
+msgid "VISUALIZZA ALLERGENI"
+msgstr "VIEW ALLERGENS"
+
+#: admin/pages/general-settings.php:296
+msgid "visualizza i prodotti dell'ordine nella tabella"
+msgstr "Displays the products of the order in the table"
+
+#: public/flash_order-public.php:440
+msgid "visualizza i risultati in griglia"
+msgstr "display results in grid"
+
+#: admin/pages/general-settings.php:289
+msgid "visualizza il nome di chi ha effettuato l'ordine nella tabella"
+msgstr "Displays the name of the person who placed the order in the table"
+
+#: admin/pages/general-settings.php:324
+msgid "visualizza il totale dell'ordine nella tabella"
+msgstr "Displays the order total in the table"
+
+#: public/flash_order-public.php:778
+msgid "Visualizza Ingrediente"
+msgstr "View Ingredient"
+
+#: admin/pages/general-settings.php:367
+msgid "VISUALIZZA INGREDIENTI"
+msgstr "VIEW INGREDIENTS"
+
+#: admin/pages/general-settings.php:282
+msgid "visualizza l'id dell'ordine nella tabella"
+msgstr "Displays the order id in the table"
+
+#: admin/pages/general-settings.php:112
+msgid ""
+"visualizza la sezione per scegliere la modalità di consegna ( ritiro o "
+"consegna ), la data e l'ora, nella pagina (checkout)"
+msgstr ""
+"displays the section to choose the delivery method (collection or delivery), "
+"the date and time, on the (checkout) page"
+
+#: admin/pages/general-settings.php:113
+msgid ""
+"visualizza la sezione per scegliere la modalità di consegna (ritiro o "
+"consegna), la data e l'ora, nella pagina (checkout)"
+msgstr ""
+"view the section to choose the delivery method (collection or delivery), the "
+"date and time, on the (checkout) page"
+
+#: admin/pages/general-settings.php:387
+msgid "visualizza la tassonomia allergeni nella pagina del prodotto"
+msgstr "View allergen taxonomy on the product page"
+
+#: admin/pages/general-settings.php:368
+msgid "visualizza la tassonomia ingredienti nella pagina del prodotto"
+msgstr "Displays the ingredient taxonomy on the product page"
+
+#: admin/pages/general-settings.php:317
+msgid "visualizza le azioni possibili per l'ordine nella tabella"
+msgstr "Displays the possible actions for the order in the table"
+
+#: admin/pages/general-settings.php:303
+msgid "visualizza le info dell'ordine nella tabella"
+msgstr "View order info in the table"
+
+#: admin/pages/general-settings.php:310
+msgid "visualizza lo stato dell'ordine nella tabella"
+msgstr "Displays the order status in the table"
+
+#: public/flash_order-public.php:980
+msgid "Visualizza Macro Categoria"
+msgstr "View Category Macros"
+
+#: admin/pages/general-settings.php:273
+msgid "visualizza sezioni della Tabella"
+msgstr "displays sections of the Table"
+
+#: public/flash_order-public.php:1090
+msgid "Visualizza Status"
+msgstr "View Status"
+
+#: public/flash_order-public.php:926
+msgid "Visualizza Sticker"
+msgstr "View Sticker"
+
+#: public/flash_order-public.php:1037
+msgid "Visualizza tavoli"
+msgstr "View tables"
+
+#: public/flash_order-public.php:1036
+msgid "Visualizza tavolo"
+msgstr "View table"
+
+#: public/flash_order-public.php:876
+msgid "Visualizza Temperatura"
+msgstr "Display Temperature"
+
+#: public/flash_order-public.php:1133
+msgid "Visualizza Zona"
+msgstr "View Area"
+
+#: public/flash_order-public.php:5416
+msgid "Vuoi aggiornare l'evento chiamato: "
+msgstr "Do you want to update the event called: "
+
+#: public/flash_order-public.php:5415
+msgid "Vuoi creare un nuovo evento chiamato: "
+msgstr "Do you want to create a new event called: "
+
+#: public/flash_order-public.php:5410
+msgid "Vuoi creare un nuovo tavolo chiamato: "
+msgstr "Do you want to create a new table called: "
+
+#: public/flash_order-public.php:5426
+msgid "Vuoi creare una nuova macro categoria chiamata: "
+msgstr "Do you want to create a new macro category called: "
+
+#: public/flash_order-public.php:5412
+msgid "Vuoi ELIMINARE il tavolo chiamato: "
+msgstr "Do you want to DELETE the table called: "
+
+#: public/flash_order-public.php:5418
+msgid "Vuoi ELIMINARE in modo definitivo questo evento, chiamato: "
+msgstr "Do you want to permanently DELETE this event, called: "
+
+#: public/flash_order-public.php:5428
+msgid "Vuoi ELIMINARE la categoria chiamata: "
+msgstr "Do you want to DELETE the category called: "
+
+#: public/flash_order-public.php:1124
+msgid "Zona"
+msgstr "Zone"
+
+#: public/flash_order-public.php:1125
+msgid "Zone"
+msgstr "Zones"
+
+#: public/flash_order-public.php:1123
+msgid "zone"
+msgstr "zone"
+
+#: public/flash_order-public.php:1137
+msgid "Zone Popolari"
+msgstr "Popular Areas"
