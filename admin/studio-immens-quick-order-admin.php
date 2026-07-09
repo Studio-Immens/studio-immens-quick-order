@@ -24,11 +24,11 @@ function SIQO_menu_page(){
     $link = plugins_url( 'includes/img/logo-20.webp', dirname(__FILE__) );
 
    add_menu_page( 'Quick Order', esc_html__( 'Quick Order', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page', $link, $position );
-   add_submenu_page( $menu_slug, 'si-quick-order-settings', esc_html__( 'Settings', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_settings' );
-   add_submenu_page( $menu_slug, 'si-quick-order-style', esc_html__( 'Style', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_style', 'SIQO_sub_menu_page_style' );
+   add_submenu_page( $menu_slug, esc_html__( 'Settings', 'studio-immens-quick-order' ), esc_html__( 'Settings', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_settings' );
+   add_submenu_page( $menu_slug, esc_html__( 'Style', 'studio-immens-quick-order' ), esc_html__( 'Style', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_style', 'SIQO_sub_menu_page_style' );
 
-   add_submenu_page( $menu_slug, 'si-quick-order-addons', esc_html__( 'Addons', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_addons', 'SIQO_sub_menu_page_addons' );
-   add_submenu_page( $menu_slug, 'si-quick-order-pro', esc_html__( 'Pro', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_pro', 'SIQO_sub_menu_page_pro' );
+   add_submenu_page( $menu_slug, esc_html__( 'Addons', 'studio-immens-quick-order' ), esc_html__( 'Addons', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_addons', 'SIQO_sub_menu_page_addons' );
+   add_submenu_page( $menu_slug, esc_html__( 'Pro', 'studio-immens-quick-order' ), esc_html__( 'Pro', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_pro', 'SIQO_sub_menu_page_pro' );
 }
 add_action( 'admin_menu', 'SIQO_menu_page' );
 
@@ -123,6 +123,7 @@ function SIQO_new_style_setting( $setting, $args = array() ){
     $args['type'] = (isset($args['type']) && $args['type']!='')?$args['type']:'color';
 
     $set_val = SIQO_get_meta($setting);
+    $background_color = '';
 
     if ( $args['type'] == 'color' ) {
         $background_color = $set_val;

@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+﻿jQuery(document).ready(function($) {
 	   "use strict";
 
     jQuery('#submit_order null').click(function() {
@@ -13,10 +13,10 @@ jQuery(document).ready(function($) {
     	console.log(inputs);
         jQuery.ajax({
             type: 'POST',
-            url: flash_orders_ajax_vars.ajaxurl,
+            url: siqo_ajax_vars.ajaxurl,
             data: {
                 action: 'flash_orders_ajax_ordination',
-                nonce: flash_orders_ajax_vars.nonce,
+                nonce: siqo_ajax_vars.nonce,
                 products: inputs,
                 table: table_name,
             },
@@ -24,9 +24,9 @@ jQuery(document).ready(function($) {
                 console.log(' ...ajax-response... ');
                 console.log(response.data);
                 if (response.success) {
-                	alert(' PERFETTO, la tua ordinazione é andata a buon fine! ');
+                	alert(' PERFETTO, la tua ordinazione Ã© andata a buon fine! ');
                 } else{
-                	alert(' ERRORE!!! , la tua ordinazione NON é andata a buon fine! ');
+                	alert(' ERRORE!!! , la tua ordinazione NON Ã© andata a buon fine! ');
                 }
                 //location.reload();
             }
@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
 });
 
 
-function FO_Hide_all_popup(targetClass){
+function SIQO_Hide_all_popup(targetClass){
 	jQuery(targetClass).each(function(i,e){
 		jQuery(e).hide();
 	});
@@ -67,18 +67,18 @@ function FO_Hide_all_popup(targetClass){
 	}
 */
 
-function FO_toggle_elements( target ) {
+function SIQO_toggle_elements( target ) {
 	console.log(target);
 	jQuery(target).toggle();
 }
 
-function FO_Remove_Item_to_Order( target ) {
+function SIQO_Remove_Item_to_Order( target ) {
 	jQuery(target).parent().parent().remove();
 	jQuery('#FOProdNumber').text( parseInt(jQuery('#FOProdNumber').text()) - 1 );
 	jQuery('#FOProdNumberMenu').text( parseInt(jQuery('#FOProdNumberMenu').text()) - 1 );
 }
 
-function FO_Add_Item_to_Order( target ) {
+function SIQO_Add_Item_to_Order( target ) {
 	var id, category, name, permalink, image, quantity, note, value;
 	id = jQuery(target).parent().parent().attr('foid');
 	category = jQuery(target).parent().parent().attr('focategories');
@@ -94,7 +94,7 @@ function FO_Add_Item_to_Order( target ) {
 
 //console.log(image);
 	var copy = jQuery(target).parent().parent().clone();
-	copy.find('.FOAddBut').attr('onclick', 'FO_Remove_Item_to_Order(this);return false;');
+	copy.find('.FOAddBut').attr('onclick', 'SIQO_Remove_Item_to_Order(this);return false;');
 	copy.find('.FOAddBut').text('RIMUOVI');
 
 	// copy.find('.prod_input input').attr('name', jQuery('#FOProdNumber').text()+'~'+id+'~' );
@@ -119,7 +119,7 @@ jQuery('#summ_order').append( copy );
 }
 
 
-function FO_validate_flash_order_form( target ){
+function SIQO_validate_order_form( target ){
 	if ( jQuery(target).parent().find('#table_name').val() <= 0 ) {
 		event.preventDefault();
 		alert('seleziona il numero del tavolo');
@@ -127,12 +127,12 @@ function FO_validate_flash_order_form( target ){
 	} else{
 		jQuery('#left-fixed-menu').animate({left:'-100%'});
 		jQuery('.FOloadingMessage').show();
-		FO_assign_index_to_inputs(this);
+		SIQO_assign_index_to_inputs(this);
 	}
 }
 
 
-function FO_assign_index_to_inputs(){
+function SIQO_assign_index_to_inputs(){
 	// event.preventDefault();
 	var table = jQuery('#summ_order').find('tr');
 
@@ -163,7 +163,7 @@ function FO_assign_index_to_inputs(){
 //   let FOstickyParent = FOstickyParent.parentElement;
 // }
 
-function FO_Edit_Item_ingredients(trigger){
+function SIQO_Edit_Item_ingredients(trigger){
 	// $(trigger).next().;
 }
 
@@ -171,7 +171,7 @@ function FOSearchIngred(search) {
 	var searchValue = jQuery(search).val();
 	var FilterSec = jQuery(search).next();
 
-	FilterSec.find('.FOIngredProdTab').each(function(index, element){
+	FilterSec.find('.SIQOIngredProdTab').each(function(index, element){
 		var DataInput = jQuery(element).find('input');
 		if (DataInput.length > 0) {
 			var regExp = new RegExp(searchValue, "i");
@@ -192,30 +192,30 @@ function FOSearchIngred(search) {
 }
 
 function FOadvToRegularFit(input){
-	var editIng = jQuery(input).closest('.foProdCard').find('input[value='+jQuery(input).val()+']');
+	var editIng = jQuery(input).closest('.SIQOprodCard').find('input[value='+jQuery(input).val()+']');
 	if ( !jQuery(input).is(':checked') ) {
 		editIng.each(function(i,e){
-			jQuery(e).addClass('FOstatus_modified');
+			jQuery(e).addClass('SIQOstatus_modified');
 			jQuery(e).attr('checked','');
 		});
-		// jQuery(input).closest('.foProdCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').addClass('FOstatus_modified');
+		// jQuery(input).closest('.SIQOprodCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').addClass('SIQOstatus_modified');
 	} else{
 		editIng.each(function(i,e){
-			jQuery(e).removeClass('FOstatus_modified');
+			jQuery(e).removeClass('SIQOstatus_modified');
 			jQuery(e).attr('checked','checked');
 		});
-		// jQuery(input).closest('.foProdCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').removeClass('FOstatus_modified');
+		// jQuery(input).closest('.SIQOprodCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').removeClass('SIQOstatus_modified');
 	}
 }
 
 function FOaddIng(input){
 	jQuery(input).attr('onclick', 'FOremoveIng(this);FOcheckCardModified(this);');
 		var copy = jQuery(input).parent().clone();
-	copy.addClass('FOstatus_modified');
+	copy.addClass('SIQOstatus_modified');
 	// console.log( jQuery(input).parent().parent().parent() );
 	jQuery(input).parent().parent().parent().prepend(copy);
 	// if ( jQuery(input).parent().parent().parent().find('[modified=modified]').length ) {
-	// 	jQuery(input).parent().parent().parent().parent().addClass('FOstatus_modified');
+	// 	jQuery(input).parent().parent().parent().parent().addClass('SIQOstatus_modified');
 	// }
 	FOcheckIfModified(input);
 	jQuery(input).parent().remove();
@@ -223,52 +223,52 @@ function FOaddIng(input){
 
 function FOcheckIfModified(input){
 	if ( !jQuery(input).is(':checked') ) {
-		jQuery(input).parent().addClass('FOstatus_modified');
+		jQuery(input).parent().addClass('SIQOstatus_modified');
 	} else{
-		jQuery(input).parent().removeClass('FOstatus_modified');
+		jQuery(input).parent().removeClass('SIQOstatus_modified');
 	}
 	FOcheckCardModified(input);
 }
 function FOcheckCardModified(input){
-	// if ( jQuery(input).closest('.foProdCard').find('.FOstatus_modified').length ) {
-	// 	jQuery(input).closest('.foProdCard').addClass('FOstatus_modified');
+	// if ( jQuery(input).closest('.SIQOprodCard').find('.SIQOstatus_modified').length ) {
+	// 	jQuery(input).closest('.SIQOprodCard').addClass('SIQOstatus_modified');
 	// } else{
-	// 	jQuery(input).closest('.foProdCard').removeClass('FOstatus_modified');
+	// 	jQuery(input).closest('.SIQOprodCard').removeClass('SIQOstatus_modified');
 	// }
-	jQuery('.foProdCard').each(function(i,e){
-		if ( jQuery(e).find('.FOstatus_modified').length ) {
-			jQuery(e).addClass('FOstatus_modified');
+	jQuery('.SIQOprodCard').each(function(i,e){
+		if ( jQuery(e).find('.SIQOstatus_modified').length ) {
+			jQuery(e).addClass('SIQOstatus_modified');
 		} else{
-			jQuery(e).removeClass('FOstatus_modified');
+			jQuery(e).removeClass('SIQOstatus_modified');
 		}
 	})
 }
 function FOremoveIng(input){
 	// var parent = jQuery(input).parent();
-	jQuery(input).parent().removeClass('FOstatus_modified');
+	jQuery(input).parent().removeClass('SIQOstatus_modified');
 
 	jQuery(input).attr('onclick', 'FOaddIng(this);FOcheckCardModified(this);');
 		var copy = jQuery(input).parent().clone();
-	copy.removeClass('FOstatus_modified');
+	copy.removeClass('SIQOstatus_modified');
 	jQuery(input).parent().parent().find('.FOIngredProdSec').prepend(copy);
 
 	if ( jQuery(input).parent().parent().find('input[modified=modified]:checked').length  <= 0 &&
 	 jQuery(input).parent().parent().find('input[modified=native]:checked').length < jQuery(input).attr('nat-ing') ) {
-		jQuery(input).parent().parent().parent().removeClass('FOstatus_modified');
+		jQuery(input).parent().parent().parent().removeClass('SIQOstatus_modified');
 	}
 	FOcheckIfModified(input);
 	jQuery(input).parent().remove();
 }
 function FOcheckIng(input){
 	if ( !jQuery(input).is(':checked') ) {
-		jQuery(input).parent().addClass('FOstatus_modified');
+		jQuery(input).parent().addClass('SIQOstatus_modified');
 	} else{
-		jQuery(input).parent().removeClass('FOstatus_modified');
+		jQuery(input).parent().removeClass('SIQOstatus_modified');
 	}
 	if ( jQuery(input).parent().parent().find('input[modified=native]:checked').length < jQuery(input).attr('nat-ing') ) {
-		jQuery(input).parent().parent().parent().parent().addClass('FOstatus_modified');
+		jQuery(input).parent().parent().parent().parent().addClass('SIQOstatus_modified');
 	} else {
-		jQuery(input).parent().parent().parent().parent().removeClass('FOstatus_modified');
+		jQuery(input).parent().parent().parent().parent().removeClass('SIQOstatus_modified');
 	}
 }
 
@@ -280,7 +280,7 @@ function toggleFullScreen() {
   }
 }
 
-function FO_grid_adjust( value ){
+function SIQO_grid_adjust( value ){
 	console.log(value);
 	document.documentElement.style.setProperty('--fo-grid-width', value+'%');
 	jQuery('.GridRange').val(value);
@@ -289,7 +289,7 @@ function FO_grid_adjust( value ){
 
 
 
-function FO_animate_css( target, first, second, time = 200 ) {
+function SIQO_animate_css( target, first, second, time = 200 ) {
 	if ( second == null || second == '' ) { second = first}
 var target = target;
 var first = first;
@@ -298,7 +298,7 @@ var time = time;
 
     jQuery(target).animate({ first }, time, function(){
         jQuery(target).animate({ second }, time, function(){
-            FO_animate_css( target, first, second, time );
+            SIQO_animate_css( target, first, second, time );
         });
     });
 }
@@ -356,13 +356,13 @@ console.log(fo_cat_name);
 		jQuery('.fo_tab_prod[foprodid="'+foprodid+'"]').hide();
 	}
 
-	FOP_change_category( args );
+	SIQOP_change_category( args );
 	// ev.target.appendChild(document.getElementById(data));
 
 }
 
 function touchstartDrag(event,input) {
-	if (jQuery('input[name="fop_touch_drag_drop"]').prop('checked')) {
+	if (jQuery('input[name="siqop_touch_drag_drop"]').prop('checked')) {
 	
 	  var prod = jQuery(input);
 	
@@ -378,7 +378,7 @@ function touchstartDrag(event,input) {
 }
 
 function FOtouchdrop(event) {
-	if (jQuery('input[name="fop_touch_drag_drop"]').prop('checked')) {
+	if (jQuery('input[name="siqop_touch_drag_drop"]').prop('checked')) {
 		var elem = jQuery(event.target).closest('.fo_tab_prod');
 			jQuery(elem).removeClass("fo_touch_drag");
 			jQuery(elem).css("left", "");
@@ -403,7 +403,7 @@ function FOtouchdrop(event) {
 			args['fo_cat_ceck'] = fo_cat_ceck;
 			args['fo_cat_copy'] = jQuery('.fo_cat_copy').attr('fo_cat_copy');
 			
-			FOP_change_category( args );
+			SIQOP_change_category( args );
 
 			jQuery(elem).attr('fomacrocat',fo_cat_name);
 			jQuery(elem).hide();
@@ -423,27 +423,27 @@ function FOtouchdrop(event) {
 
 
 
-function FO_add_prod_to_favorites(input){
-	if (jQuery('.FO_favourites_container').find('.foProdCard[foname="'+jQuery(input).attr('foname')+'"]').length > 0 ) {
-		FO_alert('',jQuery('#FO_favourite_alert').text());
+function SIQO_add_prod_to_favorites(input){
+	if (jQuery('.SIQO_favourites_container').find('.SIQOprodCard[foname="'+jQuery(input).attr('foname')+'"]').length > 0 ) {
+		SIQO_alert('',jQuery('#SIQO_favourite_alert').text());
 		return;
 	}
 
 	var p_clone = jQuery(input).clone();
 
-	p_clone.attr('focategories','FO_favourite');
+	p_clone.attr('focategories','SIQO_favourite');
 
 	p_clone.find('.foheart span').removeClass('dashicons-heart');
 	p_clone.find('.foheart span').addClass('dashicons-no');
 	
-	p_clone.find('.foheart').attr('onclick',"FO_remove_prod_from_favorites(jQuery(this).closest('.foProdCard'))");
+	p_clone.find('.foheart').attr('onclick',"SIQO_remove_prod_from_favorites(jQuery(this).closest('.SIQOprodCard'))");
 
-	jQuery('.FO_favourites_container').prepend(p_clone);
+	jQuery('.SIQO_favourites_container').prepend(p_clone);
 
 
 }
 
-function FO_remove_prod_from_favorites(input){
+function SIQO_remove_prod_from_favorites(input){
 	jQuery(input).remove();
 }
 
@@ -455,7 +455,7 @@ function FO_remove_prod_from_favorites(input){
 
 
 
-function FO_refine_search(input, def = 'show'){
+function SIQO_refine_search(input, def = 'show'){
 	var searchVal = jQuery(input).val();
 	var target = jQuery(input).attr('fotargetcat');
 	var items = jQuery('#products_container [focategories='+target+']');
@@ -489,9 +489,9 @@ function FO_refine_search(input, def = 'show'){
 		}
 	});
 }
-function FO_search_for_all(input){
+function SIQO_search_for_all(input){
 	var searchVal = jQuery(input).val();
-	var items = jQuery('#products_container .foProdCard');
+	var items = jQuery('#products_container .SIQOprodCard');
 
 	items.each(function(index, row){
 		var allDataPerRow = jQuery(row).find('.foname');
@@ -512,7 +512,7 @@ function FO_search_for_all(input){
 		}
 	});
 }
-function FO_search_for_target(input,target){
+function SIQO_search_for_target(input,target){
 	var searchVal = jQuery(input).val();
 	var items = jQuery(target);
 
@@ -529,25 +529,25 @@ function FO_search_for_target(input,target){
 			});
 			if(found === true) {
 				jQuery(row).show();
-				jQuery('.FO_order_list').show()
+				jQuery('.SIQO_order_list').show()
 			}else {
 				jQuery(row).hide();
 			}
-			if (searchVal == '') {jQuery(row).show();jQuery('.FO_order_list').show()}
+			if (searchVal == '') {jQuery(row).show();jQuery('.SIQO_order_list').show()}
 		}
 	});
 }
 
-function FO_inizialize_timer( check = '' ){
-	console.log('--FO_inizialize_timer--');
+function SIQO_inizialize_timer( check = '' ){
+	console.log('--SIQO_inizialize_timer--');
 	if ( check == 'table ') {
 		jQuery('#result-container tr[identify="orders"] tr').each(function(i,e){
 			if ( jQuery(e).attr('orderdata') != null ) {
 				var status = jQuery(e).attr('orderstatus');
 				if ( status != 'cancelled' && status != 'refunded' && status != 'completed' ) {
-					FO_timer( jQuery(e) );
+					SIQO_timer( jQuery(e) );
 				} else{
-					FO_clearTimer( jQuery(e) );
+					SIQO_clearTimer( jQuery(e) );
 				}
 			}
 		});
@@ -556,9 +556,9 @@ function FO_inizialize_timer( check = '' ){
 			if ( jQuery(e).attr('orderdata') != null ) {
 				var status = jQuery(e).attr('orderstatus');
 				if ( status != 'cancelled' && status != 'refunded' && status != 'completed' ) {
-					FO_timer( jQuery(e) );
+					SIQO_timer( jQuery(e) );
 				} else{
-					FO_clearTimer( jQuery(e) );
+					SIQO_clearTimer( jQuery(e) );
 				}
 			}
 		});
@@ -588,8 +588,8 @@ function FO_inizialize_timer( check = '' ){
 //   date.getHours();
 //   date.getMinutes();
 //   date.getSeconds();
-function FO_timer( target ){
-	// FO_clearTimer( target );
+function SIQO_timer( target ){
+	// SIQO_clearTimer( target );
 	var status = jQuery(target).attr('orderstatus');
 	var data = jQuery(target).attr('orderdata');
 var adv_durat = parseInt(jQuery('#fotimer_duration').text());
@@ -609,20 +609,20 @@ var adv_durat = parseInt(jQuery('#fotimer_duration').text());
 	diff_min = Math.floor(diff_min / 1000);
 // console.log(diff_min);
 	if ( status != 'cancelled' || status != 'refunded' || status != 'completed'  ) {
-		FO_startTimer( diff_min, jQuery(target).find('.fotimer'), jQuery(target).attr('orderid') );
+		SIQO_startTimer( diff_min, jQuery(target).find('.fotimer'), jQuery(target).attr('orderid') );
 	} else{
 		jQuery(target).find('.fotimer').slideUp();
-		FO_clearTimer( jQuery(target) );
+		SIQO_clearTimer( jQuery(target) );
 		clearInterval(jQuery(target).attr('orderid'));
 	}
 }
 
-function FO_startTimer( duration, display, id ) {
+function SIQO_startTimer( duration, display, id ) {
 
 	var status = jQuery(display).parent().parent().attr('orderstatus');
 	if (status == 'cancelled' || status == 'refunded' || status == 'completed') {
 		jQuery( display ).slideUp();
-		FO_clearTimer( jQuery(display).parent().parent() );
+		SIQO_clearTimer( jQuery(display).parent().parent() );
 		return;
 	}
 	// window.fointerval = [];
@@ -651,13 +651,13 @@ jQuery( display ).removeClass('fo_status_timer_3');
 
 	if ( status == 'cancelled' || status == 'refunded' || status == 'completed' ) {
 		jQuery(jQuery(display).parent().parent()).slideUp();
-		FO_clearTimer(jQuery(display).parent().parent());
+		SIQO_clearTimer(jQuery(display).parent().parent());
 		clearInterval(id);
 		return;
 	} else{
 		if (fullseconds <= 0  ) {
 			clearInterval(id);
-			FO_clearTimer(jQuery(display).parent().parent());
+			SIQO_clearTimer(jQuery(display).parent().parent());
 			return;
 		} else{
 				jQuery( display ).text( time );
@@ -683,12 +683,12 @@ jQuery( display ).removeClass('fo_status_timer_3');
 	// window.fointerval.push( fointerval );
 }
 
-function FO_clearTimer( target ){
-	console.log('FO_clearTimer');
+function SIQO_clearTimer( target ){
+	console.log('SIQO_clearTimer');
 	var id = jQuery(target).attr('orderid');
 	var display = jQuery(target).find('.fotimer');
 // var fointerval;
-	// FO_startTimer( 0, display, id ).cancTimer(id);
+	// SIQO_startTimer( 0, display, id ).cancTimer(id);
 	clearInterval( id );
 	jQuery(display).text("00:00");
 	jQuery(display).addClass('foTimeOutAnim');
@@ -719,7 +719,7 @@ function setIntervalWrapper(callback, time) {
 
 
 
-function FO_Show_temp(target){
+function SIQO_show_temp(target){
 	var src = jQuery(target).find('[value="'+jQuery(target).val()+'"]').attr('img');
 	var color = jQuery(target).find('[value="'+jQuery(target).val()+'"]').attr('color');
 
@@ -734,63 +734,63 @@ function FO_Show_temp(target){
 
 
 
-function Show_FO_Front_Float(){
-	jQuery('#FO_Front_Float').css('bottom','0px');
-	jQuery('#FO_Front_Float').css('opacity','0.992');
+function Show_SIQO_Front_Float(){
+	jQuery('#SIQO_Front_Float').css('bottom','0px');
+	jQuery('#SIQO_Front_Float').css('opacity','0.992');
 	// jQuery('header').css('display','none');
 	// jQuery('footer').css('display','none');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 }
 
-function Hide_FO_Front_Float(){
-	jQuery('#FO_Front_Float').css('bottom','calc(-100% - 15px)');
-	jQuery('#FO_Front_Float').css('opacity','0.5');
+function Hide_SIQO_Front_Float(){
+	jQuery('#SIQO_Front_Float').css('bottom','calc(-100% - 15px)');
+	jQuery('#SIQO_Front_Float').css('opacity','0.5');
 	// jQuery('header').css('display','');
 	// jQuery('header').css('display','');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 }
 
-function Show_FOListRapidView(){
-	jQuery('.FOListRapidView').css('left','0px');
-	jQuery('.FOListRapidView').css('opacity','1');
+function Show_SIQOListRapidView(){
+	jQuery('.SIQOListRapidView').css('left','0px');
+	jQuery('.SIQOListRapidView').css('opacity','1');
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
-	// fo_toggle_header_footer();
+	// SIQO_toggle_header_footer();
 }
 
-function Hide_FOListRapidView(){
-	jQuery('.FOListRapidView').css('left','-200px');
-	jQuery('.FOListRapidView').css('opacity','0');
+function Hide_SIQOListRapidView(){
+	jQuery('.SIQOListRapidView').css('left','-200px');
+	jQuery('.SIQOListRapidView').css('opacity','0');
 	// jQuery('header').css('display','');
 	// jQuery('header').css('display','');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 }
 
-function FO_Advanced_Prod_Card( input ){
+function SIQO_Advanced_Prod_Card( input ){
 	jQuery('.Advanced_Card').fadeIn();
 	jQuery('.Advanced_Card_background').fadeIn();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 
-	var AC_ID = jQuery(input).closest('.foProdCard').attr('foid');
-	var AC_Name = jQuery(input).closest('.foProdCard').attr('foname');
-	var Advanced_Card_gallery = jQuery(input).closest('.foProdCard').attr('fo_gallery');
+	var AC_ID = jQuery(input).closest('.SIQOprodCard').attr('foid');
+	var AC_Name = jQuery(input).closest('.SIQOprodCard').attr('foname');
+	var Advanced_Card_gallery = jQuery(input).closest('.SIQOprodCard').attr('fo_gallery');
 
-	var AC_description = jQuery(input).closest('.foProdCard').attr('fo_description');
+	var AC_description = jQuery(input).closest('.SIQOprodCard').attr('fo_description');
 
-	var AC_tax_cat = jQuery(input).closest('.foProdCard').attr('fo_tax_cat');
-	var AC_tax_tag = jQuery(input).closest('.foProdCard').attr('fo_tax_tag');
-	var AC_tax_ing = jQuery(input).closest('.foProdCard').attr('fo_tax_ing');
-	var AC_tax_allerg = jQuery(input).closest('.foProdCard').attr('fo_tax_allerg');
+	var AC_tax_cat = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_cat');
+	var AC_tax_tag = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_tag');
+	var AC_tax_ing = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_ing');
+	var AC_tax_allerg = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_allerg');
 
-	var AC_foindex = jQuery(input).closest('.foProdCard').attr('foindex');
-	var AC_tot = jQuery(input).closest('.foProdCard').attr('fo_tot');
-	var AC_Variant = jQuery(input).closest('.foProdCard').find('.fovariantcont').clone();
+	var AC_foindex = jQuery(input).closest('.SIQOprodCard').attr('foindex');
+	var AC_tot = jQuery(input).closest('.SIQOprodCard').attr('fo_tot');
+	var AC_Variant = jQuery(input).closest('.SIQOprodCard').find('.fovariantcont').clone();
 	AC_Variant.show();
 
-	var foware = jQuery(input).closest('.foProdCard').attr('foware');
+	var foware = jQuery(input).closest('.SIQOprodCard').attr('foware');
 
-	var fowarehouse = jQuery(input).closest('.foProdCard').find('.fowarehouse img').attr('color');
+	var fowarehouse = jQuery(input).closest('.SIQOprodCard').find('.fowarehouse img').attr('color');
 
 	jQuery('.AC_ID').empty();
 	jQuery('.AC_Name').empty();
@@ -850,12 +850,12 @@ if (AC_tax_allerg == '[]') {jQuery('.AC_tax_allerg').hide();}else{jQuery('.AC_ta
 	jQuery('.Advanced_Card .fowarehouse img').attr('color', fowarehouse);
 }
 
-function FO_Advanced_Prod_Card_hide( target ){
+function SIQO_Advanced_Prod_Card_hide( target ){
 	jQuery('.Advanced_Card').hide();
 	jQuery('.Advanced_Card_background').fadeOut();
 	// jQuery('header').css('display','');
 	// jQuery('footer').css('display','');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 
 	jQuery('.AC_ID').text('');
 	jQuery('.AC_Name').text('');
@@ -870,13 +870,13 @@ function FO_Advanced_Prod_Card_hide( target ){
 	jQuery('.AC_Variant').empty();
 }
 
-function FO_Advanced_Prod_Card_hide_all(){
+function SIQO_Advanced_Prod_Card_hide_all(){
 	jQuery('.Advanced_Card').hide();
 	jQuery('.Advanced_Card_background').hide();
 }
 
-function FO_toggle_Favourite( input ){
-	jQuery('.FO_favourites_container').slideToggle();
+function SIQO_toggle_Favourite( input ){
+	jQuery('.SIQO_favourites_container').slideToggle();
 	if (jQuery(input).find('span').hasClass('dashicons-arrow-down-alt2')) {
 		jQuery(input).find('span').removeClass('dashicons-arrow-down-alt2');
 		jQuery(input).find('span').addClass('dashicons-arrow-up-alt2');
@@ -893,7 +893,7 @@ function FO_toggle_Favourite( input ){
 // }
 
 document.addEventListener('click', function handleClickOutsideBox(event) {
-//   const box = document.getElementById('FO_Front_Float');
+//   const box = document.getElementById('SIQO_Front_Float');
 // console.log(event.target);
 //   if (!box.contains(event.target)) {
 //     box.style.display = 'none';
@@ -914,7 +914,7 @@ document.addEventListener('click', function handleClickOutsideBox(event) {
 
 
 
-function FO_reorder_story(){
+function SIQO_reorder_story(){
 	jQuery('.fo_story').each(function(i,e){
 		jQuery(e).insertBefore('.fo_tab_prod[fo_index_story="'+jQuery(e).attr('fo_order_id')+'"]:first');
 	});
@@ -926,52 +926,52 @@ function FO_reorder_story(){
 
 
 
-function FO_check_warehouse(item){
-	if (jQuery(item).closest('.foProdCard').attr('foware')>0 || jQuery(item).closest('.Advanced_Card').find('.fowarehouse').attr('foware')>0) {
-		FO_ajax_Add_Item_to_Order(item);
-		jQuery(item).closest('.foProdCard').find('.fovariation_card').slideUp();
+function SIQO_check_warehouse(item){
+	if (jQuery(item).closest('.SIQOprodCard').attr('foware')>0 || jQuery(item).closest('.Advanced_Card').find('.fowarehouse').attr('foware')>0) {
+		SIQO_ajax_Add_Item_to_Order(item);
+		jQuery(item).closest('.SIQOprodCard').find('.fovariation_card').slideUp();
 	}else{
-		FO_alert( '', jQuery('#FO_warehouse_alert').text() );
-		// alert(jQuery('#FO_warehouse_alert').text());
+		SIQO_alert( '', jQuery('#SIQO_warehouse_alert').text() );
+		// alert(jQuery('#SIQO_warehouse_alert').text());
 		// return false;
 	}
 }
 
-function FO_ajax_selectVarBefore_Add_Item_to_Order(item){
-	//if (jQuery(item).closest('.foProdCard').attr('fovariations') != '') {
-		//jQuery(item).closest('.foProdCard').find('.fovariation_card').slideDown();
+function SIQO_ajax_selectVarBefore_Add_Item_to_Order(item){
+	//if (jQuery(item).closest('.SIQOprodCard').attr('fovariations') != '') {
+		//jQuery(item).closest('.SIQOprodCard').find('.fovariation_card').slideDown();
 	//} else{
-		FO_check_warehouse(item);
+		SIQO_check_warehouse(item);
 	//}
 }
 
-function FO_ajax_selectVarAfter_Add_Item_to_Order(item){
+function SIQO_ajax_selectVarAfter_Add_Item_to_Order(item){
 	var check = true;
-	// jQuery(item).closest('.foProdCard').find('.fovariant select').each(function(i,e){
+	// jQuery(item).closest('.SIQOprodCard').find('.fovariant select').each(function(i,e){
 	// 	if ( jQuery(e).val() == '') { check = false; }
 	// });
 	if ( check ) {
-		FO_check_warehouse(item);
+		SIQO_check_warehouse(item);
 	} else{
-	// FO_alert( '', jQuery('#FO_select_variant_alert').text() );
-		// alert(jQuery('#FO_select_variant_alert').text());
+	// SIQO_alert( '', jQuery('#SIQO_select_variant_alert').text() );
+		// alert(jQuery('#SIQO_select_variant_alert').text());
 		// return false;
 	}
 }
-function FO_ajax_Remove_Item_to_Order( target ) {
-	jQuery(target).closest('.foProdCard').remove();
+function SIQO_ajax_Remove_Item_to_Order( target ) {
+	jQuery(target).closest('.SIQOprodCard').remove();
 	jQuery('#FOProdNumber').text( parseInt(jQuery('#FOProdNumber').text()) - 1 );
-	jQuery('#FO_order_live_count').text( parseInt(jQuery('#FO_order_live_count').text()) - 1 );
+	jQuery('#SIQO_order_live_count').text( parseInt(jQuery('#SIQO_order_live_count').text()) - 1 );
 	jQuery('#FOProdNumberMenu').text( parseInt(jQuery('#FOProdNumberMenu').text()) - 1 );
 }
-function FO_ajax_Add_Item_to_Order(item){
+function SIQO_ajax_Add_Item_to_Order(item){
 	var id, image, prod, copy;
 	if (jQuery('.AC_ID').text()!='') {
-		prod = jQuery('.foProdCard[foid="'+jQuery('.AC_ID').text()+'"][fo_menu_prod="fo_menu_prod"]');
+		prod = jQuery('.SIQOprodCard[foid="'+jQuery('.AC_ID').text()+'"][fo_menu_prod="fo_menu_prod"]');
 	} else{
-		prod = jQuery(item).closest('.foProdCard[fo_menu_prod="fo_menu_prod"]');
+		prod = jQuery(item).closest('.SIQOprodCard[fo_menu_prod="fo_menu_prod"]');
 	}
-	var current_index = jQuery('#FO_order_index').val();
+	var current_index = jQuery('#SIQO_order_index').val();
 	var stringToAdd = '['+current_index+']';
 
 	id = prod.attr('foid');
@@ -979,7 +979,7 @@ function FO_ajax_Add_Item_to_Order(item){
 
 	copy = prod.clone();
 
-	copy.find('.foadd').attr('onclick', 'FO_ajax_Remove_Item_to_Order(this);');
+	copy.find('.foadd').attr('onclick', 'SIQO_ajax_Remove_Item_to_Order(this);');
 	copy.find('.foadd').text('-');
 	copy.find('.fovariation_card .foadd').remove();
 
@@ -1004,19 +1004,19 @@ function FO_ajax_Add_Item_to_Order(item){
 	});
 
 	jQuery('#FOProdNumber').text( parseInt(jQuery('#FOProdNumber').text()) + 1 );
-	jQuery('#FO_order_live_count').text( parseInt(jQuery('#FO_order_live_count').text()) + 1 );
+	jQuery('#SIQO_order_live_count').text( parseInt(jQuery('#SIQO_order_live_count').text()) + 1 );
 
-	jQuery('.FO_show_order_summary').addClass('foBorderPulse');
-	jQuery('.FO_show_order_summary img').attr('src', image);
-	jQuery('.FO_show_order_summary img').show();
+	jQuery('.SIQO_show_order_summary').addClass('foBorderPulse');
+	jQuery('.SIQO_show_order_summary img').attr('src', image);
+	jQuery('.SIQO_show_order_summary img').show();
 
-	jQuery('#FO_sum_order').append( copy );
+	jQuery('#SIQO_sum_order').append( copy );
 
-	jQuery('#FO_order_index').val( parseInt(current_index) + 1 );
+	jQuery('#SIQO_order_index').val( parseInt(current_index) + 1 );
 }
 
-function FO_variant_set(input){
-	var prod = jQuery('.foProdCard[foid="'+jQuery('.AC_ID').text()+'"][foindex="'+jQuery('.AC_foindex').val()+'"]');
+function SIQO_variant_set(input){
+	var prod = jQuery('.SIQOprodCard[foid="'+jQuery('.AC_ID').text()+'"][foindex="'+jQuery('.AC_foindex').val()+'"]');
 
 	prod.find('select[name="'+jQuery(input).attr('name')+'"]').attr('value', jQuery(input).find('option[value="'+jQuery(input).val()+'"]').val() );
 
@@ -1031,13 +1031,13 @@ function FO_variant_set(input){
 	var final_price = parseFloat( fo_price + fo_price_to_add ).toFixed(2);
 	//jQuery(input).attr('fo_price', );
 
-jQuery('.AC_tot').text( final_price + ' ' + jQuery('#FO_woo_currency_sym').text() );
-	//FO_show_variant_tag(input);
+jQuery('.AC_tot').text( final_price + ' ' + jQuery('#SIQO_woo_currency_sym').text() );
+	//SIQO_show_variant_tag(input);
 }
 
-function FO_show_variant_tag(input){
+function SIQO_show_variant_tag(input){
 	var attr = ( jQuery(input).attr('founivariant')!= null )? jQuery(input).attr('founivariant') : jQuery(input).attr('foadvariant');
-	jQuery(input).closest('.foProdCard').find(`.fovariantag_container [founivariant='`+attr+`']`)
+	jQuery(input).closest('.SIQOprodCard').find(`.fovariantag_container [founivariant='`+attr+`']`)
 		.each(function(i,e){
 			// console.log( jQuery(e).attr('founitag') );
 		if ( jQuery(input).val() != '' && jQuery(e).attr('founitag') == jQuery(input).val() ) {
@@ -1051,12 +1051,12 @@ function FO_show_variant_tag(input){
 
 
 
-function FO_validate_flash_order_form_ajax( target ){
+function SIQO_validate_order_form_ajax( target ){
 	if(jQuery('#FOSetting_UserLoggedIn').text() == 0) {
         event.preventDefault();
-        FO_alert( '', jQuery('#FO_access_alert').text() );
-        // alert('Per poter effettuare ordini su questa pagina, é neccessario Effettuare l\'accesso!');
-		Hide_FO_Front_Float();
+        SIQO_alert( '', jQuery('#SIQO_access_alert').text() );
+        // alert('Per poter effettuare ordini su questa pagina, Ã© neccessario Effettuare l\'accesso!');
+		Hide_SIQO_Front_Float();
 		jQuery('.FO_logIn_popUp').fadeIn();
 		return false;
     } else{
@@ -1066,14 +1066,14 @@ function FO_validate_flash_order_form_ajax( target ){
 		// 	return false;
 		// } else {
 			jQuery('.FOloadingMessage').fadeIn();
-			// FO_assign_index_to_ajax_inputs(target);
-			FO_submit_flash_order_ajax_form(target);
+			// SIQO_assign_index_to_ajax_inputs(target);
+			SIQO_submit_order_ajax_form(target);
 		// }
 	}
 }
-function FO_assign_index_to_input(input){
+function SIQO_assign_index_to_input(input){
 	// event.preventDefault();
-	var table = jQuery('#FO_sum_order').find('.foProdCard');
+	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
 
 	table.each(function(I,E){
 		var foindex = jQuery(E).attr('foindex');
@@ -1088,9 +1088,9 @@ function FO_assign_index_to_input(input){
 	});
 }
 
-function FO_assign_index_to_ajax_inputs(){
+function SIQO_assign_index_to_ajax_inputs(){
 	// event.preventDefault();
-	var table = jQuery('#FO_sum_order').find('.foProdCard');
+	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
 
 	table.each(function(I,E){
 		var foindex = jQuery(E).attr('foindex');
@@ -1105,8 +1105,8 @@ function FO_assign_index_to_ajax_inputs(){
 	});
 }
 
-function FO_submit_flash_order_ajax_form(target){
-	var table = jQuery('#FO_sum_order').find('.foProdCard');
+function SIQO_submit_order_ajax_form(target){
+	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
 	var foserial = jQuery(table).find('input, textarea, select').serializeArray();
 	// foserial.filter(function(e){return e});
 	var foserialmap = foserial.map(({ name, value }) => ({ [name]: value }));
@@ -1121,29 +1121,29 @@ console.log(foserialmap);
 	console.log(' order submitted sucessfully !!! ');
 		jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
-		    action: 'FO_submit_order_ajax',
-		    nonce: flash_orders_ajax_view_orders_vars.nonce,
+		    action: 'SIQO_submit_order_ajax',
+		    nonce: siqo_ajax_view_orders_vars.nonce,
 		    table_id: jQuery('[name="table_name_cpt"]').val(),
 		    table_name_cpt: jQuery('[name="table_name_cpt"]').text(),
 		    order_note: jQuery('#orderNote').val(),
 		    foserial: foserial,
 		    foserialmap: foserialmap,
-		    _fononce_front_order_ajax: jQuery('input[name="_fononce_front_order_ajax"]').val()
+		    _siqononce_front_order_ajax: jQuery('input[name="_siqononce_front_order_ajax"]').val()
 		    // obj: obj,
 		},
 		success: function (response) {
 			console.log(response);
-				jQuery('#FO_sum_order').empty();
+				jQuery('#SIQO_sum_order').empty();
 
 				jQuery('#FOProdNumber').text( 0 );
-				jQuery('#FO_order_live_count').text( 0 );
-				jQuery('.FO_show_order_summary').removeClass('foBorderPulse');
-				jQuery('.FO_show_order_summary img').attr('src', '');
-				jQuery('.FO_show_order_summary img').hide();
+				jQuery('#SIQO_order_live_count').text( 0 );
+				jQuery('.SIQO_show_order_summary').removeClass('foBorderPulse');
+				jQuery('.SIQO_show_order_summary img').attr('src', '');
+				jQuery('.SIQO_show_order_summary img').hide();
 				jQuery('#orderNote').empty();
-				Hide_FO_Front_Float();
+				Hide_SIQO_Front_Float();
 				jQuery('.FOloadingMessage').fadeOut();
 			return;
 		}
@@ -1151,17 +1151,17 @@ console.log(foserialmap);
 }
 
 
-function FO_order_list_ajax(item){
-	if ( jQuery(item).closest('.FO_flash_list_order_container').find('#table_name').val() <= 0 && 
-			jQuery(item).closest('.FO_flash_list_order_container').find('[name="table_name_cpt"]').val() <= '' ) {
+function SIQO_order_list_ajax(item){
+	if ( jQuery(item).closest('.SIQO_flash_list_order_container').find('#table_name').val() <= 0 && 
+			jQuery(item).closest('.SIQO_flash_list_order_container').find('[name="table_name_cpt"]').val() <= '' ) {
 		event.preventDefault();
 		alert(jQuery('#folist_order_table_mex').text());
 		return false;
 	} else {
-		jQuery(item).closest('.FO_flash_list_order_container').find('.FOloadingCardPublic').fadeIn();
-		jQuery(item).closest('.FO_flash_list_order_container').find('.FO_list_height').val('');
-		jQuery(item).closest('.FO_flash_list_order_container').find('.FO_target_search').hide();
-		var table = jQuery(item).closest('.FO_flash_list_order_container').find('.FO_order_list_summary');
+		jQuery(item).closest('.SIQO_flash_list_order_container').find('.FOloadingCardPublic').fadeIn();
+		jQuery(item).closest('.SIQO_flash_list_order_container').find('.FO_list_height').val('');
+		jQuery(item).closest('.SIQO_flash_list_order_container').find('.FO_target_search').hide();
+		var table = jQuery(item).closest('.SIQO_flash_list_order_container').find('.SIQO_order_list_summary');
 
 		var foserial = jQuery(table).find('input, textarea').serializeArray();
 		var foserialmap = foserial.map(({ name, value }) => ({ [name]: value }));
@@ -1174,21 +1174,21 @@ function FO_order_list_ajax(item){
 		// console.log(' order submitted sucessfully !!! ');
 			jQuery.ajax({
 			type: 'POST',
-			url: flash_orders_ajax_view_orders_vars.ajaxurl,
+			url: siqo_ajax_view_orders_vars.ajaxurl,
 			data: {
-			    action: 'FO_flash_list_order_ajax',
-			    nonce: flash_orders_ajax_view_orders_vars.nonce,
+			    action: 'SIQO_flash_list_order_ajax',
+			    nonce: siqo_ajax_view_orders_vars.nonce,
 			    table_name: jQuery('input[name="table_name"]').val(),
 			    table_surname: jQuery('select[name="table_surname"]').val(),
 			    table_name_cpt: jQuery('select[name="table_name_cpt"]').val(),
 			    order_note: jQuery('textarea[name="order_note"]').val(),
 			    foserial: foserial,
 			    foserialmap: foserialmap,
-			    _fononce_flash_list_order: jQuery('input[name="_fononce_flash_list_order"]').val(),
+			    _siqononce_flash_list_order: jQuery('input[name="_siqononce_flash_list_order"]').val(),
 			},
 			success: function (response) {
 				console.log(response);
-					jQuery('.FO_order_list_summary').empty();
+					jQuery('.SIQO_order_list_summary').empty();
 
 					jQuery('input[name="discount"]').val( 0 );
 					jQuery('input[name="table_name"]').val( 0 );
@@ -1198,7 +1198,7 @@ function FO_order_list_ajax(item){
 					jQuery('.FO_summ_tot span').text('0');
 					jQuery('.FONum_products').text('0');
 
-					jQuery('.FO_flash_list_order_container').find('.FOloadingCardPublic').fadeOut();
+					jQuery('.SIQO_flash_list_order_container').find('.FOloadingCardPublic').fadeOut();
 				return;
 			}
 		});
@@ -1206,7 +1206,7 @@ function FO_order_list_ajax(item){
 }
 
 
-function FO_order_list(item){
+function SIQO_order_list(item){
 	var price = parseFloat(jQuery(item).attr('foprice'));
 	var tot = parseFloat(jQuery('.FO_summ_tot span').text());
 	var NumProd = parseInt(jQuery('.FONum_products').text());
@@ -1220,23 +1220,23 @@ copy.removeClass('FO_target_search');
 
 	copy.find('.FO_list_price').show();
 	copy.find('.FO_clear_target').show();
-	copy.find('.FO_clear_target').attr('onclick','FO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();');
+	copy.find('.FO_clear_target').attr('onclick','SIQO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();');
 	copy.find('input').attr('name', '['+NumProd+']'+copy.find('input').attr('name') );
 	copy.attr('onclick','');
-	jQuery(item).closest('.FO_flash_list_order_container').find('.FO_order_list_summary').append(copy);
+	jQuery(item).closest('.SIQO_flash_list_order_container').find('.SIQO_order_list_summary').append(copy);
 
 	jQuery('.FONum_products').text( parseInt(parseInt(NumProd) + 1) );
 }
 
-function FO_add_new_customer( item ){
+function SIQO_add_new_customer( item ){
 	var fo_cu_name = jQuery(item).find('.N_customer_name').val();
 	var fo_cu_mail = jQuery(item).find('.N_customer_mail').val();
 	var fo_cu_phone = jQuery(item).find('.N_customer_phone').val();
 
 	if (fo_cu_name == '') {
-		FO_alert( '', jQuery('#fo_tab_new_customer_error_name_text').text());return;}
+		SIQO_alert( '', jQuery('#fo_tab_new_customer_error_name_text').text());return;}
 	if (fo_cu_mail == '' && fo_cu_phone == '' ) {
-		FO_alert( '', jQuery('#fo_tab_new_customer_error_mail_phone_text').text());return;}
+		SIQO_alert( '', jQuery('#fo_tab_new_customer_error_mail_phone_text').text());return;}
 	
 	var input = jQuery(item).find('input').clone();
 	input.removeClass('fot_pay_input');
@@ -1260,7 +1260,7 @@ function FO_add_new_customer( item ){
 	console.log(jQuery('.FO_customers_container input').serializeArray());
 }
 
-function FO_pay_customer_list(item){
+function SIQO_pay_customer_list(item){
 	console.log(item);
 	var fo_u_id = jQuery(item).attr('fo_u_id');
 	var fo_u_name = jQuery(item).attr('fo_u_name');
@@ -1290,7 +1290,7 @@ copy.css('display','flex');
 	console.log(jQuery('.FO_customers_container input').serializeArray());
 }
 
-function FO_order_list_remove(item){
+function SIQO_order_list_remove(item){
 	var price = parseFloat(jQuery(item).attr('foprice'));
 	var tot = parseFloat(jQuery('.FO_summ_tot span').text());
 	var NumProd = jQuery('.FONum_products').text();
@@ -1301,7 +1301,7 @@ function FO_order_list_remove(item){
  	
 }
 
-function FO_order_discount_list(item, qtyTarget){
+function SIQO_order_discount_list(item, qtyTarget){
 	var price = parseFloat(jQuery(qtyTarget).val());
 	var tot = parseFloat(jQuery('.FO_summ_tot span').text());
 var NumProd = parseInt(jQuery('.FONum_products').text());
@@ -1313,7 +1313,7 @@ var NumProd = parseInt(jQuery('.FONum_products').text());
 	copy.find('input').attr('name', '['+NumProd+']'+copy.find('input').attr('name') );
 	copy.find('input').val( price );
 
-	jQuery(item).closest('.FO_flash_list_order_container').find('.FO_order_list_summary').append(copy);
+	jQuery(item).closest('.SIQO_flash_list_order_container').find('.SIQO_order_list_summary').append(copy);
 
 	jQuery('.FO_summ_tot span').text( parseFloat(tot + price).toFixed(2) );
 	jQuery('.FONum_products').text( parseInt(parseInt(NumProd) + 1) );
@@ -1334,18 +1334,18 @@ var NumProd = parseInt(jQuery('.FONum_products').text());
 
 
 
-function FO_add_value_to_input( value, target ){
+function SIQO_add_value_to_input( value, target ){
 	jQuery(target).val(parseFloat(parseFloat(jQuery(target).val()) + parseFloat(value)).toFixed(2));
 }
 
 
 
-function FO_filter_tab_product( slug_target ){
+function SIQO_filter_tab_product( slug_target ){
 	jQuery('.fo_column_products .fo_tab_prod').hide();
 	jQuery('.fo_column_products .fo_tab_prod[fomacrocat="'+slug_target+'"]').show();
 }
 
-function fo_filter_tab_story( input, slug_target ){
+function siqo_filter_tab_story( input, slug_target ){
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_story');
 	jQuery('.fo_order_table_story').removeClass('fo_tab_prod_story');
 	jQuery('.fo_column_story .fo_tab_prod').removeClass('fo_tab_prod_story');
@@ -1358,9 +1358,9 @@ function fo_filter_tab_story( input, slug_target ){
 		jQuery('.fo_column_story .fo_tab_prod[fo_index_story="'+slug_target+'"]').show();
 		jQuery('.fo_column_story .fo_tab_prod[fotableid="'+jQuery(input).attr('fotableid')+'"][fo_index_story="'+jQuery(input).attr('fo_order_id')+'"]').addClass('fo_tab_prod_story');
 	}
-	FO_calc_totals();
+	SIQO_calc_totals();
 }
-function FO_filter_tab_variant( input, slug_target ){
+function SIQO_filter_tab_variant( input, slug_target ){
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_selected');
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_modify');
 
@@ -1400,7 +1400,7 @@ function FO_filter_tab_variant( input, slug_target ){
 
 //name ---------------------------------------------
 	var name = jQuery(input).find('.FO_prod_name_manage').text();
-	var order_text = 'ORD n°'+jQuery(input).attr('fo_index_story')+'  |  ';
+	var order_text = 'ORD nÂ°'+jQuery(input).attr('fo_index_story')+'  |  ';
 	if ( parseInt(jQuery(input).attr('fo_index_story')) >= 999999 ) { order_text = '' }
 	jQuery('.fo_col_2_name').text( order_text + name );
 
@@ -1436,7 +1436,7 @@ function FO_filter_tab_variant( input, slug_target ){
 	if ( jQuery(input).attr('fo_type') == 'new' ) {
 		fo_tab_add_product_to_order();
 	}
-	FO_calc_totals();
+	SIQO_calc_totals();
 	if ( jQuery(input).attr('fo_modificable') == 'false' ) {
 		jQuery('input[type="radio"]').attr('onclick','return false;');
 		jQuery('.fo_target_note_prod, .fo_target_qty_prod').attr('disabled',true);
@@ -1450,7 +1450,7 @@ function FO_filter_tab_variant( input, slug_target ){
 	}
 }
 
-function FO_calc_totals(){
+function SIQO_calc_totals(){
 	var tot_r = 0.00;
 	jQuery('.fo_column_riepilogo .fo_tab_prod').each(function(i,e){
 		var temp_r_price = 0.00;
@@ -1495,7 +1495,7 @@ function FO_calc_totals(){
 }
 
 
-function fo_tab_add_product_to_order(){
+function siqo_tab_add_product_to_order(){
 	var copy = jQuery('.fo_column_products .fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"]').clone();
 
 	copy.attr('draggable','false');
@@ -1529,7 +1529,7 @@ function fo_tab_add_product_to_order(){
 }
 
 
-function fo_tab_prod_remove( input ){
+function siqo_tab_prod_remove( input ){
 	jQuery('.FO_flash_tab_header').removeClass('fo_tab_prod_modify');
 	jQuery('.FO_flash_tab_footer').removeClass('fo_tab_prod_modify');
 
@@ -1537,10 +1537,10 @@ function fo_tab_prod_remove( input ){
 	jQuery('.fo_tab_col_2, .fo_tab_col_3').removeClass('FO_new_background');
 
 	jQuery(input).parent().remove();
-	FO_calc_totals();
+	SIQO_calc_totals();
 }
 
-function fo_tab_parse_price( input ){
+function siqo_tab_parse_price( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 	var DisplayValue = jQuery(input).text();
 	if (DisplayValue==''||DisplayValue==null) { DisplayValue='0' }
@@ -1558,7 +1558,7 @@ function fo_tab_parse_price( input ){
 	}
 }
 
-function fo_tab_parse_qty( input ){
+function siqo_tab_parse_qty( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 	if ( jQuery(prod).attr('fo_modificable') == 'true' ) {
 		if ( prod.attr('fo_special') == 'Special' ||  prod.attr('fo_special') == 'Sconto' ) {
@@ -1568,10 +1568,10 @@ function fo_tab_parse_qty( input ){
 			prod.find('input[fo_tab_target="qty"]').val(jQuery(input).val().trim());
 		}
 	}
-	FO_calc_totals();
+	SIQO_calc_totals();
 }
 
-function fo_tab_parse_note( input ){
+function siqo_tab_parse_note( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 	if ( jQuery(prod).attr('fo_modificable') == 'true' ) {
 		if ( prod.attr('fo_special') != 'Special' &&  prod.attr('fo_special') != 'Sconto' ) {
@@ -1580,7 +1580,7 @@ function fo_tab_parse_note( input ){
 	}
 }
 
-function fo_tab_parse_temp( input ){
+function siqo_tab_parse_temp( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 	if ( jQuery(prod).attr('fo_modificable') == 'true' ) {
 		if ( prod.attr('fo_special') != 'Special' &&  prod.attr('fo_special') != 'Sconto' ) {
@@ -1589,7 +1589,7 @@ function fo_tab_parse_temp( input ){
 	}
 }
 
-function fo_tab_parse_variant( input ){
+function siqo_tab_parse_variant( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 
 	if ( prod.attr('fo_modificable') == 'true' ) {
@@ -1614,14 +1614,14 @@ function fo_tab_parse_variant( input ){
 	}
 }
 
-function fo_tab_price_default( input ){
+function siqo_tab_price_default( input ){
 	var price = jQuery(input).attr('fovalue');
 	if (price!='') {
 		jQuery('.fo_tab_price').text( parseFloat(price).toFixed(2));
 		jQuery('.fo_tab_price').attr('fo_status_modify','false');
 	}
 }
-function fo_keyboard_price( number ){
+function siqo_keyboard_price( number ){
 	var price = jQuery('.fo_tab_price').text();
 	var modify = jQuery('.fo_tab_price').attr('fo_status_modify');
 	if (modify == 'false') {
@@ -1643,34 +1643,34 @@ function fo_keyboard_price( number ){
 	fo_tab_parse_price( jQuery('.fo_tab_price') );
 }
 
-function fo_tab_price_del( input ){
+function siqo_tab_price_del( input ){
 	var price = jQuery('.fo_tab_price').text();
 	jQuery('.fo_tab_price').text( price.slice(0, -1) );
 	jQuery('.fo_tab_price').attr('fo_status_modify','true');
 }
 
-function fo_tab_price_ac( input ){
+function siqo_tab_price_ac( input ){
 	jQuery('.fo_tab_price').text('');
 	jQuery('.fo_tab_price').attr('fo_status_modify','true');
 }
 
-function fo_keyboard_special( number, text ){
+function siqo_keyboard_special( number, text ){
 	jQuery('.fo_tab_price').attr('fo_status_modify','true');
 	if ( number == 'special' ) {
-		FO_add_special_product(text);
+		SIQO_add_special_product(text);
 	} else if(number == 'sub'){
 
 	} else if(number == '-'){
-		FO_add_discount_product(number);
+		SIQO_add_discount_product(number);
 	} else if(number == '%'){
-		FO_add_discount_product(number);
+		SIQO_add_discount_product(number);
 	} else {}
 	// fo_actual_table
 	var price = jQuery('.fo_tab_price').text();
 	var modify = jQuery('.fo_tab_price').attr('fo_status_modify');
 }
 
-function FO_add_discount_product( number ){
+function SIQO_add_discount_product( number ){
 	var prodSpecial = jQuery('.fo_generic_prod .fo_tab_prod_discount').clone();
 	var index = jQuery('.fo_tab_prod_index').text();
 	var index_story = jQuery('.fo_tab_prod_index_story').text();
@@ -1717,7 +1717,7 @@ jQuery('.fo_column_riepilogo .fo_tab_prod_special[foprodid="Special'+index+'"]')
 
 
 
-function FO_add_special_product( text ){
+function SIQO_add_special_product( text ){
 	var prodSpecial = jQuery('.fo_generic_prod .fo_tab_prod_special').clone();
 	var index = jQuery('.fo_tab_prod_index').text();
 	var index_story = jQuery('.fo_tab_prod_index_story').text();
@@ -1767,9 +1767,9 @@ jQuery('.fo_column_riepilogo .fo_tab_prod_special[foprodid="'+text+index+'"]').c
 
 
 
-function FO_tab_Card_show( target ){
+function SIQO_tab_Card_show( target ){
 	jQuery('.fo_tab_show').show();
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 
@@ -1804,30 +1804,30 @@ function FO_tab_Card_show( target ){
 		jQuery('.fo_pay_table_button').hide(); 
 		jQuery('.fo_clear_table_button').hide(); 
 	}
-	FO_calc_totals();
+	SIQO_calc_totals();
 }
-function FO_tab_Card_hide(){
+function SIQO_tab_Card_hide(){
 	jQuery('.fo_tab_show').hide();
 	// jQuery('header').css('display','');
 	// jQuery('footer').css('display','');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 }
 
-function FO_confirm( call_b, text, text_v = '', text_f = '' ){
-	fo_toggle_header_footer();
+function SIQO_confirm( call_b, text, text_v = '', text_f = '' ){
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 	// jQuery('.fo_tab_show').hide();
 	if (text_v == '') {text_v = ' si '}
 	if (text_f == '') {text_f = ' no '}
 	var ELconfirm = '';
-	ELconfirm += '<div class="FO_confirm_container">';
+	ELconfirm += '<div class="SIQO_confirm_container">';
 		ELconfirm += '<div class="Advanced_Card_background"></div>';
-		ELconfirm += '<div class="FO_confirm_message">';
+		ELconfirm += '<div class="SIQO_confirm_message">';
 			ELconfirm += '<p style="flex-basis:100%;">'+text+'</p>';
-		ELconfirm += '<button style="margin-right:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.FO_confirm_container`).remove();'+call_b+'">'+
+		ELconfirm += '<button style="margin-right:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.SIQO_confirm_container`).remove();'+call_b+'">'+
 			text_v+'</button>';
-		ELconfirm += '<button style="margin-left:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.FO_confirm_container`).remove();">'+
+		ELconfirm += '<button style="margin-left:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.SIQO_confirm_container`).remove();">'+
 			text_f+'</button>';
 			ELconfirm += '</div>';
 		ELconfirm += '</div>';
@@ -1835,18 +1835,18 @@ function FO_confirm( call_b, text, text_v = '', text_f = '' ){
 	jQuery('body').append(ELconfirm);
 }
 
-function FO_alert( call_b, text, text_v = '' ){
-	fo_toggle_header_footer();
+function SIQO_alert( call_b, text, text_v = '' ){
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 	// jQuery('.fo_tab_show').hide();
 	if (text_v == '') {text_v = ' OK '}
 	var ELconfirm = '';
-	ELconfirm += '<div class="FO_confirm_container">';
+	ELconfirm += '<div class="SIQO_confirm_container">';
 		ELconfirm += '<div class="Advanced_Card_background"></div>';
-		ELconfirm += '<div class="FO_confirm_message">';
+		ELconfirm += '<div class="SIQO_confirm_message">';
 			ELconfirm += '<p style="flex-basis:100%;">'+text+'</p>';
-		ELconfirm += '<button style="margin-left:auto;margin-right:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.FO_confirm_container`).remove();'+call_b+'">'+
+		ELconfirm += '<button style="margin-left:auto;margin-right:auto;min-width:75px;" class="fo_button" onclick="jQuery(this).closest(`.SIQO_confirm_container`).remove();'+call_b+'">'+
 			text_v+'</button>';
 			ELconfirm += '</div>';
 		ELconfirm += '</div>';
@@ -1854,11 +1854,11 @@ function FO_alert( call_b, text, text_v = '' ){
 	jQuery('body').append(ELconfirm);
 }
 
-function FO_tab_clear_table( def_confirm = false, hide = true ){
+function SIQO_tab_clear_table( def_confirm = false, hide = true ){
 	if ( def_confirm == false ) {
-		text = jQuery('#fo_tab_clear_table_text').text();
-		// if ( !FO_confirm('FO_tab_clear_table(true)',text) ) { return false; }
-		FO_confirm('FO_tab_clear_table(true)',text);
+		text = jQuery('#SIQO_tab_clear_table_text').text();
+		// if ( !SIQO_confirm('SIQO_tab_clear_table(true)',text) ) { return false; }
+		SIQO_confirm('SIQO_tab_clear_table(true)',text);
 		return false;
 	}
 	// jQuery('.FOloadingCardPublic').show();
@@ -1868,23 +1868,23 @@ function FO_tab_clear_table( def_confirm = false, hide = true ){
 	// jQuery(".FOloadingCardPublicMain").fadeOut(200);
 	jQuery('.FO_table_grid [fo_tableid="'+jQuery('input[name="table_ID"]').val()+'"] .FOloadingTable').show();
 	if (hide) {
-		FO_tab_Card_hide();
+		SIQO_tab_Card_hide();
 	}
 	jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
-		    action: 'FO_flash_tab_clear_table',
-		    nonce: flash_orders_ajax_view_orders_vars.nonce,
+		    action: 'SIQO_flash_tab_clear_table',
+		    nonce: siqo_ajax_view_orders_vars.nonce,
 		    table_name_cpt: jQuery('input[name="table_name_cpt"]').val(),
 		    table_id: jQuery('input[name="table_ID"]').val(),
-		    _fononce_flash_tab_order: jQuery('input[name="_fononce_flash_tab_order"]').val(),
+		    _siqononce_flash_tab_order: jQuery('input[name="_siqononce_flash_tab_order"]').val(),
 		    // def_confirm: def_confirm,
 		},
 		success: function (response) {
 			console.log(response);
 			// console.log(jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]'));
-			// jQuery('.FO_order_list_summary').empty();
+			// jQuery('.SIQO_order_list_summary').empty();
 			// var strong = jQuery('.fo_column_story strong').clone();
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_order_id]').remove();
 			jQuery('.fo_tab_prod[fo_type="story"][fotableid="'+response.table_id+'"]').remove();
@@ -1896,9 +1896,9 @@ function FO_tab_clear_table( def_confirm = false, hide = true ){
 			jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').find('.fo_tab_notify').hide();
 				
 			// jQuery('.FO_flash_tab_order_container').find('.FOloadingCardPublic').fadeOut();
-			// FO_tab_Card_hide();
+			// SIQO_tab_Card_hide();
 			jQuery(".FOloadingCardPublicMain").fadeOut(200);
-			jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','FO_tab_Card_show(this)');
+			jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','SIQO_tab_Card_show(this)');
 			jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"] .FOloadingTable').hide();
 			return;
 		}
@@ -1906,10 +1906,10 @@ function FO_tab_clear_table( def_confirm = false, hide = true ){
 }
 
 
-function fo_clear_all_tables( def_confirm = false ){
+function siqo_clear_all_tables( def_confirm = false ){
 	if ( def_confirm == false ) {
 		text = jQuery('#fo_tab_clear_all_table_text').text();
-		FO_confirm('fo_clear_all_tables(true)',text);
+		SIQO_confirm('siqo_clear_all_tables(true)',text);
 		return false;
 	}
 	jQuery('.FOloadingCardPublic').show();
@@ -1917,16 +1917,16 @@ function fo_clear_all_tables( def_confirm = false ){
 
 	jQuery('.fo_table_cell').attr('onclick','return false;');
 	jQuery('.FO_table_grid .FOloadingTable').show();
-	FO_tab_Card_hide();
-	FO_statistics_hide();
+	SIQO_tab_Card_hide();
+	SIQO_statistics_hide();
 
 	jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
-		    action: 'FO_flash_tab_clear_all_tables',
-		    nonce: flash_orders_ajax_view_orders_vars.nonce,
-		    _fononce_flash_tab_order: jQuery('input[name="_fononce_flash_tab_order"]').val(),
+		    action: 'SIQO_flash_tab_clear_all_tables',
+		    nonce: siqo_ajax_view_orders_vars.nonce,
+		    _siqononce_flash_tab_order: jQuery('input[name="_siqononce_flash_tab_order"]').val(),
 		},
 		success: function (response) {
 			console.log(response);
@@ -1937,7 +1937,7 @@ function fo_clear_all_tables( def_confirm = false ){
 			jQuery('.fo_table_cell').find('.fo_status_string').text(jQuery('#fo_tab_table_status_free_text').text());
 
 			jQuery(".FOloadingCardPublicMain").fadeOut(200);
-			jQuery('.fo_table_cell').attr('onclick','FO_tab_Card_show(this)');
+			jQuery('.fo_table_cell').attr('onclick','SIQO_tab_Card_show(this)');
 			jQuery('.FO_table_grid').find('.fo_tab_notify').hide();
 			jQuery('.FO_table_grid .FOloadingTable').hide();
 			return;
@@ -1945,19 +1945,19 @@ function fo_clear_all_tables( def_confirm = false ){
 	});
 }
 
-function FO_tab_go_order(input){
+function SIQO_tab_go_order(input){
 	text = jQuery('#fo_tab_go_order_text').text();
 	// if (confirm(text) == true) {
 		jQuery('.FOloadingCardPublic').show();
 		if (jQuery(input).attr('fo_order_type') == 'new_order') {
-			FO_order_tab_ajax();
+			SIQO_order_tab_ajax();
 		} else if(jQuery(input).attr('fo_order_type') == 'modify_order'){
 		} else{ }
 	// }
 }
 
-// in the pay function:   (input = '.fo_pay_ajax_container',action= 'FO_flash_tab_pay_ajax' )
-function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_tab_order_ajax'){
+// in the pay function:   (input = '.fo_pay_ajax_container',action= 'SIQO_flash_tab_pay_ajax' )
+function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flash_tab_order_ajax'){
 	var table = jQuery(input);
 	var item;
 	var foserial = jQuery(table).find('input, textarea').serializeArray();
@@ -1977,7 +1977,7 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 	console.log(Src_customers);
 
 	var created_via = 'tab_ajax';
-	if (action == 'FO_flash_tab_pay_ajax') {
+	if (action == 'SIQO_flash_tab_pay_ajax') {
 		created_via = 'pay_tab';
 		console.log(' Pay order submitted sucessfully !!! ');
 	}else{
@@ -2000,17 +2000,17 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 	jQuery('.fo_tab_prod_ghost_draft_index').text( parseInt(jQuery('.fo_tab_prod_ghost_draft_index').text()) +1 );
 
 	jQuery(input).find('.fo_tab_prod').remove();
-	FO_tab_Card_hide();
-	FO_pay_tab_Card_hide();
+	SIQO_tab_Card_hide();
+	SIQO_pay_tab_Card_hide();
 
 	// console.log(jQuery('input[name="user_ID"]').val());
 	
 	jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
 			action: action,
-			nonce: flash_orders_ajax_view_orders_vars.nonce,
+			nonce: siqo_ajax_view_orders_vars.nonce,
 			table_name_cpt: jQuery('input[name="table_name_cpt"]').val(),
 			order_note: jQuery('textarea[name="order_note"]').val(),
 			table_id: jQuery('input[name="table_ID"]').val(),
@@ -2024,7 +2024,7 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 			created_via: created_via,
 			foserial: foserial,
 			foserialmap: foserialmap,
-			_fononce_flash_tab_order: jQuery('input[name="_fononce_flash_tab_order"]').val(),
+			_siqononce_flash_tab_order: jQuery('input[name="_siqononce_flash_tab_order"]').val(),
 		},
 		success: function (response) {
 			console.log(response);
@@ -2058,7 +2058,7 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'" ][fo_status="Loading"]').attr('fo_status', 'completed');
 
-			if (action != 'FO_flash_tab_pay_ajax') {
+			if (action != 'SIQO_flash_tab_pay_ajax') {
 				jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').attr('fotable_status','1');
 			} else{
 				jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').attr('fotable_status','0');
@@ -2070,7 +2070,7 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 				jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').find('.fo_tab_notify').hide();
 			}
 
-			jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','FO_tab_Card_show(this)');
+			jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','SIQO_tab_Card_show(this)');
 			jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"] .FOloadingTable').hide();
 
 			return;
@@ -2084,7 +2084,7 @@ function FO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'FO_flash_ta
 
 
 
-function fo_tab_hystory_space( input, target, sc_target = '' ){
+function siqo_tab_hystory_space( input, target, sc_target = '' ){
 	// if ( window.screen.width > 1100 ) {
 	// 	// if (jQuery(input).find('.fo_tab_prod').length) {
 	// 		// jQuery(target).find('.fo_tab_prod').css('scale', 0.2);
@@ -2114,16 +2114,16 @@ jQuery('.fo_column_story, .fo_column_riepilogo, .fo_column_products').removeClas
 	// jQuery(sc_target).removeClass('fo_area_expanded_full');
 }
 
-function fo_tab_empty_section( target ){
+function siqo_tab_empty_section( target ){
 	jQuery(target).find('.fo_tab_prod').remove();
-	FO_calc_totals();
+	SIQO_calc_totals();
 }
 
 
 
 
 
-function fo_keyboard_qty_value( number ){
+function siqo_keyboard_qty_value( number ){
 	jQuery('.fo_target_qty_prod').val( parseInt(jQuery('.fo_target_qty_prod').val()) + number);
 	if( jQuery('.fo_target_qty_prod').val() < 1 ){
 		jQuery('.fo_target_qty_prod').val(1);
@@ -2140,10 +2140,10 @@ function fo_keyboard_qty_value( number ){
 // 	setInterval(function () {
 //         jQuery.ajax({
 //             type: 'POST',
-//             url: flash_orders_ajax_view_orders_vars.ajaxurl,
+//             url: siqo_ajax_view_orders_vars.ajaxurl,
 //             data: {
-//                 action: 'FO_check_for_orders',
-//                 nonce: flash_orders_ajax_view_orders_vars.nonce,
+//                 action: 'SIQO_check_for_orders',
+//                 nonce: siqo_ajax_view_orders_vars.nonce,
 //                 last_order_id: jQuery('#result-container tr:nth-child(1)').attr('orderid'),
 //                 last_order_data: jQuery('#result-container tr:nth-child(1)').attr('orderdata'),
 //                 order_id_table: order_id_table,
@@ -2154,9 +2154,9 @@ function fo_keyboard_qty_value( number ){
 //                     if (response.newOrders.length) {
 //                         response.newOrders.forEach(function(order) {
 //                             if ( jQuery('#result-container tr:nth-child(1)').attr('orderid') != order.id ) {
-//                                 FO_append_to_order( order, response.string );
-//                                 FO_play_sound_notify();
-//                                 FO_inizialize_timer();
+//                                 SIQO_append_to_order( order, response.string );
+//                                 SIQO_play_sound_notify();
+//                                 SIQO_inizialize_timer();
 //                             }
 //                         });
 //                     }
@@ -2164,13 +2164,13 @@ function fo_keyboard_qty_value( number ){
 //                 return;
 //             }
 //         });
-//         FO_hide_duplicate_orders();
+//         SIQO_hide_duplicate_orders();
 //     }, 1000 );
 // }
-function FO_pay_tab_Card_show( input ){
+function SIQO_pay_tab_Card_show( input ){
 	jQuery('.fo_pay_tab_show').show();
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_story');
-	fo_toggle_header_footer();
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 	
@@ -2199,7 +2199,7 @@ var index = 10000;
 	jQuery('.fo_pay_total').text( parseFloat(tot).toFixed(2) );
 	Fo_add_index_to_products();
 }
-function FO_pay_tab_Card_hide( input ){
+function SIQO_pay_tab_Card_hide( input ){
 	jQuery('.fo_list_items').empty();
 	jQuery('.fo_list_final_order').empty();
 	jQuery('.fo_pay_total').empty();
@@ -2207,7 +2207,7 @@ function FO_pay_tab_Card_hide( input ){
 	jQuery('.FO_customers_container').empty();
 }
 
-function Fo_add_index_to_products() {
+function SIQO_add_index_to_products() {
 	jQuery('.fo_pay_column .fo_tab_prod').each(function(i,e){
 		var fake = i + 1 ;
 		jQuery(e).find('input').each(function(ind,ele){
@@ -2219,7 +2219,7 @@ function Fo_add_index_to_products() {
 
 
 
-function FO_order_tab_pay_ajax(){
+function SIQO_order_tab_pay_ajax(){
 	// jQuery('.FO_flash_tab_order_pay_container .FOloadingCardPublic').show();
 	// jQuery('.fo_table_cell[fo_tableid="'+jQuery('input[name="table_ID"]').val()+'"]').attr('onclick','return false;');
 	
@@ -2235,8 +2235,8 @@ function FO_order_tab_pay_ajax(){
 	// console.log(foserialmap);
 	// console.log(window);
 	// console.log(' order submitted sucessfully !!! ');
-	// FO_pay_tab_Card_hide();
-	// FO_tab_Card_hide();
+	// SIQO_pay_tab_Card_hide();
+	// SIQO_tab_Card_hide();
 	// jQuery('.FO_flash_tab_order_pay_container .FOloadingCardPublic').hide();
 	// jQuery(".FOloadingCardPublicMain").fadeOut(200);
 
@@ -2254,10 +2254,10 @@ function FO_order_tab_pay_ajax(){
 
 	// jQuery.ajax({
 	// 	type: 'POST',
-	// 	url: flash_orders_ajax_view_orders_vars.ajaxurl,
+	// 	url: siqo_ajax_view_orders_vars.ajaxurl,
 	// 	data: {
-	// 	    action: 'FO_flash_tab_pay_ajax',
-	// 	    nonce: flash_orders_ajax_view_orders_vars.nonce,
+	// 	    action: 'SIQO_flash_tab_pay_ajax',
+	// 	    nonce: siqo_ajax_view_orders_vars.nonce,
 	// 	    table_name_cpt: jQuery('input[name="table_name_cpt"]').val(),
 	// 	    order_note: jQuery('textarea[name="order_note"]').val(),
 	// 	    table_id: jQuery('input[name="table_ID"]').val(),
@@ -2267,7 +2267,7 @@ function FO_order_tab_pay_ajax(){
 	// 	},
 	// 	success: function (response) {
 	// 		console.log(response);
-	// 			// jQuery('.FO_order_list_summary').empty();
+	// 			// jQuery('.SIQO_order_list_summary').empty();
 	// 		// jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').css('backgroundColor','var(--fo-tab-2)');
 	// 		// jQuery('.FO_table_grid').removeClass('fo_tab_prod_last_modify');
 	// 		// // jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').addClass('fo_tab_prod_last_modify');
@@ -2280,8 +2280,8 @@ function FO_order_tab_pay_ajax(){
 	// 		// jQuery('.fo_column_riepilogo .fo_tab_prod').remove();
 
 	// 		// fo_change_order_status();
-	// 		FO_tab_clear_table(true, false);
-	// 	// jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','FO_tab_Card_show(this)');
+	// 		SIQO_tab_clear_table(true, false);
+	// 	// jQuery('.fo_table_cell[fo_tableid="'+response.table_id+'"]').attr('onclick','SIQO_tab_Card_show(this)');
 	// 	// jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"]').attr('fotable_status','0');
 	// 	// jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"] .FOloadingTable').hide();
 	// 		// return;
@@ -2289,23 +2289,23 @@ function FO_order_tab_pay_ajax(){
 	// });
 
 	// console.log(' order submitted sucessfully 2 !!! ');
-	FO_order_tab_ajax('.fo_pay_ajax_container', 'FO_flash_tab_pay_ajax');
-	// FO_tab_clear_table(true, false);
+	SIQO_order_tab_ajax('.fo_pay_ajax_container', 'SIQO_flash_tab_pay_ajax');
+	// SIQO_tab_clear_table(true, false);
 }
 
 
 
 
 
-function fo_change_order_status( order_id = '', status = '' ){
+function siqo_change_order_status( order_id = '', status = '' ){
 	if (order_id != '') {
 		if (status == '') {status = 'completed'}
 		jQuery.ajax({
 		    type: 'POST',
-		    url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		    url: siqo_ajax_view_orders_vars.ajaxurl,
 		    data: {
-		        action: 'FO_ajax_change_order_status',
-		        nonce: jQuery('#_fononce_insert_post_ajax_nonce').val(),
+		        action: 'SIQO_ajax_change_order_status',
+		        nonce: jQuery('#_siqononce_insert_post_ajax_nonce').val(),
 		        order_id: order_id,
 		        status: status
 		    },
@@ -2319,15 +2319,15 @@ function fo_change_order_status( order_id = '', status = '' ){
 
 
 
-function fo_toggle_header_footer( check = false ){
+function SIQO_toggle_header_footer( check = false ){
 	if (check) {
-		if (jQuery('.fo_toggle_header_footer').val() == 'true') {
-			jQuery('.fo_toggle_header_footer').val('false');
+		if (jQuery('.SIQO_toggle_header_footer').val() == 'true') {
+			jQuery('.SIQO_toggle_header_footer').val('false');
 		} else{
-			jQuery('.fo_toggle_header_footer').val('true');
+			jQuery('.SIQO_toggle_header_footer').val('true');
 		}
 	}
-	if ( jQuery('.fo_toggle_header_footer').val() == 'true') {
+	if ( jQuery('.SIQO_toggle_header_footer').val() == 'true') {
 		if (jQuery('header').css('display') == 'none') {
 			jQuery('header').css('display','');
 			jQuery('footer').css('display','');
@@ -2349,21 +2349,21 @@ function fo_toggle_header_footer( check = false ){
 
 
 
-function FO_toggle_inner_checkbox(input){
+function SIQO_toggle_inner_checkbox(input){
 	if ( jQuery(input).find('input[type="checkbox"]').is(":checked") ) {
 		jQuery(input).find('input[type="checkbox"]').prop('checked', false);
 	} else{
 		jQuery(input).find('input[type="checkbox"]').prop('checked', true);
 	}
 }
-function FO_toggle_inverted_checkbox(input){
+function SIQO_toggle_inverted_checkbox(input){
 	if ( jQuery(input).is(":checked") ) {
 		jQuery(input).prop('checked', false);
 	} else{
 		jQuery(input).prop('checked', true);
 	}
 }
-function FO_customer_pay(input){
+function SIQO_customer_pay(input){
 	if ( jQuery(input).is(":checked") ) {
 		jQuery('.fot_pay_new_customer').slideUp();
 		jQuery('.fot_pay_search_customer').slideDown();
@@ -2381,18 +2381,18 @@ function FO_customer_pay(input){
 
 
 
-function FO_catering_show(){
-	fo_toggle_header_footer();
+function SIQO_catering_show(){
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 
-	jQuery('.FOP_tab_catering_fixed_window').show();
+	jQuery('.SIQOP_tab_catering_fixed_window').show();
 }
 
-function FO_catering_hide(){
-	fo_toggle_header_footer();
+function SIQO_catering_hide(){
+	SIQO_toggle_header_footer();
 
-	jQuery('.FOP_tab_catering_fixed_window').hide();
+	jQuery('.SIQOP_tab_catering_fixed_window').hide();
 
 	jQuery('input[name="fo_catering_id"]').val('');
 	jQuery('input[name="fo_tab_catering_title"]').val('');
@@ -2403,8 +2403,8 @@ function FO_catering_hide(){
 	jQuery('input[name="fo_catering_type"]').val('');
 }
 
-function fo_catering_modify( input ){
-	jQuery('strong.FOP_tab_catering_title').text(jQuery('strong.FOP_tab_catering_title').attr('modify'));
+function siqo_catering_modify( input ){
+	jQuery('strong.SIQOP_tab_catering_title').text(jQuery('strong.SIQOP_tab_catering_title').attr('modify'));
 
 	jQuery('input[name="fo_catering_id"]').val(jQuery(input).attr('fo_catering_id'));
 
@@ -2413,15 +2413,15 @@ function fo_catering_modify( input ){
 	jQuery('input[name="fo_delivery_date"]').val(jQuery(input).find('.fo_catering_date').attr('fo_date'));
 	jQuery('select[name="fo_catering_status"]').val(jQuery(input).find('.fo_catering_status').attr('fo_status'));
 	jQuery('input[name="fo_catering_type"]').val('update');
-	FO_catering_show();
+	SIQO_catering_show();
 }
 
 
-function FO_catering_save( def_confirm = false ){
+function SIQO_catering_save( def_confirm = false ){
 	var title = jQuery('input[name="fo_tab_catering_title"]').val();
 	var date = jQuery('input[name="fo_delivery_date"]').val();
 	if ( title == '' || date == '' ) {
-		FO_alert('', jQuery('#fo_tab_create_catering_error_text').text() );
+		SIQO_alert('', jQuery('#fo_tab_create_catering_error_text').text() );
 		return false;
 	}
 	if ( def_confirm == false ) {
@@ -2431,7 +2431,7 @@ function FO_catering_save( def_confirm = false ){
 			var text = jQuery('#fo_tab_create_catering_text').text();
 		}
 		
-		FO_confirm('FO_catering_save( true )', text + '</br> 	"' + title + '" ?' );
+		SIQO_confirm('SIQO_catering_save( true )', text + '</br> 	"' + title + '" ?' );
 		return false;
 	}
 	// jQuery('.fo_table_cell[fo_tableid="'+jQuery('input[name="table_ID"]').val()+'"]').attr('onclick','return false;');
@@ -2439,49 +2439,49 @@ function FO_catering_save( def_confirm = false ){
 	// jQuery('.FO_table_grid [fo_tableid="'+jQuery('input[name="table_ID"]').val()+'"] .FOloadingTable').show();
 	jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
-		    action: 'FO_insert_post_ajax',
-		    nonce: flash_orders_ajax_view_orders_vars.nonce,
+		    action: 'SIQO_insert_post_ajax',
+		    nonce: siqo_ajax_view_orders_vars.nonce,
 		    cpt: 'catering',
 		    title: jQuery('input[name="fo_tab_catering_title"]').val(),
 		    content: jQuery('textarea[name="fo_tab_catering_desc"]').val(),
 		    fo_delivery_date: jQuery('input[name="fo_delivery_date"]').val(),
 		    fo_catering_status: jQuery('select[name="fo_catering_status"]').val(),
 		    post_id: jQuery('input[name="fo_catering_id"]').val(),
-		    _fononce_insert_post_ajax_nonce: jQuery('input[name="_fononce_insert_post_ajax_nonce"]').val(),
+		    _siqononce_insert_post_ajax_nonce: jQuery('input[name="_siqononce_insert_post_ajax_nonce"]').val(),
 		},
 		success: function (response) {
 			console.log(response);
-			FO_catering_hide();
+			SIQO_catering_hide();
 			javascript:history.go(0);
 			return;
 		}
 	});
 
 }
-function FO_catering_delete( input_id, def_confirm = false ){
+function SIQO_catering_delete( input_id, def_confirm = false ){
 	if ( def_confirm == false ) {
 		var title = jQuery('input[name="fo_tab_catering_title"]').text();
 		var text = jQuery('#fo_tab_create_catering_delete_text').text();
-		FO_confirm('FO_catering_delete('+ input_id +', true )', text + '</br> 	"' + title + '" ?' );
+		SIQO_confirm('SIQO_catering_delete('+ input_id +', true )', text + '</br> 	"' + title + '" ?' );
 		return false;
 	}
 	jQuery(".FOloadingCardPublicMain").show();
 
 	jQuery.ajax({
 		type: 'POST',
-		url: flash_orders_ajax_view_orders_vars.ajaxurl,
+		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
-		    action: 'FO_trash_post_ajax',
-		    nonce: flash_orders_ajax_view_orders_vars.nonce,
+		    action: 'SIQO_trash_post_ajax',
+		    nonce: siqo_ajax_view_orders_vars.nonce,
 		    cpt: 'catering',
 		    delete_id: input_id,
-		     _fononce_insert_post_ajax_nonce: jQuery('input[name="_fononce_insert_post_ajax_nonce"]').val(),
+		     _siqononce_insert_post_ajax_nonce: jQuery('input[name="_siqononce_insert_post_ajax_nonce"]').val(),
 		},
 		success: function (response) {
 			console.log(response);
-			FO_catering_hide();
+			SIQO_catering_hide();
 			javascript:history.go(0);
 			return;
 		}
@@ -2490,21 +2490,21 @@ function FO_catering_delete( input_id, def_confirm = false ){
 }
 
 
-function FO_settings_show(){
-	fo_toggle_header_footer();
+function SIQO_settings_show(){
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
-	jQuery('#FO_active_settings').animate({
+	jQuery('#SIQO_active_settings').animate({
 		right: '0px',
 	}, 300);
 	jQuery('.fo_setting_show').fadeIn();
 	setTimeout(function() {
-		jQuery('#FO_active_settings').addClass('setting_is_show');
+		jQuery('#SIQO_active_settings').addClass('setting_is_show');
 	}, 1000);
 }
 
-function FO_statistics_show(){
-	fo_toggle_header_footer();
+function SIQO_statistics_show(){
+	SIQO_toggle_header_footer();
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 
@@ -2518,25 +2518,25 @@ function FO_statistics_show(){
 	}, 1000);
 }
 
-function FO_statistics_hide(){
-	fo_toggle_header_footer();
+function SIQO_statistics_hide(){
+	SIQO_toggle_header_footer();
 
 	jQuery('.fo_stat_container').removeClass('setting_is_show');
 	jQuery('.fo_stat_container').slideUp();
 	jQuery('.fo_statistic_show').fadeOut();
 }
 
-function FO_settings_hide(){
+function SIQO_settings_hide(){
 	var str
 	if ( window.screen.width < 1100 ) {
 		str = '-100%';
 	} else{ str = '-50%'; }
-	jQuery('#FO_active_settings').animate({
+	jQuery('#SIQO_active_settings').animate({
 		right: str,
 	}, 300);
 	jQuery('.fo_setting_show').fadeOut();
-	jQuery('#FO_active_settings').removeClass('setting_is_show');
-	fo_toggle_header_footer();
+	jQuery('#SIQO_active_settings').removeClass('setting_is_show');
+	SIQO_toggle_header_footer();
 }
 
 
@@ -2598,6 +2598,9 @@ function fo_tab_show_variation_button(){
 
 
 
-function FO_list_view_sel(input){
-	jQuery('.foProdCard').attr('foview',jQuery(input).val());
+function SIQO_list_view_sel(input){
+	jQuery('.SIQOprodCard').attr('foview',jQuery(input).val());
 }
+
+
+
