@@ -452,7 +452,7 @@ function SIQO_head_needed(){ ?>
 	<input type="hidden" class="fo_home_url" name="fo_home_url" value="<?php echo esc_url( get_home_url() ); ?>">
 	<?php
 }
-add_action( 'wp_head', 'FO_head_needed' );
+add_action( 'wp_head', 'SIQO_head_needed' );
 
 function siqo_header_style() { ?>
 	<style type="text/css" id=fo-root>
