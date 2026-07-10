@@ -1,6 +1,6 @@
 === Studio Immens Quick Order ===
 Contributors: mauroarnone
-Tags: menu management, instant ordering, table management, restaurant, woocommerce orders, quick checkout
+Tags: woocommerce ordering, restaurant ordering, table management, food ordering, menu ordering, quick checkout, woocommerce
 Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
@@ -8,59 +8,106 @@ Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Requires Plugins: woocommerce
 
-Studio Immens Quick Order is a WordPress plugin that streamlines online ordering, manages tables, and enables fast checkouts to enhance the WooCommerce experience.
+Streamline your restaurant's online ordering with WooCommerce. Product menus, table management, QR codes, and real-time order monitoring.
 
 == Description ==
 
-Studio Immens Quick Order is an advanced WordPress plugin designed to optimize online ordering and table management for restaurants and other businesses. Ideal for WooCommerce users, this plugin enables online store owners to offer a fast and seamless checkout process, significantly improving customer satisfaction and boosting conversions.
+Studio Immens Quick Order transforms your WooCommerce store into a complete restaurant ordering system. Customers browse a visual menu, customize products (ingredients, variants, temperatures), and place orders directly to your kitchen.
 
-With Quick Order, customers can place orders in just a few clicks, thanks to its user-friendly, mobile-responsive interface that works flawlessly on any device. The plugin supports a complete product catalog and facilitates real-time order management, streamlining the workflow for business owners.
+= Key Features =
 
-One of the standout features of Quick Order is its table management capability, essential for restaurants and cafes. Managers can easily assign and monitor orders for each table, optimizing service and reducing wait times. This feature integrates smoothly with the online ordering system, allowing for centralized management of both online and on-site orders.
+* **Interactive Product Menu** - Display WooCommerce products grouped by category in a card-based grid with images, prices, stock status, and filters
+* **Table Management** - Visual grid of restaurant tables with color-coded status (free, occupied, paying). Assign orders to tables, manage running tabs, process payments
+* **QR Code Generation** - Generate QR codes for menus or tables via shortcodes `[siqo_qr_code]` and `[siqo_qr_code_content]`
+* **Custom Product Taxonomies** - Enable ingredients, allergens, temperatures, stickers, and macro categories for fine-grained product customization
+* **Product Variations** - Full support for variable products with attribute selection, ingredient checkboxes, temperature choices
+* **Real-Time Order Polling** - New orders appear automatically with configurable audio notifications
+* **User Roles** - Worker, Supervisor, Manager role-based access for staff
+* **Advanced Product Popup** - Gallery images, descriptions, ingredients, allergens, and variants in a modal
+* **Order Filtering** - Filter orders by type (table, pickup, delivery) and status
+* **Checkout Integration** - Pickup/delivery date and time selection at checkout
+* **Customizable CSS** - 38 CSS variables for colors, borders, shadows, and animations via admin style page
+* **Multiple Ordering Modes** - Card-based grid or compact list view
+* **Translation Ready** - .pot file included, Italian and English translations bundled
 
-In summary, Studio Immens Quick Order is the complete solution for businesses seeking to improve order and table management, optimize checkout processes, and deliver top-tier customer service.
+= How It Works =
+
+1. Create your WooCommerce products and assign them to categories
+2. Use the `[SIQO_front_order_ajax_section]` shortcode to display the customer menu
+3. Use the `[SIQO_manage_tables_section]` shortcode for staff table management
+4. Configure settings, styles, and taxonomies in Quick Order > Settings
+5. Staff monitor incoming orders in real-time with audio alerts
 
 == Installation ==
 
 1. Upload `studio-immens-quick-order` directory to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to the `Settings` page in the new Quick Order Menu section and create the pages with the button
-or alternatively add a shortcode for the pages you are interested in wherever you want on your site
+3. Go to `Quick Order > Settings` and click "CREATE or UPDATE pages"
+4. The plugin will create the necessary pages automatically
+5. Alternatively, use the shortcodes on any page:
 
-Menu page `<?php do_action('siqo_front_order_ajax_section'); ?>`
-Manage orders `<?php do_action('siqo_manage_order_section'); ?>`
-Manage tables `<?php do_action('siqo_manage_tables_section'); ?>`
-Manage restaurant `<?php do_action('siqo_manage_restaurant_section'); ?>`
+`[SIQO_front_order_ajax_section]` - Customer menu ordering
+`[SIQO_manage_tables_section]` - Staff table management
 
 == Frequently Asked Questions ==
 
-1. Is Studio Immens Quick Order compatible with WooCommerce?
-Yes, Quick Order integrates seamlessly with WooCommerce, allowing for smooth order management and advanced store customization.
+= Does this plugin require WooCommerce? =
 
-2. Can I manage tables with Quick Order?
-Absolutely. Quick Order includes a dedicated table management feature, allowing you to assign, monitor, and manage orders for each table within your venue.
+Yes. Studio Immens Quick Order requires WooCommerce to be installed and active.
 
-3. Is Quick Order mobile-friendly?
-Yes, Quick Order has a mobile-responsive interface, ensuring an optimal ordering experience on any device, including smartphones and tablets.
+= Can I manage tables with the free version? =
 
-4. How customizable is Quick Order?
-Quick Order offers various customization options, allowing you to adapt the interface, payment methods, and general settings to suit the specific needs of your business.
+Yes. The free version includes full table management with visual grid, color-coded status, order assignment, and payment processing.
 
-5. What payment methods does Quick Order support?
-Quick Order supports multiple payment methods integrated with WooCommerce, providing secure options for your customers, including credit cards, PayPal, and other local methods.
+= Is it mobile-friendly? =
 
-6. How does Quick Order handle product inventory?
-The plugin facilitates real-time inventory management, automatically updating product availability based on received orders.
+Yes. The interface is fully responsive and works on smartphones, tablets, and desktops.
 
-7. Can I offer discounts or promotions with Quick Order?
-Yes, Quick Order supports customizable discounts and promotions, which can be configured directly from the plugin's settings.
+= Can customers customize products? =
 
-8. Does Quick Order require technical expertise to install?
-No, Quick Order is designed to be easily installed and configured, even without technical expertise. However, basic knowledge of WordPress and WooCommerce can be helpful.
+Yes. You can enable custom taxonomies for ingredients, allergens, temperatures, and stickers. Customers can select/deselect ingredients and choose preparation options.
 
-9. What should I do if I encounter issues with Quick Order?
-If you experience any issues, you can consult the official plugin documentation or contact the plugin's technical support for assistance.
+= Does it support variable products? =
 
-10. Is Quick Order regularly updated?
-Yes, Quick Order receives regular updates to include new features, security improvements, and compatibility with the latest versions of WordPress and WooCommerce.
+Yes. Full support for WooCommerce variable products with attribute selection and price adjustments.
+
+= How do I print receipts? =
+
+The free version integrates with SI Print Receipts plugin for receipt printing. The PRO version adds automatic printing to kitchen thermal printers.
+
+= Can I customize the appearance? =
+
+Yes. Use the Quick Order > Style page to customize 38 CSS variables including colors, borders, shadows, and animations.
+
+= Is the plugin translated? =
+
+Yes. English and Italian translations are included. The plugin is translation-ready with a .pot file.
+
+== Screenshots ==
+
+1. Customer menu ordering interface with product cards
+2. Table management grid with color-coded status
+3. Product customization popup with ingredients and variants
+4. Settings page with taxonomy configuration
+5. Style customization page with CSS variable controls
+
+== Changelog ==
+
+= 1.0.0 =
+* Initial release
+* Product menu with card and list views
+* Table management with visual grid
+* QR code generation via shortcodes
+* Custom product taxonomies (ingredients, allergens, temperatures, stickers, macro categories)
+* Real-time order polling with audio notifications
+* User roles (Worker, Supervisor, Manager)
+* CSS variable customization (38 properties)
+* Pickup/delivery checkout integration
+* Translation-ready with Italian and English
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release.

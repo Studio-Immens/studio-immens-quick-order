@@ -8,13 +8,7 @@
  *
  * @package    Studio_Immens_Quick_Order
  * @subpackage Studio_Immens_Quick_Order/public
- */
-/**
- * The public-facing functionality of the plugin.
- *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/public
- * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
+ * @author     Studio Immens <info@studioimmens.com>
  */
 
 // flash_order
@@ -144,8 +138,7 @@ function SIQO_create_all_necessary_pages(){
 		// $response['manage-orders'] = '1.0.1';
 	SIQO_create_page( 'manage-tables','<!-- wp:shortcode -->[SIQO_manage_tables_section]<!-- /wp:shortcode -->', '1.0.2' );
 		$response['manage-tables'] = '1.0.2';
-	SIQO_create_page( 'manage-restaurant','<!-- wp:shortcode -->[SIQO_manage_restaurant_section]<!-- /wp:shortcode -->', '1.0.1' );
-		$response['manage-restaurant'] = '1.0.1';
+
 
 	if (isset($_POST['from'])&& sanitize_text_field(wp_unslash($_POST['from'])) == 'ajax') {
 		wp_send_json(array(
@@ -567,7 +560,6 @@ function SIQO_admin_autorole(){
 
 include_once('template/front-order-ajax.php');
 include_once('template/manage-tables.php');
-include_once('template/manage-restaurant.php');
 
 add_shortcode( 'SIQO_front_order_ajax_section', 'SIQO_front_order_ajax_section' );
 function SIQO_front_order_ajax_section(){
@@ -601,19 +593,7 @@ function SIQO_manage_tables_section(){
 	// }
 }
 
-add_shortcode( 'SIQO_manage_restaurant_section', 'SIQO_manage_restaurant_section' );
-function SIQO_manage_restaurant_section(){
-	// if (!is_admin()) {
-		// SIQO_access_denied();
-		ob_start();
-		if ( SIQO_access_autorization() ){
-			SIQO_add_special_pages_navigations();
-			SIQO_pages_header_controls();
-			SIQO_manage_restaurant();
-		}
-		return ob_get_clean();
-	// }
-}
+
 
 
 
@@ -4279,16 +4259,12 @@ function FO_flash_tab_order( $tavoli = array() ){
 							<?php } ?>
 						<?php } ?>
 					<div class="fo_tab_tool_section fo_tool_story">
-						<?php
-							if ( in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-							?>
-								<div class="fo_button_thin fo_wooprint_preconto" onclick="WooPrint(this, 'fo-tab-story');" style="color: yellow;">
-									<span class="dashicons dashicons-printer"></span>
-									<?php esc_html_e('Preconto','studio-immens-quick-order');?>
-								</div>
-							<?php 
-							}
-						?>
+						<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
+							<div class="fo_button_thin fo_wooprint_preconto" onclick="SIQO_print_receipts(this);" style="color: yellow;">
+								<span class="dashicons dashicons-printer"></span>
+								<?php esc_html_e('Preconto','studio-immens-quick-order');?>
+							</div>
+						<?php } ?>
 						
 					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 					?>
@@ -4591,7 +4567,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 			</div>
 		</div>
 		<?php 
-		if ( in_array('flash_order_pro/flash_order_pro.php',apply_filters('active_plugins',get_option('active_plugins'))) ) {
+		if ( function_exists('FOP_order_info_tab') ) {
 			FOP_order_info_tab();
 		}?>
 		<div class="FO_flash_tab_footer">
@@ -4790,16 +4766,12 @@ function FO_pay_this_order_tab(){
 				<!-- <strong> <?php echo esc_attr(get_woocommerce_currency_symbol());?> </strong> -->
 			</div>
 
-			<?php
-				if ( in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-				?>
-					<div class="fo_button_thin fo_wooprint_preconto" onclick="WooPrint(this, 'fo-tab-pay');" style="color: yellow;">
-						<span class="dashicons dashicons-printer"></span>
-						<?php esc_html_e('Preconto','studio-immens-quick-order');?>
-					</div>
-				<?php 
-				}
-			?>
+			<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
+				<div class="fo_button_thin fo_wooprint_preconto" onclick="SIQO_print_receipts(this);" style="color: yellow;">
+					<span class="dashicons dashicons-printer"></span>
+					<?php esc_html_e('Preconto','studio-immens-quick-order');?>
+				</div>
+			<?php } ?>
 
 			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;" onclick="FO_order_tab_pay_ajax()">
 				<?php esc_html_e('PAGA','studio-immens-quick-order');?>
@@ -6078,10 +6050,10 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 			$string .= SIQO_get_status_changer( $order );
 		}
 
-		if ( in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-			if ( function_exists('WOP_print_receipt') ) {
-				$string .= WOP_print_receipt('Stampa');
-			}
+		if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+			$string .= '<button type="button" class="fo_button_thin" onclick="SIQO_print_receipt(' . $order->get_id() . ');" style="color: yellow;">';
+			$string .= '<span class="dashicons dashicons-printer"></span> ' . esc_html__( 'Stampa', 'studio-immens-quick-order' );
+			$string .= '</button>';
 		}
 		if ( SIQO_get_meta( 'visualize_orders_timer') == 'yes' ) {
 			$string .= '<div identify="fotimer" class="fotimer fo_status_timer_1" style="display:none">';

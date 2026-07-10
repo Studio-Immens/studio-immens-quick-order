@@ -1,4 +1,4 @@
-﻿jQuery(document).ready(function($) {
+jQuery(document).ready(function($) {
 	   "use strict";
 
     jQuery('#submit_order null').click(function() {
@@ -2600,6 +2600,42 @@ function fo_tab_show_variation_button(){
 
 function SIQO_list_view_sel(input){
 	jQuery('.SIQOprodCard').attr('foview',jQuery(input).val());
+}
+
+function SIQO_print_receipt(order_id){
+	if (typeof wooprintAdmin !== 'undefined' && wooprintAdmin.ajaxUrl) {
+		jQuery.post(wooprintAdmin.ajaxUrl, {
+			action: 'wooprint_get_receipt',
+			order_id: order_id,
+			security: wooprintAdmin.nonce
+		}, function(response) {
+			if (response.success && response.data) {
+				var win = window.open('', '_blank');
+				win.document.write(response.data);
+				win.document.close();
+				win.focus();
+			}
+		});
+	} else if (typeof WooPrint === 'function') {
+		var btn = document.createElement('button');
+		btn.setAttribute('fotarget', 'ordertype');
+		btn.setAttribute('orderid', order_id);
+		WooPrint(btn, 'fo-order');
+	} else {
+		window.print();
+	}
+}
+
+function SIQO_print_receipts(btn){
+	var ids = [];
+	jQuery(btn).closest('.fo_tool_story').find('[orderid]').each(function(){
+		ids.push(jQuery(this).attr('orderid'));
+	});
+	if (ids.length) {
+		SIQO_print_receipt(ids[0]);
+	} else {
+		window.print();
+	}
 }
 
 

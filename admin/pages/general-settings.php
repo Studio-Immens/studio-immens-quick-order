@@ -16,9 +16,7 @@ if ( $sub ) {
     if ( $sub == 'WooPrint' ) {
         $disp_WooPrint = 'display:flex;';
     }
-    if ( $sub == 'SIQOWarehouse' ) {
-        $disp_SIQOWarehouse = 'display:flex;';
-    }
+
 } else{
     $disp_general = 'display:flex;';
 }

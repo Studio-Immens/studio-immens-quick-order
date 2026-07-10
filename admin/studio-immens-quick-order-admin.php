@@ -27,8 +27,7 @@ function SIQO_menu_page(){
    add_submenu_page( $menu_slug, esc_html__( 'Settings', 'studio-immens-quick-order' ), esc_html__( 'Settings', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_settings' );
    add_submenu_page( $menu_slug, esc_html__( 'Style', 'studio-immens-quick-order' ), esc_html__( 'Style', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_style', 'SIQO_sub_menu_page_style' );
 
-   add_submenu_page( $menu_slug, esc_html__( 'Addons', 'studio-immens-quick-order' ), esc_html__( 'Addons', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_addons', 'SIQO_sub_menu_page_addons' );
-   add_submenu_page( $menu_slug, esc_html__( 'Pro', 'studio-immens-quick-order' ), esc_html__( 'Pro', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_pro', 'SIQO_sub_menu_page_pro' );
+
 }
 add_action( 'admin_menu', 'SIQO_menu_page' );
 
@@ -92,17 +91,6 @@ SIQO_nav_menu_page();
 include( plugin_dir_path( __FILE__ ) . 'pages/style.php');
 SIQO_foot_menu_page();
 }
-function SIQO_sub_menu_page_addons(){
-SIQO_nav_menu_page();
-include( plugin_dir_path( __FILE__ ) . 'pages/addons.php');
-SIQO_foot_menu_page();
-}
-function SIQO_sub_menu_page_pro(){
-SIQO_nav_menu_page();
-include( plugin_dir_path( __FILE__ ) . 'pages/pro.php');
-SIQO_foot_menu_page();
-}
-
 function SIQO_style_setting( $setting, $style, $type ){
     $style = ( $style == null ) ? SIQO_customized_css() : $style;
     if ( $type == 'color' ) {
@@ -375,27 +363,6 @@ function SIQO_manage_pages( $setting = array() ){
 <?php
 }
 
-function SIQO_coming_soon( $args = array() ){
-    ?>
-    <div class="SIQOcomingSoon">
-        <?php
-        echo esc_html__('questa sezione  in costruzione, stiamo lavorando in continuazione e questa sezione sar presto disponibile.', 'studio-immens-quick-order');
-        ?>
-    </div>
-    <?php
-}
-
-function SIQO_pass_to_pro(){
-    ?>
-    <div class="SIQO_section">
-        <?php
-        echo esc_html__( 'Questa sezione  destinata alla versione pro del plugin (Studio Immens Quick Order Pro)', 'studio-immens-quick-order' );
-        ?>
-    </div>
-    <?php
-    SIQO_watch_quick_order_pro();
-}
-
 function SIQO_donate(){
     ?>
     <div class="SIQO_section">
@@ -416,18 +383,6 @@ function SIQO_submit_suggestions(){
         echo '<a href="https://studioimmens.com/feedback" target="_blank">'.esc_html__(' Clicca QUI ','studio-immens-quick-order').'</a>';
         esc_html_e('. Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione.','studio-immens-quick-order');
         ?>
-    </div>
-    <?php
-}
-
-function SIQO_watch_quick_order_pro(){
-    ?>
-    <div class="SIQO_section">
-        <?php
-        echo esc_html__( ' Puoi vedere il Plugin Qui: ', 'studio-immens-quick-order' );
-        ?>
-        </br>
-        <a href="https://studioimmens.com/quick-order-pro"> Studio Immens Quick Order Pro </a>
     </div>
     <?php
 }
