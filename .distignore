@@ -1,0 +1,10 @@
+.git
+.github
+.gitignore
+.gitattributes
+.distignore
+node_modules
+vendor
+.DS_Store
+Thumbs.db
+*.log
