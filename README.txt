@@ -1,11 +1,11 @@
 === Studio Immens Quick Order ===
-Contributors: mauroarnone
+Contributors: innovazioneweb
 Tags: woocommerce ordering, restaurant ordering, table management, food ordering, menu ordering, quick checkout, woocommerce
 Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce

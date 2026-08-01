@@ -1,0 +1,1903 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: studio-immens-quick-order\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-01T11:59:17+02:00\n"
+"PO-Revision-Date: 2026-08-01T11:59:17+02:00\n"
+"Last-Translator: Studio Immens <info@studioimmens.com>\n"
+"Language-Team: Studio Immens\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: i18n-tool\n"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid " - Seleziona - "
+msgstr " - Seleziona - "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Cerca QR ... "
+msgstr " Cerca QR ... "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Clicca QUI "
+msgstr " Clicca QUI "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid " Clicca qui per Accedere "
+msgstr "Clicca qui per accedere "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid " Data di Consegna: "
+msgstr "Dati di Consegna: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Gestore QR codes: "
+msgstr " Gestore QR codes: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Shortcodes disponibili: "
+msgstr " Shortcodes disponibili: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Statistiche in Flash: "
+msgstr " Statistiche in Flash: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid " Visita Questa Pagina "
+msgstr "Visita questa pagina "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "(default: 150)"
+msgstr "(default: 150)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "(default: home url)"
+msgstr "(default: home url)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "- zona -"
+msgstr "- zona -"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "-scegli-"
+msgstr "-scegli-"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid ". Ogni tuo gesto  per noi un prezioso impegno, e siamo lieti di ascoltare le tue proposte e suggerimenti."
+msgstr ". Ogni tuo gesto  per noi un prezioso impegno, e siamo lieti di ascoltare le tue proposte e suggerimenti."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid ". Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione."
+msgstr ". Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "AGGIUNGI"
+msgstr "AGGIUNGI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "ALLERGENI"
+msgstr "ALLERGENI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "AVVIA ORDINE"
+msgstr "AVVIA ORDINE"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Add New"
+msgstr "Aggiungi nuovo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Add New Catering"
+msgstr "Aggiungi nuovo catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Addons"
+msgstr "Componenti aggiuntivi"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Allergene"
+msgstr "Aggiorna Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Ingrediente"
+msgstr "Aggiorna Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Macro Categoria"
+msgstr "Aggiorna Macrocategoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Status"
+msgstr "Stato Aggiornana"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Sticker"
+msgstr "Aggiorna Adesivo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Temperatura"
+msgstr "Aggiorna Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna Zona"
+msgstr "Aggiorna Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna elemento"
+msgstr "Aggiorna elemento"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiorna la Pagina"
+msgstr "Aggiorna la Pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state create, le Crea."
+msgstr "Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state create, le Crea."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiornato in questo tavolo"
+msgstr "Aggiornato in questo tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuova Macro Categoria"
+msgstr "Aggiungi Nuova Macro Categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuova Temperatura"
+msgstr "Aggiungi nuova temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuova Zona"
+msgstr "Aggiungi Nuova Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuovo Allergene"
+msgstr "Aggiungi Nuovo Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuovo Ingrediente"
+msgstr "Aggiungi Nuovo Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuovo Status"
+msgstr "Stato Aggiungi Nuovo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi Nuovo Sticker"
+msgstr "Aggiungi Nuovo Adesivo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo (manager) all'utente"
+msgstr "Aggiungi il ruolo (manager) all'utente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo (supervisor) all'utente"
+msgstr "Aggiungi il ruolo (supervisore) all'utente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo (worker) all'utente"
+msgstr "Aggiungi il ruolo (lavoratore) all'utente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo manager"
+msgstr "Aggiungi il ruolo manager"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo supervisor"
+msgstr "Aggiungi il ruolo supervisor"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi il ruolo worker"
+msgstr "Aggiungi il ruolo operaio"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi nuovo"
+msgstr "Aggiungi nuovo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi nuovo tavolo"
+msgstr "Aggiungi nuovo tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Allergeni"
+msgstr "Aggiungi o Rimuovi Allergeni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Ingredienti"
+msgstr "Aggiungi o Rimuovi Ingredienti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Macro Categoria"
+msgstr "Aggiungi o Rimuovi Macro Categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Status"
+msgstr "Aggiungi o Rimuovi Stato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Sticker"
+msgstr "Aggiungi o Rimuovi Adesivo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Temperature"
+msgstr "Aggiungi o Rimuovi Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Aggiungi o Rimuovi Zone"
+msgstr "Aggiungi o Rimuovi Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "All Catering"
+msgstr "Tutto il catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Allergene"
+msgstr "Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Allergeni Popolari"
+msgstr "Allergeni Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Allergeni:"
+msgstr "Allergeni:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Attesa"
+msgstr "Attesa"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "Avanzate"
+msgstr "Avanzate"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "CATEGORIE POST"
+msgstr "CATEGORIA POST"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "CHIUDI"
+msgstr "CHIUDI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "CONTATTO"
+msgstr "CONTATTO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "CREA"
+msgstr "CREA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "CREA o AGGIORNA pagine"
+msgstr "CREA o AGGIORNA pagine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cancellato"
+msgstr "Cancellato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Carica Immagine"
+msgstr "Carica Immagine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Categorie:"
+msgstr "Categoria:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Catering Archives"
+msgstr "Archivi Catering "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Catering Attributes"
+msgstr "Attributi Catering "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Allergeni"
+msgstr "Cerca allergeni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Ingredienti"
+msgstr "Cerca Ingredienti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Macro Categoria"
+msgstr "Cerca Macro Categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Status"
+msgstr "Stato Cerca"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Sticker"
+msgstr "Adesivo Cerca"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Temperature"
+msgstr "Cerca Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca Zone"
+msgstr "Cerca Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca cliente..."
+msgstr "Cerca cliente..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca ingredienti da aggiungere..."
+msgstr "Cerca ingredienti da aggiungere..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca prodotto..."
+msgstr "Cerca prodotto..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca tavolo"
+msgstr "Cerca tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca un cliente:"
+msgstr "Cerca un cliente:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cerca..."
+msgstr "Cerca..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cercheremo di rispettare questo orario con il massimo dell'impegno, tuttavia l'orario effettivo potrebbe non corrispondere."
+msgstr "Cercheremo di rispettare questo orario con il massimo dell'impegno, tuttavia l'orario effettivo potrebbe non corrispondere."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Cerchi Qualcosa?"
+msgstr "Cerchi qualcosa?"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Che temperatura gradisci? "
+msgstr "Che temperatura gradisci? "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Cliente Esistente ? "
+msgstr "Cliente Esistente ? "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Colore Sfondo "
+msgstr "Colore Sfondo "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Colore Testo "
+msgstr "Colore Testo "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori degli status degli ordini di woocommerce"
+msgstr "Colori degli status degli ordini di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori degli status del timer"
+msgstr "Colori dello stato del timer"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori dei testi e effetti"
+msgstr "Colori dei testi e effetti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori della gestione tavoli"
+msgstr "Colori della gestione tavoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori di Background principali"
+msgstr "Colori di sfondo principali"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Colori principali"
+msgstr "Colori principali"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Completa prima i campi obbligatori contrassegnati da: * ."
+msgstr "Completa prima dei campi obbligatori contrassegnati da: * ."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Completato"
+msgstr "Completato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Confermi di voler creare il Prodotto chiamato: "
+msgstr "Confermi di voler creare il Prodotto chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Consegna"
+msgstr "Consegna"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Consegna a Domicilio"
+msgstr "Consegna a domicilio"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Consegna a domicilio"
+msgstr "Consegna a domicilio"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Consegnato"
+msgstr "Consegnato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Crea un nuovo shortcode:"
+msgstr "Crea un nuovo shortcode:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Data di Consegna: "
+msgstr "Dati di Consegna: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Data di consegna"
+msgstr "Dati di consegna"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Data: "
+msgstr "Dati: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Disponibile"
+msgstr "Disponibile"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "ELIMINA pagina"
+msgstr "ELIMINA pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "ERROR! Flash Order requires Woocommerce Plugin to be installed and active"
+msgstr "ERRORE! Flash Order richiede che il plugin Woocommerce sia installato e attivo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edit Catering"
+msgstr "Modifica Catering "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Allergene"
+msgstr "Edita Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Ingrediente"
+msgstr "Edita Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Macro Categoria"
+msgstr "Modifica Macro categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Status"
+msgstr "Modifica Stato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Sticker"
+msgstr "Modifica Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Temperatura"
+msgstr "Modifica temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Edita Zona"
+msgstr "Modifica Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Elimina Immagine"
+msgstr "Elimina Immagine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Esempio di utilizzo:"
+msgstr "Esempio di utilizzo:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Estendi l'influenza ad altri selettori css"
+msgstr "Estendi l'influenza ad altri selettori css"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "FATTURAZIONE"
+msgstr "FATTURAZIONE"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Featured Image"
+msgstr "Immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Filter Catering list"
+msgstr "Filtra lista catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Filtra lista tavoli"
+msgstr "Filtra elenco tavoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "GUIDA"
+msgstr "GUIDA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dell'Allergene"
+msgstr "Genitore dell'Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dell'Allergene:"
+msgstr "Genitore dell'Allergene:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dell'Ingrediente"
+msgstr "Genitore dell'Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dell'Ingrediente:"
+msgstr "Genitore dell'Ingrediente:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore della Macro Categoria:"
+msgstr "Genitore della Macro Categoria:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore della Temperatura"
+msgstr "Genitore della Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore della Temperatura:"
+msgstr "Genitore della Temperatura:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore della Zona"
+msgstr "Genitore della Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore della Zona:"
+msgstr "Genitore della Zona:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore delle Macro Categorie"
+msgstr "Genitore delle Macro Categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dello Status"
+msgstr "Genitore dello Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dello Status:"
+msgstr "Genitore dello Status:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dello Sticker"
+msgstr "Genitore dello Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore dello Sticker:"
+msgstr "Genitore dello Sticker:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Genitore tavolo:"
+msgstr "Genitore tavolo:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Gestione Pagine del Plugin"
+msgstr "Gestione pagine del plugin"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Grid View"
+msgstr "Vista griglia"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "I parametri disponibili sono:"
+msgstr "I parametri disponibili sono:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "IMPOSTAZIONI"
+msgstr "IMPOSTAZIONI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "INFO"
+msgstr "INFO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "INGREDIENTI"
+msgstr "INGREDIENTI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti"
+msgstr "Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Image"
+msgstr "Immagine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Immagine"
+msgstr "Immagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "Immagini delle Tassonomie"
+msgstr "Immagini delle Tassonomie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Imposta featured image"
+msgstr "Imposta immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "Impostazioni Globali"
+msgstr "Impostazioni Globali"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Impostazioni di rete"
+msgstr "Impostazioni di rete"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "In Attesa"
+msgstr "Ad Attesa"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "In Lavorazione"
+msgstr "In Lavorazione"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ingrediente"
+msgstr "Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ingredienti Popolari"
+msgstr "Ingredienti Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ingredienti:"
+msgstr "Ingredienti:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Inserisci almeno la mail o il numero di telefono del Cliente!"
+msgstr "Inserisci almeno la mail o il numero di telefono del Cliente!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Inserisci nel tavolo"
+msgstr "Inserisci nel tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Inserisci prima il Nome del Cliente!"
+msgstr "Inserisci prima il Nome del Cliente!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Inserisci prima il nome del tavolo."
+msgstr "Inserisci prima il nome del tavolo."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Inserisci prima il nome della categoria."
+msgstr "Inserisci prima il nome della categoria."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Insert into Catering"
+msgstr "Inserisci in Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Items Catering"
+msgstr "Articoli Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Items Catering navigation"
+msgstr "Navigazione articoli Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Items list navigation"
+msgstr "Navigazione nell'elenco degli articoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "LIBERA TAVOLO"
+msgstr "LIBERA TAVOLO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "La frase o il link che volete utilizzare per il QR"
+msgstr "La frase o il link che volete utilizzare per il QR"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Libero"
+msgstr "Libero"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Link per Questa Pagina:"
+msgstr "Link a questa pagina:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "MACRO CATEGORIE"
+msgstr "CATEGORIA MACRO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "MACRO CATEGORIES"
+msgstr "MACRO CATEGORIES"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "MODIFICA INGREDIENTI"
+msgstr "MODIFICA INGREDIENTI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Macro Categoria"
+msgstr "Macro Categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Macro Categorie"
+msgstr "Macro Categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Macro Categorie Popolari"
+msgstr "Macro Categorie Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Modifica i colori globali della pagina"
+msgstr "Modifica i colori globali della pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Modifica tavolo"
+msgstr "Modifica tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra"
+msgstr "Mostra"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra o Nascondi QR code della pagina in testa"
+msgstr "Mostra o Nascondi QR code della pagina in testa"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra o Nascondi footer al caricamento della pagina"
+msgstr "Mostra o Nascondi footer al caricamento della pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra o Nascondi header al caricamento della pagina"
+msgstr "Mostra o Nascondi intestazione al caricamento della pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra/Nascondi Header e Footer"
+msgstr "Mostra/Nascondi Intestazione e Piè di pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Mostra/Nascondi header e footer della pagina."
+msgstr "Mostra/Nascondi header e footer della pagina."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "NON Hai il permesso per accedere a questa pagina!"
+msgstr "NON Hai il permesso per accedere a questa pagina!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "NUOVO!"
+msgstr "NUOVO!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nascondi"
+msgstr "Nascondi"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nascondi tutti i PopUp"
+msgstr "Nascondi tutti i PopUp"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessun Allergene"
+msgstr "Nessun allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessun Ingrediente"
+msgstr "Nessun ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessun risultato"
+msgstr "Nessun risultato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessun tavolo"
+msgstr "Nessun tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessun tavolo in Trash"
+msgstr "Nessun tavolo nel Cestino"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuna Macro Categoria"
+msgstr "Nessuna Macro Categoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuna Temperatura"
+msgstr "Nessuna Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuna Zona"
+msgstr "Nessuna Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuna immagine di galleria"
+msgstr "Nessuna immagine di galleria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuno Status"
+msgstr "Stato di Nessuno"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nessuno Sticker"
+msgstr "Nessuno Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "New Catering"
+msgstr "Nuovo Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "No"
+msgstr "No"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nome breve"
+msgstr "Nome breve"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nome slang"
+msgstr "Nome slang"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Non Disponibile"
+msgstr "Non disponibile"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Not found"
+msgstr "Non trovato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Not found in Trash"
+msgstr "Non trovato nel Cestino"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Note"
+msgstr "Nota"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Note del prodotto..."
+msgstr "Nota del prodotto..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Note prodotto:"
+msgstr "Nota prodotto:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuova Macro Categorie"
+msgstr "Nuova Macrocategoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuova Temperatura"
+msgstr "Nuova temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuova Zona"
+msgstr "Nuova Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuovo Allergene"
+msgstr "Nuovo allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuovo Ingrediente"
+msgstr "Nuovo Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuovo Status"
+msgstr "Nuovo Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuovo Sticker"
+msgstr "Nuovo Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Nuovo tavolo"
+msgstr "Nuovo tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "ORDINE"
+msgstr "ORDINE"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Occupato"
+msgstr "Occupato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ora di consegna"
+msgstr "Ora di consegna"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/manage-tables.php
+msgid "Ora e data dell'ultima modifica"
+msgstr "Ora e data dell'ultima modifica"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ora: "
+msgstr "Ora: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "PAGA"
+msgstr "PAGA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "PAGA TALOLO"
+msgstr "PAGA TALOLO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "PRODOTTI"
+msgstr "PRODOTTI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "Pagina gestione ordini (manage-orders)"
+msgstr "Pagina gestione ordini (gestisci-ordini)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Pagine Speciali:"
+msgstr "Pagine Speciali:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Parent Catering:"
+msgstr "genitore Catering:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Per poter creare il QRcode, devi inserire il contenuto nel campo content!"
+msgstr "Per poter creare il QRcode, devi inserire il contenuto nel campo content!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l'accesso!"
+msgstr "Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l'accesso!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l'accesso."
+msgstr "Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l'accesso."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Post Type for Catering"
+msgstr "Post Type per Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Preconto"
+msgstr "Preconto"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Pro"
+msgstr "Pro"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Prodotti Preferiti"
+msgstr "Prodotti Preferiti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Prodotto Generico"
+msgstr "Prodotto Generico"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Questo post type generato dal plug-in: IW FlashOrder, serve per controllare e gestire i tavoli(o anche le zone speciali come ad es. il bancone, il cortile, il gazebo etc...), del tuo ristorante."
+msgstr "Questo post type generato dal plug-in: IW FlashOrder, serve per controllare e gestire i tavoli(o anche le zone speciali come ad es. il bancone, il cortile, il gazebo etc...), del tuo ristorante."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Questo shortcode va utilizzato direttamente sulla pagina di cui vuoi visualizzare il QRcode."
+msgstr "Questo shortcode va utilizzato direttamente sulla pagina di cui vuoi visualizzare il QRcode."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Questo shortcode va utilizzato sulla pagina su cui vuoi visualizzare il QRcode, ma il contenuto del QRcode  definito dal parametro content."
+msgstr "Questo shortcode va utilizzato sulla pagina su cui vuoi visualizzare il QRcode, ma il contenuto del QRcode  definito dal parametro content."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Quick Order"
+msgstr "Quick Order"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "RIEPILOGO:"
+msgstr "RIEPILOGO:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Remove featured image"
+msgstr "Rimuovi l'immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Rimuovi la featured image"
+msgstr "Rimuovi l'immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Ripristina il valore di default"
+msgstr "Ripristina il valore di default"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ritiro"
+msgstr "Ritiro"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Ritiro in Sede"
+msgstr "Ritiro in Sede"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "SALVA"
+msgstr "SALVA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "SPEDIZIONE"
+msgstr "SPEDIZIONE"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "STICKER"
+msgstr "STICKER"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "STORICO:"
+msgstr "STORICO:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "STORY"
+msgstr "STORIA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Scarica Immagine"
+msgstr "Scarica Immagine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Scegli fra i piÃƒÆ’Ã‚Â¹ usati"
+msgstr "Scegli fra i piÃƒÆ’Ã‚Â¹ usati"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Scegli fra le piÃƒÆ’Ã‚Â¹ usate"
+msgstr "Scegli fra le piÃƒÆ’Ã‚Â¹ usate"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Schermo Intero"
+msgstr "Schermo Intero"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sconto"
+msgstr "Sconto"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Se desideri darci un feedback o fare una richiesta, "
+msgstr "Se desideri darci un feedback o fare una richiesta, "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Se vuoi sostenerci con una donazione, "
+msgstr "Se vuoi sostenerci con una donazione, "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Search Catering"
+msgstr "Search Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sei sicuro di voler ELIMINARE il prodotto chiamato:"
+msgstr "Sei sicuro di voler ELIMINARE il prodotto chiamato:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sei sicuro di voler cambiare la categoria di questo prodotto?"
+msgstr "Sei sicuro di voler cambiare la categoria di questo prodotto?"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sei sicuro di voler cambiare lo status dell'ordine?`"
+msgstr "Sei sicuro di voler cambiare lo status dell'ordine?`"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Seleziona Tavolo"
+msgstr "Seleziona Tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Seleziona il Tavolo"
+msgstr "Seleziona il Tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Seleziona l'audio..."
+msgstr "Seleziona l'audio..."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Seleziona la variante: "
+msgstr "Seleziona la variante: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Seleziona prima il Prodotto da ELIMINARE"
+msgstr "Seleziona prima il Prodotto da ELIMINARE"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Seleziona prima la variante"
+msgstr "Seleziona prima la variante"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Seleziona un'orario!"
+msgstr "Seleziona un orario!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Seleziona una data!"
+msgstr "Seleziona un dato!"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa gli Allergeni con la virgola"
+msgstr "Separa gli Allergeni con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa gli Ingredienti con la virgola"
+msgstr "Separa gli ingredienti con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa gli Status con la virgola"
+msgstr "Separa gli Status con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa gli Sticker con la virgola"
+msgstr "Separa gli Sticker con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa le Macro Categorie con la virgola"
+msgstr "Separa le Macro Categorie con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa le Temperature con la virgola"
+msgstr "Separa le Temperature con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Separa le Zone con la virgola"
+msgstr "Separa le Zone con la virgola"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Set featured image"
+msgstr "Imposta immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Si"
+msgstr "Si"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile"
+msgstr "Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sicuro di voler LIBERARE il tavolo?"
+msgstr "Sicuro di voler LIBERARE il tavolo?"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sicuro di voler LIBERARE tutti i tavoli?"
+msgstr "Sicuro di voler LIBERARE tutti i tavoli?"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sicuro di voler procedere con l'Ordinazione?"
+msgstr "Sicuro di voler procedere con l'Ordinazione?"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Special"
+msgstr "Speciale"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Stampa"
+msgstr "Stampa"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Stampa scontrino"
+msgstr "Stampa scontrino"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Status Popolari"
+msgstr "Status Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Sticker Popolari"
+msgstr "Sticker Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Style"
+msgstr "Stile"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "TAG POST"
+msgstr "TAG POST"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "TAG PRODOTTI"
+msgstr "TAG PRODOTTI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "TAVOLO"
+msgstr "TAVOLA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "TAVOLO: "
+msgstr "TAVOLA: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "TEMPERATURE"
+msgstr "TEMPERATURA"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "TOTALE: "
+msgstr "TOTALE: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "TUTTO"
+msgstr "TUTTO"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tag:"
+msgstr "Tag:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "Tassonomie"
+msgstr "Tassonomie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tavolo"
+msgstr "Tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Temperatura"
+msgstr "Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Temperatura:"
+msgstr "Temperatura:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Temperature Popolari"
+msgstr "Temperatura Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/style.php
+msgid "Tempi delle animazioni"
+msgstr "Tempi delle animazioni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tipo Ordine: "
+msgstr "Tipo Ordine: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tipo di ordine"
+msgstr "Tipo di ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutte le Macro Categorie"
+msgstr "Tutte le Macro Categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutte le Temperature"
+msgstr "Tutte le Temperature"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti gli Allergeni"
+msgstr "Tutti gli allergeni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti gli Ingredienti"
+msgstr "Tutti gli Ingredienti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti gli Status"
+msgstr "Tutti gli Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti gli Sticker"
+msgstr "Tutti gli Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti i tavoli"
+msgstr "Tutti i tavoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Tutti le Zone"
+msgstr "Tutti le Zone"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "Ultima modifica della pagina: "
+msgstr "Ultima modifica della pagina: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Update Catering"
+msgstr "Aggiornamento Ristorazione"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Uploaded to this Catering"
+msgstr "Caricato in questo catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Usa come featured image"
+msgstr "Usa come immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Use as featured image"
+msgstr "Utilizza come immagine in primo piano"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "VARIANTI:"
+msgstr "VARIANTI:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "VISITA pagina"
+msgstr "VISITA pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "VISUALIZZA ALLERGENI"
+msgstr "VISUALIZZA ALLERGENI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "VISUALIZZA INGREDIENTI"
+msgstr "VISUALIZZA INGREDIENTI"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
+msgid "Varianti Prodotti"
+msgstr "Varianti Prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "View Catering"
+msgstr "Visualizza Catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Allergene"
+msgstr "Visualizza Allergene"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Ingrediente"
+msgstr "Visualizza Ingrediente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Macro Categoria"
+msgstr "Visualizza MacroCategoria"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Status"
+msgstr "Visualizza Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Sticker"
+msgstr "Visualizza Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Temperatura"
+msgstr "Visualizza Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza Zona"
+msgstr "Visualizza Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza tavoli"
+msgstr "Visualizza tavoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Visualizza tavolo"
+msgstr "Visualizza tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi ELIMINARE il tavolo chiamato: "
+msgstr "Vuoi ELIMINARE il tavolo chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi ELIMINARE in modo definitivo questo evento, chiamato: "
+msgstr "Vuoi ELIMINARE in modo definitivo questo evento, chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi ELIMINARE la categoria chiamata: "
+msgstr "Vuoi ELIMINARE la categoria chiamata: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi aggiornare l'evento chiamato: "
+msgstr "Vuoi aggiornare l'evento chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi creare un nuovo evento chiamato: "
+msgstr "Vuoi creare un nuovo evento chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi creare un nuovo tavolo chiamato: "
+msgstr "Vuoi creare un nuovo tavolo chiamato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Vuoi creare una nuova macro categoria chiamata: "
+msgstr "Vuoi creare una nuova macro categoria chiamata: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Zona"
+msgstr "Zona"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "Zone Popolari"
+msgstr "Zone Popolari"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "[ALTRO]"
+msgstr "[ALTRO]"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "[DATE]"
+msgstr "[DATA]"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "[FATTURAZIONE]"
+msgstr "[FATTURAZIONE]"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "[INFO]"
+msgstr "[INFO]"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "[SPEDIZIONE]"
+msgstr "[SPEDIZIONE]"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "abilita l'inserimento ordini dalla pagina del menu ( flash-order-ajax )"
+msgstr "abilita l'inserimento ordini dalla pagina del menu ( flash-order-ajax )"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "aggiorna la pagina eludendo la cache"
+msgstr "aggiorna la pagina eludendo la cache"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per gli allergeni dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per gli allergeni dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per gli ingredienti dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per gli ingredienti dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per gli sticker dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per gli adesivi dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per i tag dei post"
+msgstr "aggiungi un'immagine alla tassonomia per i tag dei post"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per i tag dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per i tag dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per le categorie dei post"
+msgstr "aggiungi un'immagine alla tassonomia per le categorie dei post"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per le macro categorie dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per le macro categorie dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "aggiungi un'immagine alla tassonomia per le temperature dei prodotti"
+msgstr "aggiungi un'immagine alla tassonomia per le temperature dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "azioni"
+msgstr "azioni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "cambia lo status dell'ordine"
+msgstr "cambia lo status dell'ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "cancellato"
+msgstr "cancellato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "completato"
+msgstr "completato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "completato: "
+msgstr "completato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "creato da - "
+msgstr "creato da - "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "creato: "
+msgstr "creato: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "data del completamento dell'ordine"
+msgstr "dati del completamento dell'ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "data dell'ultima modifica dell'ordine"
+msgstr "dati dell'ultima modifica dell'ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "data della fatturazione dell'ordine"
+msgstr "dati della fatturazione dell'ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "data di creazione dell'ordine"
+msgstr "dati di creazione dell'ordine"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "fatturazione: "
+msgstr "fatturazione: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "gli ingredienti:"
+msgstr "gli ingredienti:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "i clienti potranno inserire gli ordini direttamente dalla pagina del menu"
+msgstr "i clienti potranno inserire gli ordini direttamente dalla pagina del menu"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "id"
+msgstr "id"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "id pagina: "
+msgstr "id pagina: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "il prodotto non ha nessun ingrediente associato ad esso"
+msgstr "il prodotto non ha nessun ingrediente associato ad esso"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "il valore minimo  500 cio  0.5 secondi ( 1000 millisecondi = 1 secondo )"
+msgstr "il valore minimo  500 cio  0.5 secondi ( 1000 millisecondi = 1 secondo )"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "imposta a \"-1\" per visualizzare tutti gli ordini"
+msgstr "imposta a \"-1\" per visualizzare tutti gli ordini"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "imposta il numero di ore"
+msgstr "imposta il numero di ore"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â "
+msgstr "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "impostazioni generali"
+msgstr "impostazionigenerali"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "in lavorazione"
+msgstr "in lavorazione"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "indirizzo ip - "
+msgstr "indirizzo ip - "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "info"
+msgstr "informazioni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "inserisci fino a quante ore prima verranno visualizzati gli ordini nella pagina \"manage-order\""
+msgstr "inserisci fino a quante ore prima verranno visualizzati gli ordini nella pagina \"gestisci-ordine\""
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "inserisci il numero massimo di ordini da visualizzare nella pagina (manage-order)"
+msgstr "inserisci il numero massimo di ordini da visualizzare nella pagina (manage-order)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "inserisci la posizione del pannello menù nel backend"
+msgstr "inserisci la posizione del pannello menù nel backend"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "inserisci lo shortcode per effettuare il login dalla finestra pop up. (pagina flash-orders-ajax)"
+msgstr "inserisci lo shortcode per effettuare il login dalla finestra pop up. "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "inserisci ogni quanti millisecondi si aggiornano gli ordini nella pagina (manage-order)"
+msgstr "inserisci ogni quantitativo millisecondi si aggiornano gli ordini nella pagina (manage-order)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "inserisci prima tutti i campi richiesti e contrassegnati da *"
+msgstr "inserisci prima tutti i campi richiesti e contrassegnati da *"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "inserisci un nuovo cliente:"
+msgstr "inserisci un nuovo cliente:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "l'ID della pagina "
+msgstr "l'ID della pagina "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "la versione della pagina "
+msgstr "la versione della pagina "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "le varianti:"
+msgstr "le varianti:"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Allergeni"
+msgstr "lista Allergeni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Macro Categorie"
+msgstr "lista Macro Categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Status"
+msgstr "lista Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Sticker"
+msgstr "lista Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Temperature"
+msgstr "lista Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista Zone"
+msgstr "lista Zone"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista ingredienti"
+msgstr "lista ingredienti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "lista tavoli"
+msgstr "lista tavoli"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "mail Cliente"
+msgstr "e-mail Cliente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer la tassonomia degli allergeni di un piatto, nella pagina prodotto di woocommerce"
+msgstr "mostrer la tassonomia degli allergeni di un piatto, nella pagina prodotto di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer la tassonomia degli ingredienti di cui composto un piatto, nella pagina prodotto di woocommerce"
+msgstr "mostrer la tassonomia degli ingredienti di cui composto un piatto, nella pagina prodotto di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli allergeni, associata ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli allergeni, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli ingredienti, associata ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli ingredienti, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli sticker, associata ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli sticker, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai post di wordpress"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai post di wordpress"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle macro categorie, associate ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle macro categorie, associate ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle temperature, associata ai prodotti di woocommerce"
+msgstr "mostrer un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle temperature, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer una nuova tassonomia per selezionare facilmente gli allergeni di un piatto, associata ai prodotti di woocommerce"
+msgstr "mostrer una nuova tassonomia per selezionare facilmente gli allergeni di un piatto, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer una nuova tassonomia per selezionare facilmente gli ingredienti di cui composto un piatto, associata ai prodotti di woocommerce"
+msgstr "mostrer una nuova tassonomia per selezionare facilmente gli ingredienti di cui composto un piatto, associata ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer una nuova tassonomia per selezionare facilmente gli sticker che possono essere associati ai prodotti di woocommerce"
+msgstr "mostrer una nuova tassonomia per selezionare facilmente gli sticker che possono essere associati ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer una nuova tassonomia per selezionare facilmente le macro categorie che possono essere associate ai prodotti di woocommerce"
+msgstr "mostrer una nuova tassonomia per selezionare facilmente le macro categorie che possono essere associate ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "mostrer una nuova tassonomia per selezionare facilmente le temperature di consegna che possono essere associate ai prodotti di woocommerce"
+msgstr "mostrer una nuova tassonomia per selezionare facilmente le temperature di consegna che possono essere associate ai prodotti di woocommerce"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "nascondi tutte le finestre popup della pagina"
+msgstr "nascondi tutte le finestre popup della pagina"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Allergeni"
+msgstr "navigazione lista Allergeni"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Macro Categorie"
+msgstr "navigazione elenco Macro Categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Status"
+msgstr "navigazione lista Status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Sticker"
+msgstr "navigazione lista Sticker"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Temperature"
+msgstr "navigazione lista Temperatura"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista Zone"
+msgstr "navigazione lista Zone"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "navigazione lista ingredienti"
+msgstr "navigazione lista ingredienti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "nome"
+msgstr "nome"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "nome Cliente"
+msgstr "nome Cliente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/studio-immens-quick-order-admin.php
+msgid "nome dell'impostazione nel database: ( "
+msgstr "nome dell'impostazione nel database: ( "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "note dell'ordine: - "
+msgstr "nota dell'ordine: - "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "nuovo"
+msgstr "nuovo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "oppure impostalo"
+msgstr "oppure impostalo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "posizione del menù admin"
+msgstr "posizione del menù admin"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "prezzo / sconto"
+msgstr "prezzo/sconto"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "prodotti"
+msgstr "prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "rimborsato"
+msgstr "rimborsato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "scegli se mostrare la barra admin"
+msgstr "scegli se mostrare la barra admin"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "seleziona prima il tavolo da eliminare."
+msgstr "seleziona prima il tavolo da eliminare."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "seleziona prima la categoria da eliminare."
+msgstr "seleziona prima la categoria da eliminare."
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_allergens"
+msgstr "siqo_allergens"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_catering"
+msgstr "siqo_catering"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_ingredients"
+msgstr "siqo_ingredients"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_stickers"
+msgstr "siqo_stickers"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_table_status"
+msgstr "siqo_table_status"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_tables"
+msgstr "siqo_tables"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_temperatures"
+msgstr "siqo_temperatures"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "siqo_zones"
+msgstr "siqo_zones"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "stato"
+msgstr "stato"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "status della pagina: "
+msgstr "status della pagina: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "tavolo"
+msgstr "tavolo"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "telefono Cliente"
+msgstr "telefono Cliente"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "totale"
+msgstr "totale"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "ultima modifica: "
+msgstr "ultima modifica: "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "user agent - "
+msgstr "agente utente - "
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "utilizza la tassonomia per gli allergeni dei prodotti"
+msgstr "utilizza la tassonomia per gli allergeni dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "utilizza la tassonomia per gli ingredienti dei prodotti"
+msgstr "utilizza la tassonomia per gli ingredienti dei prodotti"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "utilizza la tassonomia per gli sticker"
+msgstr "utilizza la tassonomia per gli adesivi"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "utilizza la tassonomia per le macro categorie"
+msgstr "utilizza la tassonomia per le macro categorie"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "utilizza la tassonomia per le temperature"
+msgstr "utilizza la tassonomia per le temperature"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza i prodotti dell'ordine nella tabella"
+msgstr "visualizza i prodotti dell'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
+msgid "visualizza i risultati in griglia"
+msgstr "visualizza i risultati in griglia"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza il nome di chi ha effettuato l'ordine nella tabella"
+msgstr "visualizza il nome di chi ha effettuato l'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza il totale dell'ordine nella tabella"
+msgstr "visualizza il totale dell'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza l'id dell'ordine nella tabella"
+msgstr "visualizza l'id dell'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza la sezione per scegliere la modalit di consegna ( ritiro o consegna ), la data e l'ora, nella pagina (checkout)"
+msgstr "visualizza la sezione per scegliere la modalit di consegna ( ritiro o consegna ), la data e l'ora, nella pagina (checkout)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza la sezione per scegliere la modalit di consegna (ritiro o consegna), la data e l'ora, nella pagina (checkout)"
+msgstr "visualizza la sezione per scegliere la modalit di consegna (ritiro o consegna), la data e l'ora, nella pagina (checkout)"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza la tassonomia allergeni nella pagina del prodotto"
+msgstr "visualizza la tassonomia allergeni nella pagina del prodotto"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza la tassonomia ingredienti nella pagina del prodotto"
+msgstr "visualizza la tassonomia ingredienti nella pagina del prodotto"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza le azioni possibili per l'ordine nella tabella"
+msgstr "visualizza le azioni possibili per l'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza le info dell'ordine nella tabella"
+msgstr "visualizza le informazioni dell'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza lo stato dell'ordine nella tabella"
+msgstr "visualizza lo stato dell'ordine nella tabella"
+
+#: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
+msgid "visualizza sezioni della Tabella"
+msgstr "visualizza sezioni della Tabella"
+
