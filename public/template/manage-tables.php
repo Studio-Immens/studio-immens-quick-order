@@ -22,7 +22,11 @@ function SIQO_manage_table(){
     $nonce = wp_create_nonce( 'SIQO_insert_post_ajax_nonce' );
     echo '<input type="hidden" id="_siqononce_insert_post_ajax_nonce" name="_siqononce_insert_post_ajax_nonce" value="'.esc_attr($nonce).'" />';
     
-    SIQO_get_settings_head_manage_tables();
+    if ( function_exists( 'SIQO_get_settings_head_manage_tables' ) ) {
+        SIQO_get_settings_head_manage_tables();
+    } elseif ( function_exists( 'FO_get_settings_head_manage_tables' ) ) {
+        FO_get_settings_head_manage_tables();
+    }
 
     // $tavoli_info = FO_get_all_tables_by_status_last();
     // SIQO_debug($tavoli_info);
@@ -122,7 +126,7 @@ function SIQO_manage_table(){
                 </div>
                 <h6> <?php echo esc_attr($tavolo->post_title);?> </h6>
                 <?php if ( $zone != false ) {
-                foreach ($zone as $k => $zona) { SIQO_debug($zona) ?>
+                foreach ($zone as $k => $zona) { ?>
                     <strong> <?php echo esc_attr($zona->name);?> </strong>
                 <?php } } ?>
                 <p class="fo_status_string"> <?php echo esc_attr($status_string);?> </p>

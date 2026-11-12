@@ -383,20 +383,12 @@ function SIQO_user_meta_save($userId) {
 	if ( !isset($_POST['_siqononce_user_meta']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_user_meta'])), 'siqo_user_meta' ) ) {
 		return;
 	}
-	if ( isset($_POST['siqo_user_role_worker']) ) {
-		update_user_meta($userId, 'siqo_user_role_worker', 'on');
-	} else {
-		update_user_meta($userId, 'siqo_user_role_worker', false);
-	}
-	if ( isset($_POST['siqo_user_role_supervisor']) ) {
-		update_user_meta($userId, 'siqo_user_role_supervisor', 'on');
-	} else {
-		update_user_meta($userId, 'siqo_user_role_supervisor', false);
-	}
-	if ( isset($_POST['siqo_user_role_manager']) ) {
-		update_user_meta($userId, 'siqo_user_role_manager', 'on');
-	} else {
-		update_user_meta($userId, 'siqo_user_role_manager', false);
+	foreach ( array( 'worker', 'supervisor', 'manager' ) as $siqo_role ) {
+		// I campi del form usano il prefisso flash_order_user_role_*, il meta siqo_user_role_*.
+		$siqo_field = 'flash_order_user_role_' . $siqo_role;
+		$siqo_alias = 'siqo_user_role_' . $siqo_role;
+		$siqo_on    = isset( $_POST[ $siqo_field ] ) || isset( $_POST[ $siqo_alias ] );
+		update_user_meta( $userId, $siqo_alias, $siqo_on ? 'on' : '' );
 	}
 }
 add_action('personal_options_update', 'SIQO_user_meta_save');
@@ -508,12 +500,10 @@ add_action( 'woocommerce_account_content', 'SIQO_add_special_pages_navigations' 
 function SIQO_add_special_pages_navigations(){
 	$user = wp_get_current_user();
 
-	$worker_checked = ( isset(get_user_meta($user->ID, 'siqo_user_role_worker')[0]) ) ? get_user_meta($user->ID, 'siqo_user_role_worker')[0] : false;
-	$supervisor_checked = ( isset(get_user_meta($user->ID, 'siqo_user_role_supervisor')[0]) ) ? get_user_meta($user->ID, 'siqo_user_role_supervisor')[0] : false;
-	$manager_checked = ( isset(get_user_meta($user->ID, 'siqo_user_role_manager')[0]) ) ? get_user_meta($user->ID, 'siqo_user_role_manager')[0] : false;
-	
-	if ( isset($manager_checked)  && $manager_checked == 'on' ) { $supervisor_checked = 'on'; $worker_checked = 'on'; }
-	if ( isset($supervisor_checked) && $supervisor_checked == 'on' ) { $worker_checked = 'on'; }
+	$flags = SIQO_get_user_role_flags( $user->ID );
+	$worker_checked     = $flags['worker'] ? 'on' : '';
+	$supervisor_checked = $flags['supervisor'] ? 'on' : '';
+	$manager_checked    = $flags['manager'] ? 'on' : '';
 
 	if ( $worker_checked == 'on' ) { 
 		$fo_pages = SIQO_get_meta_by_assoc_id('page_id','OBJECT');
@@ -1637,43 +1627,85 @@ function SIQO_debug( $var ){
 		var_dump($var);
 	echo "</pre>";
 }
+/**
+ * Normalizza un valore di user meta ruolo in booleano.
+ * Accetta 'on', '1', true, 'yes' (storicamente i ruoli venivano salvati come 'on'
+ * oppure come false/'' quando la checkbox era deselezionata).
+ *
+ * @param mixed $value Valore grezzo dello user meta.
+ * @return bool
+ */
+function SIQO_role_meta_is_on( $value ) {
+	if ( is_array( $value ) ) {
+		$value = reset( $value );
+	}
+	if ( is_bool( $value ) ) {
+		return $value;
+	}
+	if ( null === $value || '' === $value || 0 === $value || '0' === $value ) {
+		return false;
+	}
+	return in_array( strtolower( (string) $value ), array( 'on', '1', 'yes', 'true' ), true );
+}
+
+/**
+ * Restituisce i ruoli Quick Order dell'utente (se non specificato, l'utente corrente).
+ * I ruoli sono gerarchici: manager implica supervisor e worker, supervisor implica worker.
+ *
+ * @param int $user_id ID utente, 0 per l'utente corrente.
+ * @return array{worker:bool,supervisor:bool,manager:bool}
+ */
+function SIQO_get_user_role_flags( $user_id = 0 ) {
+	$user_id = $user_id ? absint( $user_id ) : get_current_user_id();
+
+	$worker     = $user_id ? SIQO_role_meta_is_on( get_user_meta( $user_id, 'siqo_user_role_worker', true ) ) : false;
+	$supervisor = $user_id ? SIQO_role_meta_is_on( get_user_meta( $user_id, 'siqo_user_role_supervisor', true ) ) : false;
+	$manager    = $user_id ? SIQO_role_meta_is_on( get_user_meta( $user_id, 'siqo_user_role_manager', true ) ) : false;
+
+	if ( $manager ) {
+		$supervisor = true;
+	}
+	if ( $supervisor ) {
+		$worker = true;
+	}
+
+	return array(
+		'worker'     => $worker,
+		'supervisor' => $supervisor,
+		'manager'    => $manager,
+	);
+}
+
 function SIQO_access_autorization( $role = 'worker',  $mode = true ){
-	$user_id = wp_get_current_user()->ID;
-	// SIQO_debug($user_id);
-	$autorization = false;
+	$flags = SIQO_get_user_role_flags();
 
-	$worker_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_worker')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_worker')[0] : false;
-	$supervisor_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_supervisor')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_supervisor')[0] : false;
-	$manager_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_manager')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_manager')[0] : false;
-
-	$worker 	= ( $worker_checked !== false && $role == 'worker' ) ? true : false;
-	$supervisor = ( $supervisor_checked !== false && $role == 'supervisor' ) ? true : false;
-	$manager 	= ( $manager_checked !== false && $role == 'manager' ) ? true : false;
+	if ( ! $flags['worker'] ) {
+		return false;
+	}
 
 	if ( $mode ) {
-		if ($worker) { $autorization = true; }
-		if ($supervisor) { $autorization = true; }
-		if ($manager) { $autorization = true; }
-	}else{
-		if ($worker && $supervisor && $manager) { $autorization = true; }
+		// Gerarchia completa: manager > supervisor > worker.
+		switch ( $role ) {
+			case 'manager':
+				return $flags['manager'];
+			case 'supervisor':
+				return $flags['supervisor'];
+			case 'worker':
+			default:
+				return $flags['worker'];
+		}
 	}
-	return $autorization;
+
+	// Modalita' stretta: richiede esattamente il ruolo indicato, senza ereditarieta'.
+	return isset( $flags[ $role ] ) ? (bool) $flags[ $role ] : false;
 }
 function SIQO_access_autorization_level(){
-	$user_id = wp_get_current_user()->ID;
+	$flags = SIQO_get_user_role_flags();
+
 	$autorization = 0;
-
-	$worker_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_worker')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_worker')[0] : false;
-	$supervisor_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_supervisor')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_supervisor')[0] : false;
-	$manager_checked = ( isset(get_user_meta($user_id, 'siqo_user_role_manager')[0]) ) ? get_user_meta($user_id, 'siqo_user_role_manager')[0] : false;
-
-	$worker 	= ( $worker_checked !== false ) ? true : false;
-	$supervisor = ( $supervisor_checked !== false ) ? true : false;
-	$manager 	= ( $manager_checked !== false) ? true : false;
-
-	if ($worker) { $autorization += 1; }
-	if ($supervisor) { $autorization += 1; }
-	if ($manager) { $autorization += 1; }
+	if ( $flags['worker'] ) { $autorization += 1; }
+	if ( $flags['supervisor'] ) { $autorization += 1; }
+	if ( $flags['manager'] ) { $autorization += 1; }
 
 	return $autorization;
 }
@@ -1724,6 +1756,14 @@ function SIQO_soft_access_denied(){
 
 
 
+function SIQO_get_qr_dir() {
+	$qr_dir = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
+	if ( ! is_dir( $qr_dir ) ) {
+		wp_mkdir_p( $qr_dir );
+	}
+	return $qr_dir;
+}
+
 function SIQO_create_post_QR_code() {
 	// The file responsible for defining qr code generator library
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/qrlib.php';
@@ -1737,7 +1777,7 @@ function SIQO_create_post_QR_code() {
 
 	$url = esc_url_raw( trailingslashit( get_site_url() ) . '?p=' . $post_id );
 
-	$qr_dir   = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
+	$qr_dir = SIQO_get_qr_dir();
 	// $qr_dir   = content_url() . 'uploads/';
 	$filename = $qr_dir . 'post_' . $post_id .'('.$size.').png';
 
@@ -1775,7 +1815,7 @@ function SIQO_create_post_QR_code_shortcode( $atts ) {
 
 	$url = esc_url_raw( trailingslashit( get_site_url() ) . '?p=' . $post_id );
 
-	$qr_dir   = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
+	$qr_dir = SIQO_get_qr_dir();
 	$filename = $qr_dir . 'post_' . $post_id .'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
@@ -1804,14 +1844,14 @@ function SIQO_create_any_QR_code( $atts ) {
 	$content = sanitize_text_field( $atts['content'] );
 	$name 	 = md5(sanitize_text_field( $atts['content'] ));
 
-	$qr_dir   = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
-	$filename = $qr_dir.'any-'.$content.'('.$size.').png';
+	$qr_dir = SIQO_get_qr_dir();
+	$filename = $qr_dir.'any-'.$name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
 		QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 // Return the image tag.
-	$qr_url = esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/any-'.$content.'('.$size.').png' );
+	$qr_url = esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/any-'.$name.'('.$size.').png' );
 	return '<img src="'.$qr_url.'" height="'.$size.'" width="'.$size.'">';
 }
 add_shortcode( 'siqo_qr_code_content', 'SIQO_create_any_QR_code' );
@@ -1825,13 +1865,14 @@ function SIQO_create_any_QR_code_ajax() {
 	$size = (isset($_POST['size']) && sanitize_text_field(wp_unslash($_POST['size'])) != '')? sanitize_text_field(wp_unslash($_POST['size'])): '150';
 	$content = (isset($_POST['content']) && sanitize_text_field(wp_unslash($_POST['content'])) != '')? sanitize_text_field(wp_unslash($_POST['content'])): get_home_url();
 
-	$qr_dir   = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
-	$filename = $qr_dir.'any-'.$content.'('.$size.').png';
+	$qr_dir = SIQO_get_qr_dir();
+	$qr_name = md5( $content );
+	$filename = $qr_dir.'any-'.$qr_name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
 		QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
-	$qr_url = plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/any-'.$content.'('.$size.').png';
+	$qr_url = plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/any-'.$qr_name.'('.$size.').png';
 
 	wp_send_json(array(
 		'size' 		=> esc_attr($size),
@@ -5168,6 +5209,12 @@ function SIQO_price( $number ){
 		}
 	}
 	return $return;
+}
+
+if ( ! function_exists( 'FO_price' ) ) {
+	function FO_price( $number ) {
+		return SIQO_price( $number );
+	}
 }
 
 
