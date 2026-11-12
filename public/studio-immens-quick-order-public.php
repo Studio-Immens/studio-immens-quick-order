@@ -3095,7 +3095,7 @@ function siqo_flash_orders_ordination() {
 	//global $woocommerce, $post;
 	// $flash_order_front_name = ( SIQO_get_meta('siqo_front_name' ) != '' ) ? SIQO_get_meta('siqo_front_name') : esc_html__('TAVOLO','studio-immens-quick-order');
 	// $_POST = SIQO_recursive_sanitize_text_field($_POST);
-	if ( !isset($_POST['_siqononce_front_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_front_order'])), 'SIQO_front_order' ) ) {
+	if ( !isset($_POST['_siqononce_front_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_front_order'])), 'SIQO_front_order' ) ) {
 		return;
 	}
 	$user = wp_get_current_user();
@@ -3201,7 +3201,7 @@ foreach ($_POST['foindex'] as $K => $E) {
 
 function FO_submit_order_ajax() {
 
-	if (!isset($_POST['_siqononce_front_order_ajax']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_siqononce_front_order_ajax'])), 'SIQO_front_order_ajax' ) ) {
+	if (!isset($_POST['_siqononce_front_order_ajax']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_siqononce_front_order_ajax'])), 'SIQO_front_order_ajax' ) ) {
 		return;
 	} else{
 		$_POST['__verified_nonces'] = true;
@@ -3325,7 +3325,7 @@ add_action('wp_ajax_nopriv_siqo_submit_order_ajax', 'FO_submit_order_ajax');
 
 
 function SIQO_flash_list_order_ajax(){
-	if (!isset($_POST['_siqononce_flash_list_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_list_order'])), 'SIQO_flash_list_order' ) ) {
+	if (!isset($_POST['_siqononce_flash_list_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_list_order'])), 'SIQO_flash_list_order' ) ) {
 		return $variation_id;
 	}
 	$user = wp_get_current_user();
@@ -3668,7 +3668,7 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
 	if ( isset($poste['__verified_nonces']) && $poste['__verified_nonces'] === true ) {
 
 	} else{
-		if ( !isset($_POST['_siqononce_flash_tab_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
+		if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
 			return;
 		}
 	}
@@ -3959,7 +3959,7 @@ add_action('wp_ajax_SIQO_flash_tab_order_ajax', 'SIQO_flash_tab_order_ajax');
 add_action('wp_ajax_nopriv_SIQO_flash_tab_order_ajax', 'SIQO_flash_tab_order_ajax');
 
 function FO_flash_tab_clear_table( $poste = '' ){
-	if ( !isset($_POST['_siqononce_flash_tab_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
+	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
 		return;
 	}
 	if (SIQOcheck($poste) && is_array($poste) ) {
@@ -3986,7 +3986,7 @@ add_action('wp_ajax_FO_flash_tab_clear_table', 'FO_flash_tab_clear_table');
 add_action('wp_ajax_nopriv_FO_flash_tab_clear_table', 'FO_flash_tab_clear_table');
 
 function FO_flash_tab_clear_all_tables(){
-	if ( !isset($_POST['_siqononce_flash_tab_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
+	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
 		return;
 	}
 
@@ -4016,7 +4016,7 @@ add_action('wp_ajax_nopriv_FO_flash_tab_clear_all_tables', 'FO_flash_tab_clear_a
 
 
 function FO_flash_tab_pay_ajax(){
-	if ( !isset($_POST['_siqononce_flash_tab_order']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
+	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
 		return;
 	}
 	$table_id = (isset($_POST['table_id'])) ? sanitize_text_field(wp_unslash($_POST['table_id'])):'';
@@ -4813,7 +4813,7 @@ function FO_pay_this_order_tab(){
 
 
 function FO_insert_product_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if (!isset($_POST['title']) || $_POST['title'] == '' ) {
@@ -4950,7 +4950,7 @@ function FO_load_images_from_front( $in_file ){
 
 
 function FO_insert_macro_cat_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	// if (isset($_POST['term_id']) && $_POST['term_id'] != '' ) {
@@ -4978,7 +4978,7 @@ add_action('wp_ajax_FO_insert_macro_cat_ajax', 'FO_insert_macro_cat_ajax');
 add_action('wp_ajax_nopriv_FO_insert_macro_cat_ajax', 'FO_insert_macro_cat_ajax');
 
 function FO_delete_macro_cat_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 
@@ -5000,7 +5000,7 @@ add_action('wp_ajax_nopriv_FO_delete_macro_cat_ajax', 'FO_delete_macro_cat_ajax'
 
 
 function FO_insert_post_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if (isset($_POST['post_id']) && $_POST['post_id'] != '' ) {
@@ -5033,7 +5033,7 @@ add_action('wp_ajax_nopriv_FO_insert_post_ajax', 'FO_insert_post_ajax');
 
 
 function FO_update_post_macro_cat_ajax( $_poste = '' ){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if ($_poste != '') {
@@ -5058,7 +5058,7 @@ add_action('wp_ajax_nopriv_FO_update_post_macro_cat_ajax', 'FO_update_post_macro
 
 
 function FO_remove_post_macro_cat_ajax( $_poste = '' ){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if ($_poste != '') {
@@ -5085,7 +5085,7 @@ add_action('wp_ajax_nopriv_FO_remove_post_macro_cat_ajax', 'FO_remove_post_macro
 
 
 function FO_update_post_ajax( $_poste = '' ){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if ($_poste != '') {
@@ -5115,7 +5115,7 @@ add_action('wp_ajax_FO_update_post_ajax', 'FO_update_post_ajax');
 add_action('wp_ajax_nopriv_FO_update_post_ajax', 'FO_update_post_ajax');
 
 function FO_delete_post_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 
@@ -5133,7 +5133,7 @@ add_action('wp_ajax_FO_delete_post_ajax', 'FO_delete_post_ajax');
 add_action('wp_ajax_nopriv_FO_delete_post_ajax', 'FO_delete_post_ajax');
 
 function FO_trash_post_ajax(){
-	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 
@@ -5433,7 +5433,7 @@ function FO_save_post_extra_field( $post_id, $post, $update ) {
 		if ( 'product' !== $post->post_type ) {
 			return;
 		}
-	if ( !isset($_POST['_siqononce_post_extra_field']) && !wp_verify_nonce(sanitize_text_field(wp_unslash( $_POST['_siqononce_post_extra_field'])), 'FO_post_extra_field_nonce' ) ) {
+	if ( !isset($_POST['_siqononce_post_extra_field']) || !wp_verify_nonce(sanitize_text_field(wp_unslash( $_POST['_siqononce_post_extra_field'])), 'FO_post_extra_field_nonce' ) ) {
 		return;
 	}//_fononce_post_extra_field: jQuery('input[name="_fononce_post_extra_field"]').val(),
 
@@ -6555,7 +6555,7 @@ function FO_view_Pickup_Delivery( $order_id ){
 
 function FO_validate_pickup_delivery_section(){
 // Show an error message if the field is not set.
-    if ( !isset($_POST['_siqononce_pickup_delivery_section']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
+    if ( !isset($_POST['_siqononce_pickup_delivery_section']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
 		return;
 	}	//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 	if (!empty($_POST['fo_delivery_date'])) wc_add_notice(esc_html__('Seleziona una data!', 'studio-immens-quick-order') , 'error');
@@ -6563,7 +6563,7 @@ function FO_validate_pickup_delivery_section(){
 }
 
 function FO_save_pickup_delivery_section($order_id){
-    if ( !isset($_POST['_siqononce_pickup_delivery_section']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
+    if ( !isset($_POST['_siqononce_pickup_delivery_section']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
 		return;
 	}	//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 	if (!empty($_POST['delivery_type'])) {
@@ -6643,7 +6643,7 @@ function FO_check_meta_setting( $setting ){
 //ajax & auto refresh
 
 function FO_check_for_orders() {
-	if ( !isset($_POST['_siqononce_check_for_orders']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_check_for_orders'])), 'FO_check_for_orders' ) ) {
+	if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'siqo_ajax_view_orders_vars' ) ) {
 		return;
 	}
     $update_needed = false;
@@ -6699,10 +6699,13 @@ function FO_check_for_orders() {
 }
 add_action('wp_ajax_FO_check_for_orders', 'FO_check_for_orders');
 add_action('wp_ajax_nopriv_FO_check_for_orders', 'FO_check_for_orders');
+add_action('wp_ajax_SIQO_check_for_orders', 'FO_check_for_orders');
+add_action('wp_ajax_nopriv_SIQO_check_for_orders', 'FO_check_for_orders');
 
 
 function FO_ajax_change_order_status( $poste = '' ){
-	if ( !isset($_POST['nonce']) && !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['nonce'])), 'FO_insert_post_ajax_nonce' ) ) {
+	$siqo_change_status_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash( $_POST['nonce'])) : '';
+	if ( ! wp_verify_nonce( $siqo_change_status_nonce, 'siqo_ajax_view_orders_vars' ) && ! wp_verify_nonce( $siqo_change_status_nonce, 'SIQO_insert_post_ajax_nonce' ) ) {
 		return;
 	}
 	if (SIQOcheck($poste) && is_array($poste) ) {
@@ -6727,6 +6730,8 @@ function FO_ajax_change_order_status( $poste = '' ){
 }
 add_action('wp_ajax_FO_ajax_change_order_status', 'FO_ajax_change_order_status');
 add_action('wp_ajax_nopriv_FO_ajax_change_order_status', 'FO_ajax_change_order_status');
+add_action('wp_ajax_SIQO_ajax_change_order_status', 'FO_ajax_change_order_status');
+add_action('wp_ajax_nopriv_SIQO_ajax_change_order_status', 'FO_ajax_change_order_status');
 
 
 
