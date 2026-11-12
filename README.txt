@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,10 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+
+= 1.0.9 =
+* Fixed 50 inline handlers that still called the pre-rename function names, so the admin settings navigation, the grid-view slider, the header/footer toggle, the order story buttons, the tab keyboard and quantity parsing, favourites, variants, customer search and the "AVVIA ORDINE" button work again
+* Restored the handlers that had been renamed on the JavaScript side only (SIQO_ / siqo_ namespace) while the templates kept calling the old FO_ / fo_ names
 
 = 1.0.8 =
 * Fixed the operator roles: manager now implies supervisor and worker, multi-role accounts are handled, and the form on the user profile finally saves the role checkboxes it shows
