@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,10 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.0.6 =
+* Fixed the custom style colours being reset: the helper meant to remove empty rows deleted every saved CSS value, so opening the Style page wiped the customisations
+* Fixed the style activator deleting the default rows it had just written
+
 = 1.0.5 =
 * Restored the admin styling: the markup was renamed to the SIQO_ classes while the stylesheet still targeted the old FO_ ones, so the settings, style and main pages rendered unstyled.
 * Registered the SIQO_ variant of the QR cloud, link and section styles.
@@ -124,6 +128,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Translation-ready with Italian and English
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+Keeps the custom style colours saved instead of resetting them. Recommended update.
 
 = 1.0.5 =
 Restores the missing admin styling on the settings, style and main pages. Recommended update.
