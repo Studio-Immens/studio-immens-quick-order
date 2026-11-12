@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,12 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.0.4 =
+* Fixed nonce hidden fields rendered with the legacy _fononce_ prefix, which broke order submission, table actions and post management
+* Registered the SIQO_ AJAX action names actually used by the JavaScript (ordering, tables, posts and admin actions)
+* Aligned admin AJAX action names and nonce selectors
+* Removed an unnecessary remote request to ipinfo.io on every page load
+
 = 1.0.3 =
 * Fixed fatal error on the customer ordering page (undefined function SIQO_get_connection_info)
 * Hardened AJAX nonce verification (reject request when nonce is missing or invalid)
@@ -114,6 +120,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Translation-ready with Italian and English
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Fixes AJAX nonce/action mismatches that blocked ordering and table actions, and removes a slow remote request on page load. Recommended update.
 
 = 1.0.3 =
 Fixes a fatal error on the customer ordering page and hardens AJAX security. Recommended update.
