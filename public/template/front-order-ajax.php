@@ -208,7 +208,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 				<input type="hidden" id="FO_order_index" name="FO_order_index" value="10000">
 				<?php if ($net_info['is_local']) {
 					$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
-    				echo '<input type="hidden" id="_fononce_front_order_ajax" name="_fononce_front_order_ajax" value="'.esc_attr($nonce).'" />';
+    				echo '<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="'.esc_attr($nonce).'" />';
 				} ?>
 
 				<p><?php esc_html_e( 'Varianti Prodotti', 'studio-immens-quick-order' );?>

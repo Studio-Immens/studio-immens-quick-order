@@ -58,7 +58,7 @@ function FO_create_refresh_pages(){
 		type: 'POST',
 		url: ajaxurl,
 		data: {
-			action: 'FO_create_all_necessary_pages',
+			action: 'SIQO_create_all_necessary_pages',
 			from: 'ajax',
 			// nonce: flash_orders_ajax_vars.nonce,
 		},
@@ -71,14 +71,14 @@ function FO_create_refresh_pages(){
 }
 
 function FO_delete_page( page ){
-	console.log(jQuery('#_fononce_manage_pages').val());
+	console.log(jQuery('#_siqononce_manage_pages').val());
 	jQuery.ajax({
 		type: 'POST',
 		url: ajaxurl,
 		data: {
-			action: 'FO_delete_page',
+			action: 'SIQO_delete_page',
 			page: page,
-			nonce: jQuery('#_fononce_manage_pages').val(),
+			nonce: jQuery('#_siqononce_manage_pages').val(),
 		},
 		success: function(response) {
 			console.log(' ...ajax-response... ');
@@ -98,10 +98,10 @@ function fo_create_QR( target ){
 		type: 'POST',
 		url: ajaxurl,
 		data: {
-			action: 'FO_create_any_QR_code_ajax',
+			action: 'SIQO_create_any_QR_code_ajax',
 			size: size,
 			content: content,
-			nonce: jQuery('#_fononce_main_page').val(),
+			nonce: jQuery('#_siqononce_main_page').val(),
 		},
 		success: function(response) {
 			console.log(' ...ajax-response... ');
@@ -117,9 +117,9 @@ function FO_delete_QR_images( target ){
 		type: 'POST',
 		url: ajaxurl,
 		data: {
-			action: 'FO_delete_QR_images',
+			action: 'SIQO_delete_QR_images',
 			del_path: del_path,
-			nonce: jQuery('#_fononce_main_page').val(),
+			nonce: jQuery('#_siqononce_main_page').val(),
 		},
 		success: function(response) {
 			console.log(' ...ajax-response... ');

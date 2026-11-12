@@ -20,7 +20,7 @@ function SIQO_manage_table(){
     }
     
     $nonce = wp_create_nonce( 'SIQO_insert_post_ajax_nonce' );
-    echo '<input type="hidden" id="_fononce_insert_post_ajax_nonce" name="_fononce_insert_post_ajax_nonce" value="'.esc_attr($nonce).'" />';
+    echo '<input type="hidden" id="_siqononce_insert_post_ajax_nonce" name="_siqononce_insert_post_ajax_nonce" value="'.esc_attr($nonce).'" />';
     
     SIQO_get_settings_head_manage_tables();
 

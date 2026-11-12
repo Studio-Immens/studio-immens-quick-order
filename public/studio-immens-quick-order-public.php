@@ -3499,7 +3499,7 @@ function SIQO_flash_list_order(){
 	// );
 	// $product_variation = $parent_product->get_matching_variation($args);
 	$nonce = wp_create_nonce( 'SIQO_flash_list_order' );
-    echo '<input type="hidden" id="_fononce_flash_list_order" name="_fononce_flash_list_order" value="'.esc_attr($nonce).'" />';
+    echo '<input type="hidden" id="_siqononce_flash_list_order" name="_siqononce_flash_list_order" value="'.esc_attr($nonce).'" />';
 	?>
 	<div class="SIQO_flash_list_order_container">
 			<div class="FOloadingCardPublic" style="display:none;">
@@ -4106,7 +4106,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 	
 	
 	$nonce = wp_create_nonce( 'FO_flash_tab_order' );
-    echo '<input type="hidden" id="_fononce_flash_tab_order" name="_fononce_flash_tab_order" value="'.esc_attr($nonce).'" />';
+    echo '<input type="hidden" id="_siqononce_flash_tab_order" name="_siqononce_flash_tab_order" value="'.esc_attr($nonce).'" />';
 	?>
 	<div class="FO_flash_tab_order_container fo_tab_show" style="display:none;">
 		<!-- <div class="Advanced_Card_Close"onclick="FO_tab_Card_hide()"><?php esc_html_e('CHIUDI','studio-immens-quick-order');?></div> -->
@@ -6774,6 +6774,29 @@ function FO_load_media_files() {
     wp_enqueue_media();
 }
 add_action( 'admin_enqueue_scripts', 'FO_load_media_files' );
+
+function SIQO_register_ajax_action_aliases() {
+	$aliases = array(
+		'SIQO_submit_order_ajax'          => array( 'FO_submit_order_ajax', true ),
+		'SIQO_flash_list_order_ajax'      => array( 'SIQO_flash_list_order_ajax', true ),
+		'SIQO_flash_tab_clear_table'      => array( 'FO_flash_tab_clear_table', true ),
+		'SIQO_flash_tab_clear_all_tables' => array( 'FO_flash_tab_clear_all_tables', true ),
+		'SIQO_flash_tab_pay_ajax'         => array( 'FO_flash_tab_pay_ajax', true ),
+		'SIQO_insert_post_ajax'           => array( 'FO_insert_post_ajax', true ),
+		'SIQO_trash_post_ajax'            => array( 'FO_trash_post_ajax', true ),
+		'SIQO_create_any_QR_code_ajax'    => array( 'SIQO_create_any_QR_code_ajax', false ),
+		'SIQO_delete_QR_images'           => array( 'SIQO_delete_QR_images', false ),
+	);
+	foreach ( $aliases as $action => $alias ) {
+		if ( ! has_action( 'wp_ajax_' . $action ) ) {
+			add_action( 'wp_ajax_' . $action, $alias[0] );
+		}
+		if ( $alias[1] && ! has_action( 'wp_ajax_nopriv_' . $action ) ) {
+			add_action( 'wp_ajax_nopriv_' . $action, $alias[0] );
+		}
+	}
+}
+SIQO_register_ajax_action_aliases();
 
 
 
