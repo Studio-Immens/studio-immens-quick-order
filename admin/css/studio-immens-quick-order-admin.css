@@ -269,6 +269,270 @@ br {
 
 }
 
+/**
+ * SIQO design system.
+ *
+ * The admin markup was renamed from the FO_ prefix to SIQO_, so these rules
+ * mirror the legacy ones and use the --siqo-* custom properties printed by
+ * siqo_header_style(), with the plugin defaults as fallback.
+ */
+.SIQOMainNav {
+	margin: 30px 0;
+	padding: 25px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	border-radius: 10px;
+	background-color: var(--siqo-bg6-color, #000000);
+}
+
+.SIQOMainNavEl {
+	display: inline-block;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-weight: 600;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-bg3-color, #303030);
+	text-decoration: none;
+	transition: border-radius var(--siqo-main-tran, 0.6s), background-color var(--siqo-main-tran, 0.6s);
+}
+
+.SIQOMainNavEl:hover,
+.SIQOMainNavEl:focus {
+	border-radius: 10px;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-bg2-color, #404040) !important;
+	box-shadow: none;
+}
+
+.SIQOForm {
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	padding-bottom: 10px;
+	border-radius: 10px;
+	background-color: var(--siqo-bg-color, #505050);
+	color: var(--siqo-text-color, #ffffff);
+}
+
+.SIQOFormSeparator {
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 10px;
+	margin: 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-bg6-color, #000000);
+}
+
+.SIQOFormSeparator .dashicons {
+	margin-left: auto;
+}
+
+.SIQOFormCategory {
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 20px;
+	background-color: rgba(0, 0, 0, 0.13);
+}
+
+.SIQOFormCategory b {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 0 auto;
+	padding: 10px 20px;
+	border-radius: 5px;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-main-color, #354357);
+}
+
+.SIQOFormZone {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 0 10px;
+}
+
+.SIQOFormZone p {
+	margin: 10px;
+}
+
+.SIQOFormZone textarea {
+	width: 100%;
+	height: auto;
+	min-height: 100px;
+	margin: 10px;
+}
+
+.SIQOFormZone input {
+	margin: 0 25px 0 5px;
+}
+
+.SIQOSetting_Board {
+	box-sizing: border-box;
+	width: 100%;
+	height: auto;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 10px;
+}
+
+.SIQOsettingEl {
+	box-sizing: border-box;
+	max-width: 500px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	margin: 10px;
+	padding: 10px;
+	border: var(--siqo-main-border, 1px solid #715b3e);
+	border-radius: 8px;
+	background-color: var(--siqo-bg2-color, #404040);
+	transition: background-color var(--siqo-main-tran, 0.6s);
+}
+
+.SIQOsettingEl textarea {
+	min-width: 500px;
+	max-width: 100%;
+	margin: 10px;
+	padding: 10px;
+}
+
+.SIQOsettingEl select,
+.SIQOsettingEl input[type="text"],
+.SIQOsettingEl input[type="number"],
+.SIQOsettingEl input[type="url"] {
+	min-width: 200px;
+	max-width: 100%;
+}
+
+.SIQOtextSettings {
+	margin: 0 auto;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-size: medium;
+	color: var(--siqo-text-color, #ffffff);
+}
+
+.SIQObutton {
+	height: auto;
+	min-height: 45px;
+	margin: 10px;
+	padding: 10px 20px;
+	border: 0;
+	border-radius: 5px;
+	font-weight: 600;
+	cursor: pointer;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-main-color, #354357);
+	transition: border-radius var(--siqo-main-tran, 0.6s), background-color var(--siqo-main-tran, 0.6s);
+}
+
+.SIQObutton:hover,
+.SIQObutton:focus {
+	border-radius: 10px;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-scnd-color, #715b3e);
+}
+
+.SIQO_abutton {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	height: auto;
+	min-height: 45px;
+	margin: 10px;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-weight: 600;
+	line-height: normal;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-bg3-color, #303030);
+	transition: border-radius var(--siqo-main-tran, 0.6s), background-color var(--siqo-main-tran, 0.6s);
+}
+
+.SIQO_abutton:hover,
+.SIQO_abutton:focus {
+	border-radius: 10px;
+	color: var(--siqo-text-color, #ffffff);
+	background-color: var(--siqo-bg4-color, #202020);
+}
+
+.SIQOsettingStyle {
+	margin: 0;
+	padding: 50px 0 0;
+	border-radius: 10px;
+}
+
+.SIQOsettingStyle p {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 10px !important;
+	padding: 10px;
+	border-radius: 10px;
+	color: #ffffff;
+	background-color: rgba(0, 0, 0, 0.69);
+}
+
+.SIQOQRCloud {
+	width: calc(100% - 40px);
+	max-width: 100%;
+	height: auto;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	margin: 10px;
+	padding: 10px;
+}
+
+.SIQO_search_target {
+	margin: 10px auto !important;
+}
+
+.SIQO_link {
+	margin: 0 5px;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.SIQO_link_del {
+	margin: 0 5px;
+	padding: 5px;
+	cursor: pointer;
+	color: #f50000;
+}
+
+.SIQO_section {
+	margin: 20px;
+	padding: 10px;
+	background-color: var(--siqo-main-color, #354357);
+}
+
+.SIQO_NEW_QR {
+	display: block;
+}
+
 
 
 
