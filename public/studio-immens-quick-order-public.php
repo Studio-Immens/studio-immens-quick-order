@@ -6588,7 +6588,7 @@ function FO_get_connection_info(){
 	$info['host'] = gethostname();
 
 	// $info['details'] = json_decode(file_get_contents("https://ipinfo.io"));
-	$info['details'] = wp_remote_get("https://ipinfo.io");
+	$info['details'] = array();
 
 	$ipinfo = SIQO_get_meta('ipinfo');
 
