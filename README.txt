@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,16 +95,26 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+
+= 1.0.8 =
+* Fixed the operator roles: manager now implies supervisor and worker, multi-role accounts are handled, and the form on the user profile finally saves the role checkboxes it shows
+* Fixed the table management page throwing a fatal error on screen because it called a renamed settings helper, and removed a leftover diagnostic dump
+* Added an FO_price() shim so the Pro statistics panel can render prices again
+* QR codes are generated in a folder created on demand and named after a hash of the content instead of the raw URL
+
 = 1.0.7 =
 * Fixed the QR list on the main page throwing errors: the QRgenerate directory is empty in the package (git cannot track empty folders), so the scan failed. The folder is now created on demand and shipped with the plugin.
+
 
 = 1.0.6 =
 * Fixed the custom style colours being reset: the helper meant to remove empty rows deleted every saved CSS value, so opening the Style page wiped the customisations
 * Fixed the style activator deleting the default rows it had just written
 
+
 = 1.0.5 =
 * Restored the admin styling: the markup was renamed to the SIQO_ classes while the stylesheet still targeted the old FO_ ones, so the settings, style and main pages rendered unstyled.
 * Registered the SIQO_ variant of the QR cloud, link and section styles.
+
 
 = 1.0.4 =
 * Fixed nonce hidden fields rendered with the legacy _fononce_ prefix, which broke order submission, table actions and post management
@@ -112,11 +122,13 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Aligned admin AJAX action names and nonce selectors
 * Removed an unnecessary remote request to ipinfo.io on every page load
 
+
 = 1.0.3 =
 * Fixed fatal error on the customer ordering page (undefined function SIQO_get_connection_info)
 * Hardened AJAX nonce verification (reject request when nonce is missing or invalid)
 * Aligned front-end AJAX action names with their registered handlers
 * Fixed plugin activation and login issues caused by a UTF-8 BOM in PHP files
+
 
 = 1.0.0 =
 * Initial release
@@ -132,20 +144,26 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Upgrade Notice ==
 
+
 = 1.0.7 =
 Removes PHP warnings on the Quick Order main page. Recommended update.
+
 
 = 1.0.6 =
 Keeps the custom style colours saved instead of resetting them. Recommended update.
 
+
 = 1.0.5 =
 Restores the missing admin styling on the settings, style and main pages. Recommended update.
+
 
 = 1.0.4 =
 Fixes AJAX nonce/action mismatches that blocked ordering and table actions, and removes a slow remote request on page load. Recommended update.
 
+
 = 1.0.3 =
 Fixes a fatal error on the customer ordering page and hardens AJAX security. Recommended update.
+
 
 = 1.0.0 =
 Initial release.
