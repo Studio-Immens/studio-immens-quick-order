@@ -408,7 +408,7 @@ $style = ( SIQO_get_meta('siqo_default_grid_view') == 'yes' ) ? 'display:block' 
 	</p>
 
 	<input type="checkbox" class="toggleView" onclick="jQuery(this).next().toggle();" <?php echo esc_attr($checked); ?>>
-	<input type="range" min="10" max="100" value="50" class="FOslider GridRange" oninput="FO_grid_adjust(this.value)" style="<?php echo esc_attr($style); ?>">
+	<input type="range" min="10" max="100" value="50" class="FOslider GridRange" oninput="SIQO_grid_adjust(this.value)" style="<?php echo esc_attr($style); ?>">
 <?php
 }
 
@@ -441,7 +441,7 @@ function SIQO_head_needed(){ ?>
 	<!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" /> -->
-	<input type="hidden" class="fo_toggle_header_footer" name="fo_toggle_header_footer" value="true">
+	<input type="hidden" class="SIQO_toggle_header_footer" name="fo_toggle_header_footer" value="true">
 	<input type="hidden" class="fo_home_url" name="fo_home_url" value="<?php echo esc_url( get_home_url() ); ?>">
 	<?php
 }
@@ -602,7 +602,7 @@ function SIQO_pages_header_controls(){
 
 			<button id="FO_Refresh0" onclick="javascript:history.go(0);" title="<?php echo esc_html__( 'aggiorna la pagina eludendo la cache', 'studio-immens-quick-order' ); ?>"><?php echo esc_html__( 'Aggiorna la Pagina', 'studio-immens-quick-order' ); ?></button>
 
-			<button id="FO_hide_head_foot" onclick="fo_toggle_header_footer(true);" title="<?php echo esc_html__( 'Mostra/Nascondi header e footer della pagina.', 'studio-immens-quick-order' ); ?>"><?php esc_html_e( 'Mostra/Nascondi Header e Footer', 'studio-immens-quick-order' ); ?></button>
+			<button id="FO_hide_head_foot" onclick="SIQO_toggle_header_footer(true);" title="<?php echo esc_html__( 'Mostra/Nascondi header e footer della pagina.', 'studio-immens-quick-order' ); ?>"><?php esc_html_e( 'Mostra/Nascondi Header e Footer', 'studio-immens-quick-order' ); ?></button>
 			
 		</nav>
 	</div>
@@ -2570,7 +2570,7 @@ function SIQO_product_to_table( $product, $cat_slug ){
 				if ( $Ingredienti != null ) {
 					foreach( $Ingredienti as $key => $value ){ ?>
 						<div class="FOIngredProdTab" modified="native">
-							<input type="checkbox" name="[Ingredienti][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($value->term_id);?>]" value="<?php echo esc_attr($value->name);?>" checked="checked" onclick="SIQOcheckIng(this)" nat-ing="<?php echo count($Ingredienti);?>" modified="native"><?php echo esc_attr($value->name); ?>
+							<input type="checkbox" name="[Ingredienti][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($value->term_id);?>]" value="<?php echo esc_attr($value->name);?>" checked="checked" onclick="FOcheckIng(this)" nat-ing="<?php echo count($Ingredienti);?>" modified="native"><?php echo esc_attr($value->name); ?>
 						</div>
 					<?php } 
 				} 
@@ -2598,7 +2598,7 @@ function SIQO_product_to_table( $product, $cat_slug ){
 				<input class="prod_input" type="number"name="[<?php echo esc_attr($id);?>]"value="1"min="1"style="width:30px;">
 				<div class="spinner-button" onclick="jQuery(this).prev().val(parseInt(jQuery(this).prev().val()) + 1)">+</div>
 			</div>
-			<button class="FOAddBut" onclick="FO_Add_Item_to_Order(this);return false;"> <?php echo esc_html__( 'AGGIUNGI', 'studio-immens-quick-order' ); ?> </button>
+			<button class="FOAddBut" onclick="SIQO_Add_Item_to_Order(this);return false;"> <?php echo esc_html__( 'AGGIUNGI', 'studio-immens-quick-order' ); ?> </button>
 		</td>
 		<?php } ?>
 
@@ -2617,7 +2617,7 @@ function SIQO_products_for_div_loop( $object ){
 		<div class="title" style="font-weight:800;font-size:30px;z-index:10;">
 			<?php echo esc_attr($key); ?>
 		</div>
-		<input type="search" siqotargetcat="<?php echo esc_attr($key);?>" onclick="FO_refine_search(this)" onkeyup="FO_refine_search(this)" class="focatsearch" placeholder="<?php esc_html_e('Cerca...','studio-immens-quick-order');?>" style="z-index:10;">
+		<input type="search" siqotargetcat="<?php echo esc_attr($key);?>" onclick="SIQO_refine_search(this)" onkeyup="SIQO_refine_search(this)" class="focatsearch" placeholder="<?php esc_html_e('Cerca...','studio-immens-quick-order');?>" style="z-index:10;">
 		<span class="focatnumber" style="z-index:10;"><?php echo count($value);?></span>
 		<img src="<?php echo esc_attr($image[0]) ?>" style="<?php echo esc_attr($style);?>"><?php  ?>
 	</div>
@@ -2708,15 +2708,15 @@ $fo_gallery = array();
 
 		<div class="siqoProdCardHead">
 			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_prod_card(this)', 'class'=>'SIQO_prod_img_menu' )); ?>
-			<div class="foname target_search" onclick="SIQO_Advanced_prod_card(this)"><?php echo esc_attr($product->get_name());?></div>
+			<div class="foname target_search" onclick="SIQO_Advanced_Prod_Card(this)"><?php echo esc_attr($product->get_name());?></div>
 			<?php 
 				// SIQO_get_product_temperature_options($product);
 			?>
-			<div class="foheart" onclick="FO_add_prod_to_favorites(jQuery(this).closest('.siqoProdCard'));">
+			<div class="foheart" onclick="SIQO_add_prod_to_favorites(jQuery(this).closest('.siqoProdCard'));">
 				<span class="dashicons dashicons-heart"></span>
 			</div>
 
-<!-- <div class="fovariantag_container" onclick="SIQO_Advanced_prod_card(this)">
+<!-- <div class="fovariantag_container" onclick="SIQO_Advanced_Prod_Card(this)">
 </div> -->
 
 <?php if ( !empty( $product->get_children() ) ) { ?>
@@ -2737,7 +2737,7 @@ $fo_gallery = array();
 			<div class="fovariant" fovariant="<?php echo esc_attr($k);?>">
 				<strong><?php echo esc_attr($k);?></strong>
 
-				<select class="fo_button_thin" foadvariant="<?php echo esc_attr($k);?>" fo_prod_id="<?php echo esc_attr($product->get_id());?>" SIQO_price="<?php echo esc_attr($product->get_price());?>" fo_regular_price="<?php echo esc_attr($product->get_price());?>" onchange="FO_variant_set(this);" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" value="">
+				<select class="fo_button_thin" foadvariant="<?php echo esc_attr($k);?>" fo_prod_id="<?php echo esc_attr($product->get_id());?>" SIQO_price="<?php echo esc_attr($product->get_price());?>" fo_regular_price="<?php echo esc_attr($product->get_price());?>" onchange="SIQO_variant_set(this);" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" value="">
 
 						<option value=""><?php esc_html_e(' - Seleziona - ','studio-immens-quick-order');?></option>
 					<?php foreach ($attr as $key => $opt) { 
@@ -2799,12 +2799,12 @@ $fo_gallery = array();
 			</div>
 
 			<?php if (SIQOcheck($variations)) {?>
-				<div class="foadd" onclick="SIQO_Advanced_prod_card(this)">
+				<div class="foadd" onclick="SIQO_Advanced_Prod_Card(this)">
 					<span class="dashicons dashicons-plus"></span>
 					<input type="hidden" name="[<?php echo esc_attr($id);?>]" value="1">
 				</div>
 			<?php } else{ ?>
-				<div class="foadd" onclick="FO_ajax_selectVarBefore_Add_Item_to_Order(this);">
+				<div class="foadd" onclick="SIQO_ajax_selectVarBefore_Add_Item_to_Order(this);">
 					<span class="dashicons dashicons-plus"></span>
 					<input type="hidden" name="[<?php echo esc_attr($id);?>]" value="1">
 				</div>
@@ -2833,7 +2833,7 @@ function SIQO_Advanced_prod_card(){
 					<img class="fotax_image" width="30" height="30" src="<?php echo esc_attr($tax_img[0]);?>">
 				<?php } ?>
 					<p class="fo_ing_text"><?php echo esc_attr($v->name); ?></p>
-					<input type="checkbox" name="[Ingredienti][<?php echo esc_attr($product->get_id());?>][<?php echo  esc_attr($v->term_id);?>]" value="<?php echo esc_attr($v->name);?>" onclick="FOaddIng(this);SIQOcheckCardModified(this)" modified="modified">
+					<input type="checkbox" name="[Ingredienti][<?php echo esc_attr($product->get_id());?>][<?php echo  esc_attr($v->term_id);?>]" value="<?php echo esc_attr($v->name);?>" onclick="FOaddIng(this);FOcheckCardModified(this)" modified="modified">
 				</div>
 			<?php
 		}
@@ -2843,7 +2843,7 @@ function SIQO_Advanced_prod_card(){
 	?>
 
 	<div class="Advanced_Card" style="display:none;">
-	<div class="Advanced_Card_Close" onclick="SIQO_Advanced_prod_card_hide(jQuery(this))" style="padding: 5px;">
+	<div class="Advanced_Card_Close" onclick="SIQO_Advanced_Prod_Card_hide(jQuery(this))" style="padding: 5px;">
 		<span class="dashicons dashicons-no" style="font-size:40px;display:contents;"></span>
 	</div>
 	<div class="Advanced_Card_header">
@@ -2853,7 +2853,7 @@ function SIQO_Advanced_prod_card(){
 		<p class="AC_ID" style="width:80px;"></p>
 		<p class="AC_Name" style="max-width:calc(100% - 250px);"></p>
 		
-		<div class="Advanced_Card_Close fo_close"onclick="SIQO_Advanced_prod_card_hide(jQuery(this).parent())"><?php esc_html_e('CHIUDI','studio-immens-quick-order');?></div>
+		<div class="Advanced_Card_Close fo_close"onclick="SIQO_Advanced_Prod_Card_hide(jQuery(this).parent())"><?php esc_html_e('CHIUDI','studio-immens-quick-order');?></div>
 	</div>
 
 	<div class="Advanced_Card_gallery"> 
@@ -2906,7 +2906,7 @@ function SIQO_Advanced_prod_card(){
 				
 			</div>
 
-			<div class="foadd_fix foscale" style="scale:0.8;bottom:25px;right:-10px;" onclick="FO_ajax_selectVarAfter_Add_Item_to_Order(this);SIQO_Advanced_prod_card_hide();"> +
+			<div class="foadd_fix foscale" style="scale:0.8;bottom:25px;right:-10px;" onclick="SIQO_ajax_selectVarAfter_Add_Item_to_Order(this);SIQO_Advanced_Prod_Card_hide();"> +
 			</div>
 
 		</div>
@@ -2971,7 +2971,7 @@ function SIQO_get_product_temperature_options( $product ){
 	<!-- <div class="fobox FOeditTemp FOIngredProdTab" style="display:none;"> -->
 			<p><?php esc_html_e( 'Che temperatura gradisci? ', 'studio-immens-quick-order' ); ?></p>
 			<input type="hidden" name="[Temperature][<?php echo esc_attr($product->get_id());?>]">
-			<select onchange="FO_Show_temp(this)">
+			<select onchange="SIQO_show_temp(this)">
 				<option color="" value=""><?php esc_html_e( '-scegli-', 'studio-immens-quick-order' ); ?></option>
 			<?php foreach ($Temperature as $k => $v) { ?>
 				<?php $tax_img = get_term_meta($v->term_id, 'taxonomy_image');
@@ -3550,7 +3550,7 @@ function SIQO_flash_list_order(){
 		<div class="FONum_products" style="display:none;">0</div>
 <!-- products list -->
 		<div id="FO_order_list_search" class="FO_order_list_search">
-			<input type="search" onkeyup="FO_search_for_target(this,'.FO_target_search');jQuery('.FO_order_list').show()" onclick="FO_search_for_target(this,'.FO_target_search')" class="focatsearchall FO_list_height" placeholder="<?php esc_html_e('Cerca prodotto...','studio-immens-quick-order' );?>">
+			<input type="search" onkeyup="SIQO_search_for_target(this,'.FO_target_search');jQuery('.SIQO_order_list').show()" onclick="SIQO_search_for_target(this,'.FO_target_search')" class="focatsearchall FO_list_height" placeholder="<?php esc_html_e('Cerca prodotto...','studio-immens-quick-order' );?>">
 			<div class="FO_clear_input" onclick="jQuery(this).prev().val('');jQuery(this).next().find('.FO_target_search').hide();">X</div>
 			<div class="FO_order_list" style="display:none;">
 			<?php 
@@ -3563,7 +3563,7 @@ function SIQO_flash_list_order(){
 				// $name = $slang_title;
 					$class = ($value->get_type() == 'variation')? 'FO_list_variation': '';
 				?>
-				<div class="FO_target_search FO_list_prod_summ <?php echo esc_attr($class);?>" siqoid="<?php echo esc_attr($value->get_id());?>" siqoname="<?php echo esc_attr($name);?>" fonameshort="<?php echo esc_attr($short_title);?>" fonameslug="<?php echo esc_attr($slang_title);?>" siqoprice="<?php echo esc_attr($price);?>" style="display:none;" onclick="FO_order_list(this);">
+				<div class="FO_target_search FO_list_prod_summ <?php echo esc_attr($class);?>" siqoid="<?php echo esc_attr($value->get_id());?>" siqoname="<?php echo esc_attr($name);?>" fonameshort="<?php echo esc_attr($short_title);?>" fonameslug="<?php echo esc_attr($slang_title);?>" siqoprice="<?php echo esc_attr($price);?>" style="display:none;" onclick="SIQO_order_list(this);">
 					<div class="foname">
 						<?php 
 						echo esc_attr($slang_title);
@@ -3606,18 +3606,18 @@ function SIQO_flash_list_order(){
 <!-- Prodotto Generico -->
 				<input type="text" value="<?php esc_html_e( 'Prodotto Generico', 'studio-immens-quick-order');?>" style="flex-basis:100%;" onkeyup="jQuery(this).parent().find('.final_input').attr('name','[prod_generic]['+jQuery(this).val()+']');jQuery(this).parent().find('.foname').text(jQuery(this).val())">
 
-				<div class="spinner-button-big" onclick="FO_add_value_to_input(-1.00,'.fo_target_discount_prod')">-1</div>
+				<div class="spinner-button-big" onclick="SIQO_add_value_to_input(-1.00,'.fo_target_discount_prod')">-1</div>
 				<div class="spinner-button-big" onclick="jQuery(this).next().val(parseFloat(parseFloat(jQuery(this).next().val()) - 0.10).toFixed(2))">-</div>
 					<input id="discount" class="fo_target_discount_prod" type="number" name="discount" value="0">
 				<div class="spinner-button-big" onclick="jQuery(this).prev().val(parseFloat(parseFloat(jQuery(this).prev().val()) + 0.10).toFixed(2))">+</div>
-				<div class="spinner-button-big" onclick="FO_add_value_to_input(1.00,'.fo_target_discount_prod')">+1</div>
+				<div class="spinner-button-big" onclick="SIQO_add_value_to_input(1.00,'.fo_target_discount_prod')">+1</div>
 				<div class="FO_list_prod_summ" style="display:none;" siqoprice="">
 					<div class="foname"><?php esc_html_e( 'Prodotto Generico', 'studio-immens-quick-order');?></div>
 					<input class="final_input" type="hidden" name="[prod_generic][Prodotto Generico]" value="">
 					<div class="FO_list_price"></div>
-					<div class="FO_clear_target" onclick="FO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
+					<div class="FO_clear_target" onclick="SIQO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
 				</div>
-				<div class="spinner-button-big" style="font-size:15px!important;" onclick="FO_order_discount_list(this,'.fo_target_discount_prod');">AGGIUNGI</div>
+				<div class="spinner-button-big" style="font-size:15px!important;" onclick="SIQO_order_discount_list(this,'.fo_target_discount_prod');">AGGIUNGI</div>
 			</div>
 
 		</div>
@@ -3662,18 +3662,18 @@ function SIQO_flash_list_order(){
 				<span style="flex-basis:100%;">
 					<?php echo ' - '.esc_html__( 'prezzo / sconto','studio-immens-quick-order').' - ';?>
 				</span>
-				<div class="spinner-button-big" onclick="FO_add_value_to_input(-1.00,'.fo_target_discount')">-1</div>
+				<div class="spinner-button-big" onclick="SIQO_add_value_to_input(-1.00,'.fo_target_discount')">-1</div>
 				<div class="spinner-button-big" onclick="jQuery(this).next().val(parseFloat(parseFloat(jQuery(this).next().val()) - 0.10).toFixed(2))">-</div>
 					<input id="discount" class="fo_target_discount" type="number" name="discount"  value="0">
 				<div class="spinner-button-big" onclick="jQuery(this).prev().val(parseFloat(parseFloat(jQuery(this).prev().val()) + 0.10).toFixed(2))">+</div>
-				<div class="spinner-button-big" onclick="FO_add_value_to_input(1.00,'.fo_target_discount')">+1</div>
+				<div class="spinner-button-big" onclick="SIQO_add_value_to_input(1.00,'.fo_target_discount')">+1</div>
 				<div class="FO_list_prod_summ" style="display:none;" siqoprice="">
 					<div class="foname"><?php echo '- prezzo / sconto -';?></div>
 					<input class="final_input" type="hidden" name="[sconto][]" value="">
 					<div class="FO_list_price"></div>
-					<div class="FO_clear_target" onclick="FO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
+					<div class="FO_clear_target" onclick="SIQO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
 				</div>
-				<div class="spinner-button-big" style="font-size:15px!important;" onclick="FO_order_discount_list(this,'.fo_target_discount');">AGGIUNGI</div>
+				<div class="spinner-button-big" style="font-size:15px!important;" onclick="SIQO_order_discount_list(this,'.fo_target_discount');">AGGIUNGI</div>
 			</div>
 
 		</div>
@@ -3683,7 +3683,7 @@ function SIQO_flash_list_order(){
 			<div class="FO_summ_tot" style="flex-basis:100%">
 				<span>0</span> <?php echo esc_attr(get_woocommerce_currency_symbol());?>
 			</div>
-			<div class="FO_order_avvia" style="flex-basis:100%" onclick="FO_order_list_ajax(this)">
+			<div class="FO_order_avvia" style="flex-basis:100%" onclick="SIQO_order_list_ajax(this)">
 				AVVIA
 			</div>
 		</div>
@@ -4148,24 +4148,24 @@ function FO_flash_tab_order( $tavoli = array() ){
     echo '<input type="hidden" id="_siqononce_flash_tab_order" name="_siqononce_flash_tab_order" value="'.esc_attr($nonce).'" />';
 	?>
 	<div class="FO_flash_tab_order_container fo_tab_show" style="display:none;">
-		<!-- <div class="Advanced_Card_Close"onclick="FO_tab_Card_hide()"><?php esc_html_e('CHIUDI','studio-immens-quick-order');?></div> -->
+		<!-- <div class="Advanced_Card_Close"onclick="SIQO_tab_Card_hide()"><?php esc_html_e('CHIUDI','studio-immens-quick-order');?></div> -->
 		<div class="FOloadingCardPublic tab_fix_load" style="display:none;">
 			<span style="animation: fospin 1s infinite;font-size:120px;width:120px;height:120px;" class="dashicons dashicons-update"></span>
 		</div>
 
 		<div class="FO_flash_tab_header">
-			<div class="fo_button fo_cat_butt fo_shadow" onclick="FO_filter_tab_product(<?php echo "'-BLANK-'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>">
+			<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'-BLANK-'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>">
 				<span class="dashicons dashicons-editor-customchar" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>"></span>
 			</div>
 			<?php foreach ($products_macro_categories->terms as $key => $value) { 
 				$MC_img = get_term_meta($value->term_id, 'taxonomy_image');
 				$MC_img = ( SIQOcheck($MC_img) && isset($MC_img[0]) && $MC_img[0] !='')? $MC_img[0]:'';
 				?>
-				<div class="fo_button fo_cat_butt fo_shadow" onclick="FO_filter_tab_product(<?php echo "'".esc_attr($value->slug)."'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="<?php echo esc_attr($value->slug);?>" fo_cat_id="<?php echo esc_attr($value->term_id);?>" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>" style="background-image:url(<?php echo esc_attr($MC_img);?>);">
+				<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'".esc_attr($value->slug)."'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="<?php echo esc_attr($value->slug);?>" fo_cat_id="<?php echo esc_attr($value->term_id);?>" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>" style="background-image:url(<?php echo esc_attr($MC_img);?>);">
 					<?php echo esc_attr($value->name);?>
 				</div>
 			<?php } ?>
-			<div class="fo_button Advanced_Card_Close_float" onclick="FO_tab_Card_hide()" style="margin-left:auto!important;">
+			<div class="fo_button Advanced_Card_Close_float" onclick="SIQO_tab_Card_hide()" style="margin-left:auto!important;">
 				<?php esc_html_e('CHIUDI','studio-immens-quick-order');?>
 			</div>
 		</div>
@@ -4184,14 +4184,14 @@ function FO_flash_tab_order( $tavoli = array() ){
 <!-- COL 1: -->
 			<div class="FO_flash_tab_max_column fo_tab_col_1" style="">
 	<!-- RIEPILOGO: -->
-				<div class="FO_flash_tab_column fo_column_story FO_story_background" style="width:calc(100% - 20px);height:calc(50% - 55px);padding-right:80px;" onclick="fo_tab_hystory_space(this,'.fo_column_riepilogo', '.fo_column_products')">
+				<div class="FO_flash_tab_column fo_column_story FO_story_background" style="width:calc(100% - 20px);height:calc(50% - 55px);padding-right:80px;" onclick="siqo_tab_hystory_space(this,'.fo_column_riepilogo', '.fo_column_products')">
 
 					<div class="fo_ghost_draft" style="display:none;"></div>
 					<!-- <strong class="fo_title_" style=""><?php esc_html_e('STORICO:','studio-immens-quick-order'); ?></strong> -->
 					<?php $abs_total = 0; 
 					
 					foreach ( $tavoli as $tavolo_key => $tavolo ) { ?>
-						<strong class="fo_button fo_story fo_order_table_story fo_tab_prod_story fo_title_all" fotableid="<?php echo esc_attr($tavolo->ID);?>" ondblclick="console.log('yesssss')" onclick="fo_filter_tab_story(this,'all')">
+						<strong class="fo_button fo_story fo_order_table_story fo_tab_prod_story fo_title_all" fotableid="<?php echo esc_attr($tavolo->ID);?>" ondblclick="console.log('yesssss')" onclick="siqo_filter_tab_story(this,'all')">
 							<?php esc_html_e('STORY','studio-immens-quick-order');?>
 						</strong>
 						<?php
@@ -4200,7 +4200,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 							foreach ((array)$story as $story_v) {
 								$order = new WC_Order($story_v);
 								?>
-								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="fo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );console.log('yesssss')" onclick="fo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>" 
+								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="fo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );console.log('yesssss')" onclick="siqo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>" 
 									fo_order_date_created="<?php echo esc_attr($order->get_date_created());?>"
 									fo_order_date_modified="<?php echo esc_attr($order->get_date_modified());?>"
 									fo_order_date_completed="<?php echo esc_attr($order->get_date_completed());?>"
@@ -4247,7 +4247,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 											$style = 'background-color:var(--siqo-modified);';
 										}
 										?>
-										<div class="fo_tab_prod fo_story relative <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" foprodid="<?php echo esc_attr($prod_id);?>" foprodtot="<?php echo esc_attr($total);?>" onclick="FO_filter_tab_variant(this,<?php echo "'".esc_attr($prod_id)."'"; ?>)" fo_index="<?php echo esc_attr($order_index);?>" fo_index_story="<?php echo esc_attr($story_v);?>" fo_modificable="false" fo_type="story" fotableid="<?php echo esc_attr($tavolo->ID);?>" style="<?php echo esc_attr($style);?>">
+										<div class="fo_tab_prod fo_story relative <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" foprodid="<?php echo esc_attr($prod_id);?>" foprodtot="<?php echo esc_attr($total);?>" onclick="SIQO_filter_tab_variant(this,<?php echo "'".esc_attr($prod_id)."'"; ?>)" fo_index="<?php echo esc_attr($order_index);?>" fo_index_story="<?php echo esc_attr($story_v);?>" fo_modificable="false" fo_type="story" fotableid="<?php echo esc_attr($tavolo->ID);?>" style="<?php echo esc_attr($style);?>">
 											<div class="FO_prod_name_manage fo_text_fix">
 												<?php echo esc_attr($slang_title);?>
 											</div>
@@ -4281,7 +4281,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 									$fee_total = $item_fee->get_total();
 									$abs_total = floatval($abs_total) + floatval($fee_total);
 								?>
-									<div class="fo_tab_prod fo_story relative" foprodid="<?php echo esc_attr($fee_name);?>" foprodtot="<?php echo esc_attr($fee_total);?>" onclick="FO_filter_tab_variant(this,<?php echo "'".esc_attr($fee_name)."'"; ?>)" fo_index="<?php echo esc_attr($order_index);?>" fo_index_story="<?php echo esc_attr($story_v);?>" fo_modificable="false" fo_type="story" fotableid="<?php echo esc_attr($tavolo->ID);?>">
+									<div class="fo_tab_prod fo_story relative" foprodid="<?php echo esc_attr($fee_name);?>" foprodtot="<?php echo esc_attr($fee_total);?>" onclick="SIQO_filter_tab_variant(this,<?php echo "'".esc_attr($fee_name)."'"; ?>)" fo_index="<?php echo esc_attr($order_index);?>" fo_index_story="<?php echo esc_attr($story_v);?>" fo_modificable="false" fo_type="story" fotableid="<?php echo esc_attr($tavolo->ID);?>">
 										<div class="FO_prod_name_manage fo_text_fix">
 											<?php echo esc_attr($fee_name);?>
 										</div>
@@ -4307,7 +4307,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 						
 					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 					?>
-						<div class="fo_button_thin fo_tab_order_info" onclick="fop_show_order_info_tab()" style="color:lightblue;">
+						<div class="fo_button_thin fo_tab_order_info" onclick="SIQOP_show_order_info_tab()" style="color:lightblue;">
 							<span class="dashicons dashicons-welcome-widgets-menus"></span>
 							<?php esc_html_e('INFO','studio-immens-quick-order');?>
 						</div>
@@ -4320,9 +4320,9 @@ function FO_flash_tab_order( $tavoli = array() ){
 					</div>
 				</div>
 <!-- <strong style=""><?php esc_html_e('RIEPILOGO:','studio-immens-quick-order'); ?></strong> -->
-				<div class="FO_flash_tab_column fo_column_riepilogo FO_new_background" style="width:calc(100% - 20px);padding-right:80px;" onclick="fo_tab_hystory_space(this,'.fo_column_story','.fo_column_products')">
+				<div class="FO_flash_tab_column fo_column_riepilogo FO_new_background" style="width:calc(100% - 20px);padding-right:80px;" onclick="siqo_tab_hystory_space(this,'.fo_column_story','.fo_column_products')">
 					<div class="fo_tab_tool_section fo_tool_riepilogo">
-						<div class="fo_button_thin" onclick="fo_tab_empty_section(jQuery('.fo_column_riepilogo'))" style="color:red;">
+						<div class="fo_button_thin" onclick="siqo_tab_empty_section(jQuery('.fo_column_riepilogo'))" style="color:red;">
 							<span class="dashicons dashicons-trash"></span>
 							<?php esc_html_e('TUTTO','studio-immens-quick-order');?>
 						</div>
@@ -4339,7 +4339,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 					</div>
 				</div>
 	<!-- PRODOTTI: -->
-				<div class="FO_flash_tab_column fo_column_products" style="width:calc(100% - 20px);" onclick="fo_tab_hystory_space(this,'.fo_column_story','.fo_column_riepilogo')">
+				<div class="FO_flash_tab_column fo_column_products" style="width:calc(100% - 20px);" onclick="siqo_tab_hystory_space(this,'.fo_column_story','.fo_column_riepilogo')">
 					<!-- <strong style=""><?php esc_html_e('PRODOTTI','studio-immens-quick-order'); ?></strong> -->
 					<?php foreach ($products as $key => $value) { ?>
 						<?php foreach ($value as $product) { 
@@ -4358,7 +4358,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 							$short_title = (SIQOcheck(get_post_meta($product->get_id(),'short_title')) && get_post_meta($product->get_id(),'short_title')[0]!='')?get_post_meta($product->get_id(),'short_title')[0]:$product->get_name();
 							$slang_title = (SIQOcheck(get_post_meta($product->get_id(),'slang_title')) && get_post_meta($product->get_id(),'slang_title')[0]!='' )?get_post_meta($product->get_id(),'slang_title')[0]:$short_title;
 							?>
-							<div class="fo_tab_prod relative" foprodid="<?php echo esc_attr($product->get_id());?>" foprodtot="<?php echo esc_attr($product->get_price());?>" fomacrocat="<?php echo esc_attr($macro_cat[0]->slug);?>" style="<?php echo esc_attr($display);?>" onclick="FO_filter_tab_variant(this,<?php echo "'".esc_attr($product->get_id())."'"; ?>)" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="new" draggable="true" ontouchmove="touchstartDrag(event,this)" ontouchend="FOtouchdrop(event)" ontouchcancel="FOtouchdrop(event)" ondragstart="FOdrag(event)">
+							<div class="fo_tab_prod relative" foprodid="<?php echo esc_attr($product->get_id());?>" foprodtot="<?php echo esc_attr($product->get_price());?>" fomacrocat="<?php echo esc_attr($macro_cat[0]->slug);?>" style="<?php echo esc_attr($display);?>" onclick="SIQO_filter_tab_variant(this,<?php echo "'".esc_attr($product->get_id())."'"; ?>)" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="new" draggable="true" ontouchmove="touchstartDrag(event,this)" ontouchend="FOtouchdrop(event)" ontouchcancel="FOtouchdrop(event)" ondragstart="FOdrag(event)">
 								<span class="fo_tab_prod_remove dashicons dashicons-trash" onclick="" style="display:none;"></span>
 								<div class="FO_prod_name_manage fo_text_fix">
 									<?php echo esc_attr($slang_title); ?>
@@ -4392,9 +4392,9 @@ function FO_flash_tab_order( $tavoli = array() ){
 			<div class="FO_flash_tab_column fo_tab_col_2" style="">
 				<strong class="fo_col_2_name" style=""><?php esc_html_e('VARIANTI:','studio-immens-quick-order'); ?></strong>
 				<div class="FO_flash_tab_qty" style="display:none;"> QuantitÃƒÆ’Ã‚Â 
-					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(-1)}">-</div>
-						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="fo_tab_parse_qty(this);">
-					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(+1)}">+</div>
+					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(-1)}">-</div>
+						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="siqo_tab_parse_qty(this);">
+					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(+1)}">+</div>
 					<script type="text/javascript">
 						jQuery('.fo_target_qty_prod').on('DOMSubtreeModified', function(){
 						  fo_tab_parse_qty(jQuery('.fo_target_qty_prod'));
@@ -4433,7 +4433,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 												$price_to_add = get_string_between(get_term_by('name', $opt, $attr_term )->description,'[',']');
 											}
 											?>
-											<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);fo_tab_parse_variant(jQuery(this).find('input'));}" SIQO_price="<?php echo esc_attr($product->get_price());?>" SIQO_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_attr($opt);?>
+											<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);siqo_tab_parse_variant(jQuery(this).find('input'));}" SIQO_price="<?php echo esc_attr($product->get_price());?>" SIQO_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_attr($opt);?>
 											<input name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" type="radio" value="<?php echo esc_attr($opt);?>" fovariant="<?php echo esc_attr($k);?>">
 											</div>
 										<?php } ?>
@@ -4450,7 +4450,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 								<?php 
 								// SIQO_debug($temperature_terms);
 								foreach ($temperature as $key => $term) { ?>
-									<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);fo_tab_parse_temp(jQuery(this).find('input'));}"><?php echo esc_attr($term->name);?>
+									<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);siqo_tab_parse_temp(jQuery(this).find('input'));}"><?php echo esc_attr($term->name);?>
 										<input name="[Temperature][<?php echo esc_attr($product->get_id());?>]" type="radio" value="<?php echo esc_attr($term->slug);?>">
 									</div>
 								<?php } ?>
@@ -4462,7 +4462,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 
 				<div class="FO_flash_tab_note" style="display:none;"> 
 					<strong style="flex-basis:100%;"><?php esc_html_e('Note','studio-immens-quick-order');?></strong>
-					<textarea class="fo_target_note_prod" name="note" onchange="fo_tab_parse_note(this);" placeholder="<?php esc_html_e('Note del prodotto...','studio-immens-quick-order');?>"></textarea>
+					<textarea class="fo_target_note_prod" name="note" onchange="siqo_tab_parse_note(this);" placeholder="<?php esc_html_e('Note del prodotto...','studio-immens-quick-order');?>"></textarea>
 					<script type="text/javascript">
 						jQuery('.fo_target_note_prod').on('DOMSubtreeModified', function(){
 						  fo_tab_parse_note(jQuery('.fo_target_note_prod'));
@@ -4474,7 +4474,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 			<div class="FO_flash_tab_column fo_tab_col_3" style="">
 				<div class="fo_generic_prod" style="display:none!important;">
 					
-					<div class="fo_tab_prod fo_tab_prod_special relative" foprodid="Special" foprodtot="0" fomacrocat="Special" onclick="FO_filter_tab_variant(this,'Special')" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="modify" fo_special="Special">
+					<div class="fo_tab_prod fo_tab_prod_special relative" foprodid="Special" foprodtot="0" fomacrocat="Special" onclick="SIQO_filter_tab_variant(this,'Special')" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="modify" fo_special="Special">
 						<span class="fo_tab_prod_remove dashicons dashicons-trash" onclick="" style="display:none;"></span>
 						<div class="FO_prod_name_manage fo_text_fix">
 							Special
@@ -4490,7 +4490,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 						<input fo_tab_target="note" type="hidden" name="[note]" value="">
 					</div>
 
-					<div class="fo_tab_prod fo_tab_prod_discount relative" foprodid="Sconto" foprodtot="0" fomacrocat="Special" onclick="FO_filter_tab_variant(this,'Sconto')" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="modify" fo_special="Sconto">
+					<div class="fo_tab_prod fo_tab_prod_discount relative" foprodid="Sconto" foprodtot="0" fomacrocat="Special" onclick="SIQO_filter_tab_variant(this,'Sconto')" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="modify" fo_special="Sconto">
 						<span class="fo_tab_prod_remove dashicons dashicons-trash" onclick="" style="display:none;"></span>
 						<div class="FO_prod_name_manage fo_text_fix">
 							<?php esc_html_e( 'Sconto', 'studio-immens-quick-order' ); ?>
@@ -4508,25 +4508,25 @@ function FO_flash_tab_order( $tavoli = array() ){
 
 				</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="fo_keyboard_special('special','Special')">
+						<div class="fo_tab_calc_keyboard_key" onclick="siqo_keyboard_special('special','Special')">
 							<strong style="height:50px!important;display:flex;flex-direction:column;justify-content:center;">Special</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="fo_keyboard_special('special','Bar')">
+						<div class="fo_tab_calc_keyboard_key" onclick="siqo_keyboard_special('special','Bar')">
 							<strong style="height:50px!important;display:flex;flex-direction:column;justify-content:center;">Bar</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="fo_keyboard_special('special','Bevande')">
+						<div class="fo_tab_calc_keyboard_key" onclick="siqo_keyboard_special('special','Bevande')">
 							<strong style="height:50px!important;display:flex;flex-direction:column;justify-content:center;">Bevande</strong>
 						</div>
 					</div>
 
 				<div class="fo_tab_calc_display">
-					<span class="fo_tab_price" fo_status_modify="false" fo_actual_prod="" fo_actual_index="" fo_modificable="" onchange="fo_tab_parse_price(this)"></span>
+					<span class="fo_tab_price" fo_status_modify="false" fo_actual_prod="" fo_actual_index="" fo_modificable="" onchange="siqo_tab_parse_price(this)"></span>
 					<script type="text/javascript">
 						jQuery('.fo_tab_price').on('DOMSubtreeModified', function(){
 						  fo_tab_parse_price(jQuery('.fo_tab_price'));
 						});
 					</script>
-					<!-- <div class="fo_tab_calc_keyboard_key fo_tab_add_to_order" onclick="fo_tab_add_product_to_order()">
+					<!-- <div class="fo_tab_calc_keyboard_key fo_tab_add_to_order" onclick="siqo_tab_add_product_to_order()">
 						<strong>AGGIUNGI</strong>
 					</div> -->
 				</div>
@@ -4535,70 +4535,70 @@ function FO_flash_tab_order( $tavoli = array() ){
 				<div class="fo_tab_calc_keyboard">
 
 					<!-- <div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="fo_keyboard_special('sub')">
+						<div class="fo_tab_calc_keyboard_key" onclick="siqo_keyboard_special('sub')">
 							<strong>SUB</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_special" onclick="fo_keyboard_special('-')">
+						<div class="fo_tab_calc_keyboard_special" onclick="siqo_keyboard_special('-')">
 							<strong>( - )</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_special" onclick="fo_keyboard_special('%')">
+						<div class="fo_tab_calc_keyboard_special" onclick="siqo_keyboard_special('%')">
 							<strong>( % )</strong>
 						</div>
 					</div> -->
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('7')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('7')}">
 							<strong>7</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('8')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('8')}">
 							<strong>8</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('9')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('9')}">
 							<strong>9</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('4')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('4')}">
 							<strong>4</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('5')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('5')}">
 							<strong>5</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('6')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('6')}">
 							<strong>6</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('1')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('1')}">
 							<strong>1</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('2')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('2')}">
 							<strong>2</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('3')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('3')}">
 							<strong>3</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('.')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('.')}">
 							<strong>.</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('0')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('0')}">
 							<strong>0</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('.')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('.')}">
 							<strong>.</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key fo_tab_reset_price" fovalue="" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_default(this);}">
+						<div class="fo_tab_calc_keyboard_key fo_tab_reset_price" fovalue="" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_default(this);}">
 							<span class="dashicons dashicons-image-rotate"></span>
 						</div>
 
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_del();}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_del();}">
 							<span class="dashicons dashicons-minus"></span>
 						</div>
 
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_ac();}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_ac();}">
 							<span class="dashicons dashicons-no"></span>
 						</div>
 					</div>
@@ -4610,20 +4610,20 @@ function FO_flash_tab_order( $tavoli = array() ){
 			FOP_order_info_tab();
 		}?>
 		<div class="FO_flash_tab_footer">
-			<div class="fo_table_name" onclick="FO_tab_Card_hide()">
+			<div class="fo_table_name" onclick="SIQO_tab_Card_hide()">
 				<strong> <?php esc_html_e('TAVOLO: ','studio-immens-quick-order'); ?> </strong>
 				<strong class="fo_tab_table_name"> - - - - </strong>
 			</div>
 
-			<div class="fo_button_fix fo_clear_table_button" style="margin: 0 auto 0 15px;" onclick="FO_tab_clear_table()"><?php esc_html_e('LIBERA TAVOLO','studio-immens-quick-order');?></div>
+			<div class="fo_button_fix fo_clear_table_button" style="margin: 0 auto 0 15px;" onclick="SIQO_tab_clear_table()"><?php esc_html_e('LIBERA TAVOLO','studio-immens-quick-order');?></div>
 			<!-- <textarea class="fo_tab_fix_order_note" name="order_note" placeholder="Note..." style=""></textarea> -->
-			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;display:none;" fotableid="" onclick="FO_pay_tab_Card_show(this)">
+			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;display:none;" fotableid="" onclick="SIQO_pay_tab_Card_show(this)">
 				<?php esc_html_e('PAGA TALOLO','studio-immens-quick-order');?>
 			</div>
 
 			<?php FO_pay_this_order_tab();?>
 
-			<div class="fo_button_fix" style="margin-left:auto;" fo_order_type="new_order" onclick="FO_tab_go_order(this)"><?php esc_html_e('AVVIA ORDINE','studio-immens-quick-order');?></div>
+			<div class="fo_button_fix" style="margin-left:auto;" fo_order_type="new_order" onclick="SIQO_tab_go_order(this)"><?php esc_html_e('AVVIA ORDINE','studio-immens-quick-order');?></div>
 
 			<div class="fo_button_fix fo_variant_show_button" style="bottom:220px!important;" onclick="fo_tab_show_variation_button()">
 				<span class="dashicons dashicons-table-col-after"></span>
@@ -4692,14 +4692,14 @@ function FO_pay_this_order_tab(){
 		</div>
 
 		<div class="fo_pay_column fo_flex">
-			<div class="fo_button Advanced_Card_Close_float" onclick="FO_pay_tab_Card_hide()" style="position:absolute;right:15px;">
+			<div class="fo_button Advanced_Card_Close_float" onclick="SIQO_pay_tab_Card_hide()" style="position:absolute;right:15px;">
 				<?php esc_html_e('CHIUDI','studio-immens-quick-order');?>
 			</div>
 			<div class="fo_pay_body fo_flex">
 				<span style="width:100%;">Questa sezione ÃƒÆ’Ã‚Â© ancora in sviluppo e sarÃƒÆ’Ã‚Â  presto disponibile </span>
 				<div class="fo_pay_customer_type">
 					<span> <?php esc_html_e('Cliente Esistente ? ','studio-immens-quick-order');?> </span>
-					<input type="checkbox" name="customer_type" onclick="FO_customer_pay(this);" unchecked>
+					<input type="checkbox" name="customer_type" onclick="SIQO_customer_pay(this);" unchecked>
 				</div>
 				
 				<div class="fot_pay_new_customer">
@@ -4707,12 +4707,12 @@ function FO_pay_this_order_tab(){
 					<input class="fot_pay_input N_customer_name" type="text" name="[customer_name][]" placeholder="<?php esc_html_e('nome Cliente','studio-immens-quick-order');?>" style="width: 200px!important;">
 					<input class="fot_pay_input N_customer_mail" type="text" name="[customer_mail][]" placeholder="<?php esc_html_e('mail Cliente','studio-immens-quick-order');?>" style="width: 300px!important;">
 					<input class="fot_pay_input N_customer_phone" type="text" name="[customer_phone][]" placeholder="<?php esc_html_e('telefono Cliente','studio-immens-quick-order');?>" style="width: 200px!important;">
-					<div class="fo_button fo_border" style="width:calc(100% - 50px);" onclick="FO_add_new_customer(jQuery(this).parent());"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
+					<div class="fo_button fo_border" style="width:calc(100% - 50px);" onclick="SIQO_add_new_customer(jQuery(this).parent());"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
 				</div>
 
 				<div class="fot_pay_search_customer" style="display:none;">
 					<strong style="width:100%"> <?php esc_html_e('Cerca un cliente:','studio-immens-quick-order');?> </strong>
-					<input type="search" onkeyup="FO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" onclick="FO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" class="focatsearchall FO_list_height" style="width: 200px!important;" placeholder="<?php esc_html_e('Cerca cliente...','studio-immens-quick-order' );?>">
+					<input type="search" onkeyup="SIQO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" onclick="SIQO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" class="focatsearchall FO_list_height" style="width: 200px!important;" placeholder="<?php esc_html_e('Cerca cliente...','studio-immens-quick-order' );?>">
 					<div class="FO_clear_input" onclick="jQuery(this).prev().val('');jQuery(this).next().hide();">X</div>
 
 					<div class="FO_customer_list" style="display:none;">
@@ -4729,7 +4729,7 @@ function FO_pay_this_order_tab(){
 							$u_aurl = ( SIQOcheck( get_avatar( $u_id, 50 ) ) ) ? get_avatar( $u_id, 50, $default = '', $alt = '', $args = array( 'class' => 'FO_pay_customer_img' ) ) : '';
 							
 						?>
-						<div class="FO_customer_target_search FO_list_prod_summ" style="display:none;" onclick="FO_pay_customer_list(this);" fo_u_id="<?php echo esc_attr($u_id);?>" fo_u_name="<?php echo esc_attr($u_name);?>" fo_u_mail="<?php echo esc_attr($u_mail);?>" fo_u_phone="<?php echo esc_attr($u_phone);?>" fo_u_since="<?php echo esc_attr($u_since);?>" fo_u_aurl="<?php echo esc_attr($u_aurl);?>">
+						<div class="FO_customer_target_search FO_list_prod_summ" style="display:none;" onclick="SIQO_pay_customer_list(this);" fo_u_id="<?php echo esc_attr($u_id);?>" fo_u_name="<?php echo esc_attr($u_name);?>" fo_u_mail="<?php echo esc_attr($u_mail);?>" fo_u_phone="<?php echo esc_attr($u_phone);?>" fo_u_since="<?php echo esc_attr($u_since);?>" fo_u_aurl="<?php echo esc_attr($u_aurl);?>">
 							<div class="foname">
 								<div> <?php echo esc_attr($u_id);?> </div>
 								<div> <?php echo esc_attr($u_name);?> </div>
@@ -4766,36 +4766,36 @@ function FO_pay_this_order_tab(){
 				<!-- <div class="FO_table_input" style="border:1px solid #ffffff6b;"> -->
 				<!-- Prodotto Generico -->
 					<!-- <input type="text" value="<?php esc_html_e('Special','studio-immens-quick-order');?>" style="flex-basis:100%;" onkeyup="jQuery(this).parent().find('.final_input').attr('name','[prod_generic]['+jQuery(this).val()+']');jQuery(this).parent().find('.foname').text(jQuery(this).val())">
-					<div class="spinner-button-big" onclick="FO_add_value_to_input(-1.00,'.fo_target_discount_prod')">-1</div>
+					<div class="spinner-button-big" onclick="SIQO_add_value_to_input(-1.00,'.fo_target_discount_prod')">-1</div>
 					<div class="spinner-button-big" onclick="jQuery(this).next().val(parseFloat(parseFloat(jQuery(this).next().val()) - 0.10).toFixed(2))">-</div>
 						<input id="discount" class="fo_target_discount_prod" type="number" name="discount" value="0">
 					<div class="spinner-button-big" onclick="jQuery(this).prev().val(parseFloat(parseFloat(jQuery(this).prev().val()) + 0.10).toFixed(2))">+</div>
-					<div class="spinner-button-big" onclick="FO_add_value_to_input(1.00,'.fo_target_discount_prod')">+1</div> -->
+					<div class="spinner-button-big" onclick="SIQO_add_value_to_input(1.00,'.fo_target_discount_prod')">+1</div> -->
 					<!-- <div class="FO_list_prod_summ" style="display:none;" siqoprice="">
 						<div class="foname"><?php esc_html_e('Prodotto Generico','studio-immens-quick-order');?></div>
 						<input class="final_input" type="hidden" name="[prod_generic][Prodotto Generico]" value="">
 						<div class="FO_list_price"></div>
-						<div class="FO_clear_target" onclick="FO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
+						<div class="FO_clear_target" onclick="SIQO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
 					</div> -->
-					<!-- <div class="spinner-button-big" style="font-size:15px!important;" onclick="FO_order_discount_list(this,'.fo_target_discount_prod');"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div> -->
+					<!-- <div class="spinner-button-big" style="font-size:15px!important;" onclick="SIQO_order_discount_list(this,'.fo_target_discount_prod');"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div> -->
 				<!-- </div> -->
 
 				<!-- <div class="fo_flex" style="border:1px solid #ffffff6b;">
 					<span style="flex-basis:100%;">
 						<?php esc_html_e('prezzo / sconto','studio-immens-quick-order');?>
 					</span>
-					<div class="spinner-button-big" onclick="FO_add_value_to_input(-1.00,'.fo_target_discount')">-1</div>
+					<div class="spinner-button-big" onclick="SIQO_add_value_to_input(-1.00,'.fo_target_discount')">-1</div>
 					<div class="spinner-button-big" onclick="jQuery(this).next().val(parseFloat(parseFloat(jQuery(this).next().val()) - 0.10).toFixed(2))">-</div>
 						<input id="discount" class="fo_target_discount" type="number" name="discount"  value="0">
 					<div class="spinner-button-big" onclick="jQuery(this).prev().val(parseFloat(parseFloat(jQuery(this).prev().val()) + 0.10).toFixed(2))">+</div>
-					<div class="spinner-button-big" onclick="FO_add_value_to_input(1.00,'.fo_target_discount')">+1</div>
+					<div class="spinner-button-big" onclick="SIQO_add_value_to_input(1.00,'.fo_target_discount')">+1</div>
 					<div class="FO_list_prod_summ" style="display:none;" siqoprice="">
 						<div class="foname"><?php echo '- prezzo / sconto -';?></div>
 						<input class="final_input" type="hidden" name="[sconto][]" value="">
 						<div class="FO_list_price"></div>
-						<div class="FO_clear_target" onclick="FO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
+						<div class="FO_clear_target" onclick="SIQO_order_list_remove(jQuery(this).parent());jQuery(this).parent().remove();">X</div>
 					</div>
-					<div class="spinner-button-big" style="font-size:15px!important;" onclick="FO_order_discount_list(this,'.fo_target_discount');"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
+					<div class="spinner-button-big" style="font-size:15px!important;" onclick="SIQO_order_discount_list(this,'.fo_target_discount');"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
 				</div> -->
 */ ?>
 		<div class="fo_pay_footer fo_flex">
@@ -4812,7 +4812,7 @@ function FO_pay_this_order_tab(){
 				</div>
 			<?php } ?>
 
-			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;" onclick="FO_order_tab_pay_ajax()">
+			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;" onclick="SIQO_order_tab_pay_ajax()">
 				<?php esc_html_e('PAGA','studio-immens-quick-order');?>
 				<!-- FO_order_tab_pay_ajax() -->
 			</div>
@@ -6418,11 +6418,11 @@ function SIQO_get_status_changer( $order ){
 	$string .= esc_html__( 'CHIUDI', 'studio-immens-quick-order' );
 	$string .= '</div>';
 	// if ( $order->get_status() == 'pending' ) {
-		$string .= '<button onclick="fo_change_order_status(`'.$order->get_id().'`, `processing`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'in lavorazione', 'studio-immens-quick-order' ).'</button>';
+		$string .= '<button onclick="siqo_change_order_status(`'.$order->get_id().'`, `processing`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'in lavorazione', 'studio-immens-quick-order' ).'</button>';
 	// }
-	$string .= '<button onclick="fo_change_order_status(`'.$order->get_id().'`, `cancelled`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'cancellato', 'studio-immens-quick-order' ).'</button>';
-	$string .= '<button onclick="fo_change_order_status(`'.$order->get_id().'`, `refunded`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'rimborsato', 'studio-immens-quick-order' ).'</button>';
-	$string .= '<button onclick="fo_change_order_status(`'.$order->get_id().'`, `completed`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'completato', 'studio-immens-quick-order' ).'</button>';
+	$string .= '<button onclick="siqo_change_order_status(`'.$order->get_id().'`, `cancelled`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'cancellato', 'studio-immens-quick-order' ).'</button>';
+	$string .= '<button onclick="siqo_change_order_status(`'.$order->get_id().'`, `refunded`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'rimborsato', 'studio-immens-quick-order' ).'</button>';
+	$string .= '<button onclick="siqo_change_order_status(`'.$order->get_id().'`, `completed`, `'.esc_html__( 'Sei sicuro di voler cambiare lo status dell\'ordine?`', 'studio-immens-quick-order' ).');" title="'.esc_html__( 'cambia lo status dell\'ordine', 'studio-immens-quick-order' ).'">'.esc_html__( 'completato', 'studio-immens-quick-order' ).'</button>';
 	$string .= '</div>';
 	return $string;
 }
@@ -6829,6 +6829,11 @@ function SIQO_register_ajax_action_aliases() {
 		'SIQO_flash_tab_pay_ajax'         => array( 'FO_flash_tab_pay_ajax', true ),
 		'SIQO_insert_post_ajax'           => array( 'FO_insert_post_ajax', true ),
 		'SIQO_trash_post_ajax'            => array( 'FO_trash_post_ajax', true ),
+		'SIQO_insert_product_ajax'        => array( 'FO_insert_product_ajax', true ),
+		'SIQO_insert_macro_cat_ajax'      => array( 'FO_insert_macro_cat_ajax', true ),
+		'SIQO_delete_macro_cat_ajax'      => array( 'FO_delete_macro_cat_ajax', true ),
+		'SIQO_update_post_macro_cat_ajax' => array( 'FO_update_post_macro_cat_ajax', true ),
+		'SIQO_delete_post_ajax'           => array( 'FO_delete_post_ajax', true ),
 		'SIQO_create_any_QR_code_ajax'    => array( 'SIQO_create_any_QR_code_ajax', false ),
 		'SIQO_delete_QR_images'           => array( 'SIQO_delete_QR_images', false ),
 	);

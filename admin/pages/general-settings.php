@@ -27,7 +27,7 @@ wp_enqueue_style( 'studio-immens-quick-order-settings-css', plugins_url( 'public
 
 <nav>
     <?php do_action('siqo_settings_navigation_start') ?>
-    <button onclick="SIQO_settings_navigations( jQuery('#general') );">General</button>
+    <button onclick="FO_settings_navigations( jQuery('#general') );">General</button>
 
     <?php do_action('siqo_settings_navigation_end') ?>
 </nav>

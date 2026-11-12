@@ -101,10 +101,10 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 		</style>
 	</div>
 
-	<span class="FObuttListRapidView dashicons dashicons-menu-alt3" onclick="Show_FOListRapidView()"></span>
+	<span class="FObuttListRapidView dashicons dashicons-menu-alt3" onclick="Show_SIQOListRapidView()"></span>
 
 	<div class="FOListRapidView" style="left:-200px;">
-		<div class="Hide_FOListRapidView" onclick="Hide_FOListRapidView()">
+		<div class="Hide_FOListRapidView" onclick="Hide_SIQOListRapidView()">
 			<?php esc_html_e( 'CHIUDI', 'studio-immens-quick-order' ); ?>
 		</div>
 		<a class="FOListRapidView_cathead" href="#FO_favourite" style="background-color:var(--fo-main-color)!important;backdrop-filter: opacity(20%);"><?php esc_html_e('Prodotti Preferiti','studio-immens-quick-order' );?>
@@ -126,7 +126,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 		<div id="products_container" class="foflex">
 
 			<div class="focathead FO_list_view_selector" style="background-color: var(--fo-main-color)!important;">
-				<input type="search" onkeyup="FO_refine_search(this, 'hide')" fotargetcat="search" class="focatsearchall" placeholder="<?php esc_html_e('Cerchi Qualcosa?','studio-immens-quick-order' );?>">
+				<input type="search" onkeyup="SIQO_refine_search(this, 'hide')" fotargetcat="search" class="focatsearchall" placeholder="<?php esc_html_e('Cerchi Qualcosa?','studio-immens-quick-order' );?>">
 
 				<select onchange="jQuery('.foProdCard').attr('foview',jQuery(this).val())" foview="normal">
 					<option value="list">
@@ -155,8 +155,8 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 				<div class="title" style="font-weight:800;font-size:30px;z-index:10;">
 					<?php esc_html_e('Prodotti Preferiti','studio-immens-quick-order' );?>
 				</div>
-				<input type="search" fotargetcat="FO_favourite" onkeyup="FO_refine_search(this)" class="focatsearch" placeholder="Cerca..." style="z-index:10;">
-				<div class="fo_button" onclick="FO_toggle_Favourite(this);">
+				<input type="search" fotargetcat="FO_favourite" onkeyup="SIQO_refine_search(this)" class="focatsearch" placeholder="Cerca..." style="z-index:10;">
+				<div class="fo_button" onclick="SIQO_toggle_Favourite(this);">
 					<span class="dashicons dashicons-arrow-down-alt2"></span>
 				</div>
 			</div>
@@ -178,7 +178,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 
 
 
-		<div class="FO_show_order_summary" onclick="Show_FO_Front_Float()">
+		<div class="FO_show_order_summary" onclick="Show_SIQO_Front_Float()">
 			<strong class="text_white" style="z-index:99;"> 
 				<?php esc_html_e( 'ORDINE', 'studio-immens-quick-order' ); ?> 
 			</strong>
@@ -189,7 +189,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 		<?php SIQO_Advanced_prod_card(); ?>
 		
 		<div id="FO_Front_Float">
-			<div class="Hide_FO_Front_Float" onclick="Hide_FO_Front_Float()">
+			<div class="Hide_FO_Front_Float" onclick="Hide_SIQO_Front_Float()">
 				<?php esc_html_e( 'CHIUDI', 'studio-immens-quick-order' ); ?>
 			</div>
 	<!-- .unbind("hover"); -->
@@ -229,7 +229,7 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 				<?php } ?>
 
 				<?php if ( $net_info['is_local'] ) { ?>
-					<div class="FO_order_sub" id="submit_order" onclick="FO_validate_flash_order_form_ajax(this);">
+					<div class="FO_order_sub" id="submit_order" onclick="SIQO_validate_order_form_ajax(this);">
 						<?php esc_html_e( 'AVVIA ORDINE', 'studio-immens-quick-order' ); ?>
 					</div>
 				<?php } ?>

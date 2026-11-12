@@ -72,7 +72,7 @@ function SIQO_manage_table(){
         if (function_exists('FOP_tab_Settings_section')){
             FOP_tab_Settings_section($tavoli);
         ?>
-        <div class="fo_button fo_show_settings" onclick="FO_settings_show();">
+        <div class="fo_button fo_show_settings" onclick="SIQO_settings_show();">
             <span class="dashicons dashicons-admin-settings" style="width:40px;height:40px;font-size:40px;"></span>
         </div>
 
@@ -113,7 +113,7 @@ function SIQO_manage_table(){
             // $tab_info = FO_get_table_by_table_id_status_last($tavolo->ID);
             // SIQO_debug( $tab_info);
             ?>
-            <div class="fo_table_cell relative" fotable="<?php echo esc_attr($tavolo->post_title);?>" fo_tableid="<?php echo esc_attr($tavolo->ID);?>" fotable_status="<?php echo esc_attr($status);?>" style="<?php echo esc_attr($Style);?>" onclick="FO_tab_Card_show( this )" table_start_time="" table_last_update="" table_orders="" table_info="" table_receipt="" table_other="" table_totals="" table_end_time="" table_table_tableid="">
+            <div class="fo_table_cell relative" fotable="<?php echo esc_attr($tavolo->post_title);?>" fo_tableid="<?php echo esc_attr($tavolo->ID);?>" fotable_status="<?php echo esc_attr($status);?>" style="<?php echo esc_attr($Style);?>" onclick="SIQO_tab_Card_show( this )" table_start_time="" table_last_update="" table_orders="" table_info="" table_receipt="" table_other="" table_totals="" table_end_time="" table_table_tableid="">
 
                 <span class="fo_tab_notify" fo_not_counter="" onclick="" style="display:none;">0</span>
                 
