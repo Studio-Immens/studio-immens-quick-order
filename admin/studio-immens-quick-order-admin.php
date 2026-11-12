@@ -237,7 +237,7 @@ function SIQO_conditional_setting( $setting = array() ){
 }
 
 function SIQO_set_local_network( $setting = array() ){
-    $net_info = SIQO_get_connection_info();
+    $net_info = FO_get_connection_info();
 
     $name = ( isset($setting['name']) ) ? $setting['name'] : '';
 

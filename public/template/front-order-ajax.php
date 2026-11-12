@@ -12,7 +12,7 @@ SIQO_soft_access_denied();
 // $role = FO_access_autorization();
 $user_id = get_current_user();
 
-$net_info = SIQO_get_connection_info();
+$net_info = FO_get_connection_info();
 
 $settings = SIQO_get_meta( 'setting_page_id'.get_the_ID() );
 if ( isset($settings) && $settings != null ) {
