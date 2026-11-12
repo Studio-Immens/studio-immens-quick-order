@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.0.7 =
+* Fixed the QR list on the main page throwing errors: the QRgenerate directory is empty in the package (git cannot track empty folders), so the scan failed. The folder is now created on demand and shipped with the plugin.
+
 = 1.0.6 =
 * Fixed the custom style colours being reset: the helper meant to remove empty rows deleted every saved CSS value, so opening the Style page wiped the customisations
 * Fixed the style activator deleting the default rows it had just written
@@ -128,6 +131,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Translation-ready with Italian and English
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Removes PHP warnings on the Quick Order main page. Recommended update.
 
 = 1.0.6 =
 Keeps the custom style colours saved instead of resetting them. Recommended update.
