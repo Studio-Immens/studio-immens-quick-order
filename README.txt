@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,12 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.0.3 =
+* Fixed fatal error on the customer ordering page (undefined function SIQO_get_connection_info)
+* Hardened AJAX nonce verification (reject request when nonce is missing or invalid)
+* Aligned front-end AJAX action names with their registered handlers
+* Fixed plugin activation and login issues caused by a UTF-8 BOM in PHP files
+
 = 1.0.0 =
 * Initial release
 * Product menu with card and list views
@@ -108,6 +114,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Translation-ready with Italian and English
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Fixes a fatal error on the customer ordering page and hardens AJAX security. Recommended update.
 
 = 1.0.0 =
 Initial release.
