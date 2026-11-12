@@ -476,7 +476,12 @@ function SIQO_manage_QR_codes(){
                 </div>
 
                 <input type="text" class="SIQOtextSettings" target="SIQO_search_target" onkeyup="siqo_search_for_file(this)" onkeydown="siqo_search_for_file(this)" style="max-width:100%;flex-basis:100%;text-align:left;margin:15px;" placeholder="<?php esc_html_e(' Cerca QR ... ','studio-immens-quick-order' );?>">
-            <?php $QR_img = scandir( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/' );
+            <?php
+                $QR_dir = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
+                if ( ! is_dir( $QR_dir ) ) {
+                    wp_mkdir_p( $QR_dir );
+                }
+                $QR_img = is_dir( $QR_dir ) ? (array) scandir( $QR_dir ) : array();
                 foreach ($QR_img as $key => $value) {
                     if ($value != '.' && $value != '..') {
                         $QR_url = esc_url_raw( plugin_dir_url( dirname(__FILE__) ) . 'includes/phpqrcode/QRgenerate/' . $value);
