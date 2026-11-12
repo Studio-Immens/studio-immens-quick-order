@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,10 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.0.5 =
+* Restored the admin styling: the markup was renamed to the SIQO_ classes while the stylesheet still targeted the old FO_ ones, so the settings, style and main pages rendered unstyled.
+* Registered the SIQO_ variant of the QR cloud, link and section styles.
+
 = 1.0.4 =
 * Fixed nonce hidden fields rendered with the legacy _fononce_ prefix, which broke order submission, table actions and post management
 * Registered the SIQO_ AJAX action names actually used by the JavaScript (ordering, tables, posts and admin actions)
@@ -120,6 +124,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 * Translation-ready with Italian and English
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Restores the missing admin styling on the settings, style and main pages. Recommended update.
 
 = 1.0.4 =
 Fixes AJAX nonce/action mismatches that blocked ordering and table actions, and removes a slow remote request on page load. Recommended update.
