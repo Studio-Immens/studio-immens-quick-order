@@ -118,12 +118,13 @@ function SIQO_create_all_necessary_settings(){
 
 function SIQO_clear_meta_database( $meta_key ){
 	$database_val = SIQO_get_meta( $meta_key, 'all' );
-	foreach ($database_val as $key => $value) {
-		if ($value->meta_value == '') {
+	if ( empty( $database_val ) ) {
+		return;
+	}
+	foreach ( $database_val as $value ) {
+		if ( '' === $value->meta_value ) {
 			SIQO_delete_meta_by_id( $value->id );
 		}
-		if ( $key == 0 ) { continue; }
-		SIQO_delete_meta_by_id( $value->id );
 	}
 }
 // add_action('plugins_loaded', 'SIQO_create_all_necessary_pages');
@@ -1966,9 +1967,6 @@ function SIQO_default_css(){
 		'--siqo-timer-3' 	=> '#f50000'
 	);
 	SIQO_update_meta( 'default_css', wp_json_encode( $default_css ) );
-	foreach ($default_css as $key => $value) {
-		SIQO_clear_meta_database( $key );
-	}
 	return $default_css;
 }
 function SIQO_customized_css(){
