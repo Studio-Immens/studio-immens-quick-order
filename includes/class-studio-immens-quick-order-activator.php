@@ -35,6 +35,10 @@ class Studio_Immens_Quick_Order_Activator {
 
 		SIQO_create_all_necessary_pages();
 
+		if ( class_exists( 'SIQO_Management' ) ) {
+			SIQO_Management::install();
+		}
+
 		SIQO_admin_autorole();
 	}
 }

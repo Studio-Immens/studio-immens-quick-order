@@ -1,3 +1,15 @@
+function SIQO_show_pages_rapid_impost( pageId ){
+	jQuery('[fo_page_id="'+pageId+'"]').slideDown();
+}
+
+function SIQO_hide_pages_rapid_impost( pageId ){
+	jQuery('[fo_page_id="'+pageId+'"]').slideUp();
+}
+
+function SIQO_toggle_pages_rapid_impost( pageId ){
+	jQuery('[fo_page_id="'+pageId+'"]').slideToggle();
+}
+
 jQuery(document).ready(function($) {
 	   "use strict";
 
@@ -192,19 +204,19 @@ function FOSearchIngred(search) {
 }
 
 function FOadvToRegularFit(input){
-	var editIng = jQuery(input).closest('.SIQOprodCard').find('input[value='+jQuery(input).val()+']');
+	var editIng = jQuery(input).closest('.foProdCard').find('input[value='+jQuery(input).val()+']');
 	if ( !jQuery(input).is(':checked') ) {
 		editIng.each(function(i,e){
 			jQuery(e).addClass('SIQOstatus_modified');
 			jQuery(e).attr('checked','');
 		});
-		// jQuery(input).closest('.SIQOprodCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').addClass('SIQOstatus_modified');
+		// jQuery(input).closest('.foProdCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').addClass('SIQOstatus_modified');
 	} else{
 		editIng.each(function(i,e){
 			jQuery(e).removeClass('SIQOstatus_modified');
 			jQuery(e).attr('checked','checked');
 		});
-		// jQuery(input).closest('.SIQOprodCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').removeClass('SIQOstatus_modified');
+		// jQuery(input).closest('.foProdCard').find('#FOeditIngTab input[value='+jQuery(input).val()+']').removeClass('SIQOstatus_modified');
 	}
 }
 
@@ -230,12 +242,12 @@ function FOcheckIfModified(input){
 	FOcheckCardModified(input);
 }
 function FOcheckCardModified(input){
-	// if ( jQuery(input).closest('.SIQOprodCard').find('.SIQOstatus_modified').length ) {
-	// 	jQuery(input).closest('.SIQOprodCard').addClass('SIQOstatus_modified');
+	// if ( jQuery(input).closest('.foProdCard').find('.SIQOstatus_modified').length ) {
+	// 	jQuery(input).closest('.foProdCard').addClass('SIQOstatus_modified');
 	// } else{
-	// 	jQuery(input).closest('.SIQOprodCard').removeClass('SIQOstatus_modified');
+	// 	jQuery(input).closest('.foProdCard').removeClass('SIQOstatus_modified');
 	// }
-	jQuery('.SIQOprodCard').each(function(i,e){
+	jQuery('.foProdCard').each(function(i,e){
 		if ( jQuery(e).find('.SIQOstatus_modified').length ) {
 			jQuery(e).addClass('SIQOstatus_modified');
 		} else{
@@ -424,7 +436,7 @@ function FOtouchdrop(event) {
 
 
 function SIQO_add_prod_to_favorites(input){
-	if (jQuery('.SIQO_favourites_container').find('.SIQOprodCard[foname="'+jQuery(input).attr('foname')+'"]').length > 0 ) {
+	if (jQuery('.SIQO_favourites_container').find('.foProdCard[foname="'+jQuery(input).attr('foname')+'"]').length > 0 ) {
 		SIQO_alert('',jQuery('#SIQO_favourite_alert').text());
 		return;
 	}
@@ -436,7 +448,7 @@ function SIQO_add_prod_to_favorites(input){
 	p_clone.find('.foheart span').removeClass('dashicons-heart');
 	p_clone.find('.foheart span').addClass('dashicons-no');
 	
-	p_clone.find('.foheart').attr('onclick',"SIQO_remove_prod_from_favorites(jQuery(this).closest('.SIQOprodCard'))");
+	p_clone.find('.foheart').attr('onclick',"SIQO_remove_prod_from_favorites(jQuery(this).closest('.foProdCard'))");
 
 	jQuery('.SIQO_favourites_container').prepend(p_clone);
 
@@ -491,7 +503,7 @@ function SIQO_refine_search(input, def = 'show'){
 }
 function SIQO_search_for_all(input){
 	var searchVal = jQuery(input).val();
-	var items = jQuery('#products_container .SIQOprodCard');
+	var items = jQuery('#products_container .foProdCard');
 
 	items.each(function(index, row){
 		var allDataPerRow = jQuery(row).find('.foname');
@@ -772,25 +784,25 @@ function SIQO_Advanced_Prod_Card( input ){
 	jQuery('header').css('display','none');
 	jQuery('footer').css('display','none');
 
-	var AC_ID = jQuery(input).closest('.SIQOprodCard').attr('foid');
-	var AC_Name = jQuery(input).closest('.SIQOprodCard').attr('foname');
-	var Advanced_Card_gallery = jQuery(input).closest('.SIQOprodCard').attr('fo_gallery');
+	var AC_ID = jQuery(input).closest('.foProdCard').attr('foid');
+	var AC_Name = jQuery(input).closest('.foProdCard').attr('foname');
+	var Advanced_Card_gallery = jQuery(input).closest('.foProdCard').attr('fo_gallery');
 
-	var AC_description = jQuery(input).closest('.SIQOprodCard').attr('fo_description');
+	var AC_description = jQuery(input).closest('.foProdCard').attr('fo_description');
 
-	var AC_tax_cat = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_cat');
-	var AC_tax_tag = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_tag');
-	var AC_tax_ing = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_ing');
-	var AC_tax_allerg = jQuery(input).closest('.SIQOprodCard').attr('fo_tax_allerg');
+	var AC_tax_cat = jQuery(input).closest('.foProdCard').attr('fo_tax_cat');
+	var AC_tax_tag = jQuery(input).closest('.foProdCard').attr('fo_tax_tag');
+	var AC_tax_ing = jQuery(input).closest('.foProdCard').attr('fo_tax_ing');
+	var AC_tax_allerg = jQuery(input).closest('.foProdCard').attr('fo_tax_allerg');
 
-	var AC_foindex = jQuery(input).closest('.SIQOprodCard').attr('foindex');
-	var AC_tot = jQuery(input).closest('.SIQOprodCard').attr('fo_tot');
-	var AC_Variant = jQuery(input).closest('.SIQOprodCard').find('.fovariantcont').clone();
+	var AC_foindex = jQuery(input).closest('.foProdCard').attr('foindex');
+	var AC_tot = jQuery(input).closest('.foProdCard').attr('fo_tot');
+	var AC_Variant = jQuery(input).closest('.foProdCard').find('.fovariantcont').clone();
 	AC_Variant.show();
 
-	var foware = jQuery(input).closest('.SIQOprodCard').attr('foware');
+	var foware = jQuery(input).closest('.foProdCard').attr('foware');
 
-	var fowarehouse = jQuery(input).closest('.SIQOprodCard').find('.fowarehouse img').attr('color');
+	var fowarehouse = jQuery(input).closest('.foProdCard').find('.fowarehouse img').attr('color');
 
 	jQuery('.AC_ID').empty();
 	jQuery('.AC_Name').empty();
@@ -927,9 +939,9 @@ function SIQO_reorder_story(){
 
 
 function SIQO_check_warehouse(item){
-	if (jQuery(item).closest('.SIQOprodCard').attr('foware')>0 || jQuery(item).closest('.Advanced_Card').find('.fowarehouse').attr('foware')>0) {
+	if (jQuery(item).closest('.foProdCard').attr('foware')>0 || jQuery(item).closest('.Advanced_Card').find('.fowarehouse').attr('foware')>0) {
 		SIQO_ajax_Add_Item_to_Order(item);
-		jQuery(item).closest('.SIQOprodCard').find('.fovariation_card').slideUp();
+		jQuery(item).closest('.foProdCard').find('.fovariation_card').slideUp();
 	}else{
 		SIQO_alert( '', jQuery('#SIQO_warehouse_alert').text() );
 		// alert(jQuery('#SIQO_warehouse_alert').text());
@@ -938,8 +950,8 @@ function SIQO_check_warehouse(item){
 }
 
 function SIQO_ajax_selectVarBefore_Add_Item_to_Order(item){
-	//if (jQuery(item).closest('.SIQOprodCard').attr('fovariations') != '') {
-		//jQuery(item).closest('.SIQOprodCard').find('.fovariation_card').slideDown();
+	//if (jQuery(item).closest('.foProdCard').attr('fovariations') != '') {
+		//jQuery(item).closest('.foProdCard').find('.fovariation_card').slideDown();
 	//} else{
 		SIQO_check_warehouse(item);
 	//}
@@ -947,7 +959,7 @@ function SIQO_ajax_selectVarBefore_Add_Item_to_Order(item){
 
 function SIQO_ajax_selectVarAfter_Add_Item_to_Order(item){
 	var check = true;
-	// jQuery(item).closest('.SIQOprodCard').find('.fovariant select').each(function(i,e){
+	// jQuery(item).closest('.foProdCard').find('.fovariant select').each(function(i,e){
 	// 	if ( jQuery(e).val() == '') { check = false; }
 	// });
 	if ( check ) {
@@ -959,19 +971,19 @@ function SIQO_ajax_selectVarAfter_Add_Item_to_Order(item){
 	}
 }
 function SIQO_ajax_Remove_Item_to_Order( target ) {
-	jQuery(target).closest('.SIQOprodCard').remove();
+	jQuery(target).closest('.foProdCard').remove();
 	jQuery('#FOProdNumber').text( parseInt(jQuery('#FOProdNumber').text()) - 1 );
-	jQuery('#SIQO_order_live_count').text( parseInt(jQuery('#SIQO_order_live_count').text()) - 1 );
+	jQuery('#FO_order_live_count').text( parseInt(jQuery('#FO_order_live_count').text()) - 1 );
 	jQuery('#FOProdNumberMenu').text( parseInt(jQuery('#FOProdNumberMenu').text()) - 1 );
 }
 function SIQO_ajax_Add_Item_to_Order(item){
 	var id, image, prod, copy;
 	if (jQuery('.AC_ID').text()!='') {
-		prod = jQuery('.SIQOprodCard[foid="'+jQuery('.AC_ID').text()+'"][fo_menu_prod="fo_menu_prod"]');
+		prod = jQuery('.foProdCard[foid="'+jQuery('.AC_ID').text()+'"][fo_menu_prod="fo_menu_prod"]');
 	} else{
-		prod = jQuery(item).closest('.SIQOprodCard[fo_menu_prod="fo_menu_prod"]');
+		prod = jQuery(item).closest('.foProdCard[fo_menu_prod="fo_menu_prod"]');
 	}
-	var current_index = jQuery('#SIQO_order_index').val();
+	var current_index = jQuery('#FO_order_index').val();
 	var stringToAdd = '['+current_index+']';
 
 	id = prod.attr('foid');
@@ -1004,19 +1016,19 @@ function SIQO_ajax_Add_Item_to_Order(item){
 	});
 
 	jQuery('#FOProdNumber').text( parseInt(jQuery('#FOProdNumber').text()) + 1 );
-	jQuery('#SIQO_order_live_count').text( parseInt(jQuery('#SIQO_order_live_count').text()) + 1 );
+	jQuery('#FO_order_live_count').text( parseInt(jQuery('#FO_order_live_count').text()) + 1 );
 
-	jQuery('.SIQO_show_order_summary').addClass('foBorderPulse');
-	jQuery('.SIQO_show_order_summary img').attr('src', image);
-	jQuery('.SIQO_show_order_summary img').show();
+	jQuery('.FO_show_order_summary').addClass('foBorderPulse');
+	jQuery('.FO_show_order_summary img').attr('src', image);
+	jQuery('.FO_show_order_summary img').show();
 
-	jQuery('#SIQO_sum_order').append( copy );
+	jQuery('#FO_sum_order').append( copy );
 
-	jQuery('#SIQO_order_index').val( parseInt(current_index) + 1 );
+	jQuery('#FO_order_index').val( parseInt(current_index) + 1 );
 }
 
 function SIQO_variant_set(input){
-	var prod = jQuery('.SIQOprodCard[foid="'+jQuery('.AC_ID').text()+'"][foindex="'+jQuery('.AC_foindex').val()+'"]');
+	var prod = jQuery('.foProdCard[foid="'+jQuery('.AC_ID').text()+'"][foindex="'+jQuery('.AC_foindex').val()+'"]');
 
 	prod.find('select[name="'+jQuery(input).attr('name')+'"]').attr('value', jQuery(input).find('option[value="'+jQuery(input).val()+'"]').val() );
 
@@ -1031,13 +1043,14 @@ function SIQO_variant_set(input){
 	var final_price = parseFloat( fo_price + fo_price_to_add ).toFixed(2);
 	//jQuery(input).attr('fo_price', );
 
-jQuery('.AC_tot').text( final_price + ' ' + jQuery('#SIQO_woo_currency_sym').text() );
+jQuery('.AC_tot').text( final_price + ' ' + jQuery('#FO_woo_currency_sym').text() );
+	prod.find('input[fo_tab_target="price"]').val(final_price).attr('regularPrice', fo_price).attr('price_added', fo_price_to_add);
 	//SIQO_show_variant_tag(input);
 }
 
 function SIQO_show_variant_tag(input){
 	var attr = ( jQuery(input).attr('founivariant')!= null )? jQuery(input).attr('founivariant') : jQuery(input).attr('foadvariant');
-	jQuery(input).closest('.SIQOprodCard').find(`.fovariantag_container [founivariant='`+attr+`']`)
+	jQuery(input).closest('.foProdCard').find(`.fovariantag_container [founivariant='`+attr+`']`)
 		.each(function(i,e){
 			// console.log( jQuery(e).attr('founitag') );
 		if ( jQuery(input).val() != '' && jQuery(e).attr('founitag') == jQuery(input).val() ) {
@@ -1052,7 +1065,7 @@ function SIQO_show_variant_tag(input){
 
 
 function SIQO_validate_order_form_ajax( target ){
-	if(jQuery('#FOSetting_UserLoggedIn').text() == 0) {
+	if(jQuery('#SIQOSetting_UserLoggedIn').text() == 0) {
         event.preventDefault();
         SIQO_alert( '', jQuery('#SIQO_access_alert').text() );
         // alert('Per poter effettuare ordini su questa pagina, Ã© neccessario Effettuare l\'accesso!');
@@ -1073,7 +1086,7 @@ function SIQO_validate_order_form_ajax( target ){
 }
 function SIQO_assign_index_to_input(input){
 	// event.preventDefault();
-	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
+	var table = jQuery('#FO_sum_order').find('.foProdCard');
 
 	table.each(function(I,E){
 		var foindex = jQuery(E).attr('foindex');
@@ -1090,7 +1103,7 @@ function SIQO_assign_index_to_input(input){
 
 function SIQO_assign_index_to_ajax_inputs(){
 	// event.preventDefault();
-	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
+	var table = jQuery('#FO_sum_order').find('.foProdCard');
 
 	table.each(function(I,E){
 		var foindex = jQuery(E).attr('foindex');
@@ -1106,7 +1119,7 @@ function SIQO_assign_index_to_ajax_inputs(){
 }
 
 function SIQO_submit_order_ajax_form(target){
-	var table = jQuery('#SIQO_sum_order').find('.SIQOprodCard');
+	var table = jQuery('#FO_sum_order').find('.foProdCard');
 	var foserial = jQuery(table).find('input, textarea, select').serializeArray();
 	// foserial.filter(function(e){return e});
 	var foserialmap = foserial.map(({ name, value }) => ({ [name]: value }));
@@ -1135,13 +1148,13 @@ console.log(foserialmap);
 		},
 		success: function (response) {
 			console.log(response);
-				jQuery('#SIQO_sum_order').empty();
+				jQuery('#FO_sum_order').empty();
 
 				jQuery('#FOProdNumber').text( 0 );
-				jQuery('#SIQO_order_live_count').text( 0 );
-				jQuery('.SIQO_show_order_summary').removeClass('foBorderPulse');
-				jQuery('.SIQO_show_order_summary img').attr('src', '');
-				jQuery('.SIQO_show_order_summary img').hide();
+				jQuery('#FO_order_live_count').text( 0 );
+				jQuery('.FO_show_order_summary').removeClass('foBorderPulse');
+				jQuery('.FO_show_order_summary img').attr('src', '');
+				jQuery('.FO_show_order_summary img').hide();
 				jQuery('#orderNote').empty();
 				Hide_SIQO_Front_Float();
 				jQuery('.FOloadingMessage').fadeOut();
@@ -2168,6 +2181,7 @@ function siqo_keyboard_qty_value( number ){
 //     }, 1000 );
 // }
 function SIQO_pay_tab_Card_show( input ){
+	jQuery('.FO_flash_tab_order_pay_container').addClass('is-open');
 	jQuery('.fo_pay_tab_show').show();
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_story');
 	SIQO_toggle_header_footer();
@@ -2177,18 +2191,30 @@ function SIQO_pay_tab_Card_show( input ){
 	jQuery('.fo_list_items').empty();
 	jQuery('.fo_list_final_order').empty();
 	jQuery('.fo_pay_total').empty();
+	jQuery('.fo_pay_count').empty();
 var tot = 0.00;
+var pay_items_count = 0;
 	jQuery('.fo_tab_prod[fotableid="'+jQuery(input).attr('fotableid')+'"]').each(function(i,e){
 		var item_clone = jQuery(e).clone();
-		tot = parseFloat( tot ) + parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() );
+		var item_price = parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() ) || 0;
+		var item_qty = parseInt( jQuery(e).find('[fo_tab_target="qty"]').val(), 10 ) || 1;
+		tot = parseFloat( tot ) + item_price;
 		item_clone.attr('style','');
+		item_clone.removeAttr('onclick');
+		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_price.toFixed(2)+'</span>');
 		jQuery('.fo_list_items').append(item_clone);
+		pay_items_count++;
 	});
 	jQuery('.fo_column_riepilogo .fo_tab_prod').each(function(i,e){
 		var item_clone = jQuery(e).clone();
-		tot = parseFloat( tot ) + parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() );
+		var item_price = parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() ) || 0;
+		var item_qty = parseInt( jQuery(e).find('[fo_tab_target="qty"]').val(), 10 ) || 1;
+		tot = parseFloat( tot ) + item_price;
 		item_clone.attr('style','');
+		item_clone.removeAttr('onclick');
+		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_price.toFixed(2)+'</span>');
 		jQuery('.fo_list_items').append(item_clone);
+		pay_items_count++;
 	});
 var index = 10000;
 	jQuery('.fo_order_table_story[fotableid="'+jQuery(input).attr('fotableid')+'"]').each(function(i,e){
@@ -2196,13 +2222,15 @@ var index = 10000;
 			jQuery('.fo_list_final_order').append('<input type="hidden" name="['+index+i+'][orders]['+jQuery(e).attr('fo_order_id')+']" value="'+jQuery(e).attr('fo_order_id')+'">');
 		}
 	});
-	jQuery('.fo_pay_total').text( parseFloat(tot).toFixed(2) );
-	Fo_add_index_to_products();
+	jQuery('.fo_pay_total').text( parseFloat(tot).toFixed(2) + jQuery('.fo_woo_symb').text() );
+	jQuery('.fo_pay_count').text( pay_items_count );
+	SIQO_add_index_to_products();
 }
 function SIQO_pay_tab_Card_hide( input ){
 	jQuery('.fo_list_items').empty();
 	jQuery('.fo_list_final_order').empty();
 	jQuery('.fo_pay_total').empty();
+	jQuery('.FO_flash_tab_order_pay_container').removeClass('is-open');
 	jQuery('.fo_pay_tab_show').hide();
 	jQuery('.FO_customers_container').empty();
 }
@@ -2599,7 +2627,7 @@ function fo_tab_show_variation_button(){
 
 
 function SIQO_list_view_sel(input){
-	jQuery('.SIQOprodCard').attr('foview',jQuery(input).val());
+	jQuery('.foProdCard').attr('foview',jQuery(input).val());
 }
 
 function SIQO_print_receipt(order_id){

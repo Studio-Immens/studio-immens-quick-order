@@ -79,6 +79,7 @@ class Studio_Immens_Quick_Order {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		SIQO_Management::init();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -105,6 +106,7 @@ class Studio_Immens_Quick_Order {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-studio-immens-quick-order-i18n.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-siqo-meta-db.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-siqo-settings.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-siqo-management.php';
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-studio-immens-quick-order-admin.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/studio-immens-quick-order-admin.php';

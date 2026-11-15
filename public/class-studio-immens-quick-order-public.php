@@ -64,6 +64,13 @@ class Studio_Immens_Quick_Order_Public {
 	public function enqueue_styles() {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/studio-immens-quick-order-public.css', array(), $this->version, 'all' );
+
+		if ( $this->is_operator_page() ) {
+			$path = plugin_dir_path( __FILE__ ) . 'css/siqo-operator.css';
+			$ver  = file_exists( $path ) ? filemtime( $path ) : $this->version;
+
+			wp_enqueue_style( 'siqo-operator', plugin_dir_url( __FILE__ ) . 'css/siqo-operator.css', array( $this->plugin_name ), $ver, 'all' );
+		}
 	}
 
 	/**
@@ -74,5 +81,21 @@ class Studio_Immens_Quick_Order_Public {
 	public function enqueue_scripts() {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/studio-immens-quick-order-public.js', array( 'jquery', 'wp-api' ), $this->version, true );
+
+		if ( $this->is_operator_page() ) {
+			$path = plugin_dir_path( __FILE__ ) . 'js/siqo-operator.js';
+			$ver  = file_exists( $path ) ? filemtime( $path ) : $this->version;
+
+			wp_enqueue_script( 'siqo-operator', plugin_dir_url( __FILE__ ) . 'js/siqo-operator.js', array( $this->plugin_name ), $ver, true );
+		}
+	}
+
+	private function is_operator_page() {
+		if ( ! is_singular() ) {
+			return false;
+		}
+
+		$post = get_post();
+		return $post && has_shortcode( $post->post_content, 'SIQO_manage_tables_section' );
 	}
 }

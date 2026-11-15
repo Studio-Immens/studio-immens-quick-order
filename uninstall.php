@@ -14,12 +14,16 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
+if ( 'yes' !== get_option( 'siqo_delete_data_on_uninstall' ) ) {
+	return;
+}
+
 // Drop custom tables
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}siqo_meta" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}siqo_tables" );
 
 // Delete all options with SIQO prefix
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'siqo\_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'siqo\_%' AND option_name NOT LIKE 'siqo\_inventory\_%' AND option_name NOT LIKE 'siqo\_printers\_%' AND option_name NOT LIKE 'siqo\_receipts\_%' AND option_name NOT LIKE 'siqo\_reservations\_%' AND option_name NOT LIKE 'siqo\_staff\_%' AND option_name NOT LIKE 'siqo\_warehouse\_%' AND option_name NOT LIKE 'siqo\_license\_%' AND option_name NOT LIKE 'siqo\_print\_rules%' AND option_name NOT IN ('siqo_instance_id','siqo_api_secret','siqo_forced_version','siqo_printnode_key','siqo_delete_data_on_uninstall','_siqo_license_token','_siqo_last_sync')" );
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'siqo_setting\_%'" );
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'flash\_order\_%'" );
 

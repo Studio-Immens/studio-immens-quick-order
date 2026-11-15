@@ -10,7 +10,7 @@
  * Plugin Name:       Studio Immens Quick Order
  * Plugin URI:        https://studioimmens.com/quick-order
  * Description:       Studio Immens Quick Order is the ultimate solution for streamlining restaurant order management on your WooCommerce-powered website. With this powerful plugin, you can supercharge your restaurant's online ordering process.
- * Version:           1.0.9
+ * Version:           1.1.2
  * Author:            Studio Immens
  * Author URI:        https://studioimmens.com
  * License:           GPL-3.0
@@ -33,7 +33,7 @@ add_filter( 'wp_consent_api_registered_' . plugin_basename( __FILE__ ), '__retur
  * Currently plugin version.
  * Start at version 1.0.0
  */
-define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.0.9' );
+define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.1.2' );
 
 /**
  * Currently database version for siqo_meta table.
@@ -101,4 +101,4 @@ add_filter('plugin_row_meta', function($meta, $file) {
         $meta[] = '<a href="https://docs.studioimmens.com/studio-immens-quick-order/" target="_blank" rel="noopener">' . esc_html__('Documentazione', 'studio-immens-quick-order') . '</a>';
     }
     return $meta;
-}, 10, 2);
+}, 10, 2 );

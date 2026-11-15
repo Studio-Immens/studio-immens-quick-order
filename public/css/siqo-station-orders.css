@@ -1,0 +1,507 @@
+#siqo-station-orders {
+    --siqo-station-cream: #f7f1e8;
+    --siqo-station-paper: #fffdf9;
+    --siqo-station-espresso: #241d19;
+    --siqo-station-muted: #826f61;
+    --siqo-station-sand: #e4d7c7;
+    --siqo-station-terracotta: #a6462f;
+    --siqo-station-amber: #b7791f;
+    --siqo-station-green: #3f7d5a;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: clamp(16px, 3vw, 36px);
+    color: var(--siqo-station-espresso);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+#siqo-station-orders *,
+#siqo-station-orders *::before,
+#siqo-station-orders *::after {
+    box-sizing: border-box;
+}
+
+#siqo-station-orders .siqo-station-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+#siqo-station-orders .siqo-station-eyebrow {
+    margin: 0 0 6px;
+    color: var(--siqo-station-terracotta);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+#siqo-station-orders .siqo-station-title {
+    margin: 0;
+    color: var(--siqo-station-espresso);
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-subtitle {
+    margin: 8px 0 0;
+    color: var(--siqo-station-muted);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+#siqo-station-orders .siqo-station-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 15px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 999px;
+    background: var(--siqo-station-paper);
+    color: var(--siqo-station-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-refresh:hover {
+    border-color: var(--siqo-station-terracotta);
+    background: #fff7ef;
+}
+
+#siqo-station-orders .siqo-station-refresh:active {
+    transform: translateY(1px);
+}
+
+#siqo-station-orders .siqo-station-refresh .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 18px;
+    padding: 2px 2px 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+#siqo-station-orders .siqo-station-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+#siqo-station-orders .siqo-station-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    height: 40px;
+    padding: 0 15px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 999px;
+    background: var(--siqo-station-paper);
+    color: var(--siqo-station-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-tab:hover {
+    border-color: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-tab.is-active {
+    border-color: var(--siqo-station-espresso);
+    background: var(--siqo-station-espresso);
+    color: #fff;
+}
+
+#siqo-station-orders .siqo-station-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #efe5d8;
+    color: var(--siqo-station-muted);
+    font-size: 10px;
+    font-weight: 850;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-tab.is-active .siqo-station-count {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+
+#siqo-station-orders .siqo-station-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+    align-items: start;
+    transition: opacity 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-list[aria-busy="true"] {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+#siqo-station-orders .siqo-station-order {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--siqo-station-sand);
+    border-left: 4px solid var(--siqo-station-amber);
+    border-radius: 16px;
+    background: var(--siqo-station-paper);
+    box-shadow: 0 10px 28px rgba(36, 29, 25, 0.07);
+    overflow: hidden;
+}
+
+#siqo-station-orders .siqo-station-order--preparing {
+    border-left-color: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-order--ready {
+    border-left-color: var(--siqo-station-green);
+}
+
+#siqo-station-orders .siqo-station-order-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 14px 10px;
+    border-bottom: 1px dashed var(--siqo-station-sand);
+}
+
+#siqo-station-orders .siqo-station-order-id {
+    flex: 0 0 auto;
+    color: var(--siqo-station-espresso);
+    font-size: 18px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+#siqo-station-orders .siqo-station-order-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    margin-top: 1px;
+}
+
+#siqo-station-orders .siqo-station-order-meta strong {
+    overflow: hidden;
+    color: var(--siqo-station-espresso);
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#siqo-station-orders .siqo-station-order-meta time {
+    color: var(--siqo-station-muted);
+    font-size: 11px;
+    font-weight: 650;
+}
+
+#siqo-station-orders .siqo-station-badge {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #fbf0dc;
+    color: #8a5a10;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+#siqo-station-orders .siqo-station-badge--preparing {
+    background: #f8e4de;
+    color: #8f3b27;
+}
+
+#siqo-station-orders .siqo-station-badge--ready {
+    background: #e2f0e7;
+    color: #2f6748;
+}
+
+#siqo-station-orders .siqo-station-items {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: 0;
+    padding: 12px 14px;
+    list-style: none;
+}
+
+#siqo-station-orders .siqo-station-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    min-width: 0;
+}
+
+#siqo-station-orders .siqo-station-item-qty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 30px;
+    height: 26px;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: #f1e7da;
+    color: var(--siqo-station-espresso);
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding-top: 1px;
+}
+
+#siqo-station-orders .siqo-station-item-name {
+    color: var(--siqo-station-espresso);
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+#siqo-station-orders .siqo-station-item-details {
+    color: var(--siqo-station-terracotta);
+    font-size: 10.5px;
+    font-weight: 650;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+#siqo-station-orders .siqo-station-item-stations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 2px;
+}
+
+#siqo-station-orders .siqo-station-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 19px;
+    padding: 0 7px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 999px;
+    color: var(--siqo-station-muted);
+    font-size: 9px;
+    font-weight: 750;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-order-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding: 10px 14px 12px;
+    border-top: 1px solid #f0e6da;
+}
+
+#siqo-station-orders .siqo-station-total {
+    color: var(--siqo-station-espresso);
+    font-size: 13px;
+    font-weight: 850;
+}
+
+#siqo-station-orders .siqo-station-total .woocommerce-Price-amount {
+    font-size: inherit;
+}
+
+#siqo-station-orders .siqo-station-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+#siqo-station-orders .siqo-station-action {
+    height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--siqo-station-espresso);
+    border-radius: 10px;
+    background: var(--siqo-station-espresso);
+    color: #fff;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-action:hover {
+    background: var(--siqo-station-terracotta);
+    border-color: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-action:active {
+    transform: translateY(1px);
+}
+
+#siqo-station-orders .siqo-station-action:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+#siqo-station-orders .siqo-station-action--reset {
+    border-color: var(--siqo-station-sand);
+    background: transparent;
+    color: var(--siqo-station-espresso);
+}
+
+#siqo-station-orders .siqo-station-action--reset:hover {
+    border-color: var(--siqo-station-terracotta);
+    background: #fbf0ea;
+    color: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-empty {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 190px;
+    padding: 24px;
+    border: 1px dashed var(--siqo-station-sand);
+    border-radius: 16px;
+    background: rgba(255, 253, 249, 0.65);
+    text-align: center;
+}
+
+#siqo-station-orders .siqo-station-empty strong {
+    color: var(--siqo-station-espresso);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+#siqo-station-orders .siqo-station-empty span {
+    color: var(--siqo-station-muted);
+    font-size: 12px;
+}
+
+#siqo-station-orders .siqo-station-error {
+    grid-column: 1 / -1;
+    padding: 14px;
+    border: 1px solid #e6b8ae;
+    border-radius: 12px;
+    background: #fbebe7;
+    color: #8f3b27;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.siqo-station-denied {
+    padding: 18px;
+    border: 1px solid #e6b8ae;
+    border-radius: 12px;
+    background: #fbebe7;
+    color: #8f3b27;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    #siqo-station-orders {
+        padding: 16px 12px 24px;
+    }
+
+    #siqo-station-orders .siqo-station-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #siqo-station-orders .siqo-station-title {
+        font-size: 30px;
+    }
+
+    #siqo-station-orders .siqo-station-refresh {
+        height: 38px;
+        padding: 0 12px;
+    }
+
+    #siqo-station-orders .siqo-station-tabs {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        padding-bottom: 0;
+    }
+
+    #siqo-station-orders .siqo-station-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #siqo-station-orders .siqo-station-order {
+        border-radius: 14px;
+    }
+}
+
+@media (max-width: 420px) {
+    #siqo-station-orders .siqo-station-tab {
+        height: 37px;
+        padding: 0 12px;
+        font-size: 11px;
+    }
+
+    #siqo-station-orders .siqo-station-order-head {
+        padding: 11px 11px 9px;
+    }
+
+    #siqo-station-orders .siqo-station-items {
+        padding: 11px;
+    }
+
+    #siqo-station-orders .siqo-station-order-foot {
+        padding: 9px 11px 11px;
+    }
+
+    #siqo-station-orders .siqo-station-action {
+        height: 34px;
+        padding: 0 10px;
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #siqo-station-orders *,
+    #siqo-station-orders *::before,
+    #siqo-station-orders *::after {
+        transition: none !important;
+    }
+}

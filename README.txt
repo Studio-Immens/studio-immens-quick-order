@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.9
+Stable tag: 1.1.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -95,6 +95,32 @@ Yes. English and Italian translations are included. The plugin is translation-re
 
 == Changelog ==
 
+= 1.1.2 =
+* Added frontend users and Quick Order role management to /gestione/
+* Added WooCommerce coupon management to /gestione/
+* Made catering events fully manageable from the frontend
+* Updated the admin dashboard catering link to the frontend module
+* Renamed the catering module and post type labels to "Eventi e Catering"
+* Redesigned the table payment modal with customer details, item totals and a mobile layout
+* Fixed the table card opening the payment modal on page load and restored the order creation panel
+
+= 1.1.1 =
+* Fixed the table management page fatal caused by the missing FOcheck() helper in Pro
+* Added the catering management module and panel
+* Cleaned the management bar and WordPress admin menu, removed legacy links and duplicate entries
+* Normalized catering, table and taxonomy labels and admin placement
+
+= 1.1.0 =
+* Added the Quick Order management shell at /gestione/ with worker, supervisor and manager access levels
+* Added the customer brand bar, account actions, fullscreen mode and validated table selection
+* Reorganized settings by restaurant, brand, pages, catalog, inventory, printers, receipts, reservations, staff, advanced and license
+* Added legacy settings redirects and license-aware module visibility
+* Added the management dashboard with live orders, revenue, tables, low stock, reservations and staff-on-shift cards
+* Preserved existing options, pages and custom tables during the upgrade
+
+= 1.0.10 =
+* Fixed the last inline handlers that still used the old FO_/fo_ names: the page settings close button, the macro-category history column controls, and the double-click status change on order story rows
+* Added the missing public page open/close/toggle helpers so the settings page no longer depends on admin-only JavaScript
 
 = 1.0.9 =
 * Fixed 50 inline handlers that still called the pre-rename function names, so the admin settings navigation, the grid-view slider, the header/footer toggle, the order story buttons, the tab keyboard and quantity parsing, favourites, variants, customer search and the "AVVIA ORDINE" button work again

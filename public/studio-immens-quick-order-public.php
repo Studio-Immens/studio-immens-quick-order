@@ -441,7 +441,7 @@ function SIQO_head_needed(){ ?>
 	<!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" /> -->
-	<input type="hidden" class="SIQO_toggle_header_footer" name="fo_toggle_header_footer" value="true">
+	<input type="hidden" class="fo_toggle_header_footer" name="fo_toggle_header_footer" value="true">
 	<input type="hidden" class="fo_home_url" name="fo_home_url" value="<?php echo esc_url( get_home_url() ); ?>">
 	<?php
 }
@@ -452,8 +452,19 @@ function siqo_header_style() { ?>
 	:root{
 		<?php 
 			$styles = SIQO_get_meta_by_assoc_id('style_css','OBJECT'); 
-			foreach( $styles as $style ){
-				echo esc_attr($style->meta_key).': '.esc_attr($style->meta_value).'; ';
+			if ( is_array( $styles ) ) {
+				foreach( $styles as $style ){
+					$key   = $style->meta_key;
+					$value = $style->meta_value;
+					echo esc_attr( $key ) . ': ' . esc_attr( $value ) . '; ';
+
+					// Alias storico: il CSS pubblico usa --fo-* mentre le
+					// impostazioni salvano --siqo-*. Teniamo allineate entrambe
+					// le famiglie di variabili.
+					if ( 0 === strpos( $key, '--siqo-' ) ) {
+						echo esc_attr( '--fo-' . substr( $key, 7 ) ) . ': ' . esc_attr( $value ) . '; ';
+					}
+				}
 			}
 		?>
 	}
@@ -551,6 +562,7 @@ function SIQO_admin_autorole(){
 
 include_once('template/front-order-ajax.php');
 include_once('template/manage-tables.php');
+include_once('station-orders.php');
 
 add_shortcode( 'SIQO_front_order_ajax_section', 'SIQO_front_order_ajax_section' );
 function SIQO_front_order_ajax_section(){
@@ -576,7 +588,6 @@ function SIQO_manage_tables_section(){
 		// SIQO_access_denied();
 		ob_start();
 		if ( SIQO_access_autorization() ){
-			SIQO_add_special_pages_navigations();
 			SIQO_pages_header_controls();
 			SIQO_manage_table();
 		}
@@ -593,20 +604,7 @@ function SIQO_manage_tables_section(){
 
 
 function SIQO_pages_header_controls(){
-	?>
-	<div id="" style="width:100%;border-bottom:1px solid;display:contents;">
-		<nav class="SIQO_nav_menu">
-			<button onclick="toggleFullScreen()" title="<?php echo esc_html__( 'imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â ', 'studio-immens-quick-order' ); ?>"><?php echo esc_html__( 'Schermo Intero', 'studio-immens-quick-order' ); ?></button>
-
-			<button id="SIQO_Hide_all_popup" onclick="SIQO_Hide_all_popup('.fo_tab_show, .fo_pay_tab_show,  .FOP_tab_catering_fixed_window, .fo_fixed_container')" title="<?php echo esc_html__( 'nascondi tutte le finestre popup della pagina', 'studio-immens-quick-order' ); ?>"><?php echo esc_html__( 'Nascondi tutti i PopUp', 'studio-immens-quick-order' ); ?></button>
-
-			<button id="FO_Refresh0" onclick="javascript:history.go(0);" title="<?php echo esc_html__( 'aggiorna la pagina eludendo la cache', 'studio-immens-quick-order' ); ?>"><?php echo esc_html__( 'Aggiorna la Pagina', 'studio-immens-quick-order' ); ?></button>
-
-			<button id="FO_hide_head_foot" onclick="SIQO_toggle_header_footer(true);" title="<?php echo esc_html__( 'Mostra/Nascondi header e footer della pagina.', 'studio-immens-quick-order' ); ?>"><?php esc_html_e( 'Mostra/Nascondi Header e Footer', 'studio-immens-quick-order' ); ?></button>
-			
-		</nav>
-	</div>
-	<?php
+	SIQO_Management::render_bar( 'staff' );
 }
 
 // SIQO_debug( FOW_get_warehouse_by_assoc_id_tax(14,'woo_product','OBJECT') );
@@ -617,48 +615,49 @@ if ( ! function_exists('SIQO_Catering_cpt') ) {
 	// Register Custom Post Type
 	function SIQO_Catering_cpt() {
 		$labels = array(
-			'name'                  => esc_html__( 'siqo_catering', 'studio-immens-quick-order' ),
-			'singular_name'         => esc_html__( 'siqo_catering', 'studio-immens-quick-order' ),
-			'menu_name'             => esc_html__( 'siqo_catering', 'studio-immens-quick-order' ),
-			'name_admin_bar'        => esc_html__( 'siqo_catering', 'studio-immens-quick-order' ),
-			'archives'              => esc_html__( 'Catering Archives', 'studio-immens-quick-order' ),
-			'attributes'            => esc_html__( 'Catering Attributes', 'studio-immens-quick-order' ),
-			'parent_item_colon'     => esc_html__( 'Parent Catering:', 'studio-immens-quick-order' ),
-			'all_items'             => esc_html__( 'All Catering', 'studio-immens-quick-order' ),
-			'add_new_item'          => esc_html__( 'Add New Catering', 'studio-immens-quick-order' ),
-			'add_new'               => esc_html__( 'Add New', 'studio-immens-quick-order' ),
-			'new_item'              => esc_html__( 'New Catering', 'studio-immens-quick-order' ),
-			'edit_item'             => esc_html__( 'Edit Catering', 'studio-immens-quick-order' ),
-			'update_item'           => esc_html__( 'Update Catering', 'studio-immens-quick-order' ),
-			'view_item'             => esc_html__( 'View Catering', 'studio-immens-quick-order' ),
-			'view_items'            => esc_html__( 'View Catering', 'studio-immens-quick-order' ),
-			'search_items'          => esc_html__( 'Search Catering', 'studio-immens-quick-order' ),
-			'not_found'             => esc_html__( 'Not found', 'studio-immens-quick-order' ),
-			'not_found_in_trash'    => esc_html__( 'Not found in Trash', 'studio-immens-quick-order' ),
-			'featured_image'        => esc_html__( 'Featured Image', 'studio-immens-quick-order' ),
-			'set_featured_image'    => esc_html__( 'Set featured image', 'studio-immens-quick-order' ),
-			'remove_featured_image' => esc_html__( 'Remove featured image', 'studio-immens-quick-order' ),
-			'use_featured_image'    => esc_html__( 'Use as featured image', 'studio-immens-quick-order' ),
-			'insert_into_item'      => esc_html__( 'Insert into Catering', 'studio-immens-quick-order' ),
-			'uploaded_to_this_item' => esc_html__( 'Uploaded to this Catering', 'studio-immens-quick-order' ),
-			'items_list'            => esc_html__( 'Items Catering', 'studio-immens-quick-order' ),
-			'items_list_navigation' => esc_html__( 'Items Catering navigation', 'studio-immens-quick-order' ),
-			'filter_items_list'     => esc_html__( 'Filter Catering list', 'studio-immens-quick-order' ),
+			'name'                  => esc_html__( 'Eventi e Catering', 'studio-immens-quick-order' ),
+			'singular_name'         => esc_html__( 'Evento catering', 'studio-immens-quick-order' ),
+			'menu_name'             => esc_html__( 'Eventi e Catering', 'studio-immens-quick-order' ),
+			'name_admin_bar'        => esc_html__( 'Eventi e Catering', 'studio-immens-quick-order' ),
+			'archives'              => esc_html__( 'Archivio catering', 'studio-immens-quick-order' ),
+			'attributes'            => esc_html__( 'Attributi evento', 'studio-immens-quick-order' ),
+			'parent_item_colon'     => esc_html__( 'Evento principale:', 'studio-immens-quick-order' ),
+			'all_items'             => esc_html__( 'Tutti gli eventi', 'studio-immens-quick-order' ),
+			'add_new_item'          => esc_html__( 'Aggiungi evento catering', 'studio-immens-quick-order' ),
+			'add_new'               => esc_html__( 'Aggiungi nuovo', 'studio-immens-quick-order' ),
+			'new_item'              => esc_html__( 'Nuovo evento catering', 'studio-immens-quick-order' ),
+			'edit_item'             => esc_html__( 'Modifica evento catering', 'studio-immens-quick-order' ),
+			'update_item'           => esc_html__( 'Aggiorna evento catering', 'studio-immens-quick-order' ),
+			'view_item'             => esc_html__( 'Visualizza evento catering', 'studio-immens-quick-order' ),
+			'view_items'            => esc_html__( 'Visualizza eventi catering', 'studio-immens-quick-order' ),
+			'search_items'          => esc_html__( 'Cerca eventi catering', 'studio-immens-quick-order' ),
+			'not_found'             => esc_html__( 'Nessun evento trovato', 'studio-immens-quick-order' ),
+			'not_found_in_trash'    => esc_html__( 'Nessun evento nel cestino', 'studio-immens-quick-order' ),
+			'featured_image'        => esc_html__( 'Immagine in evidenza', 'studio-immens-quick-order' ),
+			'set_featured_image'    => esc_html__( 'Imposta immagine in evidenza', 'studio-immens-quick-order' ),
+			'remove_featured_image' => esc_html__( 'Rimuovi immagine in evidenza', 'studio-immens-quick-order' ),
+			'use_featured_image'    => esc_html__( 'Usa come immagine in evidenza', 'studio-immens-quick-order' ),
+			'insert_into_item'      => esc_html__( 'Inserisci nell’evento', 'studio-immens-quick-order' ),
+			'uploaded_to_this_item' => esc_html__( 'Caricato per questo evento', 'studio-immens-quick-order' ),
+			'items_list'            => esc_html__( 'Elenco eventi catering', 'studio-immens-quick-order' ),
+			'items_list_navigation' => esc_html__( 'Navigazione elenco eventi', 'studio-immens-quick-order' ),
+			'filter_items_list'     => esc_html__( 'Filtra eventi catering', 'studio-immens-quick-order' ),
 		);
 		$args = array(
-			'label'                 => esc_html__( 'siqo_catering', 'studio-immens-quick-order' ),
-			'description'           => esc_html__( 'Post Type for Catering', 'studio-immens-quick-order' ),
+			'label'                 => esc_html__( 'Eventi e Catering', 'studio-immens-quick-order' ),
+			'description'           => esc_html__( 'Eventi catering, banchetti e ordinazioni speciali.', 'studio-immens-quick-order' ),
 			'labels'                => $labels,
-			'supports'              => array( 'title', 'author', 'comments', 'editor', 'thumbnail', 'revisions', 'custom-fields' ),
-			'taxonomies'            => array( 'category', 'post_tag' ),
+			'supports'              => array( 'title', 'author', 'editor', 'thumbnail', 'revisions', 'custom-fields' ),
+			'taxonomies'            => array(),
 			'hierarchical'          => false,
 			'public'                => true,
 			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 5,
-			'menu_icon'             => 'dashicons-list-view',
+			'show_in_menu'          => 'si-quick-order',
+			'show_in_rest'          => true,
+			'menu_position'         => 20,
+			'menu_icon'             => 'dashicons-food',
 			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
+			'show_in_nav_menus'     => false,
 			'can_export'            => true,
 			'has_archive'           => false,
 			'exclude_from_search'   => true,
@@ -971,48 +970,49 @@ function SIQO_show_macro_cat_tax_to_product_page(){
 function SIQOP_tables_cpt() {
 
 	$labels = array(
-		'name'                  => esc_html__( 'siqo_tables', 'studio-immens-quick-order' ),
-		'singular_name'         => esc_html__( 'tavolo', 'studio-immens-quick-order' ),
-		'menu_name'             => esc_html__( 'siqo_tables', 'studio-immens-quick-order' ),
-		'name_admin_bar'        => esc_html__( 'siqo_tables', 'studio-immens-quick-order' ),
-		'archives'              => esc_html__( 'siqo_tables', 'studio-immens-quick-order' ),
-		'attributes'            => esc_html__( 'siqo_tables', 'studio-immens-quick-order' ),
-		'parent_item_colon'     => esc_html__( 'Genitore tavolo:', 'studio-immens-quick-order' ),
+		'name'                  => esc_html__( 'Tavoli', 'studio-immens-quick-order' ),
+		'singular_name'         => esc_html__( 'Tavolo', 'studio-immens-quick-order' ),
+		'menu_name'             => esc_html__( 'Tavoli', 'studio-immens-quick-order' ),
+		'name_admin_bar'        => esc_html__( 'Tavolo', 'studio-immens-quick-order' ),
+		'archives'              => esc_html__( 'Archivio tavoli', 'studio-immens-quick-order' ),
+		'attributes'            => esc_html__( 'Attributi tavolo', 'studio-immens-quick-order' ),
+		'parent_item_colon'     => esc_html__( 'Tavolo principale:', 'studio-immens-quick-order' ),
 		'all_items'             => esc_html__( 'Tutti i tavoli', 'studio-immens-quick-order' ),
 		'add_new_item'          => esc_html__( 'Aggiungi nuovo tavolo', 'studio-immens-quick-order' ),
 		'add_new'               => esc_html__( 'Aggiungi nuovo', 'studio-immens-quick-order' ),
 		'new_item'              => esc_html__( 'Nuovo tavolo', 'studio-immens-quick-order' ),
 		'edit_item'             => esc_html__( 'Modifica tavolo', 'studio-immens-quick-order' ),
-		'update_item'           => esc_html__( 'Aggiorna elemento', 'studio-immens-quick-order' ),
+		'update_item'           => esc_html__( 'Aggiorna tavolo', 'studio-immens-quick-order' ),
 		'view_item'             => esc_html__( 'Visualizza tavolo', 'studio-immens-quick-order' ),
 		'view_items'            => esc_html__( 'Visualizza tavoli', 'studio-immens-quick-order' ),
 		'search_items'          => esc_html__( 'Cerca tavolo', 'studio-immens-quick-order' ),
 		'not_found'             => esc_html__( 'Nessun tavolo', 'studio-immens-quick-order' ),
-		'not_found_in_trash'    => esc_html__( 'Nessun tavolo in Trash', 'studio-immens-quick-order' ),
-		'featured_image'        => esc_html__( 'Featured Image', 'studio-immens-quick-order' ),
-		'set_featured_image'    => esc_html__( 'Imposta featured image', 'studio-immens-quick-order' ),
-		'remove_featured_image' => esc_html__( 'Rimuovi la featured image', 'studio-immens-quick-order' ),
-		'use_featured_image'    => esc_html__( 'Usa come featured image', 'studio-immens-quick-order' ),
+		'not_found_in_trash'    => esc_html__( 'Nessun tavolo nel cestino', 'studio-immens-quick-order' ),
+		'featured_image'        => esc_html__( 'Immagine in evidenza', 'studio-immens-quick-order' ),
+		'set_featured_image'    => esc_html__( 'Imposta immagine in evidenza', 'studio-immens-quick-order' ),
+		'remove_featured_image' => esc_html__( 'Rimuovi immagine in evidenza', 'studio-immens-quick-order' ),
+		'use_featured_image'    => esc_html__( 'Usa come immagine in evidenza', 'studio-immens-quick-order' ),
 		'insert_into_item'      => esc_html__( 'Inserisci nel tavolo', 'studio-immens-quick-order' ),
-		'uploaded_to_this_item' => esc_html__( 'Aggiornato in questo tavolo', 'studio-immens-quick-order' ),
-		'items_list'            => esc_html__( 'lista tavoli', 'studio-immens-quick-order' ),
-		'items_list_navigation' => esc_html__( 'Items list navigation', 'studio-immens-quick-order' ),
-		'filter_items_list'     => esc_html__( 'Filtra lista tavoli', 'studio-immens-quick-order' ),
+		'uploaded_to_this_item' => esc_html__( 'Caricato per questo tavolo', 'studio-immens-quick-order' ),
+		'items_list'            => esc_html__( 'Elenco tavoli', 'studio-immens-quick-order' ),
+		'items_list_navigation' => esc_html__( 'Navigazione elenco tavoli', 'studio-immens-quick-order' ),
+		'filter_items_list'     => esc_html__( 'Filtra tavoli', 'studio-immens-quick-order' ),
 	);
 	$args = array(
-		'label'                 => esc_html__( 'tavolo', 'studio-immens-quick-order' ),
-		'description'           => esc_html__( 'Questo post type generato dal plug-in: IW FlashOrder, serve per controllare e gestire i tavoli(o anche le zone speciali come ad es. il bancone, il cortile, il gazebo etc...), del tuo ristorante.', 'studio-immens-quick-order' ),
+		'label'                 => esc_html__( 'Tavolo', 'studio-immens-quick-order' ),
+		'description'           => esc_html__( 'Tavoli e zone del ristorante: bancone, cortile, gazebo e altre postazioni.', 'studio-immens-quick-order' ),
 		'labels'                => $labels,
 		'supports'              => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields' ),
-		'taxonomies'            => array( 'category', 'post_tag' ),
+		'taxonomies'            => array(),
 		'hierarchical'          => false,
 		'public'                => true,
 		'show_ui'               => true,
-		'show_in_menu'          => true,
-		'menu_position'         => 5,
+		'show_in_menu'          => 'si-quick-order',
+		'show_in_rest'          => true,
+		'menu_position'         => 21,
 		'menu_icon'             => 'dashicons-food',
 		'show_in_admin_bar'     => true,
-		'show_in_nav_menus'     => true,
+		'show_in_nav_menus'     => false,
 		'can_export'            => true,
 		'has_archive'           => false,
 		'exclude_from_search'   => true,
@@ -1028,26 +1028,26 @@ add_action( 'init', 'SIQOP_tables_cpt', 0 );
 // Register Custom Taxonomy
 function SIQOP_custom_taxonomy_status() {
 	$labels = array(
-		'name'                       => esc_html__( 'siqo_table_status', 'studio-immens-quick-order' ),
-		'singular_name'              => esc_html__( 'siqo_table_status', 'studio-immens-quick-order' ),
-		'menu_name'                  => esc_html__( 'siqo_table_status', 'studio-immens-quick-order' ),
-		'all_items'                  => esc_html__( 'Tutti gli Status', 'studio-immens-quick-order' ),
-		'parent_item'                => esc_html__( 'Genitore dello Status', 'studio-immens-quick-order' ),
-		'parent_item_colon'          => esc_html__( 'Genitore dello Status:', 'studio-immens-quick-order' ),
-		'new_item_name'              => esc_html__( 'Nuovo Status', 'studio-immens-quick-order' ),
-		'add_new_item'               => esc_html__( 'Aggiungi Nuovo Status', 'studio-immens-quick-order' ),
-		'edit_item'                  => esc_html__( 'Edita Status', 'studio-immens-quick-order' ),
-		'update_item'                => esc_html__( 'Aggiorna Status', 'studio-immens-quick-order' ),
-		'view_item'                  => esc_html__( 'Visualizza Status', 'studio-immens-quick-order' ),
-		'separate_items_with_commas' => esc_html__( 'Separa gli Status con la virgola', 'studio-immens-quick-order' ),
-		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Status', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
-		'popular_items'              => esc_html__( 'Status Popolari', 'studio-immens-quick-order' ),
-		'search_items'               => esc_html__( 'Cerca Status', 'studio-immens-quick-order' ),
-		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
-		'no_terms'                   => esc_html__( 'Nessuno Status', 'studio-immens-quick-order' ),
-		'items_list'                 => esc_html__( 'lista Status', 'studio-immens-quick-order' ),
-		'items_list_navigation'      => esc_html__( 'navigazione lista Status', 'studio-immens-quick-order' ),
+		'name'                       => esc_html__( 'Stati tavolo', 'studio-immens-quick-order' ),
+		'singular_name'              => esc_html__( 'Stato tavolo', 'studio-immens-quick-order' ),
+		'menu_name'                  => esc_html__( 'Stati tavolo', 'studio-immens-quick-order' ),
+		'all_items'                  => esc_html__( 'Tutti gli stati', 'studio-immens-quick-order' ),
+		'parent_item'                => esc_html__( 'Stato principale', 'studio-immens-quick-order' ),
+		'parent_item_colon'          => esc_html__( 'Stato principale:', 'studio-immens-quick-order' ),
+		'new_item_name'              => esc_html__( 'Nuovo stato tavolo', 'studio-immens-quick-order' ),
+		'add_new_item'               => esc_html__( 'Aggiungi stato tavolo', 'studio-immens-quick-order' ),
+		'edit_item'                  => esc_html__( 'Modifica stato tavolo', 'studio-immens-quick-order' ),
+		'update_item'                => esc_html__( 'Aggiorna stato tavolo', 'studio-immens-quick-order' ),
+		'view_item'                  => esc_html__( 'Visualizza stato tavolo', 'studio-immens-quick-order' ),
+		'separate_items_with_commas' => esc_html__( 'Separa gli stati con la virgola', 'studio-immens-quick-order' ),
+		'add_or_remove_items'        => esc_html__( 'Aggiungi o rimuovi stati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli tra i più usati', 'studio-immens-quick-order' ),
+		'popular_items'              => esc_html__( 'Stati più usati', 'studio-immens-quick-order' ),
+		'search_items'               => esc_html__( 'Cerca stato tavolo', 'studio-immens-quick-order' ),
+		'not_found'                  => esc_html__( 'Nessuno stato trovato', 'studio-immens-quick-order' ),
+		'no_terms'                   => esc_html__( 'Nessuno stato', 'studio-immens-quick-order' ),
+		'items_list'                 => esc_html__( 'Elenco stati tavolo', 'studio-immens-quick-order' ),
+		'items_list_navigation'      => esc_html__( 'Navigazione elenco stati', 'studio-immens-quick-order' ),
 	);
 	$args = array(
 		'labels'            => $labels,
@@ -1055,8 +1055,8 @@ function SIQOP_custom_taxonomy_status() {
 		'public'            => true,
 		'show_ui'           => true,
 		'show_admin_column' => true,
-		'show_in_menu' 		=> true,
-		'show_in_nav_menus' => true,
+		'show_in_menu' 		=> 'edit.php?post_type=siqo_tables',
+		'show_in_nav_menus' => false,
 		'show_in_quick_edit'=> true,
 		'show_tagcloud'     => true,
 		'show_in_rest'      => true,
@@ -1071,26 +1071,26 @@ function SIQOP_custom_taxonomy_status() {
 // Register Custom Taxonomy
 function SIQOP_custom_taxonomy_zone() {
 	$labels = array(
-		'name'                       => esc_html__( 'siqo_zones', 'studio-immens-quick-order' ),
+		'name'                       => esc_html__( 'Zone', 'studio-immens-quick-order' ),
 		'singular_name'              => esc_html__( 'Zona', 'studio-immens-quick-order' ),
-		'menu_name'                  => esc_html__( 'siqo_zones', 'studio-immens-quick-order' ),
-		'all_items'                  => esc_html__( 'Tutti le Zone', 'studio-immens-quick-order' ),
-		'parent_item'                => esc_html__( 'Genitore della Zona', 'studio-immens-quick-order' ),
-		'parent_item_colon'          => esc_html__( 'Genitore della Zona:', 'studio-immens-quick-order' ),
-		'new_item_name'              => esc_html__( 'Nuova Zona', 'studio-immens-quick-order' ),
-		'add_new_item'               => esc_html__( 'Aggiungi Nuova Zona', 'studio-immens-quick-order' ),
-		'edit_item'                  => esc_html__( 'Edita Zona', 'studio-immens-quick-order' ),
-		'update_item'                => esc_html__( 'Aggiorna Zona', 'studio-immens-quick-order' ),
-		'view_item'                  => esc_html__( 'Visualizza Zona', 'studio-immens-quick-order' ),
-		'separate_items_with_commas' => esc_html__( 'Separa le Zone con la virgola', 'studio-immens-quick-order' ),
-		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Zone', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
-		'popular_items'              => esc_html__( 'Zone Popolari', 'studio-immens-quick-order' ),
-		'search_items'               => esc_html__( 'Cerca Zone', 'studio-immens-quick-order' ),
-		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
-		'no_terms'                   => esc_html__( 'Nessuna Zona', 'studio-immens-quick-order' ),
-		'items_list'                 => esc_html__( 'lista Zone', 'studio-immens-quick-order' ),
-		'items_list_navigation'      => esc_html__( 'navigazione lista Zone', 'studio-immens-quick-order' ),
+		'menu_name'                  => esc_html__( 'Zone', 'studio-immens-quick-order' ),
+		'all_items'                  => esc_html__( 'Tutte le zone', 'studio-immens-quick-order' ),
+		'parent_item'                => esc_html__( 'Zona principale', 'studio-immens-quick-order' ),
+		'parent_item_colon'          => esc_html__( 'Zona principale:', 'studio-immens-quick-order' ),
+		'new_item_name'              => esc_html__( 'Nuova zona', 'studio-immens-quick-order' ),
+		'add_new_item'               => esc_html__( 'Aggiungi zona', 'studio-immens-quick-order' ),
+		'edit_item'                  => esc_html__( 'Modifica zona', 'studio-immens-quick-order' ),
+		'update_item'                => esc_html__( 'Aggiorna zona', 'studio-immens-quick-order' ),
+		'view_item'                  => esc_html__( 'Visualizza zona', 'studio-immens-quick-order' ),
+		'separate_items_with_commas' => esc_html__( 'Separa le zone con la virgola', 'studio-immens-quick-order' ),
+		'add_or_remove_items'        => esc_html__( 'Aggiungi o rimuovi zone', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli tra le più usate', 'studio-immens-quick-order' ),
+		'popular_items'              => esc_html__( 'Zone più usate', 'studio-immens-quick-order' ),
+		'search_items'               => esc_html__( 'Cerca zona', 'studio-immens-quick-order' ),
+		'not_found'                  => esc_html__( 'Nessuna zona trovata', 'studio-immens-quick-order' ),
+		'no_terms'                   => esc_html__( 'Nessuna zona', 'studio-immens-quick-order' ),
+		'items_list'                 => esc_html__( 'Elenco zone', 'studio-immens-quick-order' ),
+		'items_list_navigation'      => esc_html__( 'Navigazione elenco zone', 'studio-immens-quick-order' ),
 	);
 	$args = array(
 		'labels'            => $labels,
@@ -1098,8 +1098,8 @@ function SIQOP_custom_taxonomy_zone() {
 		'public'            => true,
 		'show_ui'           => true,
 		'show_admin_column' => true,
-		'show_in_menu' 		=> true,
-		'show_in_nav_menus' => true,
+		'show_in_menu' 		=> 'edit.php?post_type=siqo_tables',
+		'show_in_nav_menus' => false,
 		'show_in_quick_edit'=> true,
 		'show_tagcloud'     => true,
 		'show_in_rest'      => true,
@@ -1134,7 +1134,7 @@ if ( isset($settings) && $settings != null ) {
 $page = get_post($page_id);
 ?>
 <div class="GenericDetailSection" fo_page_id="<?php echo esc_attr($page_id);?>" style="display:none;">
-	<div class="GenericClose" onclick="FO_hide_pages_rapid_impost(<?php echo '`'.esc_attr($page_id).'`'?>)">
+	<div class="GenericClose" onclick="SIQO_hide_pages_rapid_impost(<?php echo '`'.esc_attr($page_id).'`'?>)">
 		X<div style="margin-left:auto;"><?php esc_html_e('CHIUDI' , 'studio-immens-quick-order');?></div>
 	</div>
 	<div class="GenericDetailHead">
@@ -2362,7 +2362,7 @@ function SIQOP_insert_table( $args ){
   $final['orders'] = wp_json_encode( (array)$final['orders'] );
 
   $table = $wpdb->prefix . "siqo_tables";
-  $result = $wpdb->insert( $table, array( 'table_number'=>$final['table_number'], 'table_id'=>$final['table_id'], 'start_time'=>$final['start_time'], 'orders'=>$final['orders'], 'siqo_table_status'=>$final['siqo_table_status'], 'prev_status'=>$final['prev_status'], 'end_time'=>$final['end_time'], 'totals'=>$final['totals'], 'info'=>$final['info'], 'receipt'=>$final['receipt'], 'other'=>$final['other'], 'last_update'=>$final['last_update'] ) );
+  $result = $wpdb->insert( $table, array( 'table_number'=>$final['table_number'], 'table_id'=>$final['table_id'], 'start_time'=>$final['start_time'], 'orders'=>$final['orders'], 'status'=>$final['siqo_table_status'], 'siqo_table_status'=>$final['siqo_table_status'], 'prev_status'=>$final['prev_status'], 'end_time'=>$final['end_time'], 'totals'=>$final['totals'], 'info'=>$final['info'], 'receipt'=>$final['receipt'], 'other'=>$final['other'], 'last_update'=>$final['last_update'] ) );
   return $result;
 }
 function SIQOP_update_table( $id, $args ){
@@ -2383,23 +2383,35 @@ function SIQOP_update_table( $id, $args ){
 	// 'last_update' 	=> ''
 	// );
   // $final_args = wp_parse_args( $args, $default_args );
-	$final = wp_parse_args( $meta, $args );
+	$final = wp_parse_args( $args, (array) $meta );
 	if (isset($args['siqo_table_status']) ) {
 		$final['siqo_table_status'] = $args['siqo_table_status'];
 	}
 	if ( $final['siqo_table_status'] == 10 ) {
 		$final['end_time'] = wp_date('Y-m-d H:i:s');
 	}
-	$meta_order = ($meta->orders!='')?json_decode( $meta->orders ):array();
-	$args_order = ($meta->orders!='')?json_decode( $args['orders'] ):array();
+	$meta_order = ( $meta->orders != '' ) ? json_decode( $meta->orders ) : array();
+	$args_order = ( isset( $args['orders'] ) && $args['orders'] != '' ) ? json_decode( $args['orders'] ) : array();
 
-	$final['orders'] = wp_json_encode( array_unique(array_merge( (array)$meta_order, (array)$args_order )) );
+	$merged_orders = array_values( array_unique( array_merge( (array) $meta_order, (array) $args_order ) ) );
+	$final['orders'] = wp_json_encode( $merged_orders );
+	if ( ! empty( $merged_orders ) ) {
+		$orders_total = 0;
+		foreach ( $merged_orders as $merged_order_id ) {
+			$merged_order = wc_get_order( $merged_order_id );
+			if ( $merged_order ) {
+				$orders_total += (float) $merged_order->get_total();
+			}
+		}
+		$final['totals'] = (string) $orders_total;
+	}
 
 		$result = $wpdb->update( $table, array( 
 			'table_number'=> $final['table_number'], 
 			'table_id'	=> $final['table_id'], 
 			'orders'	=> $final['orders'], 
-			'siqo_table_status'	=> $final['siqo_table_status'], 
+			'status'	=> $final['siqo_table_status'],
+			'siqo_table_status'	=> $final['siqo_table_status'],
 			'prev_status'=> $meta->status, 
 			'end_time'	=> $final['end_time'], 
 			'totals'	=> $final['totals'], 
@@ -2509,7 +2521,7 @@ function SIQO_get_category_by_slug( $value = '' ){
 function SIQO_product_to_table_loop( $object ){
 	foreach ( $object as $key => $value) {
 		?>
-	<thead siqotargetcat="<?php echo esc_attr($key);?>" onclick="jQuery(this).parent().find(`tbody tr[siqocategories='<?php echo esc_attr($key);?>']`).toggle();">
+	<thead siqotargetcat="<?php echo esc_attr($key);?>" onclick="jQuery(this).parent().find(`tbody tr[focategories='<?php echo esc_attr($key);?>']`).toggle();">
 		<tr class="title" style="font-weight:800;font-size:30px;">
 			<th style="background-color: var(--siqo-main-color)!important;">
 			<?php echo esc_attr($key); ?>
@@ -2534,7 +2546,7 @@ function SIQO_product_to_table( $product, $cat_slug ){
 	// SIQO_debug( $cat_slug );
 	$visualize = SIQO_get_flash_orders_visualize_settings();
 ?>
-	<tr siqocategories="<?php echo esc_attr($cat_slug); ?>" siqocatid="<?php echo esc_attr($category); ?>" id="<?php echo 'prod-'.esc_attr($id); ?>" style="transition:var(--siqo-main-tran);position:relative;" siqoid="<?php echo esc_attr($id); ?>" siqoname="<?php echo esc_attr($product->get_name()); ?>">
+	<tr focategories="<?php echo esc_attr($cat_slug); ?>" focatid="<?php echo esc_attr($category); ?>" id="<?php echo 'prod-'.esc_attr($id); ?>" style="transition:var(--siqo-main-tran);position:relative;" foid="<?php echo esc_attr($id); ?>" foname="<?php echo esc_attr($product->get_name()); ?>">
 		<?php if ( isset($visualize['id']) && $visualize['id'] ) { ?>
 
 			<td style="width:50px;"><?php echo esc_attr($product->get_id()); ?></td>
@@ -2698,7 +2710,7 @@ $fo_gallery = array();
 	}
 
 ?>
-	<div class="siqoProdCard" siqoware="<?php echo esc_attr($fo_ware);?>" siqocategories="<?php echo esc_attr($cat_slug);?>" siqocatid="<?php echo esc_attr($category);?>" id="<?php echo 'prod-'.esc_attr($id);?>" style="transition:var(--siqo-main-tran);position:relative;" siqoid="<?php echo esc_attr($id);?>" siqoname="<?php echo esc_attr($product->get_name());?>" fovariations="<?php echo esc_attr($vari_arr);?>" nat-ing="<?php echo esc_attr($count_ing);?>" fo_gallery="<?php echo esc_attr($fo_gallery);?>" fo_description="<?php echo esc_attr($product->get_description());?>" fo_tot="<?php echo esc_attr(SIQO_price($product->get_price()));?>" fo_tax_cat="<?php echo esc_attr($fo_tax_cat);?>" fo_tax_tag="<?php echo esc_attr($fo_tax_tag);?>" fo_tax_ing="<?php echo esc_attr($fo_tax_ing);?>" fo_tax_allerg="<?php echo esc_attr($fo_tax_allerg);?>" fo_menu_prod="<?php echo esc_attr($fo_menu_prod);?>" siqoindex="0">
+	<div class="foProdCard" foware="<?php echo esc_attr($fo_ware);?>" focategories="<?php echo esc_attr($cat_slug);?>" focatid="<?php echo esc_attr($category);?>" id="<?php echo 'prod-'.esc_attr($id);?>" style="transition:var(--siqo-main-tran);position:relative;" foid="<?php echo esc_attr($id);?>" foname="<?php echo esc_attr($product->get_name());?>" fovariations="<?php echo esc_attr($vari_arr);?>" nat-ing="<?php echo esc_attr($count_ing);?>" fo_gallery="<?php echo esc_attr($fo_gallery);?>" fo_description="<?php echo esc_attr($product->get_description());?>" fo_tot="<?php echo esc_attr(SIQO_price($product->get_price()));?>" fo_tax_cat="<?php echo esc_attr($fo_tax_cat);?>" fo_tax_tag="<?php echo esc_attr($fo_tax_tag);?>" fo_tax_ing="<?php echo esc_attr($fo_tax_ing);?>" fo_tax_allerg="<?php echo esc_attr($fo_tax_allerg);?>" fo_menu_prod="<?php echo esc_attr($fo_menu_prod);?>" foindex="0">
 
 		<input fo_tab_target="id" type="hidden" name="[id][<?php echo esc_attr($id);?>]" value="1">
 		<input fo_tab_target="qty" type="hidden" name="[qty][<?php echo esc_attr($id);?>]" value="1">
@@ -2706,13 +2718,13 @@ $fo_gallery = array();
 		<input fo_tab_target="note" type="hidden" name="[note][<?php echo esc_attr($id);?>]" value="">
 
 
-		<div class="siqoProdCardHead">
-			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_prod_card(this)', 'class'=>'SIQO_prod_img_menu' )); ?>
+		<div class="foProdCardHead">
+			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_Prod_Card(this)', 'class'=>'SIQO_prod_img_menu' )); ?>
 			<div class="foname target_search" onclick="SIQO_Advanced_Prod_Card(this)"><?php echo esc_attr($product->get_name());?></div>
 			<?php 
 				// SIQO_get_product_temperature_options($product);
 			?>
-			<div class="foheart" onclick="SIQO_add_prod_to_favorites(jQuery(this).closest('.siqoProdCard'));">
+			<div class="foheart" onclick="SIQO_add_prod_to_favorites(jQuery(this).closest('.foProdCard'));">
 				<span class="dashicons dashicons-heart"></span>
 			</div>
 
@@ -2725,28 +2737,42 @@ $fo_gallery = array();
 
 		$product_attr = $product->get_attributes();
 		foreach ($product_attr as $k => $v) {
+			$attr_key = $k;
+			$attr_options = array();
 			if (str_contains($k, 'pa_')) {
 				$k = str_replace('pa_', '', $k);
-				$attr = explode( ', ', $product->get_attribute( $k ) );
 				$attr_term = 'pa_'.$k;
+				if ( taxonomy_exists( $attr_key ) ) {
+					$terms = wc_get_product_terms( $product->get_id(), $attr_key, array( 'fields' => 'all' ) );
+					foreach ( $terms as $term ) {
+						$attr_options[] = array(
+							'value' => $term->slug,
+							'label' => $term->name,
+							'price_to_add' => get_string_between( $term->description, '[', ']' ),
+						);
+					}
+				}
 			} else{
-				$attr_term = false;
 				$attr = explode( ' | ', $product->get_attribute( $k ) );
+				foreach ($attr as $opt) {
+					$attr_options[] = array(
+						'value' => $opt,
+						'label' => $opt,
+						'price_to_add' => '0.0',
+					);
+				}
 			}
 			?>
-			<div class="fovariant" fovariant="<?php echo esc_attr($k);?>">
+			<div class="fovariant" fovariant="<?php echo esc_attr($attr_key);?>">
 				<strong><?php echo esc_attr($k);?></strong>
 
-				<select class="fo_button_thin" foadvariant="<?php echo esc_attr($k);?>" fo_prod_id="<?php echo esc_attr($product->get_id());?>" SIQO_price="<?php echo esc_attr($product->get_price());?>" fo_regular_price="<?php echo esc_attr($product->get_price());?>" onchange="SIQO_variant_set(this);" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" value="">
+				<select class="fo_button_thin" foadvariant="<?php echo esc_attr($attr_key);?>" fo_prod_id="<?php echo esc_attr($product->get_id());?>" fo_price="<?php echo esc_attr($product->get_price());?>" fo_regular_price="<?php echo esc_attr($product->get_price());?>" onchange="SIQO_variant_set(this);" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($attr_key);?>]" value="">
 
 						<option value=""><?php esc_html_e(' - Seleziona - ','studio-immens-quick-order');?></option>
-					<?php foreach ($attr as $key => $opt) { 
-						$price_to_add = '0.0';
-						if ( taxonomy_exists( $attr_term ) ) {
-							$price_to_add = get_string_between(get_term_by('name', $opt, $attr_term )->description,'[',']');
-						}
+					<?php foreach ($attr_options as $opt) {
+						$price_to_add = ( $opt['price_to_add'] !== '' && $opt['price_to_add'] !== false ) ? $opt['price_to_add'] : '0.0';
 						?>
-						<option value="<?php echo esc_attr($opt);?>" fovariant="<?php echo esc_attr($k);?>" SIQO_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_attr($opt);?></option>
+						<option value="<?php echo esc_attr($opt['value']);?>" fovariant="<?php echo esc_attr($attr_key);?>" fo_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_html($opt['label']);?></option>
 					<?php } ?>
 				</select>
 			</div>
@@ -2811,14 +2837,14 @@ $fo_gallery = array();
 			<?php } ?>
 		</div>
 
-		<div class="siqoProdCardFoot">
+		<div class="foProdCardFoot">
 		
 		</div>
 	</div>
 	<?php
 }
 
-function SIQO_Advanced_prod_card(){
+function SIQO_Advanced_Prod_Card(){
 	/*
 	<!-- <input type="search" name="searched" class="FOSearchIngred fo_ajax_search_ing" onkeyup="FOSearchIngred(this)" placeholder="<?php echo esc_html__( 'Cerca ingredienti da aggiungere...', 'studio-immens-quick-order' ); ?>">
 <div class="FOIngredProdSec fo_ajax_ing_sect">
@@ -2847,7 +2873,7 @@ function SIQO_Advanced_prod_card(){
 		<span class="dashicons dashicons-no" style="font-size:40px;display:contents;"></span>
 	</div>
 	<div class="Advanced_Card_header">
-		<div class="fowarehouse fixware" siqoware="" style="display:contents;">
+		<div class="fowarehouse fixware" foware="" style="display:contents;">
 			<img color="" style="padding:0;" src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/sphere4.webp');?>"/><?php  ?>
 		</div>
 		<p class="AC_ID" style="width:80px;"></p>
@@ -2920,7 +2946,7 @@ function SIQO_Advanced_prod_card(){
 function SIQO_list_view_selector(){
 	?>
 	<div class="focathead SIQO_list_view_selector">
-		<select onchange="jQuery('.siqoProdCard').attr('foview',jQuery(this).val())" foview="normal">
+		<select onchange="jQuery('.foProdCard').attr('foview',jQuery(this).val())" foview="normal">
 			<option value="list">
 				<span class="dashicons dashicons-list-view"> List View </span>
 			</option>
@@ -3022,7 +3048,7 @@ function SIQO_get_products_for_loop( $args = array() ){
 
 	$products_categories = new WP_Term_Query( array(
 		'taxonomy'	=> 'product_cat',
-		'include' 	=> 'all',
+		'include' 	=> array(),
 		'hide_empty' => true,
 		'orderby'   => 'title',
 		'order'     => 'ASC',
@@ -3031,7 +3057,6 @@ function SIQO_get_products_for_loop( $args = array() ){
 		foreach ( $products_categories->terms as $products_category ) {
 			$temp_args = array(
 				'category' 			=> $products_category->slug,
-				'siqo_table_status'            => 'publish',
 				'orderby' 			=> 'title',
 				'order'             => 'DESC',
 				'limit'             => 200,
@@ -3055,7 +3080,6 @@ function SIQO_get_products_macro_for_loop( $args = array() ){
 	$final_products = array();
 	$products = array();
 	$default_args = array(
-	    'siqo_table_status'            => 'publish', // array( 'draft', 'pending', 'private', 'publish' )
 	    // 'category'          => get_term($category_id, 'product_cat')->slug,
 	    'tag'               => array(),
 	    'limit'             => 200,
@@ -3083,7 +3107,7 @@ function SIQO_get_products_macro_for_loop( $args = array() ){
 
 	$products_macro_categories = new WP_Term_Query( array(
 		'taxonomy'	=> 'siqo_macro_categories',
-		'include' 	=> 'all',
+		'include' 	=> array(),
 		'hide_empty' => true, //can be 1, '1' too
 		'orderby'   => 'title',
 		'order'     => 'ASC',
@@ -3100,7 +3124,7 @@ function SIQO_get_products_macro_for_loop( $args = array() ){
 
 	$products_categories = new WP_Term_Query( array(
 		'taxonomy'	=> 'product_cat',
-		'include' 	=> 'all',
+		'include' 	=> array(),
 		'hide_empty' => true, //can be 1, '1' too
 		'orderby'   => 'title',
 		'order'     => 'ASC',
@@ -3111,7 +3135,6 @@ function SIQO_get_products_macro_for_loop( $args = array() ){
 			foreach ( $products_categories->terms as $products_category ) {
 				$temp_args = array(
 					'category' 			=> $products_category->slug,
-					'siqo_table_status'            => 'publish',
 					'orderby' 			=> 'title',
 					'order'             => 'DESC',
 					'limit'             => 200,
@@ -3518,7 +3541,6 @@ add_action('wp_ajax_nopriv_siqo_flash_list_order_ajax', 'SIQO_flash_list_order_a
 
 function SIQO_flash_list_order(){
 	$args = array(
-		'siqo_table_status'            => 'publish',
 		'orderby' 			=> 'title',
 		'order'             => 'ASC',
 		'post_type' 		=> array('product', 'product_variation'),
@@ -3550,7 +3572,7 @@ function SIQO_flash_list_order(){
 		<div class="FONum_products" style="display:none;">0</div>
 <!-- products list -->
 		<div id="FO_order_list_search" class="FO_order_list_search">
-			<input type="search" onkeyup="SIQO_search_for_target(this,'.FO_target_search');jQuery('.SIQO_order_list').show()" onclick="SIQO_search_for_target(this,'.FO_target_search')" class="focatsearchall FO_list_height" placeholder="<?php esc_html_e('Cerca prodotto...','studio-immens-quick-order' );?>">
+			<input type="search" onkeyup="SIQO_search_for_target(this,'.FO_target_search');jQuery('.FO_order_list').show()" onclick="SIQO_search_for_target(this,'.FO_target_search')" class="focatsearchall FO_list_height" placeholder="<?php esc_html_e('Cerca prodotto...','studio-immens-quick-order' );?>">
 			<div class="FO_clear_input" onclick="jQuery(this).prev().val('');jQuery(this).next().find('.FO_target_search').hide();">X</div>
 			<div class="FO_order_list" style="display:none;">
 			<?php 
@@ -3563,7 +3585,7 @@ function SIQO_flash_list_order(){
 				// $name = $slang_title;
 					$class = ($value->get_type() == 'variation')? 'FO_list_variation': '';
 				?>
-				<div class="FO_target_search FO_list_prod_summ <?php echo esc_attr($class);?>" siqoid="<?php echo esc_attr($value->get_id());?>" siqoname="<?php echo esc_attr($name);?>" fonameshort="<?php echo esc_attr($short_title);?>" fonameslug="<?php echo esc_attr($slang_title);?>" siqoprice="<?php echo esc_attr($price);?>" style="display:none;" onclick="SIQO_order_list(this);">
+				<div class="FO_target_search FO_list_prod_summ <?php echo esc_attr($class);?>" foid="<?php echo esc_attr($value->get_id());?>" foname="<?php echo esc_attr($name);?>" fonameshort="<?php echo esc_attr($short_title);?>" fonameslug="<?php echo esc_attr($slang_title);?>" siqoprice="<?php echo esc_attr($price);?>" style="display:none;" onclick="SIQO_order_list(this);">
 					<div class="foname">
 						<?php 
 						echo esc_attr($slang_title);
@@ -3778,7 +3800,33 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
 	$info_string = array(); $vari_arr = array(); 
 	$price_array = array(); $prod_args = array();
 $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_encode($_POST['foserialmap']))) );
-	$total_fee = 0.0;
+$total_fee = 0.0;
+$pre_vari_arr = array();
+$pre_price_array = array();
+if ( isset( $_POST['foserialmap'] ) ) {
+	foreach ( $_POST['foserialmap'] as $pre_E ) {
+		if ( ! is_array( $pre_E ) ) { continue; }
+		foreach ( $pre_E as $pre_ele ) {
+			if ( ! is_array( $pre_ele ) ) { continue; }
+			if ( isset( $pre_ele['Variante'] ) ) {
+				foreach ( $pre_ele['Variante'] as $pre_index => $pre_element ) {
+					if ( ! is_array( $pre_element ) ) { continue; }
+					foreach ( $pre_element as $pre_var_key => $pre_var_val ) {
+						$pre_vari_arr[ $pre_index ][ 'attribute_' . $pre_var_key ] = $pre_var_val;
+					}
+				}
+			}
+			if ( isset( $pre_ele['price'] ) ) {
+				foreach ( $pre_ele['price'] as $pre_index => $pre_element ) {
+					if ( $pre_element == null || $pre_element == '' ) { $pre_element = 0; }
+					$pre_price_array[ $pre_index ] = $pre_element;
+				}
+			}
+		}
+	}
+}
+$vari_arr = $pre_vari_arr;
+$price_array = $pre_price_array;
 if (isset($_POST['foserialmap'])) {
 	foreach ( $_POST['foserialmap'] as $K => $E) {
 		foreach ($E as $ind => $ele) {
@@ -4102,7 +4150,7 @@ function SIQOP_get_table_by_table_id_last( $table_id, $type = 'OBJECT' ){
   global $wpdb;
   $table = $wpdb->prefix . "siqo_tables";
   // $date = wp_date('Y-m-d H:i:s');
-	$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %i WHERE table_id = %s AND status < 10", $table, $table_id ), $type );
+	$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %i WHERE table_id = %s AND status < 10 ORDER BY last_update DESC, id DESC", $table, $table_id ), $type );
 	return $result;
 }
 
@@ -4123,7 +4171,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 
 	$products_macro_categories = new WP_Term_Query( array(
 		'taxonomy'	=> 'siqo_macro_categories',
-		'include' 	=> 'all',
+		'include' 	=> array(),
 		'hide_empty' => false,
 		'orderby'   => 'title',
 		'order'     => 'ASC',
@@ -4133,7 +4181,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 		$m_cat_check = 'product_cat';
 		$products_macro_categories = new WP_Term_Query( array(
 			'taxonomy'	=> 'product_cat',
-			'include' 	=> 'all',
+			'include' 	=> array(),
 			'hide_empty' => false,
 			'orderby'   => 'title',
 			'order'     => 'ASC',
@@ -4154,14 +4202,14 @@ function FO_flash_tab_order( $tavoli = array() ){
 		</div>
 
 		<div class="FO_flash_tab_header">
-			<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'-BLANK-'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>">
+			<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'-BLANK-'"; ?>);siqo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>">
 				<span class="dashicons dashicons-editor-customchar" fo_cat_name="-BLANK-" fo_cat_id="-BLANK-" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>"></span>
 			</div>
 			<?php foreach ($products_macro_categories->terms as $key => $value) { 
 				$MC_img = get_term_meta($value->term_id, 'taxonomy_image');
 				$MC_img = ( SIQOcheck($MC_img) && isset($MC_img[0]) && $MC_img[0] !='')? $MC_img[0]:'';
 				?>
-				<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'".esc_attr($value->slug)."'"; ?>);fo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="<?php echo esc_attr($value->slug);?>" fo_cat_id="<?php echo esc_attr($value->term_id);?>" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>" style="background-image:url(<?php echo esc_attr($MC_img);?>);">
+				<div class="fo_button fo_cat_butt fo_shadow" onclick="SIQO_filter_tab_product(<?php echo "'".esc_attr($value->slug)."'"; ?>);siqo_tab_hystory_space('.fo_column_products','.fo_column_story','.fo_column_riepilogo')" ondrop="FOdrop(event)" ondragover="FOallowDrop(event)" fo_cat_name="<?php echo esc_attr($value->slug);?>" fo_cat_id="<?php echo esc_attr($value->term_id);?>" fo_cat_ceck="<?php echo esc_attr($m_cat_check);?>" style="background-image:url(<?php echo esc_attr($MC_img);?>);">
 					<?php echo esc_attr($value->name);?>
 				</div>
 			<?php } ?>
@@ -4200,7 +4248,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 							foreach ((array)$story as $story_v) {
 								$order = new WC_Order($story_v);
 								?>
-								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="fo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );console.log('yesssss')" onclick="siqo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>" 
+								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="siqo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );" onclick="siqo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>"
 									fo_order_date_created="<?php echo esc_attr($order->get_date_created());?>"
 									fo_order_date_modified="<?php echo esc_attr($order->get_date_modified());?>"
 									fo_order_date_completed="<?php echo esc_attr($order->get_date_completed());?>"
@@ -4307,7 +4355,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 						
 					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 					?>
-						<div class="fo_button_thin fo_tab_order_info" onclick="SIQOP_show_order_info_tab()" style="color:lightblue;">
+						<div class="fo_button_thin fo_tab_order_info" onclick="fop_show_order_info_tab()" style="color:lightblue;">
 							<span class="dashicons dashicons-welcome-widgets-menus"></span>
 							<?php esc_html_e('INFO','studio-immens-quick-order');?>
 						</div>
@@ -4332,8 +4380,8 @@ function FO_flash_tab_order( $tavoli = array() ){
 						</div>
 						<script type="text/javascript">
 							jQuery(window).on('load', function() {
-								FO_calc_totals();
-								FO_reorder_story();
+								SIQO_calc_totals();
+								SIQO_reorder_story();
 							});
 						</script>
 					</div>
@@ -4376,11 +4424,12 @@ function FO_flash_tab_order( $tavoli = array() ){
 								<?php 
 								$product_attr = $product->get_attributes();
 								foreach ($product_attr as $k => $v) {
+									$attr_key = $k;
 									if (str_contains($k, 'pa_')) {
 										$k = str_replace('pa_', '', $k);
 									}
 									?>
-									<input fo_tab_target="variante" fovariant="<?php echo esc_attr($k);?>" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" type="hidden" priceadded="" value="">
+									<input fo_tab_target="variante" fovariant="<?php echo esc_attr($attr_key);?>" name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($attr_key);?>]" type="hidden" priceadded="" value="">
 								<?php } ?>
 							</div>
 						<?php } ?>
@@ -4392,12 +4441,12 @@ function FO_flash_tab_order( $tavoli = array() ){
 			<div class="FO_flash_tab_column fo_tab_col_2" style="">
 				<strong class="fo_col_2_name" style=""><?php esc_html_e('VARIANTI:','studio-immens-quick-order'); ?></strong>
 				<div class="FO_flash_tab_qty" style="display:none;"> QuantitÃƒÆ’Ã‚Â 
-					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(-1)}">-</div>
+					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(-1)}">-</div>
 						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="siqo_tab_parse_qty(this);">
-					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(+1)}">+</div>
+					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(+1)}">+</div>
 					<script type="text/javascript">
 						jQuery('.fo_target_qty_prod').on('DOMSubtreeModified', function(){
-						  fo_tab_parse_qty(jQuery('.fo_target_qty_prod'));
+						  siqo_tab_parse_qty(jQuery('.fo_target_qty_prod'));
 						});
 					</script>
 				</div>
@@ -4412,29 +4461,40 @@ function FO_flash_tab_order( $tavoli = array() ){
 							<?php 
 								$product_attr = $product->get_attributes();
 								foreach ($product_attr as $k => $v) {
-									// SIQO_debug($product_attr);
+									$attr_key = $k;
+									$attr_options = array();
 									if (str_contains($k, 'pa_')) {
 										$k = str_replace('pa_', '', $k);
-										$attr = explode( ', ', $product->get_attribute( $k ) );
 										$attr_term = 'pa_'.$k;
+										if ( taxonomy_exists( $attr_key ) ) {
+											$terms = wc_get_product_terms( $product->get_id(), $attr_key, array( 'fields' => 'all' ) );
+											foreach ( $terms as $term ) {
+												$attr_options[] = array(
+													'value' => $term->slug,
+													'label' => $term->name,
+													'price_to_add' => get_string_between( $term->description, '[', ']' ),
+												);
+											}
+										}
 									} else{
-										$attr_term = false;
 										$attr = explode( ' | ', $product->get_attribute( $k ) );
+										foreach ($attr as $opt) {
+											$attr_options[] = array(
+												'value' => $opt,
+												'label' => $opt,
+												'price_to_add' => '0.0',
+											);
+										}
 									}
 									?>
-									<div class="fovariant fovariant_fix" fovariant="<?php echo esc_attr($k);?>">
+									<div class="fovariant fovariant_fix" fovariant="<?php echo esc_attr($attr_key);?>">
 										<strong style="flex-basis:100%;"><?php echo esc_attr($k);?></strong>
-											<?php 
-										foreach ($attr as $key => $opt) { 
-											// SIQO_debug( get_string_between(get_term_by('name', $opt, 'pa_'.$k )->description,'[',']') );
-											// get_term_by('name', $opt, 'pa_'.$k );
-											$price_to_add = '0.0';
-											if ( taxonomy_exists( $attr_term ) ) {
-												$price_to_add = get_string_between(get_term_by('name', $opt, $attr_term )->description,'[',']');
-											}
+											<?php
+										foreach ($attr_options as $opt) {
+											$price_to_add = ( $opt['price_to_add'] !== '' && $opt['price_to_add'] !== false ) ? $opt['price_to_add'] : '0.0';
 											?>
-											<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);siqo_tab_parse_variant(jQuery(this).find('input'));}" SIQO_price="<?php echo esc_attr($product->get_price());?>" SIQO_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_attr($opt);?>
-											<input name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($k);?>]" type="radio" value="<?php echo esc_attr($opt);?>" fovariant="<?php echo esc_attr($k);?>">
+											<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);siqo_tab_parse_variant(jQuery(this).find('input'));}" fo_price="<?php echo esc_attr($product->get_price());?>" fo_price_to_add="<?php echo esc_attr($price_to_add);?>"><?php echo esc_html($opt['label']);?>
+											<input name="[Variante][<?php echo esc_attr($product->get_id());?>][<?php echo esc_attr($attr_key);?>]" type="radio" value="<?php echo esc_attr($opt['value']);?>" fovariant="<?php echo esc_attr($attr_key);?>">
 											</div>
 										<?php } ?>
 									</div>
@@ -4450,7 +4510,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 								<?php 
 								// SIQO_debug($temperature_terms);
 								foreach ($temperature as $key => $term) { ?>
-									<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);siqo_tab_parse_temp(jQuery(this).find('input'));}"><?php echo esc_attr($term->name);?>
+									<div class="fo_button_thin" fo_prod_id="<?php echo esc_attr($product->get_id());?>" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){jQuery(this).find('input').prop('checked', true);fo_tab_parse_temp(jQuery(this).find('input'));}"><?php echo esc_attr($term->name);?>
 										<input name="[Temperature][<?php echo esc_attr($product->get_id());?>]" type="radio" value="<?php echo esc_attr($term->slug);?>">
 									</div>
 								<?php } ?>
@@ -4465,7 +4525,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 					<textarea class="fo_target_note_prod" name="note" onchange="siqo_tab_parse_note(this);" placeholder="<?php esc_html_e('Note del prodotto...','studio-immens-quick-order');?>"></textarea>
 					<script type="text/javascript">
 						jQuery('.fo_target_note_prod').on('DOMSubtreeModified', function(){
-						  fo_tab_parse_note(jQuery('.fo_target_note_prod'));
+						  siqo_tab_parse_note(jQuery('.fo_target_note_prod'));
 						});
 					</script>
 				</div>
@@ -4523,7 +4583,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 					<span class="fo_tab_price" fo_status_modify="false" fo_actual_prod="" fo_actual_index="" fo_modificable="" onchange="siqo_tab_parse_price(this)"></span>
 					<script type="text/javascript">
 						jQuery('.fo_tab_price').on('DOMSubtreeModified', function(){
-						  fo_tab_parse_price(jQuery('.fo_tab_price'));
+						  siqo_tab_parse_price(jQuery('.fo_tab_price'));
 						});
 					</script>
 					<!-- <div class="fo_tab_calc_keyboard_key fo_tab_add_to_order" onclick="siqo_tab_add_product_to_order()">
@@ -4546,59 +4606,59 @@ function FO_flash_tab_order( $tavoli = array() ){
 						</div>
 					</div> -->
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('7')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('7')}">
 							<strong>7</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('8')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('8')}">
 							<strong>8</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('9')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('9')}">
 							<strong>9</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('4')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('4')}">
 							<strong>4</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('5')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('5')}">
 							<strong>5</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('6')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('6')}">
 							<strong>6</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('1')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('1')}">
 							<strong>1</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('2')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('2')}">
 							<strong>2</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('3')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('3')}">
 							<strong>3</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('.')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('.')}">
 							<strong>.</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('0')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('0')}">
 							<strong>0</strong>
 						</div>
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_price('.')}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_price('.')}">
 							<strong>.</strong>
 						</div>
 					</div>
 					<div class="fo_tab_calc_keyboard_row">
-						<div class="fo_tab_calc_keyboard_key fo_tab_reset_price" fovalue="" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_default(this);}">
+						<div class="fo_tab_calc_keyboard_key fo_tab_reset_price" fovalue="" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_default(this);}">
 							<span class="dashicons dashicons-image-rotate"></span>
 						</div>
 
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_del();}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_del();}">
 							<span class="dashicons dashicons-minus"></span>
 						</div>
 
-						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_tab_price_ac();}">
+						<div class="fo_tab_calc_keyboard_key" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_tab_price_ac();}">
 							<span class="dashicons dashicons-no"></span>
 						</div>
 					</div>
@@ -4610,27 +4670,27 @@ function FO_flash_tab_order( $tavoli = array() ){
 			FOP_order_info_tab();
 		}?>
 		<div class="FO_flash_tab_footer">
-			<div class="fo_table_name" onclick="SIQO_tab_Card_hide()">
-				<strong> <?php esc_html_e('TAVOLO: ','studio-immens-quick-order'); ?> </strong>
-				<strong class="fo_tab_table_name"> - - - - </strong>
-			</div>
+<div class="fo_table_name" role="button" tabindex="0" aria-label="<?php esc_attr_e('Chiudi il tavolo','studio-immens-quick-order'); ?>" onclick="SIQO_tab_Card_hide()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_Card_hide();}">
+<strong> <?php esc_html_e('TAVOLO: ','studio-immens-quick-order'); ?> </strong>
+<strong class="fo_tab_table_name"> - - - - </strong>
+</div>
 
-			<div class="fo_button_fix fo_clear_table_button" style="margin: 0 auto 0 15px;" onclick="SIQO_tab_clear_table()"><?php esc_html_e('LIBERA TAVOLO','studio-immens-quick-order');?></div>
-			<!-- <textarea class="fo_tab_fix_order_note" name="order_note" placeholder="Note..." style=""></textarea> -->
-			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;display:none;" fotableid="" onclick="SIQO_pay_tab_Card_show(this)">
-				<?php esc_html_e('PAGA TALOLO','studio-immens-quick-order');?>
-			</div>
+<div class="fo_button_fix fo_clear_table_button siqo-secondary" style="margin: 0 auto 0 15px;" role="button" tabindex="0" onclick="SIQO_tab_clear_table()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_clear_table();}"><?php esc_html_e('LIBERA TAVOLO','studio-immens-quick-order');?></div>
+<!-- <textarea class="fo_tab_fix_order_note" name="order_note" placeholder="Note..." style=""></textarea> -->
+<div class="fo_button_fix fo_pay_table_button siqo-secondary" style="margin-left:auto;display:none;" fotableid="" role="button" tabindex="0" onclick="SIQO_pay_tab_Card_show(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_pay_tab_Card_show(this);}">
+<?php esc_html_e('PAGA TAVOLO','studio-immens-quick-order');?>
+</div>
 
-			<?php FO_pay_this_order_tab();?>
+<?php FO_pay_this_order_tab();?>
 
-			<div class="fo_button_fix" style="margin-left:auto;" fo_order_type="new_order" onclick="SIQO_tab_go_order(this)"><?php esc_html_e('AVVIA ORDINE','studio-immens-quick-order');?></div>
+<div class="fo_button_fix siqo-primary" style="margin-left:auto;" role="button" tabindex="0" fo_order_type="new_order" onclick="SIQO_tab_go_order(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_go_order(this);}"><?php esc_html_e('AVVIA ORDINE','studio-immens-quick-order');?></div>
 
-			<div class="fo_button_fix fo_variant_show_button" style="bottom:220px!important;" onclick="fo_tab_show_variation_button()">
-				<span class="dashicons dashicons-table-col-after"></span>
-			</div>
-			<div class="fo_button_fix fo_pay_show_keyboard_button" style="" onclick="fo_tab_show_keyboard_button()">
-				<span class="dashicons dashicons-editor-table"></span>
-			</div>
+<div class="fo_button_fix fo_variant_show_button" style="bottom:220px!important;" role="button" tabindex="0" aria-label="<?php esc_attr_e('Apri varianti','studio-immens-quick-order'); ?>" onclick="fo_tab_show_variation_button()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();fo_tab_show_variation_button();}">
+<span class="dashicons dashicons-table-col-after" aria-hidden="true"></span>
+</div>
+<div class="fo_button_fix fo_pay_show_keyboard_button" style="" role="button" tabindex="0" aria-label="<?php esc_attr_e('Apri tastierino quantità','studio-immens-quick-order'); ?>" onclick="fo_tab_show_keyboard_button()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();fo_tab_show_keyboard_button();}">
+<span class="dashicons dashicons-editor-table" aria-hidden="true"></span>
+</div>
 
 			<input id="table_name" type="hidden" name="table_name_cpt" value="">
 			<input type="hidden" name="table_ID" value="">
@@ -4678,40 +4738,63 @@ function FO_get_temperature_terms(){
 
 function FO_pay_this_order_tab(){
 ?>
-	<div class="FO_flash_tab_order_pay_container fo_flex fo_pay_tab_show" style="display:none;">
+	<div class="FO_flash_tab_order_pay_container fo_flex" style="display:none;">
 		
 		<div class="FOloadingCardPublic tab_fix_load" style="display:none;">
 			<span style="animation: fospin 1s infinite;font-size:120px;width:120px;height:120px;" class="dashicons dashicons-update"></span>
 		</div>
 
-		<div class="fo_pay_column fo_pay_ajax_container" style="border-right: 1px solid">
+		<div class="fo_pay_header">
+			<div class="fo_pay_header_copy">
+				<span class="fo_pay_kicker"><?php esc_html_e('Pagamento tavolo','studio-immens-quick-order');?></span>
+				<h2><?php esc_html_e('Chiudi il conto','studio-immens-quick-order');?></h2>
+				<p><?php esc_html_e('Controlla gli articoli, associa un cliente se serve e completa il pagamento.','studio-immens-quick-order');?></p>
+			</div>
+			<button type="button" class="fo_pay_close" onclick="SIQO_pay_tab_Card_hide()">
+				<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
+				<span><?php esc_html_e('Chiudi','studio-immens-quick-order');?></span>
+			</button>
+		</div>
+
+		<div class="fo_pay_column fo_pay_ajax_container">
+			<div class="fo_pay_section_head">
+				<div>
+					<span class="fo_pay_section_kicker"><?php esc_html_e('Conto','studio-immens-quick-order');?></span>
+					<h3><?php esc_html_e('Articoli ordinati','studio-immens-quick-order');?></h3>
+				</div>
+				<span class="fo_pay_count" aria-label="<?php esc_attr_e('Numero articoli','studio-immens-quick-order');?>"></span>
+			</div>
 			<div class="fo_flex fo_list_items">
 			</div>
-			<div class="fo_flex fo_list_final_order" style="border-top: 1px solid">
+			<div class="fo_flex fo_list_final_order">
 			</div>
 		</div>
 
-		<div class="fo_pay_column fo_flex">
-			<div class="fo_button Advanced_Card_Close_float" onclick="SIQO_pay_tab_Card_hide()" style="position:absolute;right:15px;">
-				<?php esc_html_e('CHIUDI','studio-immens-quick-order');?>
+		<div class="fo_pay_column fo_pay_side">
+			<div class="fo_pay_section_head">
+				<div>
+					<span class="fo_pay_section_kicker"><?php esc_html_e('Anagrafica','studio-immens-quick-order');?></span>
+					<h3><?php esc_html_e('Cliente','studio-immens-quick-order');?></h3>
+				</div>
+				<span class="fo_pay_optional"><?php esc_html_e('Opzionale','studio-immens-quick-order');?></span>
 			</div>
 			<div class="fo_pay_body fo_flex">
-				<span style="width:100%;">Questa sezione ÃƒÆ’Ã‚Â© ancora in sviluppo e sarÃƒÆ’Ã‚Â  presto disponibile </span>
+				<p class="fo_pay_hint"><?php esc_html_e('Puoi collegare un cliente esistente oppure inserire i dati del nuovo cliente.','studio-immens-quick-order');?></p>
 				<div class="fo_pay_customer_type">
-					<span> <?php esc_html_e('Cliente Esistente ? ','studio-immens-quick-order');?> </span>
+					<span><?php esc_html_e('Cliente esistente','studio-immens-quick-order');?></span>
 					<input type="checkbox" name="customer_type" onclick="SIQO_customer_pay(this);" unchecked>
 				</div>
 				
 				<div class="fot_pay_new_customer">
-					<strong style="width:100%"> <?php esc_html_e('inserisci un nuovo cliente:','studio-immens-quick-order');?> </strong>
-					<input class="fot_pay_input N_customer_name" type="text" name="[customer_name][]" placeholder="<?php esc_html_e('nome Cliente','studio-immens-quick-order');?>" style="width: 200px!important;">
-					<input class="fot_pay_input N_customer_mail" type="text" name="[customer_mail][]" placeholder="<?php esc_html_e('mail Cliente','studio-immens-quick-order');?>" style="width: 300px!important;">
-					<input class="fot_pay_input N_customer_phone" type="text" name="[customer_phone][]" placeholder="<?php esc_html_e('telefono Cliente','studio-immens-quick-order');?>" style="width: 200px!important;">
-					<div class="fo_button fo_border" style="width:calc(100% - 50px);" onclick="SIQO_add_new_customer(jQuery(this).parent());"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
+					<strong><?php esc_html_e('Nuovo cliente','studio-immens-quick-order');?></strong>
+					<input class="fot_pay_input N_customer_name" type="text" name="[customer_name][]" placeholder="<?php esc_html_e('Nome cliente','studio-immens-quick-order');?>">
+					<input class="fot_pay_input N_customer_mail" type="email" name="[customer_mail][]" placeholder="<?php esc_html_e('Email cliente','studio-immens-quick-order');?>">
+					<input class="fot_pay_input N_customer_phone" type="tel" name="[customer_phone][]" placeholder="<?php esc_html_e('Telefono cliente','studio-immens-quick-order');?>">
+					<button type="button" class="fo_pay_secondary" onclick="SIQO_add_new_customer(jQuery(this).parent());"><?php esc_html_e('Aggiungi cliente','studio-immens-quick-order');?></button>
 				</div>
 
 				<div class="fot_pay_search_customer" style="display:none;">
-					<strong style="width:100%"> <?php esc_html_e('Cerca un cliente:','studio-immens-quick-order');?> </strong>
+					<strong><?php esc_html_e('Cerca un cliente','studio-immens-quick-order');?></strong>
 					<input type="search" onkeyup="SIQO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" onclick="SIQO_search_for_target(this,'.FO_customer_target_search');jQuery('.FO_customer_list').show()" class="focatsearchall FO_list_height" style="width: 200px!important;" placeholder="<?php esc_html_e('Cerca cliente...','studio-immens-quick-order' );?>">
 					<div class="FO_clear_input" onclick="jQuery(this).prev().val('');jQuery(this).next().hide();">X</div>
 
@@ -4798,23 +4881,26 @@ function FO_pay_this_order_tab(){
 					<div class="spinner-button-big" style="font-size:15px!important;" onclick="SIQO_order_discount_list(this,'.fo_target_discount');"><?php esc_html_e('AGGIUNGI','studio-immens-quick-order');?></div>
 				</div> -->
 */ ?>
-		<div class="fo_pay_footer fo_flex">
-			<div class="" style="margin-right:auto;" onclick="">
-				<strong> <?php esc_html_e('TOTALE: ','studio-immens-quick-order');?> </strong>
-				<strong class="fo_pay_total">  </strong>
-				<!-- <strong> <?php echo esc_attr(get_woocommerce_currency_symbol());?> </strong> -->
+		<div class="fo_pay_footer">
+			<div class="fo_pay_total_block">
+				<span class="fo_pay_total_label"><?php esc_html_e('Totale da pagare','studio-immens-quick-order');?></span>
+				<span class="fo_pay_total_line">
+					<strong class="fo_pay_total"></strong>
+				</span>
 			</div>
 
-			<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
-				<div class="fo_button_thin fo_wooprint_preconto" onclick="SIQO_print_receipts(this);" style="color: yellow;">
-					<span class="dashicons dashicons-printer"></span>
-					<?php esc_html_e('Preconto','studio-immens-quick-order');?>
-				</div>
-			<?php } ?>
+			<div class="fo_pay_footer_actions">
+				<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
+					<button type="button" class="fo_pay_preconto fo_wooprint_preconto" onclick="SIQO_print_receipts(this);">
+						<span class="dashicons dashicons-printer" aria-hidden="true"></span>
+						<span><?php esc_html_e('Preconto','studio-immens-quick-order');?></span>
+					</button>
+				<?php } ?>
 
-			<div class="fo_button_fix fo_pay_table_button" style="margin-left:auto;" onclick="SIQO_order_tab_pay_ajax()">
-				<?php esc_html_e('PAGA','studio-immens-quick-order');?>
-				<!-- FO_order_tab_pay_ajax() -->
+				<button type="button" class="fo_button_fix fo_pay_table_button fo_pay_primary" onclick="SIQO_order_tab_pay_ajax()">
+					<span><?php esc_html_e('Paga tavolo','studio-immens-quick-order');?></span>
+					<span class="dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
+				</button>
 			</div>
 		</div>
 	
@@ -6829,11 +6915,6 @@ function SIQO_register_ajax_action_aliases() {
 		'SIQO_flash_tab_pay_ajax'         => array( 'FO_flash_tab_pay_ajax', true ),
 		'SIQO_insert_post_ajax'           => array( 'FO_insert_post_ajax', true ),
 		'SIQO_trash_post_ajax'            => array( 'FO_trash_post_ajax', true ),
-		'SIQO_insert_product_ajax'        => array( 'FO_insert_product_ajax', true ),
-		'SIQO_insert_macro_cat_ajax'      => array( 'FO_insert_macro_cat_ajax', true ),
-		'SIQO_delete_macro_cat_ajax'      => array( 'FO_delete_macro_cat_ajax', true ),
-		'SIQO_update_post_macro_cat_ajax' => array( 'FO_update_post_macro_cat_ajax', true ),
-		'SIQO_delete_post_ajax'           => array( 'FO_delete_post_ajax', true ),
 		'SIQO_create_any_QR_code_ajax'    => array( 'SIQO_create_any_QR_code_ajax', false ),
 		'SIQO_delete_QR_images'           => array( 'SIQO_delete_QR_images', false ),
 	);

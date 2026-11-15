@@ -178,7 +178,8 @@ function FO_toggle_pages_rapid_impost( pageId ){
 
 
 function FO_condition_setting(input){
-	if (jQuery(input).val() == jQuery(input).attr('fo_bool')) {
+	var bool = jQuery(input).attr('siqo_bool') || jQuery(input).attr('fo_bool');
+	if (jQuery(input).val() == bool) {
 		jQuery( jQuery(input).attr('target_bool') ).slideDown();
 	} else{
 		jQuery( jQuery(input).attr('target_bool') ).slideUp();
@@ -188,12 +189,24 @@ function FO_condition_setting(input){
 
 
 function FO_hide_condition_setting(input){
-	if ( jQuery( jQuery(input).attr('fo_dep') ).attr('fo_val') != 'yes' || jQuery( jQuery(input).attr('fo_dep') ).attr('fo_val') != 'si') {
+	var dep = jQuery(input).attr('siqo_dep') || jQuery(input).attr('fo_dep');
+	var val = jQuery(dep).attr('siqo_val') || jQuery(dep).attr('fo_val');
+	if ( val != 'yes' && val != 'si') {
 		jQuery(input).hide();
 	} else{
 		jQuery(input).show();
 	}
 }
+
+window.SIQO_adm_restore_prev_prev = FO_adm_restore_prev_prev;
+window.SIQO_settings_navigations = FO_settings_navigations;
+window.SIQO_create_refresh_pages = FO_create_refresh_pages;
+window.SIQO_delete_page = FO_delete_page;
+window.siqo_create_QR = fo_create_QR;
+window.SIQO_delete_QR_images = FO_delete_QR_images;
+window.siqo_search_for_file = fo_search_for_file;
+window.SIQO_toggle_pages_rapid_impost = FO_toggle_pages_rapid_impost;
+window.SIQO_condition_setting = FO_condition_setting;
 
 
 

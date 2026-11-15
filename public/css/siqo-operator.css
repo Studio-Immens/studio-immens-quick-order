@@ -1,0 +1,2718 @@
+:root {
+    --siqo-espresso: #1c1714;
+    --siqo-cream: #f7f2ec;
+    --siqo-terracotta: #a6462f;
+    --siqo-terracotta-dark: #8a3623;
+    --siqo-sand: #e6ddd2;
+    --siqo-sand-strong: #d8cabb;
+    --siqo-white: #ffffff;
+    --siqo-green: #279900;
+    --siqo-green-soft: #eef6ea;
+    --siqo-amber: #c98a00;
+    --siqo-amber-soft: #fff4d6;
+    --siqo-red-soft: #fbe9e5;
+    --siqo-muted: #6f6258;
+    --siqo-shadow: 0 18px 50px -28px rgba(28, 23, 20, 0.45);
+}
+
+html.siqo-operator-mode,
+html.siqo-operator-mode body {
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100%;
+}
+
+body:has(#SIQO_Front_Content) #header,
+body:has(#SIQO_Front_Content) #footer,
+body:has(#SIQO_Front_Content) .ct-header,
+body:has(#SIQO_Front_Content) .ct-footer,
+body:has(#SIQO_Front_Content) #wpadminbar,
+body:has(#SIQO_Front_Content) #FOSpecialPagesNavigation,
+body:has(#SIQO_Front_Content) .SIQO_nav_menu,
+body:has(#SIQO_Front_Content) .siqo_QR_pages,
+body:has(#SIQO_Front_Content) #settings,
+body:has(#SIQO_Front_Content) .fo_show_settings,
+body:has(#SIQO_Front_Content) .fo_stat_container,
+body:has(#SIQO_Front_Content) .fo_statistic_show,
+body:has(#SIQO_Front_Content) .FOP_tab_catering_container,
+body:has(#SIQO_Front_Content) .FOP_tab_catering_fixed_window,
+body:has(#SIQO_Front_Content) .FOP_tab_Settings_section,
+body:has(#SIQO_Front_Content) .FOP_tab_Statistics_section,
+body:has(#SIQO_Front_Content) .FOP_tab_status_bar_container,
+html.siqo-operator-mode #header,
+html.siqo-operator-mode #footer,
+html.siqo-operator-mode .ct-header,
+html.siqo-operator-mode .ct-footer,
+html.siqo-operator-mode #wpadminbar,
+html.siqo-operator-mode #FOSpecialPagesNavigation,
+html.siqo-operator-mode .SIQO_nav_menu,
+html.siqo-operator-mode .siqo_QR_pages,
+html.siqo-operator-mode #settings,
+html.siqo-operator-mode .fo_show_settings,
+html.siqo-operator-mode .fo_stat_container,
+html.siqo-operator-mode .fo_statistic_show,
+html.siqo-operator-mode .FOP_tab_catering_container,
+html.siqo-operator-mode .FOP_tab_catering_fixed_window,
+html.siqo-operator-mode .FOP_tab_Settings_section,
+html.siqo-operator-mode .FOP_tab_Statistics_section,
+html.siqo-operator-mode .FOP_tab_status_bar_container {
+    display: none !important;
+}
+
+html.siqo-operator-mode #main-container,
+html.siqo-operator-mode #main,
+html.siqo-operator-mode #main .ct-container-full,
+html.siqo-operator-mode #main article,
+html.siqo-operator-mode #main .entry-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#SIQO_Front_Content {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 100dvh;
+    margin: 0 !important;
+    padding: 0 0 48px !important;
+    background: var(--siqo-cream);
+    color: var(--siqo-espresso);
+    font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+}
+
+#SIQO_Front_Content,
+#SIQO_Front_Content * {
+    box-sizing: border-box;
+}
+
+#SIQO_Front_Content :focus-visible {
+    outline: 3px solid var(--siqo-terracotta) !important;
+    outline-offset: 3px !important;
+}
+
+#SIQO_Front_Content a {
+    color: var(--siqo-terracotta);
+}
+
+.siqo-app-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 76px;
+    padding: 12px 22px;
+    background: rgba(247, 242, 236, 0.94);
+    border-bottom: 1px solid var(--siqo-sand);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.siqo-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.siqo-brand-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border-radius: 14px;
+    background: var(--siqo-terracotta);
+    color: var(--siqo-cream);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16);
+}
+
+.siqo-brand-text {
+    min-width: 0;
+}
+
+.siqo-brand-text strong {
+    display: block;
+    color: var(--siqo-espresso);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.siqo-brand-text span {
+    display: block;
+    margin-top: 2px;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.siqo-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.siqo-summary-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 0 13px;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 999px;
+    background: var(--siqo-white);
+    color: var(--siqo-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.siqo-summary-item b {
+    color: var(--siqo-espresso);
+    font-size: 17px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.siqo-summary-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--siqo-green);
+}
+
+.siqo-summary-item--busy .siqo-summary-dot {
+    background: var(--siqo-terracotta);
+}
+
+.siqo-app-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.siqo-app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 13px;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 11px;
+    background: var(--siqo-white);
+    color: var(--siqo-espresso);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.siqo-app-btn:hover,
+.siqo-app-btn:focus-visible {
+    border-color: var(--siqo-sand-strong);
+    background: #fbf8f4;
+}
+
+.siqo-app-btn:active {
+    transform: translateY(1px);
+}
+
+.siqo-app-btn .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.siqo-app-btn--logout {
+    color: var(--siqo-terracotta);
+    border-color: #e8c9c1;
+}
+
+#SIQO_Front_Content .FO_table_grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(222px, 1fr));
+    gap: 14px;
+    align-items: stretch;
+    align-content: start;
+    width: 100% !important;
+    height: auto !important;
+    padding: 20px 22px 36px !important;
+    margin: 0 !important;
+}
+
+#SIQO_Front_Content .FO_table_grid > .FOloadingCardPublicMain {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(247, 242, 236, 0.92);
+}
+
+#SIQO_Front_Content .fo_table_cell {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: auto !important;
+    height: auto !important;
+    min-height: 116px;
+    margin: 0 !important;
+    padding: 14px 16px 12px 20px !important;
+    overflow: hidden;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 18px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    box-shadow: 0 1px 0 rgba(28, 23, 20, 0.04), 0 16px 34px -30px rgba(28, 23, 20, 0.5);
+    cursor: pointer;
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+#SIQO_Front_Content .fo_table_cell::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 0;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--siqo-green);
+}
+
+#SIQO_Front_Content .fo_table_cell[fotable_status="1"]::before {
+    background: var(--siqo-terracotta);
+}
+
+#SIQO_Front_Content .fo_table_cell[fotable_status="2"]::before {
+    background: var(--siqo-amber);
+}
+
+#SIQO_Front_Content .fo_table_cell:hover,
+#SIQO_Front_Content .fo_table_cell:focus-visible {
+    border-color: var(--siqo-sand-strong) !important;
+    box-shadow: 0 1px 0 rgba(28, 23, 20, 0.05), var(--siqo-shadow);
+    transform: translateY(-2px);
+}
+
+#SIQO_Front_Content .fo_table_cell:active {
+    transform: translateY(0);
+}
+
+#SIQO_Front_Content .fo_table_cell h6 {
+    max-width: 100%;
+    margin: 0 0 3px !important;
+    overflow: hidden;
+    color: var(--siqo-espresso) !important;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px !important;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#SIQO_Front_Content .fo_table_cell > strong {
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--siqo-muted) !important;
+    font-size: 10px !important;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.13em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+#SIQO_Front_Content .fo_status_string {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    min-height: 24px;
+    margin: auto 0 0 !important;
+    padding: 4px 9px !important;
+    border-radius: 999px;
+    background: var(--siqo-green-soft);
+    color: #1e6b12 !important;
+    font-size: 10px !important;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.03em;
+}
+
+#SIQO_Front_Content .fo_status_string::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+#SIQO_Front_Content .fo_table_cell[fotable_status="1"] .fo_status_string {
+    background: var(--siqo-red-soft);
+    color: var(--siqo-terracotta-dark) !important;
+}
+
+#SIQO_Front_Content .fo_table_cell[fotable_status="2"] .fo_status_string {
+    background: var(--siqo-amber-soft);
+    color: #8a5a00 !important;
+}
+
+#SIQO_Front_Content .fo_tab_abs_data {
+    position: static !important;
+    margin-top: 7px;
+    color: var(--siqo-muted) !important;
+    font-size: 10px !important;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+}
+
+#SIQO_Front_Content .fo_tab_notify {
+    top: 13px !important;
+    right: 13px !important;
+    width: 25px !important;
+    height: 25px !important;
+    border: 0 !important;
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+    font-size: 12px !important;
+    font-weight: 800;
+    line-height: 25px !important;
+}
+
+#SIQO_Front_Content .FOloadingTable {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    align-items: center;
+    justify-content: center;
+    background: rgba(247, 242, 236, 0.9);
+}
+
+.FO_flash_tab_order_container {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999999999;
+    display: none;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+}
+
+body.siqo-table-open {
+    overflow: hidden !important;
+}
+
+body.siqo-table-open .FO_flash_tab_order_container {
+    display: grid !important;
+}
+
+.FO_flash_tab_order_container .FOloadingCardPublic {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(247, 242, 236, 0.94);
+}
+
+.FO_flash_tab_header {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 7px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 68px;
+    padding: 10px 14px !important;
+    margin: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-radius: 0 !important;
+    background: #241d19 !important;
+    scrollbar-width: none;
+}
+
+.FO_flash_tab_header::-webkit-scrollbar {
+    display: none;
+}
+
+.FO_flash_tab_header .fo_button {
+    flex: 0 0 auto;
+    max-width: none !important;
+    width: auto;
+    height: 44px !important;
+    min-width: 44px;
+    margin: 0 !important;
+    padding: 0 15px !important;
+    border: 1px solid #4a4038;
+    border-radius: 999px !important;
+    background-color: #3a322c !important;
+    background-size: cover;
+    background-position: center;
+    color: var(--siqo-cream) !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.FO_flash_tab_header .fo_button:hover,
+.FO_flash_tab_header .fo_button:focus-visible {
+    background-color: #4a4038 !important;
+    border-color: #6a5a4d;
+}
+
+.FO_flash_tab_header .fo_button.siqo-active {
+    border-color: var(--siqo-terracotta);
+    background-color: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.FO_flash_tab_header .Advanced_Card_Close_float {
+    position: sticky;
+    right: 0;
+    margin: 0 0 0 auto !important;
+    padding: 0 17px !important;
+    border-color: var(--siqo-terracotta);
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+    box-shadow: -10px 0 18px rgba(36, 29, 25, 0.9);
+}
+
+.FO_flash_tab_body {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 300px) minmax(260px, 300px);
+    gap: 12px;
+    align-items: stretch;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0;
+    padding: 12px !important;
+    margin: 0 !important;
+    overflow: hidden;
+    background: var(--siqo-cream);
+}
+
+.FO_flash_tab_body > .FO_flash_tab_column,
+.FO_flash_tab_body > .FO_flash_tab_max_column {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    overflow: hidden;
+}
+
+.FO_flash_tab_body > .fo_tab_col_1 {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#SIQO_Front_Content .fo_column_story.siqo-story-empty {
+    display: none !important;
+}
+
+#SIQO_Front_Content .fo_column_story {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    height: 56px !important;
+    margin: 0 !important;
+    padding: 9px 10px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 14px !important;
+    background: var(--siqo-white) !important;
+    scrollbar-width: none;
+}
+
+#SIQO_Front_Content .fo_column_story::-webkit-scrollbar {
+    display: none;
+}
+
+#SIQO_Front_Content .fo_column_story::before {
+    content: "Storico";
+    flex: 0 0 auto;
+    padding-right: 4px;
+    color: var(--siqo-muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_tab_prod {
+    display: none !important;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_title_all {
+    display: none !important;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_button {
+    flex: 0 0 auto;
+    min-width: 0;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 11px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 999px !important;
+    background: #f0e9df !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_tab_tool_section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: 0 !important;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_tab_tool_section .fo_button_thin {
+    height: 30px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: 8px !important;
+    background: #f0e9df !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 10px !important;
+}
+
+#SIQO_Front_Content .fo_column_story .fo_tab_tool_total {
+    display: none !important;
+}
+
+#SIQO_Front_Content .fo_column_products {
+    grid-column: 1;
+    grid-row: 2;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    align-content: start;
+    min-height: 0;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 2px !important;
+    overflow-y: auto !important;
+    border: 0 !important;
+    background: transparent !important;
+    scrollbar-color: var(--siqo-sand-strong) transparent;
+    scrollbar-width: thin;
+}
+
+#SIQO_Front_Content .fo_column_products .fo_tab_prod {
+    width: auto !important;
+    height: 132px !important;
+    min-height: 132px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(28, 23, 20, 0.08);
+    border-radius: 13px !important;
+    background: #e9dfd3 !important;
+    box-shadow: 0 1px 0 rgba(28, 23, 20, 0.05);
+    isolation: isolate;
+}
+
+#SIQO_Front_Content .fo_column_products .fo_tab_prod:hover,
+#SIQO_Front_Content .fo_column_products .fo_tab_prod:focus-visible {
+    border-color: var(--siqo-terracotta);
+    box-shadow: 0 0 0 2px rgba(166, 70, 47, 0.18);
+}
+
+#SIQO_Front_Content .fo_column_products .FO_prod_img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    border-radius: 0 !important;
+}
+
+#SIQO_Front_Content .fo_column_products .FO_prod_img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+}
+
+#SIQO_Front_Content .fo_column_products .FO_prod_name_manage {
+    position: absolute !important;
+    top: auto !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 2;
+    display: flex !important;
+    align-items: flex-end;
+    justify-content: flex-start;
+    min-height: 50px;
+    max-height: 66px;
+    padding: 18px 8px 8px !important;
+    overflow: hidden;
+    background: linear-gradient(to top, rgba(17, 13, 11, 0.94) 0%, rgba(17, 13, 11, 0.6) 48%, rgba(17, 13, 11, 0) 100%) !important;
+    color: var(--siqo-white) !important;
+    font-size: clamp(12px, 0.88vw, 13px) !important;
+    font-weight: 700 !important;
+    line-height: 1.16 !important;
+    text-align: left !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+    white-space: normal !important;
+    word-break: break-word;
+}
+
+@media (min-width: 1000px) {
+    .FO_flash_tab_body > .fo_tab_col_1 {
+        height: 100% !important;
+        min-height: 0 !important;
+        grid-template-rows: auto minmax(0, 1fr) !important;
+    }
+
+    #SIQO_Front_Content .fo_column_products {
+        min-height: 0 !important;
+        max-height: 100% !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2,
+    #SIQO_Front_Content .fo_tab_col_3 {
+        height: 100% !important;
+        max-height: 100% !important;
+        align-self: stretch !important;
+    }
+}
+
+#SIQO_Front_Content .fo_column_products .fo_tab_prod_selected {
+    border-color: var(--siqo-green) !important;
+    box-shadow: 0 0 0 2px var(--siqo-green) inset;
+}
+
+#SIQO_Front_Content .fo_column_products .fo_tab_prod_modify {
+    border-color: var(--siqo-amber) !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap !important;
+    gap: 7px;
+    min-height: 0;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 0 8px !important;
+    overflow-y: auto !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 16px !important;
+    background: var(--siqo-white) !important;
+    scrollbar-color: var(--siqo-sand-strong) transparent;
+    scrollbar-width: thin;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_tool_section {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex: 0 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 !important;
+    padding: 10px 11px !important;
+    border-bottom: 1px solid var(--siqo-sand);
+    background: var(--siqo-white);
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_button_thin {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: 8px !important;
+    background: var(--siqo-red-soft) !important;
+    color: var(--siqo-terracotta) !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_button_thin .dashicons {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_tool_total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    margin: 0 !important;
+    color: var(--siqo-muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_tool_total strong {
+    color: var(--siqo-espresso);
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    width: auto !important;
+    height: 58px !important;
+    min-height: 58px;
+    margin: 0 8px !important;
+    padding: 6px !important;
+    overflow: hidden;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 12px !important;
+    background: #fbf8f4 !important;
+    color: var(--siqo-espresso) !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .FO_prod_img {
+    order: -1;
+    width: 44px !important;
+    height: 44px !important;
+    flex: 0 0 44px;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 9px !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .FO_prod_img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .FO_prod_name_manage {
+    position: static !important;
+    order: 0;
+    flex: 1 1 auto;
+    display: -webkit-box !important;
+    min-width: 0;
+    padding: 0 !important;
+    overflow: hidden;
+    background: transparent !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    text-align: left !important;
+    text-shadow: none !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod::after {
+    content: attr(data-qty-label) " · " attr(data-price-label);
+    order: 1;
+    flex: 0 0 auto;
+    padding-left: 2px;
+    color: var(--siqo-terracotta);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod_remove {
+    top: 2px !important;
+    right: 2px !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 15px !important;
+    line-height: 22px !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo.siqo-cart-empty::after {
+    content: "Nessun articolo. Scegli un prodotto dal catalogo.";
+    margin: 8px 12px;
+    padding: 14px 10px;
+    border: 1px dashed var(--siqo-sand-strong);
+    border-radius: 12px;
+    color: var(--siqo-muted);
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: center;
+}
+
+#SIQO_Front_Content .fo_tab_col_2,
+#SIQO_Front_Content .fo_tab_col_3 {
+    display: flex !important;
+    flex-direction: column;
+    align-self: flex-start;
+    gap: 9px;
+    min-height: 0;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 13px !important;
+    overflow-y: auto !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 16px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    scrollbar-color: var(--siqo-sand-strong) transparent;
+    scrollbar-width: thin;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_col_2_name {
+    margin: 0 !important;
+    color: var(--siqo-muted) !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .FO_flash_tab_qty {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0 0 auto !important;
+    align-self: flex-start;
+    gap: 7px;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 7px !important;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 12px;
+    background: var(--siqo-cream);
+    color: var(--siqo-espresso) !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_target_qty_prod {
+    width: 58px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 4px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 19px !important;
+    font-weight: 800 !important;
+    text-align: center;
+    -moz-appearance: textfield;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_target_qty_prod::-webkit-outer-spin-button,
+#SIQO_Front_Content .fo_tab_col_2 .fo_target_qty_prod::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .spinner-button-big {
+    display: grid;
+    place-items: center;
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0;
+    border-radius: 10px;
+    background: var(--siqo-terracotta);
+    color: var(--siqo-white);
+    font-size: 21px !important;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_tab_variantcont,
+#SIQO_Front_Content .fo_tab_col_2 .FO_flash_tab_temperature,
+#SIQO_Front_Content .fo_tab_col_2 .FO_flash_tab_note {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0;
+    flex-basis: auto;
+    background: transparent !important;
+    border: 0;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .FO_flash_tab_temperature {
+    background: transparent !important;
+    border: 0;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fovariant {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent !important;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fovariant > strong {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--siqo-muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_button_thin {
+    flex: 1 1 calc(50% - 7px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin: 0 !important;
+    padding: 7px 9px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_button_thin:hover,
+#SIQO_Front_Content .fo_tab_col_2 .fo_button_thin.siqo-selected {
+    border-color: var(--siqo-terracotta) !important;
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .fo_button_thin input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#SIQO_Front_Content .fo_tab_col_2 .FO_flash_tab_note textarea {
+    width: 100% !important;
+    min-height: 74px;
+    padding: 9px 10px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    font-family: inherit;
+    font-size: 12px !important;
+    line-height: 1.35;
+    resize: vertical;
+}
+
+#SIQO_Front_Content .fo_tab_col_2.siqo-variants-empty::after {
+    content: "Scegli un prodotto per vedere varianti, temperatura e quantità.";
+    margin-top: 4px;
+    padding: 14px 11px;
+    border: 1px dashed var(--siqo-sand-strong);
+    border-radius: 11px;
+    color: var(--siqo-muted);
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+#SIQO_Front_Content .fo_tab_col_3 {
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3 > * {
+    display: none !important;
+}
+
+#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3::before {
+    content: "Il tastierino si attiva quando selezioni un prodotto o modifichi la quantit\00e0.";
+    padding: 18px 12px;
+    border: 1px dashed var(--siqo-sand-strong);
+    border-radius: 11px;
+    color: var(--siqo-muted);
+    font-size: 11px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+#SIQO_Front_Content .fo_tab_calc_display {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    width: 100% !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 12px !important;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+#SIQO_Front_Content .fo_tab_calc_keyboard {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 46px;
+    align-content: start;
+    gap: 6px;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+#SIQO_Front_Content .fo_tab_col_3 > .fo_tab_calc_keyboard_row {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: stretch;
+    flex: 0 0 auto !important;
+    gap: 6px;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#SIQO_Front_Content .fo_tab_col_3 > .fo_tab_calc_keyboard_row > .fo_tab_calc_keyboard_key {
+    flex: 1 1 0;
+    height: auto !important;
+    min-height: 46px;
+}
+
+#SIQO_Front_Content .fo_tab_col_3 > .fo_tab_calc_keyboard_row > .fo_tab_calc_display {
+    flex: 0 0 100%;
+}
+
+#SIQO_Front_Content .fo_tab_calc_keyboard_row {
+    display: contents !important;
+    min-height: 0;
+}
+
+#SIQO_Front_Content .fo_tab_calc_keyboard_key,
+#SIQO_Front_Content .fo_tab_calc_keyboard_special {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    height: 46px !important;
+    min-width: 0;
+    min-height: 46px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 10px !important;
+    background: #f0e9df !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#SIQO_Front_Content .fo_tab_calc_keyboard_key:hover,
+#SIQO_Front_Content .fo_tab_calc_keyboard_key:focus-visible,
+#SIQO_Front_Content .fo_tab_calc_keyboard_special:hover,
+#SIQO_Front_Content .fo_tab_calc_keyboard_special:focus-visible {
+    background: var(--siqo-sand) !important;
+}
+
+#SIQO_Front_Content .fo_tab_calc_keyboard_special {
+    border-color: var(--siqo-terracotta) !important;
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+}
+
+.FO_flash_tab_footer {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 74px;
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    border: 0 !important;
+    border-top: 1px solid var(--siqo-sand) !important;
+    border-radius: 0 !important;
+    background: var(--siqo-white) !important;
+}
+
+#SIQO_Front_Content .fo_table_name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    flex: 0 0 auto;
+    height: auto !important;
+    margin: 0 8px 0 0 !important;
+    padding: 0 14px 0 0 !important;
+    border: 0;
+    border-right: 1px solid var(--siqo-sand);
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--siqo-espresso) !important;
+    cursor: pointer;
+}
+
+#SIQO_Front_Content .fo_table_name strong {
+    margin: 0;
+    color: var(--siqo-muted) !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#SIQO_Front_Content .fo_table_name .fo_tab_table_name {
+    color: var(--siqo-espresso) !important;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_footer .fo_button_fix {
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    height: 46px !important;
+    min-height: 46px;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    border: 1px solid transparent;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.01em;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.FO_flash_tab_footer .fo_clear_table_button {
+    display: flex !important;
+    border-color: #e8c9c1 !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-terracotta) !important;
+}
+
+.FO_flash_tab_footer .fo_pay_table_button {
+    border-color: #ecd8a6 !important;
+    background: var(--siqo-amber-soft) !important;
+    color: #8a5a00 !important;
+    line-height: 46px !important;
+}
+
+.FO_flash_tab_footer .fo_button_fix[fo_order_type="new_order"] {
+    display: flex !important;
+    flex: 1 1 auto;
+    min-width: 150px;
+    margin-left: auto !important;
+    border-color: var(--siqo-terracotta) !important;
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+    box-shadow: 0 8px 18px -12px rgba(166, 70, 47, 0.8);
+}
+
+.FO_flash_tab_footer .fo_button_fix[fo_order_type="new_order"]:hover,
+.FO_flash_tab_footer .fo_button_fix[fo_order_type="new_order"]:focus-visible {
+    background: var(--siqo-terracotta-dark) !important;
+}
+
+.FO_flash_tab_footer .fo_button_fix.siqo-pay-disabled {
+    background: #c9a79e !important;
+    border-color: #c9a79e !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.FO_flash_tab_footer .fo_variant_show_button,
+.FO_flash_tab_footer .fo_pay_show_keyboard_button {
+    display: none !important;
+}
+
+.siqo-footer-summary {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    margin-right: auto;
+    line-height: 1.1;
+}
+
+.siqo-footer-count {
+    color: var(--siqo-muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.siqo-footer-total {
+    color: var(--siqo-espresso);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.siqo-sheet-head {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    margin: 0 0 4px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--siqo-sand);
+}
+
+.siqo-sheet-head strong {
+    color: var(--siqo-espresso);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.siqo-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 9px;
+    background: var(--siqo-cream);
+    color: var(--siqo-espresso);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.siqo-sheet-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(28, 23, 20, 0.48);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.FO_flash_tab_order_pay_container {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999999999;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: stretch;
+    padding: 16px !important;
+    overflow: auto;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_column {
+    width: calc(50% - 6px);
+    height: auto;
+    min-height: 0;
+    padding: 14px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 16px;
+    background: var(--siqo-white);
+    overflow: auto;
+}
+
+.FO_confirm_container {
+    background: rgba(28, 23, 20, 0.52) !important;
+    z-index: 9999999999;
+}
+
+@media (min-width: 1000px) {
+    #SIQO_Front_Content .FO_table_grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_2,
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3 {
+        display: none !important;
+    }
+}
+
+.FO_flash_tab_footer .fo_button_fix[fo_order_type="new_order"] {
+    flex: 0 0 300px;
+    margin-left: auto;
+}
+
+@media (max-width: 1100px) and (min-width: 1000px) {
+    .FO_flash_tab_body {
+        grid-template-columns: minmax(0, 1.5fr) minmax(185px, 0.7fr) minmax(200px, 0.72fr);
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 {
+        position: relative !important;
+        inset: auto !important;
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 * {
+        font-size: inherit;
+    }
+
+    #SIQO_Front_Content .fo_table_name strong,
+    #SIQO_Front_Content .fo_button_fix {
+        font-size: 12px !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_prod,
+    #SIQO_Front_Content .fo_tab_prod img {
+        width: auto;
+        height: auto;
+    }
+}
+
+@media (max-width: 999.98px) {
+    .siqo-app-header {
+        flex-wrap: wrap;
+        gap: 8px 10px;
+        min-height: 64px;
+        padding: 9px 12px;
+    }
+
+    .siqo-brand-mark {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        border-radius: 12px;
+        font-size: 22px;
+    }
+
+    .siqo-brand-text strong {
+        font-size: 16px;
+    }
+
+    .siqo-brand-text span {
+        font-size: 9px;
+    }
+
+    .siqo-summary {
+        order: 3;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .siqo-summary-item {
+        flex: 1 1 0;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 9px;
+    }
+
+    .siqo-app-actions {
+        margin-left: auto;
+    }
+
+    .siqo-app-btn {
+        width: 38px;
+        min-height: 38px;
+        padding: 0;
+    }
+
+    .siqo-app-btn .siqo-btn-label {
+        display: none;
+    }
+
+    #SIQO_Front_Content .FO_table_grid {
+        grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+        gap: 9px;
+        padding: 12px 12px 32px !important;
+    }
+
+    #SIQO_Front_Content .fo_table_cell {
+        min-height: 112px;
+        padding: 12px 12px 10px 16px !important;
+        border-radius: 15px !important;
+    }
+
+    #SIQO_Front_Content .fo_table_cell h6 {
+        font-size: 17px !important;
+    }
+
+    #SIQO_Front_Content .fo_status_string {
+        font-size: 9px !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_abs_data {
+        font-size: 9px !important;
+    }
+
+    .FO_flash_tab_header {
+        min-height: 60px;
+        padding: 8px 0 8px 10px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .FO_flash_tab_header::-webkit-scrollbar {
+        display: none;
+    }
+
+    .FO_flash_tab_header .fo_cat_butt {
+        flex: 0 0 auto;
+    }
+
+    .FO_flash_tab_header .Advanced_Card_Close_float {
+        position: sticky !important;
+        right: 0;
+        flex: 0 0 auto;
+        margin-left: 6px;
+    }
+
+    .FO_flash_tab_header .fo_button {
+        height: 40px !important;
+        padding: 0 13px !important;
+        font-size: 11px !important;
+    }
+
+    .FO_flash_tab_body {
+        display: flex !important;
+        flex-direction: column;
+        gap: 9px;
+        padding: 9px 9px calc(92px + env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+        scroll-padding-bottom: calc(92px + env(safe-area-inset-bottom));
+        scrollbar-color: var(--siqo-sand-strong) transparent;
+        scrollbar-width: none;
+    }
+
+    .FO_flash_tab_body::-webkit-scrollbar {
+        width: 0;
+        display: none;
+    }
+
+    .FO_flash_tab_body::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: var(--siqo-sand-strong);
+    }
+
+    .FO_flash_tab_body > .fo_tab_col_1 {
+        display: flex !important;
+        flex-direction: column;
+        flex-wrap: nowrap !important;
+        gap: 9px;
+        overflow: visible;
+    }
+
+    #SIQO_Front_Content .fo_column_story {
+        display: none !important;
+    }
+
+    #SIQO_Front_Content .fo_column_products {
+        order: 1;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        flex: 0 0 auto;
+        max-height: none;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    #SIQO_Front_Content .fo_column_products .fo_tab_prod {
+        height: 108px !important;
+        min-height: 108px;
+    }
+
+    #SIQO_Front_Content .fo_column_products .FO_prod_name_manage {
+        min-height: 44px;
+        max-height: 58px;
+        padding: 14px 6px 6px !important;
+        font-size: 11px !important;
+        line-height: 1.14 !important;
+    }
+
+    #SIQO_Front_Content .fo_column_riepilogo {
+        order: 2;
+        flex: 0 0 auto;
+        flex-wrap: nowrap !important;
+        max-height: none;
+        overflow: visible !important;
+    }
+
+    #SIQO_Front_Content .fo_column_riepilogo .fo_tab_tool_section {
+        position: static;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 8px !important;
+    }
+
+    #SIQO_Front_Content .fo_column_riepilogo .fo_tab_tool_total {
+        display: none !important;
+    }
+
+    #SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod {
+        margin: 0 7px !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2,
+    #SIQO_Front_Content .fo_tab_col_3 {
+        position: fixed !important;
+        inset: auto 0 0 0 !important;
+        z-index: 1001;
+        display: none !important;
+        width: 100% !important;
+        max-height: 72dvh;
+        padding: 13px 13px calc(13px + env(safe-area-inset-bottom)) !important;
+        border: 0 !important;
+        border-radius: 20px 20px 0 0 !important;
+        box-shadow: 0 -14px 46px rgba(28, 23, 20, 0.32);
+        overflow-y: auto !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2[fo_show="show"],
+    #SIQO_Front_Content .fo_tab_col_3[fo_show="show"] {
+        display: flex !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2 .fo_button_thin {
+        flex-basis: calc(33.333% - 7px);
+        min-height: 46px;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 .fo_tab_calc_keyboard_key,
+    #SIQO_Front_Content .fo_tab_col_3 .fo_tab_calc_keyboard_special {
+        height: 52px !important;
+        min-height: 52px;
+        font-size: 18px !important;
+    }
+
+    .siqo-sheet-head {
+        display: flex;
+    }
+
+    .siqo-sheet-open .siqo-sheet-backdrop {
+        display: block;
+    }
+
+    .FO_flash_tab_footer {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        min-height: 0;
+        padding: 9px 10px calc(9px + env(safe-area-inset-bottom)) !important;
+    }
+
+    #SIQO_Front_Content .fo_table_name {
+        flex: 1 1 auto;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 4px;
+        margin: 0 !important;
+        padding: 0 7px 0 0 !important;
+        border-right: 1px solid var(--siqo-sand);
+    }
+
+    #SIQO_Front_Content .fo_table_name strong {
+        display: none;
+    }
+
+    #SIQO_Front_Content .fo_table_name .fo_tab_table_name {
+        font-size: 14px !important;
+    }
+
+    .FO_flash_tab_footer .fo_clear_table_button,
+    .FO_flash_tab_footer .fo_pay_table_button {
+        display: flex !important;
+        width: auto !important;
+        height: 34px !important;
+        min-height: 34px;
+        padding: 0 9px !important;
+        border-radius: 9px !important;
+        font-size: 9px !important;
+        line-height: 34px !important;
+    }
+
+    .FO_flash_tab_footer .fo_pay_table_button[style*="display:none"],
+    .FO_flash_tab_footer .fo_pay_table_button[style*="display: none"] {
+        display: none !important;
+    }
+
+    .siqo-footer-summary {
+        display: flex;
+        flex: 1 1 auto;
+        min-width: 52px;
+    }
+
+    .FO_flash_tab_footer .fo_button_fix[fo_order_type="new_order"] {
+        flex: 1 1 120px;
+        min-width: 120px;
+        height: 50px !important;
+        min-height: 50px;
+        padding: 0 12px !important;
+        font-size: 12px !important;
+    }
+
+    .FO_flash_tab_footer .fo_variant_show_button,
+    .FO_flash_tab_footer .fo_pay_show_keyboard_button {
+        display: flex !important;
+        position: static !important;
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px;
+        min-height: 46px;
+        padding: 0 !important;
+        border: 1px solid var(--siqo-sand) !important;
+        border-radius: 12px !important;
+        background: #f0e9df !important;
+        color: var(--siqo-espresso) !important;
+    }
+
+    .FO_flash_tab_footer .fo_variant_show_button .dashicons,
+    .FO_flash_tab_footer .fo_pay_show_keyboard_button .dashicons {
+        width: 22px;
+        height: 22px;
+        font-size: 22px !important;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_column {
+        width: 100%;
+    }
+}
+
+@media (min-width: 730px) and (max-width: 999.98px) {
+    #SIQO_Front_Content .fo_column_products {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #SIQO_Front_Content .fo_column_products .fo_tab_prod {
+        height: 120px !important;
+        min-height: 120px;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1199px) {
+    .FO_flash_tab_body {
+        grid-template-columns: minmax(0, 1fr) 220px 220px;
+        gap: 8px;
+        padding: 10px !important;
+    }
+
+    .FO_flash_tab_body > .fo_tab_col_1 {
+        grid-template-columns: minmax(0, 1fr) 200px;
+        gap: 8px;
+    }
+
+    #SIQO_Front_Content .fo_column_products {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 7px;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2,
+    #SIQO_Front_Content .fo_tab_col_3 {
+        padding: 10px !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2 .fo_button_thin {
+        flex-basis: 100%;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 .fo_tab_calc_keyboard_key,
+    #SIQO_Front_Content .fo_tab_col_3 .fo_tab_calc_keyboard_special {
+        font-size: 15px !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 > .fo_tab_calc_keyboard_row .fo_tab_calc_keyboard_key {
+        min-width: 0;
+        padding: 0 3px !important;
+        overflow: hidden;
+        font-size: 10px !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 > .fo_tab_calc_keyboard_row .fo_tab_calc_keyboard_key strong {
+        height: 100% !important;
+        font-size: 10px !important;
+        line-height: 1.1 !important;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_3 .fo_tab_calc_display {
+        font-size: 18px !important;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1299.98px) {
+    #SIQO_Front_Content .fo_tab_col_1 {
+        grid-template-columns: minmax(0, 1fr) 250px;
+    }
+}
+
+@media (max-width: 560px) {
+    .siqo-brand-text {
+        display: none;
+    }
+
+    .siqo-summary-item .siqo-summary-label {
+        display: inline;
+    }
+
+    .siqo-summary-item {
+        padding: 0 9px !important;
+    }
+
+    .siqo-summary-item {
+        gap: 6px;
+    }
+
+    .siqo-summary-item b {
+        font-size: 16px;
+    }
+
+    #SIQO_Front_Content .FO_table_grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #SIQO_Front_Content .fo_table_cell {
+        min-height: 104px;
+    }
+
+    #SIQO_Front_Content .fo_table_cell h6 {
+        font-size: 16px !important;
+    }
+
+    #SIQO_Front_Content .fo_table_cell > strong {
+        font-size: 9px !important;
+    }
+
+    #SIQO_Front_Content .fo_column_products {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #SIQO_Front_Content .fo_column_products .fo_tab_prod {
+        height: 100px !important;
+        min-height: 100px;
+    }
+
+    #SIQO_Front_Content .fo_tab_col_2 .fo_button_thin {
+        flex-basis: calc(50% - 7px);
+    }
+
+    .FO_flash_tab_header .fo_button {
+        padding: 0 11px !important;
+        font-size: 10px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #SIQO_Front_Content *,
+    #SIQO_Front_Content *::before,
+    #SIQO_Front_Content *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+.FO_flash_tab_order_pay_container {
+    position: fixed !important;
+    inset: 0 !important;
+    display: none !important;
+    grid-template-columns: minmax(0, 720px) minmax(300px, 430px);
+    grid-template-rows: auto auto auto;
+    align-content: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: clamp(18px, 3vw, 40px) !important;
+    overflow: auto;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background:
+        radial-gradient(circle at 12% 4%, rgba(166, 70, 47, 0.16), transparent 34rem),
+        radial-gradient(circle at 88% 96%, rgba(201, 138, 0, 0.1), transparent 28rem),
+        var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    box-sizing: border-box;
+}
+
+.FO_flash_tab_order_pay_container.is-open {
+    display: grid !important;
+}
+
+.FO_flash_tab_order_pay_container *,
+.FO_flash_tab_order_pay_container *::before,
+.FO_flash_tab_order_pay_container *::after {
+    box-sizing: border-box;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0;
+    padding: clamp(20px, 2.4vw, 30px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 0 0, rgba(166, 70, 47, 0.55), transparent 46%),
+        linear-gradient(135deg, #2b201b, #1d1613) !important;
+    color: #fff8f0;
+    box-shadow: 0 20px 45px rgba(47, 34, 27, 0.22);
+    user-select: none;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_header_copy {
+    min-width: 0;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_kicker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 10px;
+    border: 1px solid rgba(233, 179, 127, 0.24);
+    border-radius: 999px;
+    background: rgba(233, 179, 127, 0.1);
+    color: #e9b37f;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_header h2 {
+    margin: 10px 0 0;
+    color: #fff8f0;
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_header p {
+    max-width: 58ch;
+    margin: 8px 0 0;
+    color: rgba(247, 242, 236, 0.7);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_close {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff8f0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_close:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_close .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0;
+    margin: 0 !important;
+    padding: clamp(16px, 2vw, 22px) !important;
+    overflow: hidden;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 14px 36px rgba(47, 34, 27, 0.08);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_side {
+    overflow-y: auto;
+    background: rgba(255, 253, 250, 0.96) !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_section_head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--siqo-sand);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_section_kicker {
+    display: block;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_section_head h3 {
+    margin: 3px 0 0;
+    color: var(--siqo-espresso);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 26px;
+    padding: 0 9px;
+    border-radius: 999px;
+    background: var(--siqo-red-soft);
+    color: var(--siqo-terracotta);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_optional {
+    padding: 4px 9px;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 999px;
+    background: var(--siqo-cream);
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items {
+    display: grid !important;
+    gap: 8px;
+    align-content: start !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: clamp(180px, 34vh, 340px);
+    padding: 2px 4px 2px 0 !important;
+    overflow: auto;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items > .fo_tab_prod {
+    display: grid !important;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 2px 12px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 9px 12px !important;
+    overflow: hidden;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 13px !important;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso) !important;
+    cursor: default;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items > .fo_tab_prod:hover {
+    border-color: var(--siqo-sand-strong) !important;
+    transform: none !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items .FO_prod_img {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: 11px !important;
+    background: var(--siqo-white);
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items .FO_prod_img img {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    border-radius: 11px !important;
+    object-fit: cover;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items .FO_prod_name_manage {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    color: var(--siqo-espresso) !important;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items .fo_pay_line_qty {
+    grid-column: 2;
+    grid-row: 2;
+    color: var(--siqo-muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_items .fo_pay_line_price {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    color: var(--siqo-terracotta);
+    font-size: 14px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.FO_flash_tab_order_pay_container .fo_list_final_order {
+    display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap !important;
+    gap: 12px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_hint {
+    margin: 0;
+    color: var(--siqo-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_customer_type {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 12px !important;
+    background: var(--siqo-cream) !important;
+    color: var(--siqo-espresso);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_customer_type input[type="checkbox"] {
+    position: relative;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 24px;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--siqo-sand-strong);
+    appearance: none;
+    cursor: pointer;
+    transition: background 0.16s ease;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_customer_type input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--siqo-white);
+    box-shadow: 0 1px 4px rgba(28, 23, 20, 0.2);
+    transition: transform 0.16s ease;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_customer_type input[type="checkbox"]:checked {
+    background: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_customer_type input[type="checkbox"]:checked::after {
+    transform: translateX(18px);
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    flex-basis: auto !important;
+    justify-content: initial !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 14px !important;
+    background: var(--siqo-cream) !important;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer > strong {
+    grid-column: 1 / -1;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer .fot_pay_input {
+    width: 100% !important;
+    min-width: 0;
+    height: 42px;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid var(--siqo-sand-strong) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 13px !important;
+    box-shadow: none !important;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer .N_customer_name {
+    grid-column: 1 / -1;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer .N_customer_mail {
+    grid-column: 1;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer .N_customer_phone {
+    grid-column: 2;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_new_customer .fot_pay_input:focus {
+    border-color: var(--siqo-terracotta) !important;
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(166, 70, 47, 0.12) !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_secondary {
+    display: inline-flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--siqo-sand-strong);
+    border-radius: 10px;
+    background: var(--siqo-white);
+    color: var(--siqo-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_secondary:hover {
+    border-color: var(--siqo-terracotta);
+    color: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_search_customer {
+    margin: 0 !important;
+    padding: 12px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 14px !important;
+    background: var(--siqo-cream) !important;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_search_customer > strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_search_customer input[type="search"] {
+    width: 100% !important;
+    height: 42px;
+    padding: 0 12px !important;
+    border: 1px solid var(--siqo-sand-strong) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 13px !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_list {
+    width: 100% !important;
+    max-height: 230px;
+    margin-top: 8px;
+    overflow: auto;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 10px;
+    background: var(--siqo-white);
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search {
+    width: 100% !important;
+    height: auto !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid var(--siqo-sand);
+    cursor: pointer;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search:hover {
+    background: var(--siqo-cream);
+}
+
+.FO_flash_tab_order_pay_container .FO_customers_container {
+    display: grid;
+    gap: 8px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin-top: 2px;
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_customers_container:empty {
+    display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card.FO_example {
+    display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 76px;
+    margin: 0 !important;
+    padding: 12px 12px 12px 64px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 13px !important;
+    background: var(--siqo-cream) !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card img,
+.FO_flash_tab_order_pay_container .FO_pay_customer_card .FO_pay_customer_img {
+    position: absolute !important;
+    top: 12px !important;
+    left: 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    object-fit: cover;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card .FO_pay_customer_id {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    left: auto !important;
+    min-width: 24px;
+    padding: 2px 7px !important;
+    border-radius: 999px;
+    background: var(--siqo-red-soft) !important;
+    color: var(--siqo-terracotta);
+    font-size: 10px;
+    font-weight: 800;
+    text-align: center;
+    opacity: 1 !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card .FO_pay_customer_name {
+    position: static !important;
+    display: block;
+    padding: 0 28px 0 0 !important;
+    border: 0;
+    background: transparent !important;
+    color: var(--siqo-espresso);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.3;
+    opacity: 1 !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card .FO_pay_customer_mail,
+.FO_flash_tab_order_pay_container .FO_pay_customer_card .FO_pay_customer_phone {
+    position: static !important;
+    display: block;
+    padding: 0 !important;
+    border: 0;
+    background: transparent !important;
+    color: var(--siqo-muted);
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 1 !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_pay_customer_card input[type="hidden"] {
+    display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_footer {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0;
+    padding: 14px 16px !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 14px 36px rgba(47, 34, 27, 0.08);
+    user-select: none;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_total_block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_total_label {
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_total_line {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    color: var(--siqo-espresso);
+    font-variant-numeric: tabular-nums;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_currency {
+    color: var(--siqo-terracotta);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_total {
+    color: var(--siqo-espresso);
+    font-size: clamp(28px, 3.2vw, 38px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_footer_actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_preconto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 46px;
+    padding: 0 15px;
+    border: 1px solid var(--siqo-sand-strong);
+    border-radius: 12px;
+    background: var(--siqo-white);
+    color: var(--siqo-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_preconto:hover {
+    border-color: var(--siqo-terracotta);
+    color: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_preconto .dashicons {
+    width: 17px;
+    height: 17px;
+    font-size: 17px;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_table_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    margin: 0 !important;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 10px 22px -10px rgba(166, 70, 47, 0.6);
+    cursor: pointer;
+    transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_table_button:hover {
+    background: var(--siqo-terracotta-dark) !important;
+    transform: translateY(-1px);
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_table_button .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+
+@media (max-width: 1080px) {
+    .FO_flash_tab_order_pay_container {
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+        padding: 18px !important;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_header,
+    .FO_flash_tab_order_pay_container .fo_pay_footer {
+        grid-column: 1;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_column {
+        width: 100% !important;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_list_items {
+        max-height: 260px;
+    }
+}
+
+@media (max-width: 640px) {
+    .FO_flash_tab_order_pay_container {
+        gap: 10px;
+        padding: 10px !important;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_header {
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px !important;
+        border-radius: 16px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_header h2 {
+        font-size: 24px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_header p {
+        display: none;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_close {
+        min-height: 40px;
+        padding: 0 11px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_close span:last-child {
+        display: none;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_column {
+        gap: 10px;
+        padding: 14px !important;
+        border-radius: 16px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_list_items {
+        max-height: 210px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_footer {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px !important;
+        border-radius: 16px;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_footer_actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .FO_flash_tab_order_pay_container .fo_pay_table_button,
+    .FO_flash_tab_order_pay_container .fo_pay_preconto {
+        width: 100%;
+        min-height: 48px;
+    }
+}
+
+@media (max-height: 860px) and (min-width: 1081px) {
+    .FO_flash_tab_order_pay_container {
+        align-content: start;
+    }
+}

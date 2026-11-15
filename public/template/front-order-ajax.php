@@ -35,6 +35,11 @@ $tavoli = get_posts( array(
 
 $products = SIQO_get_products_for_loop();
 
+$table_id_valid = 0;
+$table_name     = '';
+$table_notice   = '';
+$table_link_id  = '0';
+
 
 if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'SIQO_check_table_nonce' ) ) {
 // get table_id from link
@@ -47,6 +52,19 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 	} else{ $table_link_id = '0'; }
 } else{
 	$net_info['is_local'] = false;
+}
+
+if ( $table_link_id ) {
+	foreach ( $tavoli as $tavolo ) {
+		if ( (string) $tavolo->ID === (string) $table_link_id ) {
+			$table_id_valid = (int) $tavolo->ID;
+			$table_name     = $tavolo->post_title;
+			break;
+		}
+	}
+	if ( ! $table_id_valid && '0' !== (string) $table_link_id ) {
+		$table_notice = __( 'Il tavolo richiesto non è disponibile. Selezionalo qui sotto.', 'studio-immens-quick-order' );
+	}
 }
 
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
@@ -78,6 +96,24 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 
 ?>
 <div class="FOmniContent">
+	<?php
+	$account_page = get_option( 'woocommerce_myaccount_page_id' ) ? get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) : wp_login_url( get_permalink() );
+	$account_url  = is_user_logged_in() ? wp_logout_url( get_permalink() ) : wp_login_url( get_permalink() );
+	$account_text = is_user_logged_in() ? __( 'Esci', 'studio-immens-quick-order' ) : __( 'Accedi', 'studio-immens-quick-order' );
+	if ( is_user_logged_in() && $account_page ) {
+		$account_url = $account_page;
+		$account_text = __( 'Account', 'studio-immens-quick-order' );
+	}
+	SIQO_Management::render_bar(
+		'customer',
+		array(
+			'table_name'    => $table_name,
+			'account_url'   => $account_url,
+			'account_label' => $account_text,
+			'title'         => $table_notice,
+		)
+	);
+	?>
 
 	<?php  if (isset($settings->showQR) && $settings->showQR == 'yes' ) {
 		echo SIQO_create_post_QR_code();
@@ -217,10 +253,13 @@ if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_fiel
 
 				<?php if ( $net_info['is_local'] ) { ?>
 					<div id="table_input"> 
+						<?php if ( $table_notice ) { ?>
+							<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
+						<?php } ?>
 						<select class="fo-select" name="table_name_cpt">
 							<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
 							<?php foreach ($tavoli as $tavolo) { ?>
-								<option value="<?php echo esc_attr($tavolo->ID);?>">
+								<option value="<?php echo esc_attr($tavolo->ID);?>"<?php selected( $table_id_valid, $tavolo->ID ); ?>>
 									<?php echo esc_attr($tavolo->post_title);?>
 								</option>
 							<?php } ?>

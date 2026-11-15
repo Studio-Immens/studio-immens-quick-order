@@ -62,6 +62,35 @@ function SIQO_manage_table(){
     <?php }
 ?>
 <div id="SIQO_Front_Content">
+    <script type="text/javascript">document.documentElement.classList.add('siqo-operator-mode');</script>
+    <?php $siqo_brand = SIQO_Management::get_brand(); ?>
+    <header class="siqo-app-header">
+        <div class="siqo-brand">
+            <?php if ( ! empty( $siqo_brand['logo'] ) ) : ?>
+                <img class="siqo-brand-logo" src="<?php echo esc_url( $siqo_brand['logo'] ); ?>" alt="">
+            <?php else : ?>
+                <span class="siqo-brand-mark" aria-hidden="true"><?php echo esc_html( mb_substr( $siqo_brand['name'], 0, 1 ) ); ?></span>
+            <?php endif; ?>
+            <div class="siqo-brand-text">
+                <strong><?php echo esc_html( $siqo_brand['name'] ); ?></strong>
+                <span><?php esc_html_e( 'Gestione tavoli', 'studio-immens-quick-order' ); ?></span>
+            </div>
+        </div>
+        <div class="siqo-summary" aria-live="polite" aria-label="Stato tavoli">
+            <span class="siqo-summary-item siqo-summary-item--free"><span class="siqo-summary-dot" aria-hidden="true"></span><b class="siqo-count-free">0</b><span class="siqo-summary-label">liberi</span></span>
+            <span class="siqo-summary-item siqo-summary-item--busy"><span class="siqo-summary-dot" aria-hidden="true"></span><b class="siqo-count-busy">0</b><span class="siqo-summary-label">occupati</span></span>
+        </div>
+        <div class="siqo-app-actions">
+            <button type="button" class="siqo-app-btn" onclick="window.location.reload()">
+                <span class="dashicons dashicons-update" aria-hidden="true"></span>
+                <span class="siqo-btn-label">Aggiorna</span>
+            </button>
+            <a class="siqo-app-btn siqo-app-btn--logout" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
+                <span class="dashicons dashicons-exit" aria-hidden="true"></span>
+                <span class="siqo-btn-label">Esci</span>
+            </a>
+        </div>
+    </header>
     <?php 
         if (function_exists('FOP_tab_status_bar')){FOP_tab_status_bar();}
 
@@ -86,9 +115,18 @@ function SIQO_manage_table(){
         <?php 
 
         foreach ( $tavoli as $key => $tavolo ) {
-        $zone = get_the_terms( $tavolo->ID, 'zone' );
-        $macro_status = get_the_terms( $tavolo->ID, 'status' );
+        $zone = get_the_terms( $tavolo->ID, 'siqo_zones' );
+        if ( is_wp_error( $zone ) ) {
+            $zone = false;
+        }
+        $macro_status = get_the_terms( $tavolo->ID, 'siqo_table_status' );
+        if ( is_wp_error( $macro_status ) ) {
+            $macro_status = false;
+        }
         $status = SIQO_get_meta( 'status_table_'.$tavolo->ID );
+        if ( $status === '' || $status === null || $status === false ) {
+            $status = 0;
+        }
         // SIQO_debug($status);
         if ( $macro_status != false ) {
             if ($macro_status[0]->name == 'Libero' || $macro_status[0]->name == 'Aperto' || $macro_status[0]->name == 'Open') {
@@ -103,7 +141,7 @@ function SIQO_manage_table(){
             } elseif ($status == 1) {
                 $Style = 'background-color:var(--fo-tab-2);';$status_string = __( 'Occupato', 'studio-immens-quick-order' );
             } elseif ($status == 2) {
-                $Style = 'background-color:yellow;';$status_string = __( 'Libero', 'studio-immens-quick-order' );
+                $Style = 'background-color:yellow;';$status_string = __( 'Da incassare', 'studio-immens-quick-order' );
             } else{
                 $Style = 'background-color:var(--fo-bg4-color);';$status_string = '';
             }

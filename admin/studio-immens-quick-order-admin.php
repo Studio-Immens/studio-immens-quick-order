@@ -24,12 +24,55 @@ function SIQO_menu_page(){
     $link = plugins_url( 'includes/img/logo-20.webp', dirname(__FILE__) );
 
    add_menu_page( 'Quick Order', esc_html__( 'Quick Order', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page', $link, $position );
-   add_submenu_page( $menu_slug, esc_html__( 'Settings', 'studio-immens-quick-order' ), esc_html__( 'Settings', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_settings' );
-   add_submenu_page( $menu_slug, esc_html__( 'Style', 'studio-immens-quick-order' ), esc_html__( 'Style', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_style', 'SIQO_sub_menu_page_style' );
+   add_submenu_page( $menu_slug, esc_html__( 'Dashboard', 'studio-immens-quick-order' ), esc_html__( 'Dashboard', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page' );
+   add_submenu_page( $menu_slug, esc_html__( 'Impostazioni', 'studio-immens-quick-order' ), esc_html__( 'Impostazioni', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_settings', 'SIQO_sub_menu_page_management_settings' );
+   add_submenu_page( $menu_slug, esc_html__( 'Impostazioni legacy', 'studio-immens-quick-order' ), esc_html__( 'Impostazioni legacy', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_legacy', 'SIQO_sub_menu_page_settings' );
+   add_submenu_page( $menu_slug, esc_html__( 'Stile', 'studio-immens-quick-order' ), esc_html__( 'Stile', 'studio-immens-quick-order' ), 'manage_options', $menu_slug.'_style', 'SIQO_sub_menu_page_style' );
 
 
 }
 add_action( 'admin_menu', 'SIQO_menu_page' );
+
+function SIQO_clean_admin_menu() {
+	global $submenu;
+
+	remove_submenu_page( 'si-quick-order', 'si-quick-order_legacy' );
+	remove_submenu_page( 'si-quick-order', 'si-quick-order_style' );
+
+	if ( empty( $submenu['si-quick-order'] ) ) {
+		return;
+	}
+
+	$order = array(
+		'si-quick-order'                 => 0,
+		'edit.php?post_type=siqo_tables' => 1,
+		'edit.php?post_type=siqo_catering' => 2,
+		'si-quick-order_settings'        => 3,
+		'si-quick-order_pro'             => 4,
+		'siqo-warehouse'                 => 5,
+		'siqo-print-rules'               => 6,
+	);
+
+	foreach ( $submenu['si-quick-order'] as &$item ) {
+		if ( 'edit.php?post_type=siqo_tables' === $item[2] ) {
+			$item[0] = esc_html__( 'Tavoli', 'studio-immens-quick-order' );
+		}
+		if ( 'edit.php?post_type=siqo_catering' === $item[2] ) {
+			$item[0] = esc_html__( 'Catering', 'studio-immens-quick-order' );
+		}
+	}
+	unset( $item );
+
+	usort(
+		$submenu['si-quick-order'],
+		function ( $a, $b ) use ( $order ) {
+			$pa = isset( $order[ $a[2] ] ) ? $order[ $a[2] ] : 99;
+			$pb = isset( $order[ $b[2] ] ) ? $order[ $b[2] ] : 99;
+			return $pa <=> $pb;
+		}
+	);
+}
+add_action( 'admin_menu', 'SIQO_clean_admin_menu', 99 );
 
 function SIQO_head_menu_page(){
     ?>
@@ -50,7 +93,6 @@ function SIQO_nav_menu_page(){
     $QuickOrder_color = ( $current_page == 'si-quick-order' )? $color1 : $color2;
     $Settings_color = ( $current_page == 'si-quick-order_settings' )? $color1 : $color2;
     $Style_color = ( $current_page == 'si-quick-order_style' )? $color1 : $color2;
-    $Addons_color = ( $current_page == 'si-quick-order_addons' )? $color1 : $color2;
     $Pro_color = ( $current_page == 'si-quick-order_pro' )? $color1 : $color2;
     SIQO_head_menu_page();
     ?>
@@ -58,13 +100,11 @@ function SIQO_nav_menu_page(){
         <a href="admin.php?page=si-quick-order" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($QuickOrder_color); ?>;">
         <?php esc_html_e( 'Quick Order', 'studio-immens-quick-order' ); ?></a>
         <a href="admin.php?page=si-quick-order_settings" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Settings_color); ?>;">
-        <?php esc_html_e( 'Settings', 'studio-immens-quick-order' ); ?></a>
+        <?php esc_html_e( 'Impostazioni', 'studio-immens-quick-order' ); ?></a>
         <a href="admin.php?page=si-quick-order_style" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Style_color); ?>">
-        <?php esc_html_e( 'Style', 'studio-immens-quick-order' ); ?></a>
-        <a href="admin.php?page=si-quick-order_addons" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Addons_color); ?>">
-        <?php esc_html_e( 'Addons', 'studio-immens-quick-order' ); ?></a>
+        <?php esc_html_e( 'Stile', 'studio-immens-quick-order' ); ?></a>
         <a href="admin.php?page=si-quick-order_pro" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Pro_color); ?>">
-        <?php esc_html_e( 'Pro', 'studio-immens-quick-order' ); ?></a>
+        <?php esc_html_e( 'Licenza Pro', 'studio-immens-quick-order' ); ?></a>
     </nav>
     <?php
 }
@@ -77,9 +117,10 @@ function SIQO_foot_menu_page( $debug = false ){
     }
 }
 function SIQO_main_menu_page(){
-SIQO_nav_menu_page();
 include( plugin_dir_path( __FILE__ ) . 'pages/main.php');
-SIQO_foot_menu_page();
+}
+function SIQO_sub_menu_page_management_settings(){
+SIQO_Management::render_settings_page();
 }
 function SIQO_sub_menu_page_settings(){
 SIQO_nav_menu_page();

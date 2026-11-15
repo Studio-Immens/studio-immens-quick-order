@@ -1,0 +1,150 @@
+body.siqo-customer-mode {
+	background: #f7f2ec;
+}
+
+body.siqo-customer-mode #SIQO_Front_Content,
+body.siqo-customer-mode .FOmniContent {
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.siqo-bar-customer {
+	position: sticky;
+	top: 0;
+	z-index: 80;
+	background: rgba(255, 253, 249, 0.96);
+}
+
+.siqo-bar-customer .siqo-bar-action {
+	border-color: rgba(166, 70, 47, 0.20);
+}
+
+.siqo-customer-shell {
+	width: min(1380px, calc(100% - 1.2rem));
+	margin: 0 auto;
+	padding: 1rem 0 7rem;
+}
+
+body.siqo-customer-mode .FOmniContent {
+	width: min(1380px, calc(100% - 1.2rem)) !important;
+	margin: 0 auto !important;
+	padding: 1rem 0 7rem !important;
+}
+
+body.siqo-customer-mode #products_container {
+	display: grid !important;
+	grid-template-columns: 220px minmax(0, 1fr) !important;
+	gap: 1rem;
+	align-items: start;
+}
+
+body.siqo-customer-mode .FOListRapidView {
+	position: sticky;
+	top: 86px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	padding: 0.6rem;
+	border: 1px solid var(--siqo-line);
+	border-radius: 16px;
+	background: #fffdf9;
+	max-height: calc(100dvh - 110px);
+	overflow: auto;
+}
+
+body.siqo-customer-mode .FOListRapidView_cathead {
+	display: block;
+	padding: 0.62rem 0.7rem;
+	border-radius: 9px;
+	font-size: 0.72rem;
+	font-weight: 800;
+	text-decoration: none;
+	color: #fff !important;
+	background: var(--siqo-brand) !important;
+}
+
+body.siqo-customer-mode .FO_search_container {
+	display: grid !important;
+	grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	gap: 0.7rem;
+}
+
+body.siqo-customer-mode .foProdCard {
+	border-radius: 16px !important;
+	overflow: hidden;
+	border: 1px solid var(--siqo-line);
+	background: #fffdf9;
+	box-shadow: 0 12px 30px -28px rgba(28, 23, 20, 0.55);
+	transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+body.siqo-customer-mode .foProdCard:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 20px 38px -28px rgba(28, 23, 20, 0.55);
+}
+
+body.siqo-customer-mode .focathead {
+	border-radius: 14px;
+	background: var(--siqo-brand) !important;
+	color: #fff;
+}
+
+body.siqo-customer-mode .FO_show_order_summary {
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	z-index: 90;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.7rem 1rem;
+	border-radius: 999px;
+	background: var(--siqo-brand);
+	color: #fff;
+	box-shadow: 0 18px 40px -18px rgba(28, 23, 20, 0.55);
+}
+
+body.siqo-customer-mode .FO_show_order_summary .text_white {
+	color: #fff;
+}
+
+body.siqo-customer-mode #FO_Front_Float {
+	border-radius: 22px 22px 0 0;
+	box-shadow: 0 -22px 60px -24px rgba(28, 23, 20, 0.45);
+}
+
+body.siqo-customer-mode #submit_order {
+	background: var(--siqo-brand) !important;
+	border-radius: 12px;
+}
+
+@media (max-width: 900px) {
+	body.siqo-customer-mode #products_container {
+		grid-template-columns: 1fr !important;
+	}
+	body.siqo-customer-mode .FOListRapidView {
+		position: static;
+		max-height: none;
+		flex-direction: row;
+		overflow-x: auto;
+	}
+	body.siqo-customer-mode .FOListRapidView_cathead {
+		white-space: nowrap;
+	}
+}
+
+@media (max-width: 560px) {
+	.siqo-bar-customer .siqo-bar-title {
+		display: none;
+	}
+	.siqo-customer-shell,
+	body.siqo-customer-mode .FOmniContent {
+		width: calc(100% - 0.8rem) !important;
+	}
+	body.siqo-customer-mode .FO_search_container {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+}
