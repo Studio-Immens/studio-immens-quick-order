@@ -4,7 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SIQO_STATION_VERSION', '1.0.0' );
+require_once __DIR__ . '/template/station-table-sessions.php';
+
+define( 'SIQO_STATION_VERSION', '1.0.1' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
@@ -165,6 +167,8 @@ function siqo_station_orders_render( $embedded = false ) {
 				<?php esc_html_e( 'Aggiorna', 'studio-immens-quick-order' ); ?>
 			</button>
 		</header>
+
+		<?php echo siqo_table_session_render_bar(); ?>
 
 		<nav class="siqo-station-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Filtra per punto di preparazione', 'studio-immens-quick-order' ); ?>">
 			<?php echo siqo_station_render_tabs( $station, $counts ); ?>

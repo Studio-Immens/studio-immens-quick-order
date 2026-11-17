@@ -154,7 +154,80 @@
         }
     }
 
+    function setTableBarStatus(bar, message, isError) {
+        var status = bar.querySelector('.siqo-table-session-status');
+        if (!status) {
+            return;
+        }
+        status.textContent = message || '';
+        status.classList.toggle('is-error', !!isError);
+    }
+
+    function toggleTable(button) {
+        var bar = button.closest('.siqo-table-session-bar');
+        var chip = button.closest('.siqo-table-chip');
+        if (!bar || !chip) {
+            return;
+        }
+
+        var doAction = button.getAttribute('data-do') === 'close' ? 'close' : 'open';
+        var labelOpen = bar.getAttribute('data-label-open') || 'Apri';
+        var labelClose = bar.getAttribute('data-label-close') || 'Chiudi';
+        var tableId = chip.getAttribute('data-table-id') || '';
+        var endpoint = bar.getAttribute('data-ajax-url') || window.ajaxurl || ajaxUrl;
+        var body = new FormData();
+
+        body.append('action', doAction === 'close' ? 'siqo_table_close' : 'siqo_table_open');
+        body.append('_siqo_nonce', bar.getAttribute('data-nonce') || '');
+        body.append('table_id', tableId);
+        body.append('do', doAction);
+
+        button.disabled = true;
+        setTableBarStatus(bar, doAction === 'close' ? 'Chiusura…' : 'Apertura…', false);
+
+        fetch(endpoint, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                if (!json || !json.success) {
+                    throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+                }
+
+                var isActive = !!json.data.active;
+                var statusLabel = chip.querySelector('.siqo-table-chip-status');
+
+                chip.classList.toggle('is-active', isActive);
+                button.setAttribute('data-do', isActive ? 'close' : 'open');
+                button.classList.toggle('is-open', !isActive);
+                button.classList.toggle('is-close', isActive);
+                button.textContent = isActive ? labelClose : labelOpen;
+
+                if (statusLabel) {
+                    statusLabel.textContent = isActive ? (json.data.label || 'Attivo') : 'Non attivo';
+                }
+
+                setTableBarStatus(bar, isActive ? 'Tavolo aperto.' : 'Tavolo chiuso.', false);
+            })
+            .catch(function (error) {
+                setTableBarStatus(bar, error.message || 'Errore di comunicazione.', true);
+            })
+            .then(function () {
+                button.disabled = false;
+            });
+    }
+
     root.addEventListener('click', function (event) {
+        var tableButton = event.target.closest('.siqo-table-toggle');
+        if (tableButton) {
+            toggleTable(tableButton);
+            return;
+        }
+
         var tab = event.target.closest('[data-station-target]');
         if (tab) {
             var station = tab.getAttribute('data-station-target');
