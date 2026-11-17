@@ -3884,10 +3884,6 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = fal
 		if ( ! $requested_table_id || 'siqo_tables' !== get_post_type( $requested_table_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Seleziona un tavolo attivo prima di ordinare.', 'studio-immens-quick-order' ) ), 400 );
 		}
-		$siqo_reserved = SIQO_Table_Sessions::reserve_order( $requested_table_id );
-		if ( is_wp_error( $siqo_reserved ) ) {
-			wp_send_json_error( array( 'message' => $siqo_reserved->get_error_message() ), 403 );
-		}
 	}
 
 	if ( $clear && $requested_table_id ) {
@@ -4221,8 +4217,21 @@ if ( ! $verified && $order->get_items()!=null) {
 	if ( $verified && 0 === count( $order->get_items() ) ) {
 		wp_send_json_error( array( 'message' => __( 'Ordine senza articoli validi.', 'studio-immens-quick-order' ) ), 400 );
 	}
-	$order->calculate_totals();	//Recalculate the totals. IMPORTANT!
-	$order->save();
+	if ( ! $siqo_is_operator ) {
+		$siqo_reserved = SIQO_Table_Sessions::reserve_order( $requested_table_id );
+		if ( is_wp_error( $siqo_reserved ) ) {
+			wp_send_json_error( array( 'message' => $siqo_reserved->get_error_message() ), 403 );
+		}
+	}
+	try {
+		$order->calculate_totals();	//Recalculate the totals. IMPORTANT!
+		$order->save();
+	} catch ( Exception $siqo_create_error ) {
+		if ( $siqo_reserved && ! is_wp_error( $siqo_reserved ) ) {
+			SIQO_Table_Sessions::release_order( (int) $siqo_reserved->id );
+		}
+		wp_send_json_error( array( 'message' => __( 'Impossibile creare l\'ordine. Riprova.', 'studio-immens-quick-order' ) ), 500 );
+	}
 
 	$order_id = $order->get_id();
 
@@ -4239,7 +4248,19 @@ if ( ! $verified && $order->get_items()!=null) {
 
 	if ( 'pending' === $siqo_approval && $siqo_session ) {
 		global $wpdb;
-		$wpdb->update( SIQO_Table_Sessions::table_name(), array( 'status' => 'awaiting_approval' ), array( 'id' => (int) $siqo_session->id ), array( '%s' ), array( '%d' ) );
+		$siqo_transitioned = (int) $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'awaiting_approval' WHERE id = %d AND status IN ('open','awaiting_approval')",
+				(int) $siqo_session->id
+			)
+		);
+		if ( 0 === $siqo_transitioned ) {
+			$order->update_meta_data( '_siqo_approval', 'rejected' );
+			$order->update_status( 'cancelled', __( 'Sessione del tavolo non più attiva.', 'studio-immens-quick-order' ) );
+			$order->save();
+			SIQO_Table_Sessions::release_order( (int) $siqo_session->id );
+			wp_send_json_error( array( 'message' => __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
+		}
 	}
 
 	$siqo_previous_order_ids = array();
@@ -4284,6 +4305,7 @@ if ( ! $verified && $order->get_items()!=null) {
 			$order->update_meta_data( '_siqo_approval', 'rejected' );
 			$order->update_status( 'cancelled' );
 			$order->save();
+			SIQO_Table_Sessions::release_order( (int) $siqo_session->id );
 			global $wpdb;
 			$wpdb->query(
 				$wpdb->prepare(

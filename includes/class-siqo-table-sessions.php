@@ -244,6 +244,9 @@ class SIQO_Table_Sessions {
 		if ( strtotime( $session->expires_at . ' UTC' ) <= time() ) {
 			return new WP_Error( 'session_expired', __( 'Sessione del tavolo scaduta. Chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
+		if ( 'awaiting_approval' === $session->status ) {
+			return new WP_Error( 'awaiting_approval', __( 'Ordine in attesa di conferma. Attendi un operatore prima di ordinare di nuovo.', 'studio-immens-quick-order' ) );
+		}
 		if ( ! self::register_order( $session->id, $total ) ) {
 			$fresh = self::get( $session->id );
 			if ( ! $fresh || ! in_array( $fresh->status, array( 'open', 'awaiting_approval' ), true ) ) {
@@ -262,6 +265,17 @@ class SIQO_Table_Sessions {
 		return self::get( $session->id );
 	}
 
+	public static function release_order( $session_id ) {
+		global $wpdb;
+		$affected = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE " . self::table_name() . " SET orders_count = IF(orders_count > 0, orders_count - 1, 0) WHERE id = %d",
+				absint( $session_id )
+			)
+		);
+		return 1 === (int) $affected;
+	}
+
 	public static function register_order( $session_id, $total = 0 ) {
 		global $wpdb;
 		$table      = self::table_name();
@@ -276,7 +290,7 @@ class SIQO_Table_Sessions {
 		$affected   = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
-				 WHERE id = %d AND status IN ('open','awaiting_approval')
+				 WHERE id = %d AND status = 'open'
 				 AND expires_at > %s
 				 AND orders_count < %d
 				 AND (last_order_at IS NULL OR last_order_at < %s)
@@ -304,11 +318,14 @@ class SIQO_Table_Sessions {
 		$affected  = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE " . self::table_name() . " SET session_total = session_total + %f
-				 WHERE id = %d AND session_total + %f <= %f",
+				 WHERE id = %d AND session_total + %f <= %f
+				 AND status IN ('open','awaiting_approval')
+				 AND expires_at > %s",
 				(float) $total,
 				absint( $session_id ),
 				(float) $total,
-				$max_total
+				$max_total,
+				self::now()
 			)
 		);
 		return 1 === (int) $affected;
