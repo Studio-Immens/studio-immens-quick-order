@@ -720,4 +720,3 @@
 
 #siqo-station-orders .siqo-author { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: inherit; opacity: .85; }
 #siqo-station-orders .siqo-author img { border-radius: 50%; display: block; }
-#siqo-station-orders .siqo-station-order-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

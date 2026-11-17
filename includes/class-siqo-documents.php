@@ -665,7 +665,12 @@ class SIQO_Documents {
 	 * @return string
 	 */
 	private static function ascii( $text ) {
-		$text = remove_accents( (string) $text );
+		$text = str_replace(
+			array( '—', '–', '‘', '’', '“', '”', '…' ),
+			array( '-', '-', "'", "'", '"', '"', '...' ),
+			(string) $text
+		);
+		$text = remove_accents( $text );
 		$text = str_replace( array( "\r", "\t", '€' ), array( '', ' ', 'EUR' ), $text );
 		return trim( substr( $text, 0, 4096 ) );
 	}
