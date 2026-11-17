@@ -1122,6 +1122,11 @@ foserialmap = foserial.map(item => {
 
 console.log(foserialmap);
 	console.log(' order submitted sucessfully !!! ');
+	var previous_error = jQuery('#order_actions').find('.siqo-order-error').first();
+	if ( previous_error.length ) {
+		previous_error.text('');
+		previous_error.get(0).style.setProperty( 'display', 'none', 'important' );
+	}
 		jQuery.ajax({
 		type: 'POST',
 		url: siqo_ajax_view_orders_vars.ajaxurl,
@@ -1147,8 +1152,23 @@ console.log(foserialmap);
 				jQuery('.FO_show_order_summary img').hide();
 				jQuery('#orderNote').empty();
 				Hide_SIQO_Front_Float();
-				jQuery('.FOloadingMessage').fadeOut();
+				jQuery('.FOloadingMessage').stop(true, true).fadeOut();
 			return;
+		}
+	}).fail(function (xhr) {
+		console.log(xhr);
+		var msg = xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message ? xhr.responseJSON.data.message : (xhr.responseJSON && xhr.responseJSON.data && typeof xhr.responseJSON.data === 'string' ? xhr.responseJSON.data : '');
+		jQuery('.FOloadingMessage').stop(true, true).fadeOut();
+		var submit_button = jQuery('#submit_order');
+		submit_button.removeClass('disabled fo_disabled').css({ 'pointer-events': '', 'opacity': '' });
+		if ( msg ) {
+			var error_box = jQuery('#order_actions').find('.siqo-order-error').first();
+			if ( ! error_box.length ) {
+				error_box = jQuery('<p class="siqo-order-error" role="alert" style="color:#b32d2e;margin:6px 0;font-size:14px;"></p>');
+				submit_button.before( error_box );
+			}
+			error_box.text( msg );
+			error_box.get(0).style.setProperty( 'display', 'block', 'important' );
 		}
 	});
 }

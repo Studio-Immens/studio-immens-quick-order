@@ -4285,7 +4285,12 @@ if ( ! $verified && $order->get_items()!=null) {
 			$order->update_status( 'cancelled' );
 			$order->save();
 			global $wpdb;
-			$wpdb->update( SIQO_Table_Sessions::table_name(), array( 'status' => 'open' ), array( 'id' => (int) $siqo_session->id ), array( '%s' ), array( '%d' ) );
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					(int) $siqo_session->id
+				)
+			);
 			$order->add_order_note( __( 'Annullato: superato il limite importo della sessione tavolo.', 'studio-immens-quick-order' ) );
 			wp_send_json_error( array( 'message' => __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
 		}
