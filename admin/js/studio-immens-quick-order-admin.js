@@ -60,7 +60,7 @@ function FO_create_refresh_pages(){
 		data: {
 			action: 'SIQO_create_all_necessary_pages',
 			from: 'ajax',
-			// nonce: flash_orders_ajax_vars.nonce,
+			nonce: jQuery('#_siqononce_manage_pages').val(),
 		},
 		success: function(response) {
 			console.log(' ...ajax-response... ');

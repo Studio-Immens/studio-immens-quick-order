@@ -130,11 +130,20 @@ function SIQO_clear_meta_database( $meta_key ){
 // add_action('plugins_loaded', 'SIQO_create_all_necessary_pages');
 // SIQO_create_all_necessary_pages();
 function SIQO_create_all_necessary_pages(){
+	$is_ajax = isset( $_POST['from'] ) && sanitize_text_field( wp_unslash( $_POST['from'] ) ) === 'ajax';
+	if ( $is_ajax ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+		}
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'SIQO_manage_pages' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+		}
+	}
 	$response = array();
 	// SIQO_create_page( 'flash-orders','<!-- wp:shortcode -->[FO_front_order_section]<!-- /wp:shortcode -->', '1.0.1' );
 	// $response['flash-orders'] = '1.0.1';
-	SIQO_create_page( 'flash-orders-ajax','<!-- wp:shortcode -->[SIQO_front_order_ajax_section]<!-- /wp:shortcode -->', '1.0.2' );
-		$response['flash-orders-ajax'] = '1.0.2';
+	SIQO_create_page( 'quick-menu','<!-- wp:shortcode -->[SIQO_front_order_ajax_section]<!-- /wp:shortcode -->', '1.0.3' );
+		$response['quick-menu'] = '1.0.3';
 	// SIQO_create_page( 'manage-orders','<!-- wp:shortcode -->[FO_manage_order_section]<!-- /wp:shortcode -->', '1.0.1');
 		// $response['manage-orders'] = '1.0.1';
 	SIQO_create_page( 'manage-tables','<!-- wp:shortcode -->[SIQO_manage_tables_section]<!-- /wp:shortcode -->', '1.0.2' );
@@ -151,6 +160,62 @@ function SIQO_create_all_necessary_pages(){
 	}
 }
 add_action('wp_ajax_SIQO_create_all_necessary_pages', 'SIQO_create_all_necessary_pages');
+
+function SIQO_migrate_customer_page_slug() {
+	if ( get_option( 'siqo_customer_page_slug_migrated' ) ) {
+		return;
+	}
+
+	$old_page = get_page_by_path( 'flash-orders-ajax' );
+	if ( $old_page && ! get_page_by_path( 'quick-menu' ) ) {
+		wp_update_post( array(
+			'ID'           => $old_page->ID,
+			'post_name'    => 'quick-menu',
+			'post_title'   => 'Quick Menu',
+			'post_content' => '<!-- wp:shortcode -->[SIQO_front_order_ajax_section]<!-- /wp:shortcode -->',
+		) );
+
+		SIQO_delete_meta( 'page_id_flash-orders-ajax' );
+		SIQO_delete_meta( 'page_version_flash-orders-ajax' );
+		SIQO_delete_meta( 'last_update_flash-orders-ajax' );
+		SIQO_update_meta( 'page_id_quick-menu', $old_page->ID, 'page_id' );
+		SIQO_update_meta( 'page_version_quick-menu', '1.0.3', 'page_id_' . $old_page->ID );
+	}
+
+	update_option( 'siqo_customer_page_slug_migrated', 1, false );
+}
+add_action( 'init', 'SIQO_migrate_customer_page_slug', 5 );
+
+function SIQO_redirect_legacy_customer_slug() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$request_uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+	$request_path = wp_parse_url( $request_uri, PHP_URL_PATH );
+	if ( ! $request_path ) {
+		return;
+	}
+
+	$legacy_path = wp_parse_url( home_url( '/flash-orders-ajax/' ), PHP_URL_PATH );
+	if ( untrailingslashit( $request_path ) !== untrailingslashit( $legacy_path ) ) {
+		return;
+	}
+
+	$page = get_page_by_path( 'quick-menu' );
+	if ( ! $page ) {
+		return;
+	}
+
+	$target = get_permalink( $page );
+	if ( ! empty( $_GET ) ) {
+		$target = add_query_arg( wp_unslash( $_GET ), $target );
+	}
+
+	wp_safe_redirect( $target, 301 );
+	exit;
+}
+add_action( 'template_redirect', 'SIQO_redirect_legacy_customer_slug', 1 );
 
 function SIQO_create_page( $page_name, $content = '', $version = '1.0.0' ){
 	$fo_page_id = SIQO_get_meta('page_id_'.$page_name);
@@ -238,26 +303,18 @@ function SIQO_recursive_sanitize_text_field($array) {
 }
 
 function SIQO_delete_page(){
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+    }
     if ( !isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'SIQO_manage_pages' ) ) {
-        return;
+        wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
     }
     $response = array();
     $page_name = (isset($_POST['page'])) ? sanitize_text_field(wp_unslash($_POST['page'])):'';
-    $fo_page_id = SIQO_get_meta('page_id_'.$page_name);
-    $fo_version = SIQO_get_meta('page_version_'.$page_name);
+    $fo_page_id = absint( SIQO_get_meta('page_id_'.$page_name) );
 
-    $query_page_name = new WP_Query( array(
-            'post_type'              => 'page',
-            'title'                  => $page_name,
-            'post_status'            => 'all',
-            'posts_per_page'         => 1,
-            'no_found_rows'          => true,
-        )
-    );
-
-    if( $query_page_name ) {
+    if ( $fo_page_id && 'page' === get_post_type( $fo_page_id ) && current_user_can( 'delete_page', $fo_page_id ) ) {
         wp_delete_post( $fo_page_id );
-        // SIQO_delete_meta( 'last_update_'.$page_name );
         SIQO_delete_meta('page_version_'.$page_name );
         SIQO_delete_meta('page_id_'.$page_name );
         $response['deleted'] = 'deleted page -> '.$page_name;
@@ -265,8 +322,6 @@ function SIQO_delete_page(){
 
     wp_send_json(array(
         'response'  => $response,
-        // 'time_exec' => $time,
-        'post' => $_POST,
     ));
     die();
 }
@@ -523,7 +578,7 @@ function SIQO_add_special_pages_navigations(){
 			<nav id="FOSpecialPagesNavigation" style=""> <strong><?php esc_html_e( 'Pagine Speciali:', 'studio-immens-quick-order' );?> </strong>
 				<?php foreach ($fo_pages as $key => $value) {
 					$post = get_post($value->meta_value);
-					if ( !$worker_checked && substr($value->meta_key, 8) == 'flash-orders-ajax' ) { continue; }
+					if ( !$worker_checked && in_array( substr($value->meta_key, 8), array( 'flash-orders-ajax', 'quick-menu' ), true ) ) { continue; }
 					if ( !$worker_checked && substr($value->meta_key, 8) == 'flash-orders' ) { continue; }
 
 					if ( !$supervisor_checked && substr($value->meta_key, 8) == 'manage-tables' ) { continue; }
@@ -681,7 +736,7 @@ function fo_add_data_metabox() {
         'fo_show_data_metabox',   // Callback per visualizzare il contenuto della metabox
         'siqo_catering',               // Screen (CPT) dove visualizzare la metabox
         'normal',                 // Contesto della metabox (normal, side, ecc.)
-        'high'                    // PrioritÃƒÆ’Ã‚Â  della metabox (high, low)
+        'high'                    // Priorità della metabox (high, low)
     );
 }
 add_action('add_meta_boxes', 'fo_add_data_metabox');
@@ -728,7 +783,7 @@ function SIQO_custom_taxonomy_ingredients() {
 		'view_item'                  => esc_html__( 'Visualizza Ingrediente', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Ingredienti con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Ingredienti', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Ingredienti Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Ingredienti', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -777,7 +832,7 @@ function SIQO_custom_taxonomy_allergens() {
 		'view_item'                  => esc_html__( 'Visualizza Allergene', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Allergeni con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Allergeni', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Allergeni Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Allergeni', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -826,7 +881,7 @@ function SIQO_custom_taxonomy_temperature() {
 		'view_item'                  => esc_html__( 'Visualizza Temperatura', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa le Temperature con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Temperature', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Temperature Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Temperature', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -876,7 +931,7 @@ function SIQO_custom_taxonomy_sticker() {
 		'view_item'                  => esc_html__( 'Visualizza Sticker', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Sticker con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Sticker', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Sticker Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Sticker', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -930,7 +985,7 @@ function SIQO_custom_taxonomy_macro_categories() {
 		'view_item'                  => esc_html__( 'Visualizza Macro Categoria', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa le Macro Categorie con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Macro Categoria', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra le piÃƒÆ’Ã‚Â¹ usate', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra le più usate', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Macro Categorie Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Macro Categoria', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -1728,9 +1783,9 @@ function SIQO_soft_access_denied(){
 
 	if ( !$user->ID ) { ?>
 		<div id="SIQOSetting_UserLoggedIn" style="display:none!important;">0</div>
-	<div style="width:calc(100% - 60px);margin:20px;padding:10px;">
+	<div class="siqo-access-notice" style="width:calc(100% - 60px);margin:20px;padding:10px;">
 		<div class="title">
-			<?php esc_html_e( 'Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l\'accesso.', 'studio-immens-quick-order' ); ?>
+			<?php esc_html_e( 'Per poter effettuare ordini su questa pagina, è necessario effettuare l\'accesso.', 'studio-immens-quick-order' ); ?>
 			<a href="<?php echo esc_url(get_permalink( get_option('woocommerce_myaccount_page_id') )); ?>"><?php esc_html_e( ' Clicca qui per Accedere ', 'studio-immens-quick-order' ); ?> </a>
 		</div>
 	</div>
@@ -1858,11 +1913,17 @@ add_shortcode( 'siqo_qr_code_content', 'SIQO_create_any_QR_code' );
 
 function SIQO_create_any_QR_code_ajax() {
 	if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['nonce'])), 'SIQO_main_page' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/qrlib.php';
 
-	$size = (isset($_POST['size']) && sanitize_text_field(wp_unslash($_POST['size'])) != '')? sanitize_text_field(wp_unslash($_POST['size'])): '150';
+	$size = (isset($_POST['size']) && sanitize_text_field(wp_unslash($_POST['size'])) != '')? absint( wp_unslash( $_POST['size'] ) ): 150;
+	if ( $size <= 0 ) {
+		$size = 150;
+	}
 	$content = (isset($_POST['content']) && sanitize_text_field(wp_unslash($_POST['content'])) != '')? sanitize_text_field(wp_unslash($_POST['content'])): get_home_url();
 
 	$qr_dir = SIQO_get_qr_dir();
@@ -1886,14 +1947,17 @@ add_action('wp_ajax_siqo_create_any_QR_code_ajax', 'SIQO_create_any_QR_code_ajax
 
 function SIQO_delete_QR_images(){
 	if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['nonce'])), 'SIQO_main_page' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
     if(isset($_POST['del_path']) && sanitize_text_field(wp_unslash($_POST['del_path'])) != '') {
         $del_path = sanitize_text_field(wp_unslash($_POST['del_path']));
         $qr_dir = plugin_dir_path(dirname(__FILE__)) . 'includes/phpqrcode/QRgenerate/';
         $real_path = realpath($del_path);
         $real_qr_dir = realpath($qr_dir);
-        if ($real_path && $real_qr_dir && strpos($real_path, $real_qr_dir) === 0 && file_exists($real_path)) {
+        if ($real_path && $real_qr_dir && strpos($real_path, rtrim($real_qr_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) === 0 && file_exists($real_path)) {
             unlink($real_path);
         }
     }
@@ -2362,10 +2426,10 @@ function SIQOP_insert_table( $args ){
   $final['orders'] = wp_json_encode( (array)$final['orders'] );
 
   $table = $wpdb->prefix . "siqo_tables";
-  $result = $wpdb->insert( $table, array( 'table_number'=>$final['table_number'], 'table_id'=>$final['table_id'], 'start_time'=>$final['start_time'], 'orders'=>$final['orders'], 'status'=>$final['siqo_table_status'], 'siqo_table_status'=>$final['siqo_table_status'], 'prev_status'=>$final['prev_status'], 'end_time'=>$final['end_time'], 'totals'=>$final['totals'], 'info'=>$final['info'], 'receipt'=>$final['receipt'], 'other'=>$final['other'], 'last_update'=>$final['last_update'] ) );
+  $result = $wpdb->insert( $table, array( 'table_number'=>$final['table_number'], 'table_id'=>$final['table_id'], 'start_time'=>$final['start_time'], 'orders'=>$final['orders'], 'status'=>$final['siqo_table_status'], 'prev_status'=>$final['prev_status'], 'end_time'=>$final['end_time'], 'totals'=>$final['totals'], 'info'=>$final['info'], 'receipt'=>$final['receipt'], 'other'=>$final['other'], 'last_update'=>$final['last_update'] ) );
   return $result;
 }
-function SIQOP_update_table( $id, $args ){
+function SIQOP_update_table( $id, $args, $replace_orders = false ){
   global $wpdb;
   	$table = $wpdb->prefix . "siqo_tables";
   	$now = new DateTime();
@@ -2384,8 +2448,10 @@ function SIQOP_update_table( $id, $args ){
 	// );
   // $final_args = wp_parse_args( $args, $default_args );
 	$final = wp_parse_args( $args, (array) $meta );
-	if (isset($args['siqo_table_status']) ) {
+	if ( isset( $args['siqo_table_status'] ) ) {
 		$final['siqo_table_status'] = $args['siqo_table_status'];
+	} elseif ( ! isset( $final['siqo_table_status'] ) ) {
+		$final['siqo_table_status'] = isset( $final['status'] ) ? $final['status'] : 1;
 	}
 	if ( $final['siqo_table_status'] == 10 ) {
 		$final['end_time'] = wp_date('Y-m-d H:i:s');
@@ -2393,7 +2459,11 @@ function SIQOP_update_table( $id, $args ){
 	$meta_order = ( $meta->orders != '' ) ? json_decode( $meta->orders ) : array();
 	$args_order = ( isset( $args['orders'] ) && $args['orders'] != '' ) ? json_decode( $args['orders'] ) : array();
 
-	$merged_orders = array_values( array_unique( array_merge( (array) $meta_order, (array) $args_order ) ) );
+	if ( $replace_orders ) {
+		$merged_orders = array_values( array_unique( (array) $args_order ) );
+	} else {
+		$merged_orders = array_values( array_unique( array_merge( (array) $meta_order, (array) $args_order ) ) );
+	}
 	$final['orders'] = wp_json_encode( $merged_orders );
 	if ( ! empty( $merged_orders ) ) {
 		$orders_total = 0;
@@ -2411,7 +2481,6 @@ function SIQOP_update_table( $id, $args ){
 			'table_id'	=> $final['table_id'], 
 			'orders'	=> $final['orders'], 
 			'status'	=> $final['siqo_table_status'],
-			'siqo_table_status'	=> $final['siqo_table_status'],
 			'prev_status'=> $meta->status, 
 			'end_time'	=> $final['end_time'], 
 			'totals'	=> $final['totals'], 
@@ -2472,13 +2541,13 @@ function SIQOP_update_table_from_id( $id, $args ){
   }
   return $result;
 }
-function SIQOP_update_table_from_table_id( $table_id, $args ){
+function SIQOP_update_table_from_table_id( $table_id, $args, $replace_orders = false ){
   // global $wpdb;
   	// $table = $wpdb->prefix . "siqo_tables";
   	$meta = SIQOP_get_table_by_table_id_last( $table_id, 'OBJECT' );
 
   if ( $meta != null && $meta->status != 10 ) {
-    $result = SIQOP_update_table( $meta->id, $args );
+    $result = SIQOP_update_table( $meta->id, $args, $replace_orders );
   } else {
     $result = SIQOP_insert_table( $args );
   }
@@ -2623,22 +2692,30 @@ function SIQO_products_for_div_loop( $object ){
 		$term = get_term_by('name', $key, 'product_cat');
 		$term_meta = (SIQOcheck($term))? get_term_meta($term->term_id):false;
 		$image = ( isset($term_meta['thumbnail_id']) )? wp_get_attachment_image_src($term_meta['thumbnail_id'][0] ):array('0');
-		$style = ( !SIQOcheck($image[0]) )? 'display:none;':'';
+		$image_url = ( ! empty( $image[0] ) && '0' !== (string) $image[0] ) ? $image[0] : '';
+		$cat_id = 'cat-' . sanitize_title( $key );
 		?>
-	<div class="focathead" id="<?php echo esc_attr($key);?>" siqotargetcat="<?php echo esc_attr($key);?>" style="background-color: var(--siqo-main-color)!important;">
-		<div class="title" style="font-weight:800;font-size:30px;z-index:10;">
-			<?php echo esc_attr($key); ?>
-		</div>
-		<input type="search" siqotargetcat="<?php echo esc_attr($key);?>" onclick="SIQO_refine_search(this)" onkeyup="SIQO_refine_search(this)" class="focatsearch" placeholder="<?php esc_html_e('Cerca...','studio-immens-quick-order');?>" style="z-index:10;">
-		<span class="focatnumber" style="z-index:10;"><?php echo count($value);?></span>
-		<img src="<?php echo esc_attr($image[0]) ?>" style="<?php echo esc_attr($style);?>"><?php  ?>
-	</div>
+	<section class="siqo-menu-section" id="<?php echo esc_attr( $cat_id ); ?>" data-category="<?php echo esc_attr( $key ); ?>">
+		<header class="siqo-menu-section-head">
+			<?php if ( $image_url ) { ?>
+				<img class="siqo-menu-section-thumb" src="<?php echo esc_url( $image_url ); ?>" alt="" loading="lazy">
+			<?php } ?>
+			<div class="siqo-menu-section-title">
+				<p class="siqo-eyebrow"><?php esc_html_e( 'Categoria', 'studio-immens-quick-order' ); ?></p>
+				<h2><?php echo esc_html( $key ); ?></h2>
+			</div>
+			<span class="siqo-menu-count"><?php echo esc_html( count( $value ) ); ?></span>
+		</header>
 
-	<?php 
-	// SIQO_debug(count($value));
-		foreach( $value as $product ){
-			SIQO_product_to_div_loop( $product, $key );
-		}
+		<div class="siqo-menu-grid">
+			<?php
+			foreach( $value as $product ){
+				SIQO_product_to_div_loop( $product, $key );
+			}
+			?>
+		</div>
+	</section>
+	<?php
 	}
 }
 function SIQO_product_to_div_loop( $product, $cat_slug = 'search' ){
@@ -2838,7 +2915,7 @@ $fo_gallery = array();
 		</div>
 
 		<div class="foProdCardFoot">
-		
+			<span class="siqo-prod-price"><?php echo wp_kses_post( SIQO_price( $product->get_price() ) ); ?></span>
 		</div>
 	</div>
 	<?php
@@ -3174,7 +3251,7 @@ function siqo_flash_orders_ordination() {
 		'first_name' 	=> $user->user_firstname,
 		'last_name' 	=> $user->user_lastname,
 		'email'      	=> $user->user_email,
-		'phone'      	=> $user->user_phone,
+		'phone'      	=> get_user_meta( $user->ID, 'billing_phone', true ),
 		// 'address_1'  	=> $user->get_billing_address_1(),
 		// 'address_2'  	=> $user->get_billing_address_2(),
 		// 'city'       	=> $user->get_billing_city(),
@@ -3264,16 +3341,16 @@ foreach ($_POST['foindex'] as $K => $E) {
 function FO_submit_order_ajax() {
 
 	if (!isset($_POST['_siqononce_front_order_ajax']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_siqononce_front_order_ajax'])), 'SIQO_front_order_ajax' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	} else{
-		$_POST['__verified_nonces'] = true;
-
 		// $_POST['user_id'] = '';
 		$_POST['created_via'] = 'menu_ajax';
+		$_POST['customer_id'] = get_current_user_id();
+		$_POST['user_id'] = get_current_user_id();
 	}
 	
 
-	SIQO_flash_tab_order_ajax( $_POST );
+	SIQO_flash_tab_order_ajax( $_POST, false, true );
 
 	/*
 	// $_POST = SIQO_recursive_sanitize_text_field($_POST);
@@ -3291,7 +3368,7 @@ function FO_submit_order_ajax() {
 		'first_name' 	=> $user->user_firstname,
 		'last_name' 	=> $user->user_lastname,
 		'email'      	=> $user->user_email,
-		'phone'      	=> $user->user_phone,
+		'phone'      	=> get_user_meta( $user->ID, 'billing_phone', true ),
 		// 'address_1'  	=> $user->get_billing_address_1(),
 		// 'address_2'  	=> $user->get_billing_address_2(),
 		// 'city'       	=> $user->get_billing_city(),
@@ -3388,7 +3465,10 @@ add_action('wp_ajax_nopriv_siqo_submit_order_ajax', 'FO_submit_order_ajax');
 
 function SIQO_flash_list_order_ajax(){
 	if (!isset($_POST['_siqononce_flash_list_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_list_order'])), 'SIQO_flash_list_order' ) ) {
-		return $variation_id;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	$user = wp_get_current_user();
 	$order = new WC_Order();
@@ -3403,21 +3483,28 @@ function SIQO_flash_list_order_ajax(){
 		'first_name' 	=> $user->user_firstname,
 		'last_name' 	=> $user->user_lastname,
 		'email'      	=> $user->user_email,
-		'phone'      	=> $user->user_phone,
+		'phone'      	=> get_user_meta( $user->ID, 'billing_phone', true ),
 	);
 	$order->set_address( $addressBilling, 'billing' );
 	$info_string = array();
+	$total_fee = 0.0;
 
 if (isset($_POST['foserialmap'])) {
 $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_encode($_POST['foserialmap']))) );
-	$total_fee = 0.0;
 	foreach ( $_POST['foserialmap'] as $K => $E) {
 		foreach ( $E as $pos => $item) {
-			if ( isset($item['id']) ) { 
-				$order->update_meta_data( '{'.substr($pos,1).'}index-'.sanitize_text_field(wp_unslash(key($item['id']))), sanitize_text_field(wp_unslash( array_values( $item['id'] )[0] )) );
-				$product = wc_get_product(sanitize_text_field(wp_unslash(key($item['id']))));
-				$order->add_product( $product, sanitize_text_field(wp_unslash( array_values( $item['id'] )[0] )) );
-				$info_string[sanitize_text_field(wp_unslash(key($item['id'])))] = sanitize_text_field(wp_unslash(array_values($item['id'])[0]));
+			if ( isset($item['id']) ) {
+				$id_values   = array_values( (array) $item['id'] );
+				$product_key = sanitize_text_field( (string) key( $item['id'] ) );
+				$product_id  = absint( $product_key );
+				$product_qty = isset( $id_values[0] ) ? absint( $id_values[0] ) : 0;
+				$product     = $product_id ? wc_get_product( $product_id ) : false;
+				if ( ! $product || $product_qty < 1 ) {
+					continue;
+				}
+				$order->update_meta_data( '{'.substr($pos,1).'}index-'.$product_key, $product_qty );
+				$order->add_product( $product, $product_qty );
+				$info_string[ $product_key ] = $product_qty;
 			}
 			if (isset($item['note'])) {
 				$order->update_meta_data( '{'.substr($pos,1).'}prod-'.sanitize_text_field(wp_unslash(key($item['note']))).'_note-', sanitize_text_field(wp_unslash( array_values( $item['note'] )[0] )) );
@@ -3425,7 +3512,12 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_
 			}
 			if (isset($item['siqo_ingredients'])) {
 				foreach ( $item['siqo_ingredients'] as $index => $element) {
+					if ( ! is_array( $element ) ) {
+						continue;
+					}
 					foreach( $element as $ing_key => $ing_val ){
+						$ing_key = sanitize_text_field( (string) $ing_key );
+						$ing_val = is_scalar( $ing_val ) ? sanitize_text_field( (string) $ing_val ) : '';
 						$info_string['siqo_ingredients'][$index][$ing_key] = $ing_val;
 						$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_ingredient-'.$ing_key, $ing_key.' | '.$ing_val );
 					}
@@ -3433,7 +3525,12 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_
 			}
 			if (isset($item['Variante'])) {
 				foreach ( $item['Variante'] as $index => $element) {
+					if ( ! is_array( $element ) ) {
+						continue;
+					}
 					foreach( $element as $var_key => $var_val ){
+						$var_key = sanitize_text_field( (string) $var_key );
+						$var_val = is_scalar( $var_val ) ? sanitize_text_field( (string) $var_val ) : '';
 						$info_string['Variante'][$index][$var_key] = $var_val;
 						$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_variant-'.$var_key, $var_key.' | '.$var_val );
 					}
@@ -3441,6 +3538,7 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_
 			}
 			if (isset($item['siqo_temperatures'])) {
 				foreach ( $item['siqo_temperatures'] as $index => $element) {
+					$element = is_scalar( $element ) ? sanitize_text_field( (string) $element ) : '';
 					$info_string['siqo_temperatures'][$index] = $element;
 					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_temperature-'.$index, $index.' | '.$element );
 				}
@@ -3456,6 +3554,8 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_
 
 			if (isset($item['prod_generic'])) {
 				foreach ( $item['prod_generic'] as $ind => $ele) {
+					$ind = sanitize_text_field( (string) $ind );
+					$ele = is_scalar( $ele ) ? sanitize_text_field( (string) $ele ) : '';
 					$info_string['prod_generic'][$ind] = $ele;
 					$order->update_meta_data( '{'.substr($pos,1).'}prod_generic-'.$ind, $ind.' | '.$ele );
 
@@ -3470,6 +3570,10 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_
 		}
 	}
 }
+	if ( 0 === count( $order->get_items() ) ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine senza articoli validi.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
 	if (isset($_POST['table_name_cpt'])) {
 		$order->update_meta_data( 'Table_cpt', sanitize_text_field(wp_unslash($_POST['table_name_cpt'])) );
 	}
@@ -3504,17 +3608,19 @@ if ( $total_fee > 0.0 ) {
 
 	$order_id = $order->get_id();
 
-	if ($_POST['table_name_cpt'] != '' ) {
-		$table_id = SIQO_get_page_id_by_title(sanitize_text_field(wp_unslash($_POST['table_name_cpt'])),'siqo_tables');
-		SIQO_update_meta( 'status_table_'.$table_id, 1, 'table_status' );
-		if (function_exists('SIQOP_update_table_from_table_id')) {
-			SIQOP_update_table_from_table_id( $table_id ,array(
-				'table_number'=>sanitize_text_field(wp_unslash($_POST['table_name_cpt'])),
-				'table_id'=>$table_id,
-				'siqo_table_status' => 1,
-				'orders' => $order_id,
-				'totals' => (string)$order->get_total(),
-			) );
+	if ( isset( $_POST['table_name_cpt'] ) && '' !== trim( $table_name_cpt ) ) {
+		$table_id = absint( SIQO_get_page_id_by_title( $table_name_cpt, 'siqo_tables' ) );
+		if ( $table_id ) {
+			SIQO_update_meta( 'status_table_'.$table_id, 1, 'table_status' );
+			if (function_exists('SIQOP_update_table_from_table_id')) {
+				SIQOP_update_table_from_table_id( $table_id ,array(
+					'table_number'=>$table_name_cpt,
+					'table_id'=>$table_id,
+					'siqo_table_status' => 1,
+					'orders' => $order_id,
+					'totals' => (string)$order->get_total(),
+				) );
+			}
 		}
 	}
 
@@ -3529,7 +3635,6 @@ do_action( 'SIQO_flash_list_order_ajax', $order_id );
 	die();
 }
 add_action('wp_ajax_siqo_flash_list_order_ajax', 'SIQO_flash_list_order_ajax');
-add_action('wp_ajax_nopriv_siqo_flash_list_order_ajax', 'SIQO_flash_list_order_ajax');
 
 
 
@@ -3725,12 +3830,10 @@ function SIQO_flash_list_order(){
 
 
 
-function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
-	if ( isset($poste['__verified_nonces']) && $poste['__verified_nonces'] === true ) {
-
-	} else{
+function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = false ){
+	if ( ! $verified ) {
 		if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
-			return;
+			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 		}
 	}
 	$check_for_pay = false;
@@ -3738,11 +3841,28 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
 		$_POST = $poste;
 		$check_for_pay = true;
 	}
+
+	if ( ! $verified && ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+
+	$requested_table_id = isset( $_POST['table_id'] ) ? absint( wp_unslash( $_POST['table_id'] ) ) : 0;
+	if ( $verified && $requested_table_id && 'siqo_tables' !== get_post_type( $requested_table_id ) ) {
+		wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
+	}
+	if ( $clear && $requested_table_id ) {
+		global $wpdb;
+		$last_table = $wpdb->get_row( $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}siqo_tables WHERE table_id = %s ORDER BY last_update DESC, id DESC LIMIT 1", $requested_table_id ) );
+		if ( $last_table && (int) $last_table->status === 10 ) {
+			wp_send_json_error( array( 'message' => __( 'Il tavolo risulta già chiuso.', 'studio-immens-quick-order' ) ), 409 );
+		}
+	}
+
 	$order = new WC_Order();
 
 	$user_id = (isset($_POST['user_id'])) ? sanitize_text_field(wp_unslash($_POST['user_id'])):'';
 	$created_via = (isset($_POST['created_via'])) ? sanitize_text_field(wp_unslash($_POST['created_via'])):'tab_ajax';
-	// $user = wp_get_current_user();
+	$user = wp_get_current_user();
 
 	$order->update_meta_data( 'created_via', $created_via );
 	$order->update_meta_data( 'user_id', $user_id );
@@ -3783,7 +3903,7 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
 		'first_name'=> $user->user_firstname,
 		'last_name' => $user->user_lastname,
 		'email'     => $user->user_email,
-		'phone'     => $user->user_phone,
+		'phone'     => get_user_meta( $user->ID, 'billing_phone', true ),
 	    'address_1' => $table_name_cpt,
 	    'address_2' => '', //sanitize_text_field($_POST['table_name']),
 	    'company'   => '', //sanitize_text_field($_POST['table_surname'])
@@ -3793,13 +3913,14 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false ){
 		'first_name'=> $user->user_firstname,
 		'last_name' => $user->user_lastname,
 		'email'     => $user->user_email,
-		'phone'     => $user->user_phone,
+		'phone'     => get_user_meta( $user->ID, 'billing_phone', true ),
 	);
 	$order->set_address( $addressBilling, 'billing' );
 
 	$info_string = array(); $vari_arr = array(); 
 	$price_array = array(); $prod_args = array();
-$order->update_meta_data( 'foserialmap', sanitize_text_field(wp_unslash(wp_json_encode($_POST['foserialmap']))) );
+$siqo_serialmap = isset( $_POST['foserialmap'] ) ? wp_json_encode( wp_unslash( $_POST['foserialmap'] ) ) : '';
+$order->update_meta_data( 'foserialmap', sanitize_text_field( $siqo_serialmap ) );
 $total_fee = 0.0;
 $pre_vari_arr = array();
 $pre_price_array = array();
@@ -3857,22 +3978,54 @@ if (isset($_POST['foserialmap'])) {
 				$info_string[sanitize_text_field(key($item['price']))] = sanitize_text_field(array_values($item['price'])[0]);
 			}
 			if ( isset($item['id']) ) {
-				$order->update_meta_data( '{'.substr($pos,1).'}index-'.sanitize_text_field(key($item['id'])), sanitize_text_field( array_values( $item['id'] )[0] ) );
-				$product = new WC_Product(sanitize_text_field(key($item['id'])) );
-
-					$total = $price_array[sanitize_text_field(key($item['id']))];
-					$order->update_meta_data( '{'.substr($pos,1).'}'.sanitize_text_field(key($item['id'])), $total );
-
-				if ( isset( $vari_arr[sanitize_text_field(key($item['id']))] ) ) {
-					$product_variation = $product->get_matching_variation( $vari_arr[sanitize_text_field(key($item['id']))] );
-					$product = wc_get_product($product_variation);
+				$product_key = sanitize_text_field( (string) key($item['id']) );
+				$product_id  = absint( $product_key );
+				$product     = $product_id ? wc_get_product( $product_id ) : false;
+				if ( ! $product ) {
+					continue;
 				}
-				$p_qty =  (int)sanitize_text_field(array_values($item['id'])[0]);
+				$order->update_meta_data( '{'.substr($pos,1).'}index-'.$product_key, sanitize_text_field( array_values( $item['id'] )[0] ) );
+
+					$total = isset( $price_array[ $product_id ] ) ? (float) $price_array[ $product_id ] : (float) $product->get_price();
+					$meta_total = $total;
+
+				if ( isset( $vari_arr[ $product_key ] ) ) {
+					$product_variation = $product->get_matching_variation( $vari_arr[ $product_key ] );
+					$product = $product_variation ? wc_get_product( $product_variation ) : false;
+				}
+				$p_qty = (int) sanitize_text_field( array_values( $item['id'] )[0] );
+				if ( ! $product ) {
+					continue;
+				}
+				if ( $verified && ( ! $product->is_purchasable() || ! $product->is_in_stock() ) ) {
+					continue;
+				}
+				if ( $verified && $p_qty < 1 ) {
+					continue;
+				}
+				if ( $verified && $p_qty > 0 ) {
+					$max_qty = max( 1, (int) apply_filters( 'siqo_max_order_item_quantity', 999 ) );
+					$p_qty   = min( $p_qty, $max_qty );
+					if ( $product->managing_stock() ) {
+						$stock_qty = $product->get_stock_quantity();
+						if ( null !== $stock_qty ) {
+							$p_qty = min( $p_qty, max( 0, (int) $stock_qty ) );
+						}
+					}
+					if ( $p_qty < 1 ) {
+						continue;
+					}
+				}
+				if ( $verified ) {
+					$total = null;
+					$meta_total = $product ? $product->get_price() : 0;
+				}
+					$order->update_meta_data( '{'.substr($pos,1).'}'.sanitize_text_field(key($item['id'])), $meta_total );
 				// if ( $p_qty > 1 ) {
 				// 	$total = $total * $p_qty;
 				// 	$total = number_format((float)$total, 2, '.', '');
 				// }
-				$order->add_product( $product, $p_qty, array('total'=>$total));
+				$order->add_product( $product, $p_qty, ( null === $total ) ? array() : array('total'=>$total) );
 				$info_string[sanitize_text_field(key($item['id']))] = sanitize_text_field(array_values($item['id'])[0]);
 			}
 			if (isset($item['note'])) {
@@ -3881,7 +4034,10 @@ if (isset($_POST['foserialmap'])) {
 			}
 			if (isset($item['siqo_ingredients'])) {
 				foreach ( $item['siqo_ingredients'] as $index => $element) {
+					if ( ! is_array( $element ) ) { continue; }
 					foreach( $element as $ing_key => $ing_val ){
+						$ing_key = sanitize_text_field( (string) $ing_key );
+						$ing_val = is_scalar( $ing_val ) ? sanitize_text_field( (string) $ing_val ) : '';
 						$info_string['siqo_ingredients'][$index][$ing_key] = $ing_val;
 						$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_ingredient-'.$ing_key, $ing_key.' | '.$ing_val );
 					}
@@ -3889,7 +4045,10 @@ if (isset($_POST['foserialmap'])) {
 			}
 			if (isset($item['Variante'])) {
 				foreach ( $item['Variante'] as $index => $element) {
+					if ( ! is_array( $element ) ) { continue; }
 					foreach( $element as $var_key => $var_val ){
+						$var_key = sanitize_text_field( (string) $var_key );
+						$var_val = is_scalar( $var_val ) ? sanitize_text_field( (string) $var_val ) : '';
 						$info_string['Variante'][$index][$var_key] = $var_val;
 						$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_variant-'.$var_key, $var_key.' | '.$var_val );
 					}
@@ -3897,6 +4056,7 @@ if (isset($_POST['foserialmap'])) {
 			}
 			if (isset($item['siqo_temperatures'])) {
 				foreach ( $item['siqo_temperatures'] as $index => $element) {
+					$element = is_scalar( $element ) ? sanitize_text_field( (string) $element ) : '';
 					$info_string['siqo_temperatures'][$index] = $element;
 					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_temperature-'.$index, $index.' | '.$element );
 				}
@@ -3904,14 +4064,16 @@ if (isset($_POST['foserialmap'])) {
 			if (isset($item['searched'])) {
 				$info_string['searched'] = sanitize_text_field( array_values( $item['searched'] )[0] );
 			}
-			if (isset($item['sconto'])) {
+			if ( ! $verified && isset($item['sconto']) ) {
 				$order->update_meta_data( '{'.substr($pos,1).'}sconto-', sanitize_text_field( array_values( $item['sconto'] )[0] ) );
 				$info_string[sanitize_text_field(key($item['sconto']))] = sanitize_text_field(array_values($item['sconto'])[0]);
 				$total_fee = floatval($total_fee) + floatval( sanitize_text_field(array_values($item['sconto'])[0]) );
 			}
 
-			if (isset($item['prod_generic'])) {
+			if ( ! $verified && isset($item['prod_generic']) ) {
 				foreach ( $item['prod_generic'] as $ind => $ele) {
+					$ind = sanitize_text_field( (string) $ind );
+					$ele = is_scalar( $ele ) ? sanitize_text_field( (string) $ele ) : '';
 					$info_string['prod_generic'][$ind] = $ele;
 					$order->update_meta_data( '{'.substr($pos,1).'}prod_generic-'.$ind, $ind.' | '.$ele );
 					$prod_generic_fee = new WC_Order_Item_Fee();
@@ -3955,6 +4117,16 @@ if (isset($_POST['foserialmap'])) {
 	$order->set_payment_method('cod');
 	$order->set_created_via( $created_via );
 
+	$siqo_customer_email = ( isset( $_POST['customer_email'] ) ) ? sanitize_email( wp_unslash( $_POST['customer_email'] ) ) : '';
+	if ( $siqo_customer_email ) {
+		$order->set_billing_email( $siqo_customer_email );
+	}
+
+	$siqo_customer_id = ( isset( $_POST['customer_id'] ) ) ? absint( $_POST['customer_id'] ) : 0;
+	if ( $siqo_customer_id ) {
+		$order->set_customer_id( $siqo_customer_id );
+	}
+
 if ($total_fee > 0.0 ) {
 	$fee = new WC_Order_Item_Fee();
 	$fee->set_name('Sconto');		//Give the Fee a name e.g. Discount
@@ -3962,10 +4134,16 @@ if ($total_fee > 0.0 ) {
   	$order->add_item($fee);			//Add to the Order
 }
 
-if ($order->get_items()!=null) {
+if ( ! $verified && $order->get_items()!=null) {
 	foreach ($order->get_items() as $key => $item) {
-		// $price_arr[$item->get_id()]
-		$tot = $price_array[$item->get_product_id()];
+		$lookup_id = $item->get_variation_id() ? $item->get_variation_id() : $item->get_product_id();
+		if ( isset( $price_array[ $lookup_id ] ) ) {
+			$tot = $price_array[ $lookup_id ];
+		} elseif ( isset( $price_array[ $item->get_product_id() ] ) ) {
+			$tot = $price_array[ $item->get_product_id() ];
+		} else {
+			$tot = $item->get_total();
+		}
 		if ((int)$item->get_quantity()>1) {
 			$tot = (float)$tot * (float)$item->get_quantity();
 		}
@@ -3976,13 +4154,70 @@ if ($order->get_items()!=null) {
 		$item->save();
 	}
 }
+
+	$siqo_coupon_codes = ( isset( $_POST['coupon_codes'] ) && is_array( $_POST['coupon_codes'] ) ) ? wp_unslash( $_POST['coupon_codes'] ) : array();
+	foreach ( $siqo_coupon_codes as $siqo_coupon_code ) {
+		$siqo_coupon_code = sanitize_text_field( $siqo_coupon_code );
+		if ( function_exists( 'wc_format_coupon_code' ) ) {
+			$siqo_coupon_code = wc_format_coupon_code( $siqo_coupon_code );
+		}
+		if ( '' === $siqo_coupon_code ) {
+			continue;
+		}
+		try {
+			$order->apply_coupon( $siqo_coupon_code );
+		} catch ( Exception $e ) {
+			continue;
+		}
+	}
+
+	$siqo_line_total = 0;
+	foreach ( $order->get_items() as $siqo_item ) {
+		$siqo_line_total += (float) $siqo_item->get_total();
+	}
+	if ( $clear && ( 0 === count( $order->get_items() ) || $siqo_line_total <= 0 ) ) {
+		wp_send_json_error( array( 'message' => __( 'Impossibile chiudere il tavolo: ordine senza articoli o con totale zero.', 'studio-immens-quick-order' ) ), 400 );
+	}
+	if ( $verified && 0 === count( $order->get_items() ) ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine senza articoli validi.', 'studio-immens-quick-order' ) ), 400 );
+	}
 	$order->calculate_totals();	//Recalculate the totals. IMPORTANT!
 	$order->save();
 
 	$order_id = $order->get_id();
 
-	if (isset($_POST['siqo_table_status'])) {
-		$order->update_status(sanitize_text_field(wp_unslash($_POST['siqo_table_status'])));
+	$siqo_previous_order_ids = array();
+	if ( ! empty( $info_string['orders'] ) && is_array( $info_string['orders'] ) ) {
+		foreach ( $info_string['orders'] as $siqo_previous_order_id ) {
+			$siqo_previous_order_id = absint( $siqo_previous_order_id );
+			if ( $siqo_previous_order_id && $siqo_previous_order_id !== $order_id ) {
+				$siqo_previous_order_ids[] = $siqo_previous_order_id;
+			}
+		}
+	}
+	$siqo_previous_order_ids = array_values( array_unique( $siqo_previous_order_ids ) );
+
+	if ( $clear && ! empty( $siqo_previous_order_ids ) ) {
+		foreach ( $siqo_previous_order_ids as $siqo_previous_order_id ) {
+			$siqo_previous_order = wc_get_order( $siqo_previous_order_id );
+			if ( ! $siqo_previous_order || $siqo_previous_order->get_id() === $order_id ) {
+				continue;
+			}
+			if ( ! in_array( $siqo_previous_order->get_status(), array( 'pending', 'on-hold', 'failed' ), true ) ) {
+				continue;
+			}
+			$siqo_previous_order->add_order_note( sprintf( __( 'Unito all’ordine #%d.', 'studio-immens-quick-order' ), $order_id ) );
+			$siqo_previous_order->set_status( 'cancelled' );
+			$siqo_previous_order->save();
+		}
+	}
+
+	if ( isset( $_POST['siqo_table_status'] ) && ! $verified ) {
+		$siqo_new_status     = sanitize_text_field( wp_unslash( $_POST['siqo_table_status'] ) );
+		$siqo_allowed_status = array( 'pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed' );
+		if ( in_array( $siqo_new_status, $siqo_allowed_status, true ) ) {
+			$order->update_status( $siqo_new_status );
+		}
 	}
 
 	$order = wc_get_order($order_id);
@@ -3993,30 +4228,43 @@ if ($order->get_items()!=null) {
 
 	$order->calculate_totals();	
 	$order->save();
-
 $table_id = (isset($_POST['table_id'])) ? sanitize_text_field(wp_unslash($_POST['table_id'])):'';
-$table_total = (isset($_POST['table_total'])) ? sanitize_text_field(wp_unslash($_POST['table_total'])):0.0;
+
+$table_total = 0.0;
+if ( ! $verified && isset($_POST['table_total']) ) {
+	$table_total = (float) sanitize_text_field(wp_unslash($_POST['table_total']));
+}
+if ( $verified && '' !== $table_id && function_exists('SIQOP_get_table_by_table_id_last') ) {
+	$current_table = SIQOP_get_table_by_table_id_last( $table_id, 'OBJECT' );
+	if ( $current_table && (int) $current_table->status !== 10 ) {
+		$table_total = (float) $current_table->totals;
+	}
+}
 
 $table_total = (float)$table_total + (float)$order->get_total();
 
-	SIQO_update_meta( 'status_table_'.$table_id, 1, 'table_status' );
-	if ( function_exists('SIQOP_update_table_from_table_id') ) {
-		SIQOP_update_table_from_table_id( $table_id, array(
-			'table_number'=> $table_name_cpt,
-			'table_id'=> $table_id,
-			'siqo_table_status' => 1,
-			'orders' => $order_id,
-			'totals' => (string)$table_total,
-		) );
+	if ( '' !== $table_id ) {
+		SIQO_update_meta( 'status_table_'.$table_id, 1, 'table_status' );
+		if ( function_exists('SIQOP_update_table_from_table_id') ) {
+			SIQOP_update_table_from_table_id( $table_id, array(
+				'table_number'=> $table_name_cpt,
+				'table_id'=> $table_id,
+				'siqo_table_status' => 1,
+				'orders' => $order_id,
+				'totals' => (string)$table_total,
+			) );
+		}
 	}
 
-	if ($clear) {
+	if ($clear && '' !== $table_id) {
+		do_action( 'siqo_table_paid', $order_id, $table_id, $table_name_cpt );
 		SIQO_update_meta( 'status_table_'.$table_id, 0, 'table_status' );
 		if (function_exists('SIQOP_update_table_from_table_id')) {
 			SIQOP_update_table_from_table_id( $table_id, array(
 				'end_time' 	=> wp_date('Y-m-d H:i:s'),
 				'siqo_table_status' 	=> 10,
-			) );
+				'orders' 	=> $order_id,
+			), true );
 		}
 	}
 	
@@ -4043,16 +4291,21 @@ do_action( 'SIQO_flash_tab_order_ajax', $order_id );
 	}
 }
 add_action('wp_ajax_SIQO_flash_tab_order_ajax', 'SIQO_flash_tab_order_ajax');
-add_action('wp_ajax_nopriv_SIQO_flash_tab_order_ajax', 'SIQO_flash_tab_order_ajax');
 
 function FO_flash_tab_clear_table( $poste = '' ){
 	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	if (SIQOcheck($poste) && is_array($poste) ) {
 		$_POST = $poste;
 	}
-	$table_id = (isset($_POST['table_id'])) ? sanitize_text_field(wp_unslash($_POST['table_id'])):'';
+	$table_id = ( isset( $_POST['table_id'] ) ) ? absint( wp_unslash( $_POST['table_id'] ) ) : 0;
+	if ( ! $table_id ) {
+		wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
+	}
 	// do_action( 'FO_flash_tab_clear_table', $order_id );
 	SIQO_update_meta( 'status_table_'.$table_id, 0, 'table_status' );
 	if (function_exists('SIQOP_update_table_from_table_id')) {
@@ -4070,11 +4323,13 @@ function FO_flash_tab_clear_table( $poste = '' ){
 	}
 }
 add_action('wp_ajax_FO_flash_tab_clear_table', 'FO_flash_tab_clear_table');
-add_action('wp_ajax_nopriv_FO_flash_tab_clear_table', 'FO_flash_tab_clear_table');
 
 function FO_flash_tab_clear_all_tables(){
 	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
 
 	$tables = SIQO_get_meta_by_assoc_id( 'table_status', 'OBJECT' );
@@ -4097,16 +4352,21 @@ function FO_flash_tab_clear_all_tables(){
 	
 }
 add_action('wp_ajax_FO_flash_tab_clear_all_tables', 'FO_flash_tab_clear_all_tables');
-add_action('wp_ajax_nopriv_FO_flash_tab_clear_all_tables', 'FO_flash_tab_clear_all_tables');
 
 
 
 
 function FO_flash_tab_pay_ajax(){
 	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_flash_tab_order'])), 'FO_flash_tab_order' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
-	$table_id = (isset($_POST['table_id'])) ? sanitize_text_field(wp_unslash($_POST['table_id'])):'';
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	$table_id = ( isset( $_POST['table_id'] ) ) ? absint( wp_unslash( $_POST['table_id'] ) ) : 0;
+	if ( ! $table_id ) {
+		wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
+	}
 	// do_action( 'FO_flash_tab_clear_table', $order_id );
 	$_POST['siqo_table_status'] = 'completed';
 	// $_POST['pay_status_order'] = 'completed';
@@ -4127,7 +4387,7 @@ function FO_flash_tab_pay_ajax(){
 	// 		'siqo_table_status' 	=> 10,
 	// 	) );
 	// }
-	SIQO_flash_tab_order_ajax( $_POST, true );
+	SIQO_flash_tab_order_ajax( $_POST, true, true );
 
 	wp_send_json(array(
 		'post' => $_POST,
@@ -4136,7 +4396,114 @@ function FO_flash_tab_pay_ajax(){
 	die();
 }
 add_action('wp_ajax_FO_flash_tab_pay_ajax', 'FO_flash_tab_pay_ajax');
-add_action('wp_ajax_nopriv_FO_flash_tab_pay_ajax', 'FO_flash_tab_pay_ajax');
+
+function SIQO_pay_coupon_quote() {
+	check_ajax_referer( 'siqo_ajax_view_orders_vars', 'nonce' );
+
+	if ( ! is_user_logged_in() || ! class_exists( 'WC_Order' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Operazione non consentita.', 'studio-immens-quick-order' ) ) );
+	}
+
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ) );
+	}
+
+	$items = isset( $_POST['items'] ) ? wp_unslash( $_POST['items'] ) : array();
+	if ( is_string( $items ) ) {
+		$items = json_decode( $items, true );
+	}
+	if ( ! is_array( $items ) || empty( $items ) ) {
+		wp_send_json_error( array( 'message' => __( 'Nessun articolo da calcolare.', 'studio-immens-quick-order' ) ) );
+	}
+
+	$order = new WC_Order();
+
+	$customer_email = isset( $_POST['customer_email'] ) ? sanitize_email( wp_unslash( $_POST['customer_email'] ) ) : '';
+	if ( $customer_email ) {
+		$order->set_billing_email( $customer_email );
+	}
+
+	$added = 0;
+	foreach ( $items as $item ) {
+		if ( ! is_array( $item ) ) {
+			continue;
+		}
+		$product_id = isset( $item['product_id'] ) ? absint( $item['product_id'] ) : 0;
+		$qty        = isset( $item['qty'] ) ? max( 1, absint( $item['qty'] ) ) : 1;
+		$price      = isset( $item['price'] ) ? (float) wc_format_decimal( $item['price'] ) : 0;
+		if ( ! $product_id ) {
+			continue;
+		}
+
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			continue;
+		}
+
+		$line_total = $price * $qty;
+		$order->add_product(
+			$product,
+			$qty,
+			array(
+				'total'    => $line_total,
+				'subtotal' => $line_total,
+			)
+		);
+		$added++;
+	}
+
+	if ( ! $added ) {
+		wp_send_json_error( array( 'message' => __( 'Nessun articolo valido da calcolare.', 'studio-immens-quick-order' ) ) );
+	}
+
+	$order->calculate_totals();
+
+	$coupon_codes = isset( $_POST['coupons'] ) ? wp_unslash( $_POST['coupons'] ) : array();
+	if ( is_string( $coupon_codes ) ) {
+		$coupon_codes = json_decode( $coupon_codes, true );
+	}
+	$coupon_codes = is_array( $coupon_codes ) ? $coupon_codes : array();
+
+	$errors = array();
+	foreach ( $coupon_codes as $coupon_code ) {
+		$coupon_code = sanitize_text_field( $coupon_code );
+		if ( function_exists( 'wc_format_coupon_code' ) ) {
+			$coupon_code = wc_format_coupon_code( $coupon_code );
+		}
+		if ( '' === $coupon_code ) {
+			continue;
+		}
+		try {
+			$order->apply_coupon( $coupon_code );
+		} catch ( Exception $e ) {
+			$errors[] = array(
+				'code'    => $coupon_code,
+				'message' => wp_strip_all_tags( $e->getMessage() ),
+			);
+		}
+	}
+
+	$order->calculate_totals();
+
+	$coupon_lines = array();
+	foreach ( $order->get_items( 'coupon' ) as $coupon_item ) {
+		$coupon_lines[] = array(
+			'code'     => method_exists( $coupon_item, 'get_code' ) ? $coupon_item->get_code() : $coupon_item->get_name(),
+			'discount' => (float) $coupon_item->get_discount(),
+		);
+	}
+
+	wp_send_json_success(
+		array(
+			'subtotal'       => (float) $order->get_subtotal(),
+			'discount_total' => (float) $order->get_discount_total(),
+			'total'          => (float) $order->get_total(),
+			'coupons'        => $coupon_lines,
+			'errors'         => $errors,
+		)
+	);
+}
+add_action( 'wp_ajax_SIQO_pay_coupon_quote', 'SIQO_pay_coupon_quote' );
 
 
 
@@ -4246,7 +4613,8 @@ function FO_flash_tab_order( $tavoli = array() ){
 							$data_table = SIQOP_get_table_by_table_id_last($tavolo->ID);
 							$story = ( $data_table != null ) ? json_decode($data_table->orders) : array();
 							foreach ((array)$story as $story_v) {
-								$order = new WC_Order($story_v);
+								$order = wc_get_order( absint( $story_v ) );
+								if ( ! $order ) { continue; }
 								?>
 								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="siqo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );" onclick="siqo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>"
 									fo_order_date_created="<?php echo esc_attr($order->get_date_created());?>"
@@ -4263,8 +4631,8 @@ function FO_flash_tab_order( $tavoli = array() ){
 							} 
 							foreach ((array)$story as $story_v) {
 								$f_i = 200000;
-								$order = new WC_Order($story_v); 
-								// $order = wc_get_order($story_v); 
+								$order = wc_get_order( absint( $story_v ) );
+								if ( ! $order ) { continue; }
 								$items = $order->get_items();
 								$meta_data = SIQO_get_all_order_meta( $order->get_id() );
 								$meta_array = SIQO_extract_meta_object( $meta_data );
@@ -4346,12 +4714,10 @@ function FO_flash_tab_order( $tavoli = array() ){
 							<?php } ?>
 						<?php } ?>
 					<div class="fo_tab_tool_section fo_tool_story">
-						<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
-							<div class="fo_button_thin fo_wooprint_preconto" onclick="SIQO_print_receipts(this);" style="color: yellow;">
-								<span class="dashicons dashicons-printer"></span>
-								<?php esc_html_e('Preconto','studio-immens-quick-order');?>
-							</div>
-						<?php } ?>
+						<div class="fo_button_thin fo_wooprint_preconto" onclick="SIQO_print_receipts(this);" style="color: yellow;">
+							<span class="dashicons dashicons-printer"></span>
+							<?php esc_html_e('Preconto','studio-immens-quick-order');?>
+						</div>
 						
 					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 					?>
@@ -4392,9 +4758,11 @@ function FO_flash_tab_order( $tavoli = array() ){
 					<?php foreach ($products as $key => $value) { ?>
 						<?php foreach ($value as $product) { 
 							$macro_cat = get_the_terms( $product->get_id(), 'siqo_macro_categories');
-							if ( $macro_cat == null ) {
+							if ( empty( $macro_cat ) || is_wp_error( $macro_cat ) ) {
 								$macro_cat = get_the_terms( $product->get_id(), 'product_cat');
-								$macro_cat[0]->slug = '-BLANK-';
+								if ( empty( $macro_cat ) || is_wp_error( $macro_cat ) ) {
+									$macro_cat = array( (object) array( 'slug' => '-BLANK-' ) );
+								}
 							}
 							$display = 'display:none';
 							if ( $first_macro != false ) {
@@ -4440,7 +4808,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 	<!-- VARIANTI: -->
 			<div class="FO_flash_tab_column fo_tab_col_2" style="">
 				<strong class="fo_col_2_name" style=""><?php esc_html_e('VARIANTI:','studio-immens-quick-order'); ?></strong>
-				<div class="FO_flash_tab_qty" style="display:none;"> QuantitÃƒÆ’Ã‚Â 
+				<div class="FO_flash_tab_qty" style="display:none;"> Quantità 
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(-1)}">-</div>
 						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="siqo_tab_parse_qty(this);">
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){fo_keyboard_qty_value(+1)}">+</div>
@@ -4531,7 +4899,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 				</div>
 			</div>
 <!-- COL 3: -->
-			<div class="FO_flash_tab_column fo_tab_col_3" style="">
+			<div class="FO_flash_tab_column fo_tab_col_3" style="" fo_show="hide">
 				<div class="fo_generic_prod" style="display:none!important;">
 					
 					<div class="fo_tab_prod fo_tab_prod_special relative" foprodid="Special" foprodtot="0" fomacrocat="Special" onclick="SIQO_filter_tab_variant(this,'Special')" fo_index="0" fo_index_story="0" fo_modificable="true" fo_type="modify" fo_special="Special">
@@ -4736,7 +5104,118 @@ function FO_get_temperature_terms(){
 
 
 
+function SIQO_get_pay_coupons() {
+	if ( ! class_exists( 'WC_Coupon' ) || ! function_exists( 'wc_get_coupon_types' ) ) {
+		return array();
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'      => 'shop_coupon',
+			'post_status'    => 'publish',
+			'posts_per_page' => 200,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+
+	$coupons = array();
+	foreach ( $posts as $post ) {
+		$coupon = new WC_Coupon( $post->ID );
+		if ( ! $coupon->get_id() ) {
+			continue;
+		}
+
+		$expires = $coupon->get_date_expires();
+		if ( $expires && $expires->getTimestamp() < time() ) {
+			continue;
+		}
+
+		$usage_limit = (int) $coupon->get_usage_limit();
+		if ( $usage_limit > 0 && (int) $coupon->get_usage_count() >= $usage_limit ) {
+			continue;
+		}
+
+		$type   = $coupon->get_discount_type();
+		$amount = (float) $coupon->get_amount();
+
+		if ( 'percent' === $type ) {
+			$label = wc_format_decimal( $amount, 2 ) . '%';
+		} elseif ( 'free_shipping' === $type ) {
+			$label = __( 'Spedizione gratuita', 'studio-immens-quick-order' );
+		} elseif ( function_exists( 'wc_price' ) ) {
+			$label = wp_strip_all_tags( wc_price( $amount ) );
+		} else {
+			$label = wc_format_decimal( $amount, 2 );
+		}
+
+		$emails = array();
+		foreach ( (array) $coupon->get_email_restrictions() as $email ) {
+			$email = strtolower( trim( (string) $email ) );
+			if ( '' !== $email ) {
+				$emails[] = $email;
+			}
+		}
+
+		$coupons[] = array(
+			'code'              => $coupon->get_code(),
+			'type'              => $type,
+			'amount'            => $amount,
+			'label'             => $label,
+			'description'       => $coupon->get_description(),
+			'emails'            => array_values( array_unique( $emails ) ),
+			'minimum'           => (float) $coupon->get_minimum_amount(),
+			'maximum'           => (float) $coupon->get_maximum_amount(),
+			'products'          => array_values( array_filter( array_map( 'absint', (array) $coupon->get_product_ids() ) ) ),
+			'excluded_products' => array_values( array_filter( array_map( 'absint', (array) $coupon->get_excluded_product_ids() ) ) ),
+			'expires'           => $expires ? $expires->getTimestamp() : 0,
+		);
+	}
+
+	return $coupons;
+}
+
+function SIQO_pay_coupon_button_html( $coupon ) {
+	$title = $coupon['description'] ? $coupon['description'] : sprintf(
+		/* translators: %s: coupon code */
+		__( 'Applica il coupon %s', 'studio-immens-quick-order' ),
+		$coupon['code']
+	);
+
+	ob_start();
+	?>
+	<button type="button" class="siqo-pay-coupon" data-siqo-coupon
+		data-code="<?php echo esc_attr( $coupon['code'] ); ?>"
+		data-type="<?php echo esc_attr( $coupon['type'] ); ?>"
+		data-amount="<?php echo esc_attr( $coupon['amount'] ); ?>"
+		data-label="<?php echo esc_attr( $coupon['label'] ); ?>"
+		data-emails="<?php echo esc_attr( wp_json_encode( $coupon['emails'] ) ); ?>"
+		data-minimum="<?php echo esc_attr( $coupon['minimum'] ); ?>"
+		data-maximum="<?php echo esc_attr( $coupon['maximum'] ); ?>"
+		data-products="<?php echo esc_attr( wp_json_encode( $coupon['products'] ) ); ?>"
+		data-excluded-products="<?php echo esc_attr( wp_json_encode( $coupon['excluded_products'] ) ); ?>"
+		data-expires="<?php echo esc_attr( $coupon['expires'] ); ?>"
+		title="<?php echo esc_attr( $title ); ?>"
+		aria-pressed="false">
+		<span class="siqo-pay-coupon-code"><?php echo esc_html( $coupon['code'] ); ?></span>
+		<span class="siqo-pay-coupon-meta"><?php echo esc_html( $coupon['label'] ); ?></span>
+		<span class="siqo-pay-coupon-action"><?php esc_html_e( 'Aggiungi', 'studio-immens-quick-order' ); ?></span>
+	</button>
+	<?php
+	return ob_get_clean();
+}
+
 function FO_pay_this_order_tab(){
+	$siqo_pay_coupons    = SIQO_get_pay_coupons();
+	$siqo_general_coupons = array();
+	$siqo_customer_coupons = array();
+	foreach ( $siqo_pay_coupons as $siqo_pay_coupon ) {
+		if ( empty( $siqo_pay_coupon['emails'] ) ) {
+			$siqo_general_coupons[] = $siqo_pay_coupon;
+		} else {
+			$siqo_customer_coupons[] = $siqo_pay_coupon;
+		}
+	}
 ?>
 	<div class="FO_flash_tab_order_pay_container fo_flex" style="display:none;">
 		
@@ -4834,7 +5313,7 @@ function FO_pay_this_order_tab(){
 			</div>
 
 			<div class="FO_example FO_pay_customer_card FO_exemple_customer_card" style="display:none;">
-				<span class="fo_tab_remove dashicons dashicons-trash" onclick="jQuery(this).parent().remove();"></span>
+				<span class="fo_tab_remove dashicons dashicons-trash" onclick="SIQO_remove_pay_customer(jQuery(this));"></span>
 				<span class="FO_pay_customer_id"> <?php esc_html_e('NUOVO!','studio-immens-quick-order'); ?> </span>
 				<span class="FO_pay_customer_name"> name </span>
 				<span class="FO_pay_customer_mail"> mail@gmail.com </span>
@@ -4842,6 +5321,55 @@ function FO_pay_this_order_tab(){
 			</div>
 
 			<div class="FO_customers_container">
+			</div>
+
+			<div class="siqo-pay-discounts" data-siqo-pay-discounts>
+				<div class="fo_pay_section_head">
+					<div>
+						<span class="fo_pay_section_kicker"><?php esc_html_e( 'Sconti', 'studio-immens-quick-order' ); ?></span>
+						<h3><?php esc_html_e( 'Coupon e sconti', 'studio-immens-quick-order' ); ?></h3>
+					</div>
+					<span class="fo_pay_optional" data-siqo-pay-discount-count><?php echo esc_html( count( $siqo_pay_coupons ) ); ?></span>
+				</div>
+
+				<p class="fo_pay_hint"><?php esc_html_e( 'Aggiungi uno o più coupon. Se selezioni un cliente, vedrai anche gli sconti associati al suo indirizzo email.', 'studio-immens-quick-order' ); ?></p>
+
+				<div class="siqo-pay-coupon-search">
+					<input type="search" data-siqo-pay-coupon-search placeholder="<?php esc_attr_e( 'Cerca un coupon…', 'studio-immens-quick-order' ); ?>" aria-label="<?php esc_attr_e( 'Cerca un coupon', 'studio-immens-quick-order' ); ?>">
+				</div>
+
+				<div class="siqo-pay-applied" data-siqo-pay-applied hidden>
+					<span class="siqo-pay-applied-label"><?php esc_html_e( 'Applicati', 'studio-immens-quick-order' ); ?></span>
+					<div class="siqo-pay-applied-list" data-siqo-pay-applied-list></div>
+				</div>
+
+				<div class="siqo-pay-coupon-group" data-siqo-pay-coupon-customer hidden>
+					<div class="siqo-pay-coupon-group-head">
+						<span><?php esc_html_e( 'Sconti del cliente', 'studio-immens-quick-order' ); ?></span>
+						<span class="siqo-pay-coupon-group-count" data-siqo-pay-customer-count></span>
+					</div>
+					<div class="siqo-pay-coupon-list">
+						<?php foreach ( $siqo_customer_coupons as $siqo_pay_coupon ) : ?>
+							<?php echo SIQO_pay_coupon_button_html( $siqo_pay_coupon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php endforeach; ?>
+					</div>
+					<p class="siqo-pay-coupon-empty" data-siqo-pay-coupon-customer-empty hidden><?php esc_html_e( 'Nessuno sconto associato a questo cliente.', 'studio-immens-quick-order' ); ?></p>
+				</div>
+
+				<div class="siqo-pay-coupon-group" data-siqo-pay-coupon-available>
+					<div class="siqo-pay-coupon-group-head">
+						<span><?php esc_html_e( 'Coupon disponibili', 'studio-immens-quick-order' ); ?></span>
+						<span class="siqo-pay-coupon-group-count" data-siqo-pay-general-count></span>
+					</div>
+					<div class="siqo-pay-coupon-list">
+						<?php foreach ( $siqo_general_coupons as $siqo_pay_coupon ) : ?>
+							<?php echo SIQO_pay_coupon_button_html( $siqo_pay_coupon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php endforeach; ?>
+					</div>
+					<p class="siqo-pay-coupon-empty" data-siqo-pay-coupon-empty <?php echo empty( $siqo_general_coupons ) ? '' : 'hidden'; ?>><?php esc_html_e( 'Nessun coupon disponibile.', 'studio-immens-quick-order' ); ?></p>
+				</div>
+
+				<p class="siqo-pay-coupon-message" data-siqo-pay-coupon-message hidden></p>
 			</div>
 
 		</div>
@@ -4884,18 +5412,17 @@ function FO_pay_this_order_tab(){
 		<div class="fo_pay_footer">
 			<div class="fo_pay_total_block">
 				<span class="fo_pay_total_label"><?php esc_html_e('Totale da pagare','studio-immens-quick-order');?></span>
+				<span class="siqo-pay-discount-line" data-siqo-pay-discount-line hidden></span>
 				<span class="fo_pay_total_line">
 					<strong class="fo_pay_total"></strong>
 				</span>
 			</div>
 
 			<div class="fo_pay_footer_actions">
-				<?php if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { ?>
-					<button type="button" class="fo_pay_preconto fo_wooprint_preconto" onclick="SIQO_print_receipts(this);">
-						<span class="dashicons dashicons-printer" aria-hidden="true"></span>
-						<span><?php esc_html_e('Preconto','studio-immens-quick-order');?></span>
-					</button>
-				<?php } ?>
+				<button type="button" class="fo_pay_preconto fo_wooprint_preconto" onclick="SIQO_print_receipts(this);">
+					<span class="dashicons dashicons-printer" aria-hidden="true"></span>
+					<span><?php esc_html_e('Preconto','studio-immens-quick-order');?></span>
+				</button>
 
 				<button type="button" class="fo_button_fix fo_pay_table_button fo_pay_primary" onclick="SIQO_order_tab_pay_ajax()">
 					<span><?php esc_html_e('Paga tavolo','studio-immens-quick-order');?></span>
@@ -4937,10 +5464,27 @@ function FO_pay_this_order_tab(){
 // );
 
 
+function siqo_ajax_require_cap( $capability ) {
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( $capability ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+}
+
+function siqo_ajax_post_capability( $post_type ) {
+	if ( in_array( $post_type, array( 'siqo_catering', 'catering' ), true ) ) {
+		return 'manage_catering';
+	}
+	if ( in_array( $post_type, array( 'siqo_tables', 'tavoli' ), true ) ) {
+		return 'manage_tables';
+	}
+	return '';
+}
+
 function FO_insert_product_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
+	siqo_ajax_require_cap( 'manage_inventory' );
 	if (!isset($_POST['title']) || $_POST['title'] == '' ) {
 	    return;
 	}
@@ -4956,7 +5500,7 @@ function FO_insert_product_ajax(){
 	$description = (isset($_POST['description'])) ? sanitize_text_field(wp_unslash( $_POST['description'])) : '';
 	$exerpt = (isset($_POST['exerpt'])) ? sanitize_text_field(wp_unslash( $_POST['exerpt'])) : '';
 	
-	$image = (isset($_POST['image'])) ? sanitize_text_field(wp_unslash( $_POST['image'])) : '';
+	$image = ( isset( $_FILES['image'] ) && is_array( $_FILES['image'] ) ) ? $_FILES['image'] : array();
 
 	$product = new WC_Product_Simple();
 
@@ -4970,8 +5514,8 @@ function FO_insert_product_ajax(){
 	$product->set_short_description($exerpt);
 
 	$resp = FO_load_images_from_front( $image );
-	if ($resp['siqo_table_status']=='success') {
-		$product->set_image_id( (int)$resp['id'] );
+	if ( is_array( $resp ) && isset( $resp['siqo_table_status'] ) && 'success' === $resp['siqo_table_status'] ) {
+		$product->set_image_id( (int) $resp['id'] );
 	}
 
 // $product->set_image_id( 90 );
@@ -5013,71 +5557,73 @@ function FO_insert_product_ajax(){
 	die();
 }
 add_action('wp_ajax_FO_insert_product_ajax', 'FO_insert_product_ajax');
-add_action('wp_ajax_nopriv_FO_insert_product_ajax', 'FO_insert_product_ajax');
 
 
 function FO_load_images_from_front( $in_file ){
-	if (isset( $in_file ) && !empty( $in_file['name'] ) ) {
-		$allowedExts = array("png", "jpg", "webp");
-		$temp = explode(".", $in_file["name"]);
-		$extension = end($temp);
-		if ( in_array($extension, $allowedExts)) {
-			if ( ($in_file["error"] > 0) && ($in_file['size'] <= 3145728 )) {
-				$response = array(
-					"siqo_table_status" => 'error',
-					"message" => 'ERROR Return Code: '. $in_file["error"],
-				);
-			}
-			else
-			{
-				$uploadedfile = $in_file;
-				$upload_name = $in_file['name'];
-				$uploads = wp_upload_dir();
-				$filepath = $uploads['path']."/$upload_name";
-				if ( ! function_exists( 'wp_handle_upload' ) ) {
-				    require_once( ABSPATH . 'wp-admin/includes/file.php' );
-				}
-				require_once( ABSPATH . 'wp-admin/includes/image.php' );
-				$upload_overrides = array( 'test_form' => false );
-				$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
-				if ( $movefile && !isset( $movefile['error'] )  ) {
+	$response = array(
+		'siqo_table_status' => 'error',
+		'message' => __( 'File non valido.', 'studio-immens-quick-order' ),
+	);
 
-					$file = $movefile['file'];
-					$url = $movefile['url'];
-					$type = $movefile['type'];
+	if ( ! is_array( $in_file ) || empty( $in_file['name'] ) || ! isset( $in_file['error'], $in_file['size'], $in_file['tmp_name'] ) ) {
+		return $response;
+	}
 
-					$attachment = array(
-						'post_mime_type' => $type ,
-						'post_title' => $upload_name,
-						'post_content' => 'File '.$upload_name,
-						'post_status' => 'inherit'
-					);
-					$attach_id = wp_insert_attachment( $attachment, $file, 0);
-					$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-					wp_update_attachment_metadata( $attach_id, $attach_data );
-				}
-				$response = array(
-					"siqo_table_status" => 'success',
-					"id" => $attach_id,
-					"url" => $url,
-				);
-			}
-		} else {
-			// something went wrong, most likely file is to large for upload. check upload_max_filesize, post_max_size and memory_limit in you php.ini
-			$response = array(
-				"siqo_table_status" => 'error',
-				"message" => 'ERROR',
-			);
-        }
-    }
-    return $response;
+	$allowedExts = array( 'png', 'jpg', 'webp' );
+	$extension = strtolower( pathinfo( $in_file['name'], PATHINFO_EXTENSION ) );
+	if ( ! in_array( $extension, $allowedExts, true ) ) {
+		return $response;
+	}
+
+	if ( (int) $in_file['error'] !== UPLOAD_ERR_OK ) {
+		$response['message'] = 'ERROR Return Code: ' . (int) $in_file['error'];
+		return $response;
+	}
+
+	if ( (int) $in_file['size'] <= 0 || (int) $in_file['size'] > 3145728 ) {
+		$response['message'] = __( 'File troppo grande.', 'studio-immens-quick-order' );
+		return $response;
+	}
+
+	if ( ! function_exists( 'wp_handle_upload' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+	}
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$movefile = wp_handle_upload( $in_file, array( 'test_form' => false ) );
+	if ( ! is_array( $movefile ) || isset( $movefile['error'] ) ) {
+		$response['message'] = is_array( $movefile ) && isset( $movefile['error'] ) ? $movefile['error'] : __( 'Caricamento non riuscito.', 'studio-immens-quick-order' );
+		return $response;
+	}
+
+	$attachment = array(
+		'post_mime_type' => $movefile['type'],
+		'post_title' => sanitize_file_name( $in_file['name'] ),
+		'post_content' => '',
+		'post_status' => 'inherit',
+	);
+	$attach_id = wp_insert_attachment( $attachment, $movefile['file'], 0 );
+	if ( is_wp_error( $attach_id ) || ! $attach_id ) {
+		$response['message'] = __( 'Impossibile creare l’allegato.', 'studio-immens-quick-order' );
+		return $response;
+	}
+
+	$attach_data = wp_generate_attachment_metadata( $attach_id, $movefile['file'] );
+	wp_update_attachment_metadata( $attach_id, $attach_data );
+
+	return array(
+		'siqo_table_status' => 'success',
+		'id' => (int) $attach_id,
+		'url' => $movefile['url'],
+	);
 }
 
 
 function FO_insert_macro_cat_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
+	siqo_ajax_require_cap( 'manage_inventory' );
 	// if (isset($_POST['term_id']) && $_POST['term_id'] != '' ) {
 	//     FO_update_post_ajax( $_POST );
 	//     return;
@@ -5100,12 +5646,13 @@ function FO_insert_macro_cat_ajax(){
 	die();
 }
 add_action('wp_ajax_FO_insert_macro_cat_ajax', 'FO_insert_macro_cat_ajax');
-add_action('wp_ajax_nopriv_FO_insert_macro_cat_ajax', 'FO_insert_macro_cat_ajax');
 
 function FO_delete_macro_cat_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
-	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	siqo_ajax_require_cap( 'manage_inventory' );
+//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
 
 	if (isset($_POST['delete_id'])) {
 		$post = wp_delete_term( (int)sanitize_text_field(wp_unslash($_POST['delete_id'])),'siqo_macro_categories' );
@@ -5118,7 +5665,6 @@ function FO_delete_macro_cat_ajax(){
 	die();
 }
 add_action('wp_ajax_FO_delete_macro_cat_ajax', 'FO_delete_macro_cat_ajax');
-add_action('wp_ajax_nopriv_FO_delete_macro_cat_ajax', 'FO_delete_macro_cat_ajax');
 
 
 
@@ -5126,14 +5672,26 @@ add_action('wp_ajax_nopriv_FO_delete_macro_cat_ajax', 'FO_delete_macro_cat_ajax'
 
 function FO_insert_post_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	if (isset($_POST['post_id']) && $_POST['post_id'] != '' ) {
 	    FO_update_post_ajax( $_POST );
 	    return;
 	}
+	$cpt = (isset($_POST['cpt'])) ? sanitize_key( wp_unslash( $_POST['cpt'] ) ) : '';
+	if ( 'catering' === $cpt ) {
+		$cpt = 'siqo_catering';
+	}
+	if ( 'tavoli' === $cpt ) {
+		$cpt = 'siqo_tables';
+	}
+	$capability = siqo_ajax_post_capability( $cpt );
+	if ( ! $capability ) {
+		wp_send_json_error( array( 'message' => __( 'Tipo di contenuto non consentito.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	siqo_ajax_require_cap( $capability );
 	$post_id = wp_insert_post(array (
-	    'post_type' => (isset($_POST['cpt']))?sanitize_text_field(wp_unslash($_POST['cpt'])):'',
+	    'post_type' => $cpt,
 	    'post_title' => (isset($_POST['title']))?sanitize_text_field(wp_unslash($_POST['title'])):'',
 	    'post_content' => (isset($_POST['content']))?sanitize_text_field(wp_unslash($_POST['content'])):'',
 	    'post_status' => 'publish',
@@ -5154,13 +5712,13 @@ function FO_insert_post_ajax(){
 	die();
 }
 add_action('wp_ajax_FO_insert_post_ajax', 'FO_insert_post_ajax');
-add_action('wp_ajax_nopriv_FO_insert_post_ajax', 'FO_insert_post_ajax');
 
 
 function FO_update_post_macro_cat_ajax( $_poste = '' ){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
+	siqo_ajax_require_cap( 'manage_inventory' );
 	if ($_poste != '') {
 		$_POST = $_poste;
 	}
@@ -5179,13 +5737,13 @@ function FO_update_post_macro_cat_ajax( $_poste = '' ){
 	die();
 }
 add_action('wp_ajax_FO_update_post_macro_cat_ajax', 'FO_update_post_macro_cat_ajax');
-add_action('wp_ajax_nopriv_FO_update_post_macro_cat_ajax', 'FO_update_post_macro_cat_ajax');
 
 
 function FO_remove_post_macro_cat_ajax( $_poste = '' ){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
+	siqo_ajax_require_cap( 'manage_inventory' );
 	if ($_poste != '') {
 		$_POST = $_poste;
 	}
@@ -5204,20 +5762,26 @@ function FO_remove_post_macro_cat_ajax( $_poste = '' ){
 	die();
 }
 add_action('wp_ajax_FO_remove_post_macro_cat_ajax', 'FO_remove_post_macro_cat_ajax');
-add_action('wp_ajax_nopriv_FO_remove_post_macro_cat_ajax', 'FO_remove_post_macro_cat_ajax');
 
 
 
 
 function FO_update_post_ajax( $_poste = '' ){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	if ($_poste != '') {
 		$_POST = $_poste;
 	}
+	$post_id = (isset($_POST['post_id']))? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+	$post_type = $post_id ? get_post_type( $post_id ) : '';
+	$capability = siqo_ajax_post_capability( $post_type );
+	if ( ! $post_id || ! $capability ) {
+		wp_send_json_error( array( 'message' => __( 'Contenuto non consentito.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	siqo_ajax_require_cap( $capability );
 	$post_id = wp_update_post(array (
-		'ID' => (isset($_POST['post_id']))?sanitize_text_field(wp_unslash($_POST['post_id'])):'',
+		'ID' => $post_id,
 	    'post_title' => (isset($_POST['title']))?sanitize_text_field(wp_unslash($_POST['title'])):'',
 	    'post_content' => (isset($_POST['content']))?sanitize_text_field(wp_unslash($_POST['content'])):'',
 	    'post_status' => 'publish',
@@ -5237,43 +5801,46 @@ function FO_update_post_ajax( $_poste = '' ){
 	die();
 }
 add_action('wp_ajax_FO_update_post_ajax', 'FO_update_post_ajax');
-add_action('wp_ajax_nopriv_FO_update_post_ajax', 'FO_update_post_ajax');
 
 function FO_delete_post_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
-	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
-
-	if (isset($_POST['delete_id'])) {
-		$post = wp_delete_post( (int)sanitize_text_field(wp_unslash($_POST['delete_id'])) );
-	} else { $post = ''; }
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	$delete_id = (isset($_POST['delete_id']))? absint( wp_unslash( $_POST['delete_id'] ) ) : 0;
+	$post_type = $delete_id ? get_post_type( $delete_id ) : '';
+	$capability = siqo_ajax_post_capability( $post_type );
+	if ( ! $delete_id || ! $capability ) {
+		wp_send_json_error( array( 'message' => __( 'Contenuto non consentito.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	siqo_ajax_require_cap( $capability );
+	$post = wp_delete_post( $delete_id );
 
 	wp_send_json(array(
-		//'post' => $_POST,
 		'post' => $post,
 	));
 	die();
 }
 add_action('wp_ajax_FO_delete_post_ajax', 'FO_delete_post_ajax');
-add_action('wp_ajax_nopriv_FO_delete_post_ajax', 'FO_delete_post_ajax');
 
 function FO_trash_post_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
-	}//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
-
-	if (isset($_POST['delete_id'])) {
-		$post = wp_trash_post( (int)sanitize_text_field(wp_unslash($_POST['delete_id'])) );
-	} else { $post = ''; }
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	$delete_id = (isset($_POST['delete_id']))? absint( wp_unslash( $_POST['delete_id'] ) ) : 0;
+	$post_type = $delete_id ? get_post_type( $delete_id ) : '';
+	$capability = siqo_ajax_post_capability( $post_type );
+	if ( ! $delete_id || ! $capability ) {
+		wp_send_json_error( array( 'message' => __( 'Contenuto non consentito.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	siqo_ajax_require_cap( $capability );
+	$post = wp_trash_post( $delete_id );
 
 	wp_send_json(array(
-		//'post' => $_POST,
 		'post' => $post,
 	));
 	die();
 }
 add_action('wp_ajax_FO_trash_post_ajax', 'FO_trash_post_ajax');
-add_action('wp_ajax_nopriv_FO_trash_post_ajax', 'FO_trash_post_ajax');
 
 
 
@@ -5697,6 +6264,17 @@ function SIQO_get_manage_orders_visualize_settings() {
 
 
 
+function SIQO_get_order_meta_array( $order ) {
+	$meta_data = array();
+	if ( ! $order instanceof WC_Order ) {
+		return $meta_data;
+	}
+	foreach ( $order->get_meta_data() as $meta ) {
+		$meta_data[ $meta->key ][] = $meta->value;
+	}
+	return $meta_data;
+}
+
 function SIQO_manage_order_add_order( $order, $visualize = array() ){
 	$order = new WC_Order($order->get_id()); 
 	$visualize = wp_parse_args( SIQO_get_manage_orders_visualize_settings(), $visualize );
@@ -5715,17 +6293,17 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 	$_div_class = '';
 }
 	$string = '';
-	$string .= '<tr orderid="'.$order->get_id().'" orderdata="'.$order->get_date_modified().'" orderstatus="'.$order->get_status().'" ordertype="'.$order->get_meta('delivery_type').'" class="'.$back_status.$_div_class.'" style="position:relative;">';
+	$string .= '<tr orderid="'.absint( $order->get_id() ).'" orderdata="'.esc_attr( $order->get_date_modified() ).'" orderstatus="'.esc_attr( $order->get_status() ).'" ordertype="'.esc_attr( $order->get_meta('delivery_type') ).'" class="'.esc_attr( $back_status.$_div_class ).'" style="position:relative;">';
 
 	if ( isset($visualize['id']) && $visualize['id'] ) {
 		$string .= '<td identify="ID">'.$order->get_id().'</td>';
 	}
 	if ( isset($visualize['name']) && $visualize['name'] ) {
 		$string .= '<td identify="name">';
-			$string .= $order->get_billing_first_name().' '.$order->get_billing_last_name();
+			$string .= esc_html( $order->get_billing_first_name() ).' '.esc_html( $order->get_billing_last_name() );
 		$string .= '</td>';
 	}
-	$meta_data = get_post_meta( $order->get_id() );
+	$meta_data = SIQO_get_order_meta_array( $order );
 	$Front_Post = array();
 	foreach ($meta_data as $key => $value) {
 		if ( str_contains( (string)$key, 'info-' )) {
@@ -5763,10 +6341,10 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 					$string .= '<span class="FO_id_info">#'.$item->get_id().'</span>';
 	//-----------------				
 						$string .= '<div class="FO_prod_name_manage">';
-							$string .= $products->get_name();
+							$string .= esc_html( $products->get_name() );
 							// echo $slang_title;
 							if ( $products->get_type() == 'variation' ) {
-								$string .= "  |>".implode(", ", $products->get_attributes() );
+								$string .= "  |>".esc_html( implode(", ", $products->get_attributes() ) );
 							}
 						$string .= '</div>';
 
@@ -5775,7 +6353,7 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 				$string .= '<div class="FOimgProdInfo" style="display:none;">';
 					$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 					$string .= '<div class="FO_prod_name">';
-						$string .= $item->get_name();
+						$string .= esc_html( $item->get_name() );
 
 					$string .= '</div>';
 					$string .= '<div class="FO_prod_img">';
@@ -5816,9 +6394,9 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 					$string .= '<div class="FO_prod_note">';
 						$string .= esc_html__( 'Note prodotto:', 'studio-immens-quick-order' );
 					$string .= '</div>';
-					$string .= '<div style="width:100%;justify-content:center;">';
-						$string .= $product_note;
-					$string .= '</div>';
+						$string .= '<div style="width:100%;justify-content:center;">';
+							$string .= esc_html( $product_note );
+						$string .= '</div>';
 				}
 				$string .= '</div>';
 				$string .= '</div>';
@@ -5836,9 +6414,10 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 					$varianti = (array_key_exists('variant', $meta_elem))?$meta_elem['variant']:array();
 					$temperature = (array_key_exists('siqo_temperatures', $meta_elem))?$meta_elem['siqo_temperatures']:'';
 
-					if ($temperature!='') {
-						$temper_id = get_term_by( 'name', $temperature, 'siqo_temperatures' )->term_id;
-						$tax_img = get_term_meta($temper_id, 'taxonomy_image'); 
+					if ($temperature!='' && is_scalar($temperature)) {
+						$temper_term = get_term_by( 'name', $temperature, 'siqo_temperatures' );
+						$temper_id = $temper_term ? $temper_term->term_id : 0;
+						$tax_img = $temper_id ? get_term_meta($temper_id, 'taxonomy_image') : array();
 					}
 					
 					$Ingredienti = get_the_terms($product_id,'siqo_ingredients');
@@ -5866,16 +6445,16 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 							$string .= '<span class="FO_id_variant" title="'.count($varianti).'"><img src="/wp-content/plugins/studio-immens-quick-order/includes/img/cycle.webp"></span>';
 						}
 						$string .= '<div class="FO_prod_name_manage">';
-							$string .= $slang_title;
+							$string .= esc_html( $slang_title );
 							if ( $products->get_type() == 'variation' ) {
-								$string .= "  |>".implode(", ", $products->get_attributes() );
+								$string .= "  |>".esc_html( implode(", ", $products->get_attributes() ) );
 							}
 						$string .= '</div>';
 						if ($temperature!='') {
-							$string .= '<span class="FO_id_temperature" title="'.$temperature.'">';
+							$string .= '<span class="FO_id_temperature" title="'.esc_attr($temperature).'">';
 								$string .= '<img src="/wp-content/plugins/studio-immens-quick-order/includes/img/thermometer2.webp">';
 								if ( SIQOcheck($tax_img) && isset($tax_img[0]) && $tax_img[0] != '' ) {
-									$string .= '<img class="fotemper_image"width="20"height="20"src="'.$tax_img[0].'">';
+									$string .= '<img class="fotemper_image"width="20"height="20"src="'.esc_url($tax_img[0]).'">';
 								}
 							$string .= '</span>';
 						}
@@ -5884,9 +6463,9 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 					$string .= '<div class="FOimgProdInfo" style="display:none;">';
 						$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 						$string .= '<div class="FO_prod_name">';
-							$string .= $slang_title;
+							$string .= esc_html( $slang_title );
 							if ( $products->get_type() == 'variation' ) {
-								$string .= "  |>".implode(", ", $products->get_attributes() );
+								$string .= "  |>".esc_html( implode(", ", $products->get_attributes() ) );
 							}
 						$string .= '</div>';
 						$string .= '<div class="FO_prod_img">';
@@ -5899,9 +6478,9 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 							$string .= '</div>';
 							$string .= '<div class="FOAdvVariantProdTab">';
 							foreach ($varianti as $key => $value) {
-								$string .= '<div class="FO_variant" title="'.$key.'">';
-									$string .= '<p>'.$key.': </p>';
-									$string .= '<p> '.$value.'</p>';
+								$string .= '<div class="FO_variant" title="'.esc_attr($key).'">';
+									$string .= '<p>'.esc_html($key).': </p>';
+									$string .= '<p> '.esc_html(is_scalar($value) ? (string) $value : '').'</p>';
 								$string .= '</div>';
 							}
 							$string .= '</div>';
@@ -5915,10 +6494,10 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 
 								$string .= '<img src="/wp-content/plugins/studio-immens-quick-order/includes/img/thermometer2.webp">';
 
-									if ( SIQOcheck($tax_img) && isset($tax_img[0]) && $tax_img[0] != '' ) {
-										$string .= '<img class="fotemper_image"width="20"height="20"src="'.$tax_img[0].'">';
-									}
-								$string .= '<span class="FO_temperature" title="'.$temperature.'">'.$temperature.'</span>';
+								if ( SIQOcheck($tax_img) && isset($tax_img[0]) && $tax_img[0] != '' ) {
+									$string .= '<img class="fotemper_image"width="20"height="20"src="'.esc_url($tax_img[0]).'">';
+								}
+								$string .= '<span class="FO_temperature" title="'.esc_attr($temperature).'">'.esc_html($temperature).'</span>';
 							$string .= '</div>';
 						}
 
@@ -5935,9 +6514,9 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 								$value = get_term( $value, 'siqo_ingredients' );
 								$tax_img = get_term_meta($value->term_id, 'taxonomy_image'); 
 								$string .= '<div class="FOAdvIngredProdTab '.$clssmod.'">';
-									$string .= '<p>'.$value->name.'</p>';
+									$string .= '<p>'.esc_html($value->name).'</p>';
 									if ( SIQOcheck($tax_img) && isset($tax_img[0]) && $tax_img[0] != '' ) {
-										$string .= '<img class="fotax_image"width="30"height="30"src="'.$tax_img[0].'">';
+										$string .= '<img class="fotax_image"width="30"height="30"src="'.esc_url($tax_img[0]).'">';
 									}
 								$string .= '</div>';
 							}
@@ -5957,10 +6536,10 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 									$tax_img = get_term_meta($value, 'taxonomy_image'); 
 
 									$string .= '<div class="FOAdvIngredProdTab">';
-										$string .= '<p>'.$ing_name.'</p>';
+										$string .= '<p>'.esc_html($ing_name).'</p>';
 										// $string .= $ing_name;
 										if ( SIQOcheck($tax_img) && isset($tax_img[0]) && $tax_img[0] != '' ) {
-											$string .= '<img class="fotax_image"width="30"height="30"src="'.$tax_img[0].'">';
+											$string .= '<img class="fotax_image"width="30"height="30"src="'.esc_url($tax_img[0]).'">';
 										}
 									$string .= '</div>';
 								}
@@ -5972,7 +6551,7 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 							$string .= esc_html__( 'Note prodotto:', 'studio-immens-quick-order' );
 						$string .= '</div>';
 						$string .= '<div style="width:100%;justify-content:center;">';
-							$string .= $product_note;
+							$string .= esc_html( $product_note );
 						$string .= '</div>';
 					}
 					$string .= '</div>';
@@ -6036,7 +6615,7 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 						$string .= '<div class="FOimgProdInfo" style="display:none;">';
 							$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 							$string .= '<div class="FO_prod_name">';
-								$string .= $products->get_name();
+								$string .= esc_html( $products->get_name() );
 							$string .= '</div>';
 							$string .= '<div class="FO_prod_img">';
 								$string .= wp_kses_post($products->get_image());
@@ -6077,7 +6656,7 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 								$string .= esc_html__( 'Note prodotto:', 'studio-immens-quick-order' );
 							$string .= '</div>';
 							$string .= '<div style="width:100%;justify-content:center;">';
-								$string .= $product_note;
+								$string .= esc_html( $product_note );
 							$string .= '</div>';
 						}
 						$string .= '</div>';
@@ -6090,11 +6669,11 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 				$fee_name = $item_fee->get_name();
 				$fee_total = $item_fee->get_total();
 
-				$string .= '<div foprodid="'.$fee_name.'" foprodtot="'.$fee_total.'" class="relative">';
+				$string .= '<div foprodid="'.esc_attr( $fee_name ).'" foprodtot="'.esc_attr( $fee_total ).'" class="relative">';
 					$string .= '<div onclick="jQuery(this).next().slideToggle()">';
 							$string .= '<div class="fo_fake_image_fee">'.esc_html__( 'Special', 'studio-immens-quick-order' ).'</div>';
 						$string .= '<div class="FO_prod_name_manage">';
-							$string .= $fee_name;
+							$string .= esc_html( $fee_name );
 						$string .= '</div>';
 						
 						$string .= '<span class="FO_quantity_info">'.SIQO_price($fee_total).'</span>';
@@ -6104,7 +6683,7 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 						$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 
 						$string .= '<div class="FO_prod_name">';
-							$string .= $fee_name;
+							$string .= esc_html( $fee_name );
 						$string .= '</div>';
 						$string .= '<div class="FO_prod_img">';
 							$string .= '<div class="fo_fake_image_fee">'.esc_html__( 'Special', 'studio-immens-quick-order' ).'</div>';
@@ -6140,15 +6719,15 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 		}
 		$string .= '<div fotarget="ordertype" title="'.esc_html__( 'Tipo di ordine', 'studio-immens-quick-order' ).'">';
 		if ($order->get_meta('Table_cpt')!= '') {
-			$string .= $order->get_meta('Table_cpt');
+			$string .= esc_html( $order->get_meta('Table_cpt') );
 			$separator_1 = ' - ';
 		} else{	$separator_1 = '';
 			// $order = new WC_Order($order->get_id()); 
 		}
 		if ($tab_num_data != '0' ) {
-			$string .= $separator_1.$del_type;
-			$string .= ' '.$tab_num_data;
-			$string .= ' '.$table_surname;
+			$string .= $separator_1.esc_html( $del_type );
+			$string .= ' '.esc_html( $tab_num_data );
+			$string .= ' '.esc_html( $table_surname );
 		}
 		$string .= '</div>';
 		$string .= SIQO_get_order_info_button_tab_string($order->get_id());
@@ -6181,11 +6760,9 @@ if ( isset($visualize['div']) && $visualize['div'] ) {
 			$string .= SIQO_get_status_changer( $order );
 		}
 
-		if ( class_exists( 'WooPrint_Main' ) || in_array( 'WooPrint/WooPrint.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-			$string .= '<button type="button" class="fo_button_thin" onclick="SIQO_print_receipt(' . $order->get_id() . ');" style="color: yellow;">';
-			$string .= '<span class="dashicons dashicons-printer"></span> ' . esc_html__( 'Stampa', 'studio-immens-quick-order' );
-			$string .= '</button>';
-		}
+		$string .= '<button type="button" class="fo_button_thin" onclick="SIQO_print_receipt(' . $order->get_id() . ');" style="color: yellow;">';
+		$string .= '<span class="dashicons dashicons-printer"></span> ' . esc_html__( 'Stampa', 'studio-immens-quick-order' );
+		$string .= '</button>';
 		if ( SIQO_get_meta( 'visualize_orders_timer') == 'yes' ) {
 			$string .= '<div identify="fotimer" class="fotimer fo_status_timer_1" style="display:none">';
 				$string .= 'timer';
@@ -6304,8 +6881,8 @@ function FO_extract_meta_array( $meta ){
 				$array[$index]['ingredient'][$i] = substr( (string)$key, strpos((string)$key,'ingredient-')+11 );
 				$i++;
 			}
-			if ( str_contains( (string)$key, 'siqo_temperatures' ) ) {
-				$array[$index]['siqo_temperatures'] = substr($value[0],strpos($value[0],'| ')+2);
+			if ( str_contains( (string)$key, 'siqo_temperatures' ) || str_contains( (string)$key, '_temperature-' ) ) {
+				$array[$index]['siqo_temperatures'] = substr( $value[0], strpos( $value[0], '| ' ) + 2 );
 			}
 			if ( str_contains( (string)$key, 'variant' ) ) {
 				$array[$index]['variant'][substr((string)$key,strpos((string)$key,'variant-')+8)] = substr($value[0],strpos($value[0],'| ')+2);
@@ -6323,7 +6900,7 @@ function FO_extract_meta_array( $meta ){
 
 function FO_get_product_image_and_ingredient( $order_id ){
 	$order = new WC_Order($order_id); 
-		$meta_data = get_post_meta( $order->get_id() );
+	$meta_data = SIQO_get_order_meta_array( $order );
 	$Front_Post = array();
 	$string = '';
 
@@ -6360,7 +6937,7 @@ function FO_get_product_image_and_ingredient( $order_id ){
 			$string .= '<div class="FOimgProdInfo" style="display:none;">';
 				$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 				$string .= '<div style="width:100%;justify-content:center;">';
-					$string .= $item->get_name();
+					$string .= esc_html( $item->get_name() );
 				$string .= '</div>';
 				$string .= '<div style="width:100%;justify-content:center;">';
 					$string .= wp_kses_post($products->get_image());
@@ -6398,7 +6975,7 @@ function FO_get_product_image_and_ingredient( $order_id ){
 					$string .= esc_html__( 'Note prodotto:', 'studio-immens-quick-order' );
 				$string .= '</div>';
 				$string .= '<div style="width:100%;justify-content:center;">';
-					$string .= $product_note;
+					$string .= esc_html( $product_note );
 				$string .= '</div>';
 			}
 			$string .= '</div>';
@@ -6448,7 +7025,7 @@ function FO_get_product_image_and_ingredient( $order_id ){
 					$string .= '<div class="FOimgProdInfo" style="display:none;">';
 						$string .= '<div class="FOCloseTab" onclick="jQuery(this).parent().slideToggle()">'.esc_html__('CHIUDI','studio-immens-quick-order').'</div>';
 						$string .= '<div style="width:100%;justify-content:center;">';
-							$string .= $products->get_name();
+							$string .= esc_html( $products->get_name() );
 						$string .= '</div>';
 						$string .= '<div style="width:100%;justify-content:center;">';
 							$string .= wp_kses_post($products->get_image());
@@ -6486,7 +7063,7 @@ function FO_get_product_image_and_ingredient( $order_id ){
 							$string .= esc_html__( 'Note prodotto:', 'studio-immens-quick-order' );
 						$string .= '</div>';
 						$string .= '<div style="width:100%;justify-content:center;">';
-							$string .= $product_note;
+							$string .= esc_html( $product_note );
 						$string .= '</div>';
 					}
 					$string .= '</div>';
@@ -6513,15 +7090,28 @@ function SIQO_get_status_changer( $order ){
 	return $string;
 }
 
-function SIQO_get_order_info_button_tab_string ( $order_id ){
+function SIQO_get_order_info_button_tab_string ( $order_id = null ){
 
+	$order_id = absint( $order_id );
 	if ( isset($_POST['ajax_order_id']) && $order_id == null ) { 
-		$order_id = $_POST['ajax_order_id'];
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'siqo_ajax_view_orders_vars' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+		}
+		$order_id = absint( wp_unslash( $_POST['ajax_order_id'] ) );
 		$ajax_check = true;
 	} else{
 		$ajax_check = false;
 	}
-$order = new WC_Order($order_id); 
+	if ( $ajax_check && ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+$order = wc_get_order( $order_id ); 
+	if ( ! $order ) {
+		if ( $ajax_check ) {
+			wp_send_json_error( array( 'message' => __( 'Ordine non trovato.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		return '';
+	}
 	$string = '';
 	if (!$ajax_check) {
 		$string .= '<button onclick="jQuery(this).next().slideToggle();">'.esc_html__( 'INFO', 'studio-immens-quick-order' ).'</button>';
@@ -6535,7 +7125,7 @@ $order = new WC_Order($order_id);
 			$string .= '</div>';
 
 			$string .= '<div class="title" style="font-size:20px;color:var(--siqo-scnd-color);">';
-			$string .= esc_html__( 'Tipo di ordine', 'studio-immens-quick-order' ).'- '.$order->get_meta('delivery_type');
+			$string .= esc_html__( 'Tipo di ordine', 'studio-immens-quick-order' ).'- '.esc_html( $order->get_meta( 'delivery_type' ) );
 			$string .= '</div>';
 		$string .= '</div>';	
 		$string .= '<div class="FO_inSIQO_section">';
@@ -6560,38 +7150,38 @@ $order = new WC_Order($order_id);
 			$string .= '</div>';
 
 			$string .= '<div class="title">'.esc_html__( '[FATTURAZIONE]', 'studio-immens-quick-order' );
-				$string .= '<p title="get_billing_first_name - get_billing_last_name">'.$order->get_billing_first_name().' '.$order->get_billing_last_name().'</p>';
-				$string .= '<p title="get_billing_company">'.$order->get_billing_company().'</p>';
-				$string .= '<p title="get_billing_address_1">'.$order->get_billing_address_1().'</p>';
-				$string .= '<p title="get_billing_address_2">'.$order->get_billing_address_2().'</p>';
-				$string .= '<p title="get_billing_city - get_billing_state">'.$order->get_billing_city().' '.$order->get_billing_state().'</p>';
-				$string .= '<p title="get_billing_postcode - get_billing_country">'.$order->get_billing_postcode().' '.$order->get_billing_country().'</p>';
+				$string .= '<p title="get_billing_first_name - get_billing_last_name">'.esc_html( $order->get_billing_first_name() ).' '.esc_html( $order->get_billing_last_name() ).'</p>';
+				$string .= '<p title="get_billing_company">'.esc_html( $order->get_billing_company() ).'</p>';
+				$string .= '<p title="get_billing_address_1">'.esc_html( $order->get_billing_address_1() ).'</p>';
+				$string .= '<p title="get_billing_address_2">'.esc_html( $order->get_billing_address_2() ).'</p>';
+				$string .= '<p title="get_billing_city - get_billing_state">'.esc_html( $order->get_billing_city() ).' '.esc_html( $order->get_billing_state() ).'</p>';
+				$string .= '<p title="get_billing_postcode - get_billing_country">'.esc_html( $order->get_billing_postcode() ).' '.esc_html( $order->get_billing_country() ).'</p>';
 			$string .= '</div>';
 
 			$string .= '<div class="title">'.esc_html__( '[SPEDIZIONE]', 'studio-immens-quick-order' );
-				$string .= '<p title="get_shipping_first_name - get_shipping_last_name">'.$order->get_shipping_first_name().' '.$order->get_shipping_last_name().'</p>';
-				$string .= '<p title="get_shipping_company">'.$order->get_shipping_company().'</p>';
-				$string .= '<p title="get_shipping_address_1">'.$order->get_shipping_address_1().'</p>';
-				$string .= '<p title="get_shipping_address_2">'.$order->get_shipping_address_2().'</p>';
+				$string .= '<p title="get_shipping_first_name - get_shipping_last_name">'.esc_html( $order->get_shipping_first_name() ).' '.esc_html( $order->get_shipping_last_name() ).'</p>';
+				$string .= '<p title="get_shipping_company">'.esc_html( $order->get_shipping_company() ).'</p>';
+				$string .= '<p title="get_shipping_address_1">'.esc_html( $order->get_shipping_address_1() ).'</p>';
+				$string .= '<p title="get_shipping_address_2">'.esc_html( $order->get_shipping_address_2() ).'</p>';
 
 
-				$string .= '<p title="get_shipping_city - get_shipping_state">'.$order->get_shipping_city().' '.$order->get_shipping_state().'</p>';
-				$string .= '<p title="get_shipping_postcode - get_shipping_country">'.$order->get_shipping_postcode().' '.$order->get_shipping_country().'</p>';
+				$string .= '<p title="get_shipping_city - get_shipping_state">'.esc_html( $order->get_shipping_city() ).' '.esc_html( $order->get_shipping_state() ).'</p>';
+				$string .= '<p title="get_shipping_postcode - get_shipping_country">'.esc_html( $order->get_shipping_postcode() ).' '.esc_html( $order->get_shipping_country() ).'</p>';
 
 			$string .= '</div>';
 
 			$string .= '<div class="title">'.esc_html__( '[INFO]', 'studio-immens-quick-order' );
-				$string .= '<p title="get_created_via">'.esc_html__( 'creato da - ', 'studio-immens-quick-order' ).$order->get_created_via().'</p>';
-				$string .= '<p title="get_billing_email">'.$order->get_billing_email().'</p>';
-				$string .= '<p title="get_billing_phone">'.$order->get_billing_phone().'</p>';
-				$string .= '<p title="get_customer_ip_address">'.esc_html__('indirizzo ip - ','studio-immens-quick-order').$order->get_customer_ip_address().'</p>';
-				$string .= '<p title="get_customer_user_agent">'.esc_html__('user agent - ','studio-immens-quick-order').$order->get_customer_user_agent().'</p>';
+				$string .= '<p title="get_created_via">'.esc_html__( 'creato da - ', 'studio-immens-quick-order' ).esc_html( $order->get_created_via() ).'</p>';
+				$string .= '<p title="get_billing_email">'.esc_html( $order->get_billing_email() ).'</p>';
+				$string .= '<p title="get_billing_phone">'.esc_html( $order->get_billing_phone() ).'</p>';
+				$string .= '<p title="get_customer_ip_address">'.esc_html__('indirizzo ip - ','studio-immens-quick-order').esc_html( $order->get_customer_ip_address() ).'</p>';
+				$string .= '<p title="get_customer_user_agent">'.esc_html__('user agent - ','studio-immens-quick-order').esc_html( $order->get_customer_user_agent() ).'</p>';
 			$string .= '</div>';
 		$string .= '</div>';
 
 		$string .= '<div class="FO_inSIQO_section">';
 			$string .= '<div class="title">'.esc_html__( '[ALTRO]', 'studio-immens-quick-order' );
-				$string .= '<p>'.esc_html__( 'note dell\'ordine: - ', 'studio-immens-quick-order' ).$order->get_meta('order_note').'</p>';
+				$string .= '<p>'.esc_html__( 'note dell\'ordine: - ', 'studio-immens-quick-order' ).esc_html( $order->get_meta( 'order_note' ) ).'</p>';
 			$string .= '</div>';
 		$string .= '</div>';
 	$string .= '</div>';
@@ -6605,18 +7195,10 @@ $order = new WC_Order($order_id);
 	}
 }
 add_action('wp_ajax_SIQO_get_order_info_button_tab_string', 'SIQO_get_order_info_button_tab_string');
-add_action('wp_ajax_nopriv_SIQO_get_order_info_button_tab_string', 'SIQO_get_order_info_button_tab_string');
 
 
 
 
-
-
-add_action('woocommerce_before_checkout_form', 'hizlicicek_test');
-
-function hizlicicek_test() {
-echo "yjjfjhghghj";
-}
 
 
 if ( SIQO_get_meta('siqo_pickup_delivery_checkout') == 'yes' ) {
@@ -6634,6 +7216,7 @@ function FO_add_pickup_delivery_section(){
 	$nonce = wp_create_nonce( 'FO_pickup_delivery_section_nonce' );
 	?>
 	<div id="FO_pickup_delivery">
+		<input type="hidden" id="_siqononce_pickup_delivery_section" name="_siqononce_pickup_delivery_section" value="<?php echo esc_attr($nonce);?>">
 		<p>
 			<span class="woocommerce-input-wrapper">
 				<input type="radio" class="input-radio " value="pickup" name="delivery_type" id="fo_order_type_pickup">
@@ -6652,8 +7235,7 @@ function FO_add_pickup_delivery_section(){
 	            		<abbr class="required" title="obbligatorio">*</abbr>
 	            	</label>
 	            	<span class="woocommerce-input-wrapper">
-	            		<input type="date" name="fo_delivery_date" id="fo_delivery_date" placeholder="" value="">
-	            		<input type="hidden" id="_fononce_pickup_delivery_section" name="_fononce_pickup_delivery_section" value="<?php echo esc_attr($nonce);?>">
+	            		<input type="date" name="fo_delivery_date" id="fo_delivery_date" placeholder="" value="" required>
 	            	</span>
 	            </p>                
 	        </div>
@@ -6663,25 +7245,38 @@ function FO_add_pickup_delivery_section(){
 	            		<abbr class="required" title="obbligatorio">*</abbr>
 	            	</label>
 	            	<span class="woocommerce-input-wrapper">
-	            		<input type="time" name="fo_delivery_time" id="fo_delivery_time" placeholder="" value="">
-	            		<input type="hidden" id="_fononce_pickup_delivery_section" name="_fononce_pickup_delivery_section" value="<?php echo esc_attr($nonce);?>">
+	            		<input type="time" name="fo_delivery_time" id="fo_delivery_time" placeholder="" value="" required>
 	            	</span>
 	            </p>              
 	        </div>
         </div>
     </div>
+	<script>
+	jQuery(function($){
+		function foToggleDelivery(){
+			var pickup = $('#fo_order_type_pickup').is(':checked');
+			$('.fo_delivery').toggle(!pickup);
+			$('#fo_delivery_date, #fo_delivery_time').prop('required', !pickup);
+		}
+		$(document).on('change', 'input[name="delivery_type"]', foToggleDelivery);
+		foToggleDelivery();
+	});
+	</script>
 	<?php
 }
 
 function FO_view_Pickup_Delivery( $order_id ){
-	$delivery_type = get_post_meta( $order_id, 'delivery_type', true );
+	$order = wc_get_order( $order_id );
+	$delivery_type = $order ? $order->get_meta( 'delivery_type' ) : '';
 		if ($delivery_type == 'delivery'){ $delivery_type = esc_html__('Consegna a Domicilio', 'studio-immens-quick-order'); }
 		if ($delivery_type == 'pickup'){ $delivery_type = esc_html__('Ritiro in Sede', 'studio-immens-quick-order'); }
-	$fo_delivery_date = get_post_meta( $order_id, 'fo_delivery_date', true );
-	$fo_delivery_time = get_post_meta( $order_id, 'fo_delivery_time', true );
+	$fo_delivery_date = $order ? $order->get_meta( 'fo_delivery_date' ) : '';
+	$fo_delivery_time = $order ? $order->get_meta( 'fo_delivery_time' ) : '';
 
 	echo '<p>'.esc_html__("Tipo Ordine: ", 'studio-immens-quick-order').'<strong>'.esc_attr($delivery_type).'</strong></p>';
-	echo '<p>'.esc_html__("Data: ", 'studio-immens-quick-order').'<strong>'.esc_attr($fo_delivery_date).'</strong> '.esc_html__("Ora: ", 'studio-immens-quick-order').'<strong>'.esc_attr($fo_delivery_time).'</strong></p>';
+	if ( $order && 'delivery' === $order->get_meta( 'delivery_type' ) ) {
+		echo '<p>'.esc_html__("Data: ", 'studio-immens-quick-order').'<strong>'.esc_attr($fo_delivery_date).'</strong> '.esc_html__("Ora: ", 'studio-immens-quick-order').'<strong>'.esc_attr($fo_delivery_time).'</strong></p>';
+	}
 }
 
 function FO_validate_pickup_delivery_section(){
@@ -6689,23 +7284,39 @@ function FO_validate_pickup_delivery_section(){
     if ( !isset($_POST['_siqononce_pickup_delivery_section']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
 		return;
 	}	//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
-	if (!empty($_POST['fo_delivery_date'])) wc_add_notice(esc_html__('Seleziona una data!', 'studio-immens-quick-order') , 'error');
-	if (!empty($_POST['fo_delivery_time'])) wc_add_notice(esc_html__('Seleziona un\'orario!', 'studio-immens-quick-order') , 'error');
+	$delivery_type = isset( $_POST['delivery_type'] ) ? sanitize_key( wp_unslash( $_POST['delivery_type'] ) ) : 'delivery';
+	if ( 'delivery' === $delivery_type ) {
+		if ( empty( $_POST['fo_delivery_date'] ) ) {
+			wc_add_notice( esc_html__( 'Seleziona una data!', 'studio-immens-quick-order' ), 'error' );
+		}
+		if ( empty( $_POST['fo_delivery_time'] ) ) {
+			wc_add_notice( esc_html__( 'Seleziona un\'orario!', 'studio-immens-quick-order' ), 'error' );
+		}
+	}
 }
 
 function FO_save_pickup_delivery_section($order_id){
     if ( !isset($_POST['_siqononce_pickup_delivery_section']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_pickup_delivery_section'])), 'FO_pickup_delivery_section_nonce' ) ) {
 		return;
 	}	//_fononce_stat_update_nonce: jQuery('input[name="_fononce_stat_update_nonce"]').val(),
-	if (!empty($_POST['delivery_type'])) {
-		update_post_meta($order_id, 'delivery_type',sanitize_text_field(wp_unslash($_POST['delivery_type'])));
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
 	}
-	if (!empty($_POST['fo_delivery_date'])) {
-		update_post_meta($order_id, 'fo_delivery_date',sanitize_text_field(wp_unslash($_POST['fo_delivery_date'])));
+	$delivery_type = ! empty( $_POST['delivery_type'] ) ? sanitize_key( wp_unslash( $_POST['delivery_type'] ) ) : 'delivery';
+	$order->update_meta_data( 'delivery_type', $delivery_type );
+	if ( 'delivery' === $delivery_type ) {
+		if ( ! empty( $_POST['fo_delivery_date'] ) ) {
+			$order->update_meta_data( 'fo_delivery_date', sanitize_text_field( wp_unslash( $_POST['fo_delivery_date'] ) ) );
+		}
+		if ( ! empty( $_POST['fo_delivery_time'] ) ) {
+			$order->update_meta_data( 'fo_delivery_time', sanitize_text_field( wp_unslash( $_POST['fo_delivery_time'] ) ) );
+		}
+	} else {
+		$order->delete_meta_data( 'fo_delivery_date' );
+		$order->delete_meta_data( 'fo_delivery_time' );
 	}
-	if (!empty($_POST['fo_delivery_time'])) {
-		update_post_meta($order_id, 'fo_delivery_time',sanitize_text_field(wp_unslash($_POST['fo_delivery_time'])));
-	}
+	$order->save();
 }
 
 
@@ -6775,7 +7386,10 @@ function FO_check_meta_setting( $setting ){
 
 function FO_check_for_orders() {
 	if ( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'siqo_ajax_view_orders_vars' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
     $update_needed = false;
     $orders_to_refresh = array();
@@ -6784,7 +7398,10 @@ function FO_check_for_orders() {
     $orders_date_created = intval( SIQO_get_meta('orders_date_created') ) * 3600;
 	$orders_date_created_operator =  ( $orders_date_created == 0 ) ? '<' : '>';
 
-	$order_id_table = (isset($_POST['order_id_table'])) ? sanitize_text_field(wp_unslash($_POST['order_id_table'])) : '';
+	$order_id_table = array();
+	if ( isset( $_POST['order_id_table'] ) && is_array( $_POST['order_id_table'] ) ) {
+		$order_id_table = array_map( 'absint', wp_unslash( $_POST['order_id_table'] ) );
+	}
 
 	$orders = wc_get_orders( array(
 		'numberposts'    	=> 5,
@@ -6796,13 +7413,21 @@ function FO_check_for_orders() {
 		'paginate'          => false,
 		'date_created' => $orders_date_created_operator . ( time() - $orders_date_created ),// 3600s = 1h  28800s = 8h
 	) );
+	if ( empty( $orders ) ) {
+		wp_send_json( array(
+			'updateNeeded'   => false,
+			'newOrders'      => array(),
+			'last_id'        => 0,
+			'order_id_table' => $order_id_table,
+			'string'         => '',
+		) );
+	}
 	$last_id = $orders[0]->get_id();
 	
 	if ( isset($_POST['last_order_id']) && sanitize_text_field(wp_unslash($_POST['last_order_id'])) != $last_id ) {
 		foreach( $orders as $k => $v ){
-			SIQO_add_products_to_order( $v->get_id(), $v );
 			if ( isset($_POST['last_order_data']) && $v->get_date_modified() > sanitize_text_field(wp_unslash($_POST['last_order_data']))) {
-				if ( !in_array( $v->get_id(), $order_id_table ) ) {
+				if ( !in_array( $v->get_id(), $order_id_table, true ) ) {
 					$orders_to_refresh[$k] = $v->get_data();
 					//$order_items[$k] = $v->get_items();
 					$string .= SIQO_manage_order_add_order( $v );
@@ -6829,21 +7454,26 @@ function FO_check_for_orders() {
 	die();
 }
 add_action('wp_ajax_FO_check_for_orders', 'FO_check_for_orders');
-add_action('wp_ajax_nopriv_FO_check_for_orders', 'FO_check_for_orders');
 add_action('wp_ajax_SIQO_check_for_orders', 'FO_check_for_orders');
-add_action('wp_ajax_nopriv_SIQO_check_for_orders', 'FO_check_for_orders');
 
 
 function FO_ajax_change_order_status( $poste = '' ){
 	$siqo_change_status_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash( $_POST['nonce'])) : '';
 	if ( ! wp_verify_nonce( $siqo_change_status_nonce, 'siqo_ajax_view_orders_vars' ) && ! wp_verify_nonce( $siqo_change_status_nonce, 'SIQO_insert_post_ajax_nonce' ) ) {
-		return;
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
 	if (SIQOcheck($poste) && is_array($poste) ) {
 		$_POST = $poste;
 	}
-	$order_id = (isset($_POST['order_id'])) ? sanitize_text_field(wp_unslash( $_POST['order_id'] )) : '';
+	$order_id = (isset($_POST['order_id'])) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
 	$status = (isset($_POST['siqo_table_status'])) ? sanitize_text_field(wp_unslash( $_POST['siqo_table_status'] )) : '';
+	$allowed_statuses = array( 'pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed' );
+	if ( ! $order_id || ! in_array( $status, $allowed_statuses, true ) ) {
+		wp_send_json_error( array( 'message' => __( 'Dati ordine non validi.', 'studio-immens-quick-order' ) ), 400 );
+	}
 	$order = wc_get_order($order_id);
 	// $order = new WC_Order($order_id); 
 	if (!empty($order)) {
@@ -6860,9 +7490,7 @@ function FO_ajax_change_order_status( $poste = '' ){
 	}
 }
 add_action('wp_ajax_FO_ajax_change_order_status', 'FO_ajax_change_order_status');
-add_action('wp_ajax_nopriv_FO_ajax_change_order_status', 'FO_ajax_change_order_status');
 add_action('wp_ajax_SIQO_ajax_change_order_status', 'FO_ajax_change_order_status');
-add_action('wp_ajax_nopriv_SIQO_ajax_change_order_status', 'FO_ajax_change_order_status');
 
 
 
@@ -6909,12 +7537,14 @@ add_action( 'admin_enqueue_scripts', 'FO_load_media_files' );
 function SIQO_register_ajax_action_aliases() {
 	$aliases = array(
 		'SIQO_submit_order_ajax'          => array( 'FO_submit_order_ajax', true ),
-		'SIQO_flash_list_order_ajax'      => array( 'SIQO_flash_list_order_ajax', true ),
-		'SIQO_flash_tab_clear_table'      => array( 'FO_flash_tab_clear_table', true ),
-		'SIQO_flash_tab_clear_all_tables' => array( 'FO_flash_tab_clear_all_tables', true ),
-		'SIQO_flash_tab_pay_ajax'         => array( 'FO_flash_tab_pay_ajax', true ),
-		'SIQO_insert_post_ajax'           => array( 'FO_insert_post_ajax', true ),
-		'SIQO_trash_post_ajax'            => array( 'FO_trash_post_ajax', true ),
+		'SIQO_flash_list_order_ajax'      => array( 'SIQO_flash_list_order_ajax', false ),
+		'SIQO_flash_tab_clear_table'      => array( 'FO_flash_tab_clear_table', false ),
+		'SIQO_flash_tab_clear_all_tables' => array( 'FO_flash_tab_clear_all_tables', false ),
+		'SIQO_flash_tab_pay_ajax'         => array( 'FO_flash_tab_pay_ajax', false ),
+		'SIQO_insert_post_ajax'           => array( 'FO_insert_post_ajax', false ),
+		'SIQO_delete_post_ajax'           => array( 'FO_delete_post_ajax', false ),
+		'SIQO_insert_product_ajax'        => array( 'FO_insert_product_ajax', false ),
+		'SIQO_trash_post_ajax'            => array( 'FO_trash_post_ajax', false ),
 		'SIQO_create_any_QR_code_ajax'    => array( 'SIQO_create_any_QR_code_ajax', false ),
 		'SIQO_delete_QR_images'           => array( 'SIQO_delete_QR_images', false ),
 	);

@@ -13,9 +13,6 @@ if ( $sub ) {
     if ( $sub == 'pro' ) {
         $disp_pro = 'display:flex;';
     }
-    if ( $sub == 'WooPrint' ) {
-        $disp_WooPrint = 'display:flex;';
-    }
 
 } else{
     $disp_general = 'display:flex;';
@@ -27,7 +24,7 @@ wp_enqueue_style( 'studio-immens-quick-order-settings-css', plugins_url( 'public
 
 <nav>
     <?php do_action('siqo_settings_navigation_start') ?>
-    <button onclick="FO_settings_navigations( jQuery('#general') );">General</button>
+    <button onclick="FO_settings_navigations( jQuery('#general') );">Generali</button>
 
     <?php do_action('siqo_settings_navigation_end') ?>
 </nav>
@@ -54,23 +51,23 @@ SIQO_general_setting( array( 'name' => 'siqo_menu_order',
     'default'   => '5',
     'type'      => 'number',
     'class'     => '',
-    'text'      => __('posizione del menù admin' , 'studio-immens-quick-order'),
-    'info'      => __('inserisci la posizione del pannello menù nel backend', 'studio-immens-quick-order')
+    'text'      => __('posizione del menu admin' , 'studio-immens-quick-order'),
+    'info'      => __('inserisci la posizione del pannello menu nel backend', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_show_admin_bar_all',
     'options'   => array('yes','no'),
     'type'      => 'select',
     'class'     => '',
-    'text'      => __('scegli se mostrare la barra admin', 'studio-immens-quick-order'),
-    'info'      => __('scegli se mostrare la barra admin', 'studio-immens-quick-order')
+    'text'      => __('Scegli se mostrare la barra admin', 'studio-immens-quick-order'),
+    'info'      => __('Scegli se mostrare la barra admin', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_pickup_delivery_checkout',
     'options'   => array('yes','no'),
     'type'      => 'select',
     'class'     => '',
-    'text'      => __('visualizza la sezione per scegliere la modalit di consegna ( ritiro o consegna ), la data e l\'ora, nella pagina (checkout)', 'studio-immens-quick-order'),
-    'info'      => __('visualizza la sezione per scegliere la modalit di consegna (ritiro o consegna), la data e l\'ora, nella pagina (checkout)', 'studio-immens-quick-order')
+    'text'      => __('visualizza la sezione per scegliere la modalità di consegna ( ritiro o consegna ), la data e l\'ora, nella pagina (checkout)', 'studio-immens-quick-order'),
+    'info'      => __('visualizza la sezione per scegliere la modalità di consegna (ritiro o consegna), la data e l\'ora, nella pagina (checkout)', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_allow_menu_order',
@@ -118,12 +115,12 @@ SIQO_general_setting( array( 'name' => 'siqo_ajax_refresh_order_seconds',
     'type'      => 'number',
     'class'     => '',
     'text'      => __('inserisci ogni quanti millisecondi si aggiornano gli ordini nella pagina (manage-order)', 'studio-immens-quick-order'),
-    'info'      => __('il valore minimo  500 cio  0.5 secondi ( 1000 millisecondi = 1 secondo )', 'studio-immens-quick-order')
+    'info'      => __('il valore minimo è 500, cioè 0,5 secondi ( 1000 millisecondi = 1 secondo )', 'studio-immens-quick-order')
 ) );
 
 ?>
     <div class="SIQOFormCategory">
-        <b> <?php esc_html_e('visualizza sezioni della Tabella' , 'studio-immens-quick-order'); ?> </b>
+        <b> <?php esc_html_e('Visualizza sezioni della tabella' , 'studio-immens-quick-order'); ?> </b>
     </div>
 <?php
 
@@ -208,7 +205,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_ingredients_tax',
     'class'     => '',
     'title'      => __('INGREDIENTI', 'studio-immens-quick-order'),
     'text'      => __('utilizza la tassonomia per gli ingredienti dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer una nuova tassonomia per selezionare facilmente gli ingredienti di cui composto un piatto, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà una nuova tassonomia per selezionare facilmente gli ingredienti di cui composto un piatto, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_show_product_ingredients_tax',
     'options'   => array( 'yes', 'no' ),
@@ -216,7 +213,7 @@ SIQO_general_setting( array( 'name' => 'siqo_show_product_ingredients_tax',
     'class'     => '',
     'title'      => __('VISUALIZZA INGREDIENTI', 'studio-immens-quick-order'),
     'text'      => __('visualizza la tassonomia ingredienti nella pagina del prodotto' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer la tassonomia degli ingredienti di cui composto un piatto, nella pagina prodotto di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà la tassonomia degli ingredienti di cui composto un piatto, nella pagina prodotto di woocommerce', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_product_allergens_tax',
@@ -225,7 +222,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_allergens_tax',
     'class'     => '',
     'title'      => __('ALLERGENI', 'studio-immens-quick-order'),
     'text'      => __('utilizza la tassonomia per gli allergeni dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer una nuova tassonomia per selezionare facilmente gli allergeni di un piatto, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà una nuova tassonomia per selezionare facilmente gli allergeni di un piatto, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_show_product_allergens_tax',
     'options'   => array( 'yes', 'no' ),
@@ -233,7 +230,7 @@ SIQO_general_setting( array( 'name' => 'siqo_show_product_allergens_tax',
     'class'     => '',
     'title'      => __('VISUALIZZA ALLERGENI', 'studio-immens-quick-order'),
     'text'      => __('visualizza la tassonomia allergeni nella pagina del prodotto' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer la tassonomia degli allergeni di un piatto, nella pagina prodotto di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà la tassonomia degli allergeni di un piatto, nella pagina prodotto di woocommerce', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_product_temperature_tax',
@@ -242,7 +239,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_temperature_tax',
     'class'     => '',
     'title'      => __('TEMPERATURE', 'studio-immens-quick-order'),
     'text'      => __('utilizza la tassonomia per le temperature' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer una nuova tassonomia per selezionare facilmente le temperature di consegna che possono essere associate ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà una nuova tassonomia per selezionare facilmente le temperature di consegna che possono essere associate ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_sticker_tax',
     'options'   => array( 'yes', 'no' ),
@@ -250,7 +247,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_sticker_tax',
     'class'     => '',
     'title'      => __('STICKER', 'studio-immens-quick-order'),
     'text'      => __('utilizza la tassonomia per gli sticker' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer una nuova tassonomia per selezionare facilmente gli sticker che possono essere associati ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà una nuova tassonomia per selezionare facilmente gli sticker che possono essere associati ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_macro_categories_tax',
     'options'   => array( 'yes', 'no' ),
@@ -258,7 +255,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_macro_categories_tax',
     'class'     => '',
     'title'      => __('MACRO CATEGORIE', 'studio-immens-quick-order'),
     'text'      => __('utilizza la tassonomia per le macro categorie' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer una nuova tassonomia per selezionare facilmente le macro categorie che possono essere associate ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà una nuova tassonomia per selezionare facilmente le macro categorie che possono essere associate ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 ?>
     <div class="SIQOFormCategory">
@@ -272,7 +269,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_ingredients_images',
     'class'     => '',
     'title'      => __('INGREDIENTI', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per gli ingredienti dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli ingredienti, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli ingredienti, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_allergens_images',
     'options'   => array( 'yes', 'no' ),
@@ -280,7 +277,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_allergens_images',
     'class'     => '',
     'title'      => __('ALLERGENI', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per gli allergeni dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli allergeni, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli allergeni, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_temperature_images',
     'options'   => array( 'yes', 'no' ),
@@ -288,7 +285,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_temperature_images',
     'class'     => '',
     'title'      => __('TEMPERATURE', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per le temperature dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle temperature, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle temperature, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_sticker_images',
     'options'   => array( 'yes', 'no' ),
@@ -296,7 +293,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_sticker_images',
     'class'     => '',
     'title'      => __('STICKER', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per gli sticker dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli sticker, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia degli sticker, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_macro_categories_images',
     'options'   => array( 'yes', 'no' ),
@@ -304,7 +301,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_macro_categories_images',
     'class'     => '',
     'title'      => __('MACRO CATEGORIES', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per le macro categorie dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle macro categorie, associate ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle macro categorie, associate ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 SIQO_general_setting( array( 'name' => 'siqo_product_tags_images',
     'options'   => array( 'yes', 'no' ),
@@ -312,7 +309,7 @@ SIQO_general_setting( array( 'name' => 'siqo_product_tags_images',
     'class'     => '',
     'title'      => __('TAG PRODOTTI', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per i tag dei prodotti' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia dei tag, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia dei tag, associata ai prodotti di woocommerce', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_posts_tag_images',
@@ -321,7 +318,7 @@ SIQO_general_setting( array( 'name' => 'siqo_posts_tag_images',
     'class'     => '',
     'title'      => __('TAG POST', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per i tag dei post' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia dei tag, associata ai post di wordpress', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia dei tag, associata ai post di wordpress', 'studio-immens-quick-order')
 ) );
 
 SIQO_general_setting( array( 'name' => 'siqo_posts_category_images',
@@ -330,7 +327,7 @@ SIQO_general_setting( array( 'name' => 'siqo_posts_category_images',
     'class'     => '',
     'title'      => __('CATEGORIE POST', 'studio-immens-quick-order'),
     'text'      => __('aggiungi un\'immagine alla tassonomia per le categorie dei post' , 'studio-immens-quick-order'),
-    'info'      => __('mostrer un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress', 'studio-immens-quick-order')
+    'info'      => __('mostrerà un nuovo meta box per selezionare facilmente l\' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress', 'studio-immens-quick-order')
 ) );
 
 
@@ -351,3 +348,4 @@ do_action('siqo_setting_general_foot');
 
 <?php
 SIQO_save_settings( "setting", 'setting' );
+

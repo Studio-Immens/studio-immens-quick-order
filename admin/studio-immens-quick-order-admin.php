@@ -37,7 +37,6 @@ function SIQO_clean_admin_menu() {
 	global $submenu;
 
 	remove_submenu_page( 'si-quick-order', 'si-quick-order_legacy' );
-	remove_submenu_page( 'si-quick-order', 'si-quick-order_style' );
 
 	if ( empty( $submenu['si-quick-order'] ) ) {
 		return;
@@ -94,6 +93,7 @@ function SIQO_nav_menu_page(){
     $Settings_color = ( $current_page == 'si-quick-order_settings' )? $color1 : $color2;
     $Style_color = ( $current_page == 'si-quick-order_style' )? $color1 : $color2;
     $Pro_color = ( $current_page == 'si-quick-order_pro' )? $color1 : $color2;
+    $has_pro = class_exists( 'SIQO_License_Admin' ) || class_exists( 'SIQO_License' );
     SIQO_head_menu_page();
     ?>
     <nav class="SIQOMainNav">
@@ -103,8 +103,10 @@ function SIQO_nav_menu_page(){
         <?php esc_html_e( 'Impostazioni', 'studio-immens-quick-order' ); ?></a>
         <a href="admin.php?page=si-quick-order_style" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Style_color); ?>">
         <?php esc_html_e( 'Stile', 'studio-immens-quick-order' ); ?></a>
+        <?php if ( $has_pro ) : ?>
         <a href="admin.php?page=si-quick-order_pro" class="SIQOMainNavEl" style="background-color:<?php echo esc_attr($Pro_color); ?>">
         <?php esc_html_e( 'Licenza Pro', 'studio-immens-quick-order' ); ?></a>
+        <?php endif; ?>
     </nav>
     <?php
 }
@@ -304,7 +306,7 @@ function SIQO_set_local_network( $setting = array() ){
 
 function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
     if ( isset($_POST["update"]) && current_user_can( 'manage_options' ) ) {
-        if ( isset($_POST['_siqononce_save_settings']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_siqononce_save_settings'])), 'SIQO_save_settings' ) ) {
+        if ( ! isset($_POST['_siqononce_save_settings']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_siqononce_save_settings'] ) ), 'SIQO_save_settings' ) ) {
             return;
         }
         if ( isset( $_POST[$args] ) ) {
@@ -317,6 +319,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
             $assoc_id = 'page_settings';
             foreach ( $_POST['PGSett'] as $PGSett_K => $PGSett_V ) {
                 $settings = json_decode(SIQO_get_meta( sanitize_text_field(wp_unslash($PGSett_K)) ));
+                $PGSett_V = is_array( $PGSett_V ) ? SIQO_recursive_sanitize_text_field( wp_unslash( $PGSett_V ) ) : sanitize_text_field( wp_unslash( $PGSett_V ) );
 
                 $default_sett = array(
                   'showHead'    => 'yes',
@@ -342,7 +345,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
         } else{
             if (isset($_SERVER['REQUEST_URI'])) {
                 $req_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
-                wp_redirect( $req_uri );
+                wp_safe_redirect( $req_uri );
                 exit;
             }
         }

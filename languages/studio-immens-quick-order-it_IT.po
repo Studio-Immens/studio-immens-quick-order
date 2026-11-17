@@ -111,7 +111,7 @@ msgstr "Aggiorna Macrocategoria"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Aggiorna Status"
-msgstr "Stato Aggiornana"
+msgstr "Stato Aggiornato"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Aggiorna Sticker"
@@ -598,8 +598,8 @@ msgid "INGREDIENTI"
 msgstr "INGREDIENTI"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti"
-msgstr "Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti"
+msgid "Il prodotto è già tra i favoriti"
+msgstr "Il prodotto è già tra i favoriti"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Image"
@@ -911,7 +911,7 @@ msgstr "PAGA"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "PAGA TALOLO"
-msgstr "PAGA TALOLO"
+msgstr "PAGA TAVOLO"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "PRODOTTI"
@@ -934,12 +934,12 @@ msgid "Per poter creare il QRcode, devi inserire il contenuto nel campo content!
 msgstr "Per poter creare il QRcode, devi inserire il contenuto nel campo content!"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l'accesso!"
-msgstr "Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l'accesso!"
+msgid "Per poter effettuare ordini su questa pagina, è necessario Effettuare l'accesso!"
+msgstr "Per poter effettuare ordini su questa pagina, è necessario Effettuare l'accesso!"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l'accesso."
-msgstr "Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l'accesso."
+msgid "Per poter effettuare ordini su questa pagina, è necessario effettuare l'accesso."
+msgstr "Per poter effettuare ordini su questa pagina, è necessario effettuare l'accesso."
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Post Type for Catering"
@@ -1026,12 +1026,12 @@ msgid "Scarica Immagine"
 msgstr "Scarica Immagine"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Scegli fra i piÃƒÆ’Ã‚Â¹ usati"
-msgstr "Scegli fra i piÃƒÆ’Ã‚Â¹ usati"
+msgid "Scegli fra i più usati"
+msgstr "Scegli fra i più usati"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Scegli fra le piÃƒÆ’Ã‚Â¹ usate"
-msgstr "Scegli fra le piÃƒÆ’Ã‚Â¹ usate"
+msgid "Scegli fra le più usate"
+msgstr "Scegli fra le più usate"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Schermo Intero"
@@ -1138,8 +1138,8 @@ msgid "Si"
 msgstr "Si"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile"
-msgstr "Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile"
+msgid "Siamo spiacenti ma il prodotto non è al momento disponibile"
+msgstr "Siamo spiacenti ma il prodotto non è al momento disponibile"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "Sicuro di voler LIBERARE il tavolo?"
@@ -1187,11 +1187,11 @@ msgstr "TAG PRODOTTI"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "TAVOLO"
-msgstr "TAVOLA"
+msgstr "TAVOLO"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
 msgid "TAVOLO: "
-msgstr "TAVOLA: "
+msgstr "TAVOLO: "
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
 msgid "TEMPERATURE"
@@ -1530,8 +1530,8 @@ msgid "imposta il numero di ore"
 msgstr "imposta il numero di ore"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â "
-msgstr "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â "
+msgid "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalità"
+msgstr "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalità"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php
 msgid "impostazioni generali"

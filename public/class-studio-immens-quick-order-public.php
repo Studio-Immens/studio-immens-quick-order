@@ -95,6 +95,13 @@ class Studio_Immens_Quick_Order_Public {
 			return false;
 		}
 
+		if ( is_page( SIQO_Management::PAGE_SLUG ) ) {
+			$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : '';
+			if ( 'tables' === $view ) {
+				return true;
+			}
+		}
+
 		$post = get_post();
 		return $post && has_shortcode( $post->post_content, 'SIQO_manage_tables_section' );
 	}

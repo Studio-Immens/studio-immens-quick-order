@@ -18,6 +18,8 @@ class SIQO_Management {
 		add_action( 'admin_init', array( __CLASS__, 'redirect_legacy_pages' ) );
 		add_action( 'admin_post_siqo_create_pages', array( __CLASS__, 'handle_create_pages' ) );
 		add_action( 'wp_ajax_siqo_management_dashboard', array( __CLASS__, 'ajax_dashboard' ) );
+		add_action( 'wp_ajax_siqo_save_table_layout', array( __CLASS__, 'ajax_save_table_layout' ) );
+		add_action( 'wp_ajax_siqo_profile_save', array( __CLASS__, 'ajax_profile_save' ) );
 		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
 		add_filter( 'siqo_management_modules', array( __CLASS__, 'default_modules' ) );
 	}
@@ -225,6 +227,10 @@ class SIQO_Management {
 		wp_enqueue_style( 'siqo-management', plugins_url( 'public/css/siqo-management.css', dirname( __FILE__ ) ), array( 'dashicons' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		wp_add_inline_style( 'siqo-management', self::get_brand_css() );
 
+		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'stations' === sanitize_key( wp_unslash( $_GET['view'] ) ) && function_exists( 'siqo_station_enqueue_assets' ) ) {
+			siqo_station_enqueue_assets();
+		}
+
 		if ( $is_customer ) {
 			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', dirname( __FILE__ ) ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		}
@@ -252,31 +258,27 @@ class SIQO_Management {
 	public static function default_modules( $modules ) {
 		$modules[] = array(
 			'id'    => 'dashboard',
-			'label' => 'Dashboard',
+			'label' => __( 'Dashboard', 'studio-immens-quick-order' ),
 			'url'   => self::page_url(),
 			'cap'   => 'view_dashboard',
 			'icon'  => 'dashboard',
 		);
-		$tables = self::get_page_url( 'manage-tables' );
-		if ( $tables ) {
-			$modules[] = array(
-				'id'    => 'tables',
-				'label' => 'Tavoli',
-				'url'   => $tables,
-				'cap'   => 'manage_tables',
-				'icon'  => 'grid-view',
-			);
-		}
-		$stations = self::get_page_url( 'ordini-reparti' );
-		if ( $stations ) {
-			$modules[] = array(
-				'id'    => 'stations',
-				'label' => 'Reparti',
-				'url'   => $stations,
-				'cap'   => 'view_stations',
-				'icon'  => 'food',
-			);
-		}
+		$modules[] = array(
+			'id'     => 'tables',
+			'label'  => __( 'Tavoli', 'studio-immens-quick-order' ),
+			'url'    => self::page_url( array( 'view' => 'tables' ) ),
+			'cap'    => 'manage_tables',
+			'icon'   => 'grid-view',
+			'legacy' => 'manage-tables',
+		);
+		$modules[] = array(
+			'id'     => 'stations',
+			'label'  => __( 'Reparti', 'studio-immens-quick-order' ),
+			'url'    => self::page_url( array( 'view' => 'stations' ) ),
+			'cap'    => 'view_stations',
+			'icon'   => 'food',
+			'legacy' => 'ordini-reparti',
+		);
 		return $modules;
 	}
 
@@ -376,15 +378,22 @@ class SIQO_Management {
 		if ( isset( $module['id'] ) && $module['id'] === $current ) {
 			return true;
 		}
-		if ( empty( $_SERVER['REQUEST_URI'] ) || empty( $module['url'] ) ) {
+		$request = empty( $_SERVER['REQUEST_URI'] ) ? '' : wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+		if ( ! $request ) {
 			return false;
 		}
-		if ( false !== strpos( $module['url'], 'view=' ) ) {
+		if ( ! empty( $module['legacy'] ) ) {
+			$legacy = self::get_page_url( $module['legacy'] );
+			$target = $legacy ? wp_parse_url( $legacy, PHP_URL_PATH ) : '';
+			if ( $target && untrailingslashit( $request ) === untrailingslashit( $target ) ) {
+				return true;
+			}
+		}
+		if ( empty( $module['url'] ) || false !== strpos( $module['url'], 'view=' ) ) {
 			return false;
 		}
-		$request = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
-		$target  = wp_parse_url( $module['url'], PHP_URL_PATH );
-		if ( ! $request || ! $target ) {
+		$target = wp_parse_url( $module['url'], PHP_URL_PATH );
+		if ( ! $target ) {
 			return false;
 		}
 		return untrailingslashit( $request ) === untrailingslashit( $target );
@@ -467,6 +476,21 @@ class SIQO_Management {
 						<b class="siqo-cart-count" data-siqo-cart-count><?php echo esc_html( isset( $args['cart_count'] ) ? $args['cart_count'] : 0 ); ?></b>
 					</a>
 				<?php else : ?>
+					<?php
+					$current_user = wp_get_current_user();
+					if ( $current_user->exists() ) :
+						$account_label = $current_user->display_name ? $current_user->display_name : $current_user->user_login;
+						$avatar_url    = get_avatar_url( $current_user->ID, array( 'size' => 48 ) );
+						?>
+						<a class="siqo-bar-action siqo-account-action" href="<?php echo esc_url( self::page_url( array( 'view' => 'account' ) ) ); ?>" title="<?php echo esc_attr( sprintf( __( 'Account di %s', 'studio-immens-quick-order' ), $account_label ) ); ?>">
+							<?php if ( $avatar_url ) : ?>
+								<img class="siqo-account-avatar" src="<?php echo esc_url( $avatar_url ); ?>" alt="" width="24" height="24" loading="lazy">
+							<?php else : ?>
+								<span class="dashicons dashicons-admin-users" aria-hidden="true"></span>
+							<?php endif; ?>
+							<span class="siqo-account-name"><?php echo esc_html( $account_label ); ?></span>
+						</a>
+					<?php endif; ?>
 					<button type="button" class="siqo-bar-action" data-siqo-fullscreen>
 						<span class="dashicons dashicons-fullscreen-alt" aria-hidden="true"></span>
 						<span><?php esc_html_e( 'Schermo intero', 'studio-immens-quick-order' ); ?></span>
@@ -495,13 +519,179 @@ class SIQO_Management {
 		<?php
 	}
 
+	public static function render_account_panel() {
+		$user = wp_get_current_user();
+		if ( ! $user->exists() ) {
+			return '';
+		}
+		$avatar = get_avatar_url( $user->ID, array( 'size' => 96 ) );
+		$roles  = array(
+			'manager'    => __( 'Manager', 'studio-immens-quick-order' ),
+			'supervisor' => __( 'Supervisor', 'studio-immens-quick-order' ),
+			'worker'     => __( 'Worker', 'studio-immens-quick-order' ),
+			'none'       => __( 'Nessun ruolo Quick Order', 'studio-immens-quick-order' ),
+		);
+		$level  = self::role_level();
+		$role   = isset( $roles[ $level ] ) ? $roles[ $level ] : $roles['none'];
+
+		ob_start();
+		?>
+		<section class="siqo-view siqo-view-account">
+			<header class="siqo-view-head">
+				<div>
+					<p class="siqo-eyebrow"><?php esc_html_e( 'Profilo', 'studio-immens-quick-order' ); ?></p>
+					<h1><?php esc_html_e( 'Il tuo account', 'studio-immens-quick-order' ); ?></h1>
+					<p class="siqo-muted"><?php esc_html_e( 'Aggiorna i tuoi dati di accesso e il nome mostrato in sala.', 'studio-immens-quick-order' ); ?></p>
+				</div>
+			</header>
+
+			<div class="siqo-panel siqo-account-panel">
+				<div class="siqo-account-head">
+					<?php if ( $avatar ) : ?>
+						<img class="siqo-account-avatar-lg" src="<?php echo esc_url( $avatar ); ?>" alt="" width="72" height="72" loading="lazy">
+					<?php else : ?>
+						<span class="siqo-account-avatar-lg siqo-account-avatar-fallback"><span class="dashicons dashicons-admin-users" aria-hidden="true"></span></span>
+					<?php endif; ?>
+					<div>
+						<strong><?php echo esc_html( $user->display_name ? $user->display_name : $user->user_login ); ?></strong>
+						<span class="siqo-account-role"><?php echo esc_html( $role ); ?></span>
+						<span class="siqo-muted"><?php echo esc_html( $user->user_login ); ?></span>
+					</div>
+				</div>
+
+				<form id="siqo-profile-form" class="siqo-form">
+					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'siqo_profile_save' ) ); ?>">
+					<div class="siqo-form-row">
+						<label><?php esc_html_e( 'Nome visualizzato', 'studio-immens-quick-order' ); ?><input type="text" name="display_name" required value="<?php echo esc_attr( $user->display_name ); ?>"></label>
+						<label><?php esc_html_e( 'Email', 'studio-immens-quick-order' ); ?><input type="email" name="user_email" required value="<?php echo esc_attr( $user->user_email ); ?>"></label>
+					</div>
+					<div class="siqo-form-row">
+						<label><?php esc_html_e( 'Nome', 'studio-immens-quick-order' ); ?><input type="text" name="first_name" value="<?php echo esc_attr( $user->first_name ); ?>"></label>
+						<label><?php esc_html_e( 'Cognome', 'studio-immens-quick-order' ); ?><input type="text" name="last_name" value="<?php echo esc_attr( $user->last_name ); ?>"></label>
+					</div>
+					<div class="siqo-form-row">
+						<label><?php esc_html_e( 'Nuova password', 'studio-immens-quick-order' ); ?><input type="password" name="user_pass" autocomplete="new-password" placeholder="<?php esc_attr_e( 'Lascia vuoto per non modificare', 'studio-immens-quick-order' ); ?>"></label>
+						<label><?php esc_html_e( 'Conferma password', 'studio-immens-quick-order' ); ?><input type="password" name="user_pass_confirm" autocomplete="new-password"></label>
+					</div>
+					<div class="siqo-form-row">
+						<label><?php esc_html_e( 'Password attuale', 'studio-immens-quick-order' ); ?><input type="password" name="user_pass_current" autocomplete="current-password" placeholder="<?php esc_attr_e( 'Richiesta solo per cambiare email o password', 'studio-immens-quick-order' ); ?>"></label>
+					</div>
+					<button class="siqo-btn siqo-btn-primary" type="submit"><?php esc_html_e( 'Salva profilo', 'studio-immens-quick-order' ); ?></button>
+					<p class="siqo-form-status" data-profile-status aria-live="polite"></p>
+				</form>
+			</div>
+		</section>
+		<script type="text/javascript">
+		(function () {
+			var form = document.getElementById('siqo-profile-form');
+			if (!form) {
+				return;
+			}
+			form.addEventListener('submit', function (event) {
+				event.preventDefault();
+				var status = form.querySelector('[data-profile-status]');
+				var body = new FormData(form);
+				body.set('action', 'siqo_profile_save');
+				if (status) {
+					status.textContent = 'Salvataggio...';
+					status.classList.remove('is-error');
+				}
+				fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+					method: 'POST',
+					credentials: 'same-origin',
+					body: body
+				}).then(function (response) {
+					return response.json();
+				}).then(function (result) {
+					if (result && result.success) {
+						if (status) {
+							status.textContent = 'Profilo aggiornato';
+						}
+						window.setTimeout(function () {
+							window.location.reload();
+						}, 600);
+					} else {
+						if (status) {
+							status.textContent = (result && result.data && result.data.message) ? result.data.message : 'Salvataggio non riuscito';
+							status.classList.add('is-error');
+						}
+					}
+				}).catch(function () {
+					if (status) {
+						status.textContent = 'Salvataggio non riuscito';
+						status.classList.add('is-error');
+					}
+				});
+			});
+		})();
+		</script>
+		<?php
+		return ob_get_clean();
+	}
+
+	public static function ajax_profile_save() {
+		check_ajax_referer( 'siqo_profile_save', 'nonce' );
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( array( 'message' => 'Accesso negato.' ), 403 );
+		}
+
+		$user_id      = get_current_user_id();
+		$user         = wp_get_current_user();
+		$display_name = isset( $_POST['display_name'] ) ? sanitize_text_field( wp_unslash( $_POST['display_name'] ) ) : '';
+		$email        = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+		$first_name   = isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
+		$last_name    = isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
+		$password     = isset( $_POST['user_pass'] ) ? (string) wp_unslash( $_POST['user_pass'] ) : '';
+		$confirm      = isset( $_POST['user_pass_confirm'] ) ? (string) wp_unslash( $_POST['user_pass_confirm'] ) : '';
+		$current_pass = isset( $_POST['user_pass_current'] ) ? (string) wp_unslash( $_POST['user_pass_current'] ) : '';
+
+		if ( '' === $display_name ) {
+			wp_send_json_error( array( 'message' => 'Il nome visualizzato è obbligatorio.' ), 400 );
+		}
+		if ( ! is_email( $email ) ) {
+			wp_send_json_error( array( 'message' => 'Email non valida.' ), 400 );
+		}
+		$existing = email_exists( $email );
+		if ( $existing && (int) $existing !== (int) $user_id ) {
+			wp_send_json_error( array( 'message' => 'Email già usata da un altro account.' ), 400 );
+		}
+		if ( '' !== $password && $password !== $confirm ) {
+			wp_send_json_error( array( 'message' => 'Le password non coincidono.' ), 400 );
+		}
+
+		$email_changed = $user && $user->user_email !== $email;
+		if ( '' !== $password || $email_changed ) {
+			if ( '' === $current_pass || ! $user || ! wp_check_password( $current_pass, $user->user_pass, $user_id ) ) {
+				wp_send_json_error( array( 'message' => 'La password attuale non è corretta.' ), 403 );
+			}
+		}
+
+		$data = array(
+			'ID'           => $user_id,
+			'display_name' => $display_name,
+			'user_email'   => $email,
+			'first_name'   => $first_name,
+			'last_name'    => $last_name,
+		);
+		if ( '' !== $password ) {
+			$data['user_pass'] = $password;
+		}
+
+		$result = wp_update_user( $data );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ), 400 );
+		}
+
+		wp_send_json_success( array( 'message' => 'Profilo aggiornato.' ) );
+	}
+
 	public static function render_dashboard() {
 		if ( ! self::can( 'view_dashboard' ) ) {
 			return '<div class="siqo-denied">' . esc_html__( 'Non hai i permessi per accedere alla gestione.', 'studio-immens-quick-order' ) . '</div>';
 		}
 
 		$view  = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'dashboard';
-		$views = array( 'dashboard', 'inventory', 'printers', 'receipts', 'reservations', 'staff', 'reports', 'catering', 'users', 'discounts' );
+		$views = array( 'dashboard', 'tables', 'stations', 'account', 'inventory', 'printers', 'receipts', 'reservations', 'staff', 'reports', 'catering', 'users', 'discounts' );
 		if ( ! in_array( $view, $views, true ) ) {
 			$view = 'dashboard';
 		}
@@ -517,8 +707,17 @@ class SIQO_Management {
 			'users'        => array( 'SIQO_Users', 'manage_users' ),
 			'discounts'    => array( 'SIQO_Discounts', 'manage_discounts' ),
 		);
+		$free_views = array(
+			'tables'   => 'manage_tables',
+			'stations' => 'view_stations',
+			'account'  => 'view_dashboard',
+		);
 
-		if ( 'dashboard' !== $view ) {
+		if ( 'dashboard' !== $view && isset( $free_views[ $view ] ) ) {
+			if ( ! self::can( $free_views[ $view ] ) ) {
+				return '<div class="siqo-denied">' . esc_html__( 'Modulo non disponibile.', 'studio-immens-quick-order' ) . '</div>';
+			}
+		} elseif ( 'dashboard' !== $view ) {
 			if ( ! isset( $panels[ $view ] ) || ! class_exists( $panels[ $view ][0] ) || ! self::can( $panels[ $view ][1] ) ) {
 				return '<div class="siqo-denied">' . esc_html__( 'Modulo non disponibile.', 'studio-immens-quick-order' ) . '</div>';
 			}
@@ -536,6 +735,25 @@ class SIQO_Management {
 			$orders = self::get_live_orders( 12 );
 			$modules = self::get_modules();
 			include plugin_dir_path( dirname( __FILE__ ) ) . 'public/template/management-dashboard.php';
+		} elseif ( 'tables' === $view ) {
+			echo '<section class="siqo-view siqo-view-tables">';
+			echo '<header class="siqo-view-head"><div>';
+			echo '<p class="siqo-eyebrow">' . esc_html__( 'Sala', 'studio-immens-quick-order' ) . '</p>';
+			echo '<h1>' . esc_html__( 'Gestione tavoli', 'studio-immens-quick-order' ) . '</h1>';
+			echo '<p class="siqo-muted">' . esc_html__( 'Apri un tavolo per creare l’ordine o gestire il conto.', 'studio-immens-quick-order' ) . '</p>';
+			echo '</div></header>';
+			if ( function_exists( 'SIQO_manage_table' ) ) {
+				SIQO_manage_table( true );
+			}
+			echo '</section>';
+		} elseif ( 'stations' === $view ) {
+			echo '<section class="siqo-view siqo-view-stations">';
+			if ( function_exists( 'siqo_station_orders_render' ) ) {
+				echo siqo_station_orders_render( true );
+			}
+			echo '</section>';
+		} elseif ( 'account' === $view ) {
+			echo self::render_account_panel();
 		} else {
 			$class = $panels[ $view ][0];
 			if ( ! self::license_active() ) {
@@ -554,6 +772,11 @@ class SIQO_Management {
 	}
 
 	public static function get_live_stats() {
+		$cached = get_transient( 'siqo_live_stats' );
+		if ( is_array( $cached ) ) {
+			return $cached;
+		}
+
 		$stats = array(
 			'orders_today'       => 0,
 			'revenue_today'      => 0,
@@ -566,10 +789,10 @@ class SIQO_Management {
 		if ( function_exists( 'wc_get_orders' ) ) {
 			$orders = wc_get_orders(
 				array(
-					'limit'        => 1000,
-					'status'       => array( 'processing', 'completed', 'on-hold' ),
-					'date_created' => current_time( 'Y-m-d' ),
-					'return'       => 'objects',
+					'limit'      => 1000,
+					'status'     => array( 'processing', 'completed', 'on-hold' ),
+					'date_after' => current_time( 'Y-m-d' ) . ' 00:00:00',
+					'return'     => 'objects',
 				)
 			);
 			foreach ( $orders as $order ) {
@@ -603,6 +826,7 @@ class SIQO_Management {
 				$stats['staff_on_shift'] = (int) SIQO_Staff::get_active_count();
 			}
 		}
+		set_transient( 'siqo_live_stats', $stats, (int) apply_filters( 'siqo_live_stats_cache_ttl', 30 ) );
 		return $stats;
 	}
 
@@ -655,6 +879,35 @@ class SIQO_Management {
 		);
 	}
 
+	public static function ajax_save_table_layout() {
+		check_ajax_referer( 'SIQO_insert_post_ajax_nonce', 'nonce' );
+		if ( ! self::can( 'manage_tables' ) ) {
+			wp_send_json_error( array( 'message' => 'Accesso negato.' ), 403 );
+		}
+
+		$raw    = isset( $_POST['layout'] ) ? wp_unslash( $_POST['layout'] ) : '';
+		$layout = json_decode( $raw, true );
+		if ( ! is_array( $layout ) ) {
+			wp_send_json_error( array( 'message' => 'Disposizione non valida.' ), 400 );
+		}
+
+		$saved = 0;
+		foreach ( $layout as $item ) {
+			$table_id = isset( $item['id'] ) ? absint( $item['id'] ) : 0;
+			if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) ) {
+				continue;
+			}
+			$position = array(
+				'x' => isset( $item['x'] ) ? absint( $item['x'] ) : 0,
+				'y' => isset( $item['y'] ) ? absint( $item['y'] ) : 0,
+			);
+			update_post_meta( $table_id, '_siqo_plan_position', $position );
+			$saved++;
+		}
+
+		wp_send_json_success( array( 'saved' => $saved ) );
+	}
+
 	public static function handle_settings_save() {
 		if ( ! isset( $_POST['siqo_management_action'] ) || 'save' !== $_POST['siqo_management_action'] ) {
 			return;
@@ -687,6 +940,18 @@ class SIQO_Management {
 				update_option( $key, sanitize_textarea_field( wp_unslash( $_POST[ $key ] ) ) );
 			}
 		}
+		if ( isset( $_POST['siqo_receipt_paper_width'] ) ) {
+			$paper_width = sanitize_key( wp_unslash( $_POST['siqo_receipt_paper_width'] ) );
+			update_option( 'siqo_receipt_paper_width', in_array( $paper_width, array( '58', '80' ), true ) ? $paper_width : '80' );
+		}
+		foreach ( array( 'siqo_receipt_show_logo', 'siqo_receipt_auto_print' ) as $key ) {
+			if ( isset( $_POST[ $key ] ) ) {
+				update_option( $key, 'no' === sanitize_key( wp_unslash( $_POST[ $key ] ) ) ? 'no' : 'yes' );
+			}
+		}
+		if ( isset( $_POST['siqo_receipt_printer_id'] ) ) {
+			update_option( 'siqo_receipt_printer_id', absint( $_POST['siqo_receipt_printer_id'] ) );
+		}
 		if ( isset( $_POST['siqo_restaurant_logo_url'] ) ) {
 			update_option( 'siqo_restaurant_logo_url', esc_url_raw( wp_unslash( $_POST['siqo_restaurant_logo_url'] ) ) );
 		}
@@ -716,7 +981,6 @@ class SIQO_Management {
 		}
 		$page = sanitize_key( wp_unslash( $_GET['page'] ) );
 		$map  = array(
-			'si-quick-order_style' => array( 'brand', '' ),
 			'siqo-warehouse'       => array( 'inventory', 'SIQO_Inventory' ),
 			'siqo-print-rules'     => array( 'printers', 'SIQO_Printers' ),
 			'siqo-receipts'        => array( 'receipts', 'SIQO_Receipts' ),

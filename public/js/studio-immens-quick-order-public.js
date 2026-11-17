@@ -13,38 +13,6 @@ function SIQO_toggle_pages_rapid_impost( pageId ){
 jQuery(document).ready(function($) {
 	   "use strict";
 
-    jQuery('#submit_order null').click(function() {
-    	var inputs;
-    	var table_name = jQuery('#table_name').val();
-
-    	jQuery('#summ_order input.prod_input').each(function(i,v){
-    		if ( v != null ) {
-    			inputs += v.name.toString()+','+v.value.toString()+'|';
-    		}
-    	});
-    	console.log(inputs);
-        jQuery.ajax({
-            type: 'POST',
-            url: siqo_ajax_vars.ajaxurl,
-            data: {
-                action: 'flash_orders_ajax_ordination',
-                nonce: siqo_ajax_vars.nonce,
-                products: inputs,
-                table: table_name,
-            },
-            success: function(response) {
-                console.log(' ...ajax-response... ');
-                console.log(response.data);
-                if (response.success) {
-                	alert(' PERFETTO, la tua ordinazione Ã© andata a buon fine! ');
-                } else{
-                	alert(' ERRORE!!! , la tua ordinazione NON Ã© andata a buon fine! ');
-                }
-                //location.reload();
-            }
-        });
-    });
-
 
     //jQuery('.fo_column_products .fo_tab_prod').bind('touchstart', function(event) {
 	//	console.log(event);
@@ -503,7 +471,10 @@ function SIQO_refine_search(input, def = 'show'){
 }
 function SIQO_search_for_all(input){
 	var searchVal = jQuery(input).val();
-	var items = jQuery('#products_container .foProdCard');
+	var sections = jQuery('#products_container .siqo-menu-section[data-category]');
+	var items = sections.find('.foProdCard');
+
+	sections.not('.siqo-favourites-section').show();
 
 	items.each(function(index, row){
 		var allDataPerRow = jQuery(row).find('.foname');
@@ -523,6 +494,23 @@ function SIQO_search_for_all(input){
 			}
 		}
 	});
+
+	var visibleTotal = 0;
+	sections.each(function(){
+		var section = jQuery(this);
+		if (section.hasClass('siqo-favourites-section')) {
+			return;
+		}
+		var hasMatch = section.find('.foProdCard').filter(function(){
+			return this.style.display !== 'none';
+		}).length > 0;
+		section.toggle(hasMatch);
+		if (hasMatch) {
+			visibleTotal++;
+		}
+	});
+	jQuery('#siqo-search-empty').prop('hidden', visibleTotal > 0);
+	jQuery('.siqo-toolbar-note').toggle(searchVal === '');
 }
 function SIQO_search_for_target(input,target){
 	var searchVal = jQuery(input).val();
@@ -747,16 +735,18 @@ function SIQO_show_temp(target){
 
 
 function Show_SIQO_Front_Float(){
-	jQuery('#SIQO_Front_Float').css('bottom','0px');
-	jQuery('#SIQO_Front_Float').css('opacity','0.992');
+	jQuery('#FO_Front_Float').css('bottom','0px');
+	jQuery('#FO_Front_Float').css('opacity','1');
+	document.body.classList.add('siqo-drawer-open');
 	// jQuery('header').css('display','none');
 	// jQuery('footer').css('display','none');
 	SIQO_toggle_header_footer();
 }
 
 function Hide_SIQO_Front_Float(){
-	jQuery('#SIQO_Front_Float').css('bottom','calc(-100% - 15px)');
-	jQuery('#SIQO_Front_Float').css('opacity','0.5');
+	jQuery('#FO_Front_Float').css('bottom','calc(-100% - 15px)');
+	jQuery('#FO_Front_Float').css('opacity','0.5');
+	document.body.classList.remove('siqo-drawer-open');
 	// jQuery('header').css('display','');
 	// jQuery('header').css('display','');
 	SIQO_toggle_header_footer();
@@ -905,7 +895,7 @@ function SIQO_toggle_Favourite( input ){
 // }
 
 document.addEventListener('click', function handleClickOutsideBox(event) {
-//   const box = document.getElementById('SIQO_Front_Float');
+//   const box = document.getElementById('FO_Front_Float');
 // console.log(event.target);
 //   if (!box.contains(event.target)) {
 //     box.style.display = 'none';
@@ -1270,6 +1260,8 @@ function SIQO_add_new_customer( item ){
 	console.log(copy);
 	jQuery('.FO_customers_container').empty();
 	jQuery('.FO_customers_container').append(copy);
+	SIQO_refresh_pay_discounts();
+	siqo_pay_quote_coupons();
 	console.log(jQuery('.FO_customers_container input').serializeArray());
 }
 
@@ -1300,6 +1292,8 @@ copy.css('display','flex');
 	console.log(copy);
 	jQuery('.FO_customers_container').empty();
 	jQuery('.FO_customers_container').append(copy);
+	SIQO_refresh_pay_discounts();
+	siqo_pay_quote_coupons();
 	console.log(jQuery('.FO_customers_container input').serializeArray());
 }
 
@@ -1971,6 +1965,13 @@ function SIQO_tab_go_order(input){
 
 // in the pay function:   (input = '.fo_pay_ajax_container',action= 'SIQO_flash_tab_pay_ajax' )
 function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flash_tab_order_ajax'){
+	if (action === 'SIQO_flash_tab_pay_ajax') {
+		if (window.SIQO_pay_in_flight) {
+			console.log('Pagamento già in corso.');
+			return;
+		}
+		window.SIQO_pay_in_flight = true;
+	}
 	var table = jQuery(input);
 	var item;
 	var foserial = jQuery(table).find('input, textarea').serializeArray();
@@ -2034,6 +2035,9 @@ function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flas
 			// N_customers: N_customers,
 			S_customers: Src_customers,
 			customer_type: jQuery('input[name="customer_type"]').prop('checked'),
+			customer_email: siqo_pay_customer_email(),
+			customer_id: siqo_pay_customer_id(),
+			coupon_codes: siqo_pay_coupon_codes(),
 			created_via: created_via,
 			foserial: foserial,
 			foserialmap: foserialmap,
@@ -2087,10 +2091,15 @@ function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flas
 			jQuery('.FO_table_grid [fo_tableid="'+response.table_id+'"] .FOloadingTable').hide();
 
 			return;
-		}
+		},
 		//error: function(response){
 		//	console.log(response);
 		//}
+		complete: function(){
+			if (action === 'SIQO_flash_tab_pay_ajax') {
+				window.SIQO_pay_in_flight = false;
+			}
+		}
 	});
 }
 
@@ -2198,10 +2207,11 @@ var pay_items_count = 0;
 		var item_clone = jQuery(e).clone();
 		var item_price = parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() ) || 0;
 		var item_qty = parseInt( jQuery(e).find('[fo_tab_target="qty"]').val(), 10 ) || 1;
-		tot = parseFloat( tot ) + item_price;
+		var item_line_total = item_price * item_qty;
+		tot = parseFloat( tot ) + item_line_total;
 		item_clone.attr('style','');
 		item_clone.removeAttr('onclick');
-		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_price.toFixed(2)+'</span>');
+		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_line_total.toFixed(2)+'</span>');
 		jQuery('.fo_list_items').append(item_clone);
 		pay_items_count++;
 	});
@@ -2209,10 +2219,11 @@ var pay_items_count = 0;
 		var item_clone = jQuery(e).clone();
 		var item_price = parseFloat( jQuery(e).find('[fo_tab_target="price"]').val() ) || 0;
 		var item_qty = parseInt( jQuery(e).find('[fo_tab_target="qty"]').val(), 10 ) || 1;
-		tot = parseFloat( tot ) + item_price;
+		var item_line_total = item_price * item_qty;
+		tot = parseFloat( tot ) + item_line_total;
 		item_clone.attr('style','');
 		item_clone.removeAttr('onclick');
-		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_price.toFixed(2)+'</span>');
+		item_clone.append('<span class="fo_pay_line_qty">×'+item_qty+'</span><span class="fo_pay_line_price">'+item_line_total.toFixed(2)+'</span>');
 		jQuery('.fo_list_items').append(item_clone);
 		pay_items_count++;
 	});
@@ -2222,30 +2233,351 @@ var index = 10000;
 			jQuery('.fo_list_final_order').append('<input type="hidden" name="['+index+i+'][orders]['+jQuery(e).attr('fo_order_id')+']" value="'+jQuery(e).attr('fo_order_id')+'">');
 		}
 	});
-	jQuery('.fo_pay_total').text( parseFloat(tot).toFixed(2) + jQuery('.fo_woo_symb').text() );
+	jQuery('.fo_pay_total')
+		.data('siqo-base-total', parseFloat(tot))
+		.text( parseFloat(tot).toFixed(2) + jQuery('.fo_woo_symb').text() );
 	jQuery('.fo_pay_count').text( pay_items_count );
-	SIQO_add_index_to_products();
+	SIQO_init_pay_discounts();
 }
 function SIQO_pay_tab_Card_hide( input ){
 	jQuery('.fo_list_items').empty();
 	jQuery('.fo_list_final_order').empty();
 	jQuery('.fo_pay_total').empty();
+	SIQO_reset_pay_discounts();
 	jQuery('.FO_flash_tab_order_pay_container').removeClass('is-open');
 	jQuery('.fo_pay_tab_show').hide();
 	jQuery('.FO_customers_container').empty();
 }
 
-function SIQO_add_index_to_products() {
-	jQuery('.fo_pay_column .fo_tab_prod').each(function(i,e){
-		var fake = i + 1 ;
-		jQuery(e).find('input').each(function(ind,ele){
-			jQuery(ele).attr('name', '['+fake+']'+jQuery(ele).attr('name'));
-		});
+
+
+function siqo_pay_customer_email() {
+	var mail = jQuery('.FO_customers_container .FO_pay_customer_mail').first().text().trim();
+	if (!mail || mail === '-') {
+		return '';
+	}
+	return mail.toLowerCase();
+}
+
+function siqo_pay_customer_id() {
+	var input = jQuery('.FO_customers_container input[name^="[customer_ID]"]').first();
+	return input.length ? input.val() : '';
+}
+
+function SIQO_remove_pay_customer(element) {
+	jQuery(element).parent().remove();
+	SIQO_refresh_pay_discounts();
+	siqo_pay_quote_coupons();
+}
+
+function siqo_coupon_email_match(pattern, email) {
+	pattern = String(pattern || '').toLowerCase().trim();
+	email = String(email || '').toLowerCase().trim();
+	if (!pattern || !email) {
+		return false;
+	}
+	if (pattern === email) {
+		return true;
+	}
+	if (pattern.indexOf('*') === -1) {
+		return false;
+	}
+	var escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+	return new RegExp('^' + escaped + '$').test(email);
+}
+
+function siqo_parse_json(value) {
+	if (!value) {
+		return [];
+	}
+	if (typeof value === 'object') {
+		return value;
+	}
+	try {
+		var parsed = JSON.parse(value);
+		return Array.isArray(parsed) ? parsed : [];
+	} catch (e) {
+		return [];
+	}
+}
+
+function siqo_pay_coupon_codes() {
+	var codes = [];
+	jQuery('[data-siqo-applied-code]').each(function () {
+		var code = jQuery(this).attr('data-siqo-applied-code');
+		if (code && codes.indexOf(code) === -1) {
+			codes.push(code);
+		}
+	});
+	return codes;
+}
+
+function siqo_pay_coupon_message(message) {
+	var box = jQuery('[data-siqo-pay-coupon-message]');
+	if (!message) {
+		box.prop('hidden', true).text('');
+		return;
+	}
+	box.text(message).prop('hidden', false);
+}
+
+function siqo_pay_coupon_buttons(code) {
+	return jQuery('[data-siqo-coupon]').filter(function () {
+		return jQuery(this).attr('data-code') === code;
 	});
 }
 
+function siqo_pay_set_coupon_applied(code, applied) {
+	siqo_pay_coupon_buttons(code)
+		.toggleClass('is-applied', applied)
+		.attr('aria-pressed', applied ? 'true' : 'false')
+		.find('.siqo-pay-coupon-action')
+		.text(applied ? 'Rimuovi' : 'Aggiungi');
+}
 
+function siqo_pay_add_coupon(button) {
+	var code = jQuery(button).attr('data-code');
+	var emails = siqo_parse_json(jQuery(button).attr('data-emails'));
+	var email = siqo_pay_customer_email();
+	var label = jQuery(button).attr('data-label') || '';
 
+	if (!code) {
+		return;
+	}
+	if (siqo_pay_coupon_codes().indexOf(code) !== -1) {
+		return;
+	}
+	if (emails.length) {
+		if (!email) {
+			siqo_pay_coupon_message('Seleziona un cliente per usare questo sconto.');
+			return;
+		}
+		var allowed = emails.some(function (pattern) {
+			return siqo_coupon_email_match(pattern, email);
+		});
+		if (!allowed) {
+			siqo_pay_coupon_message('Questo sconto non è associato al cliente selezionato.');
+			return;
+		}
+	}
+
+	var minimum = parseFloat(jQuery(button).attr('data-minimum')) || 0;
+	var base = parseFloat(jQuery('.fo_pay_total').data('siqo-base-total')) || 0;
+	if (minimum > 0 && base < minimum) {
+		siqo_pay_coupon_message('Il coupon richiede un minimo di ' + minimum.toFixed(2) + jQuery('.fo_woo_symb').text() + '.');
+		return;
+	}
+
+	var chip = jQuery('<div>', {
+		'class': 'siqo-pay-applied-chip',
+		'data-siqo-applied-code': code
+	});
+	chip.append(jQuery('<span>', { 'class': 'siqo-pay-applied-code' }).text(code));
+	chip.append(jQuery('<span>', { 'class': 'siqo-pay-applied-value' }).text(label));
+	chip.append(
+		jQuery('<button>', {
+			type: 'button',
+			'class': 'siqo-pay-applied-remove',
+			'data-siqo-remove-coupon': code,
+			'aria-label': 'Rimuovi ' + code
+		}).text('×')
+	);
+
+	jQuery('[data-siqo-pay-applied-list]').append(chip);
+	jQuery('[data-siqo-pay-applied]').prop('hidden', false);
+	siqo_pay_set_coupon_applied(code, true);
+	siqo_pay_coupon_message('');
+	siqo_pay_quote_coupons();
+}
+
+function siqo_pay_remove_coupon(code) {
+	if (!code) {
+		return;
+	}
+	jQuery('[data-siqo-applied-code]').filter(function () {
+		return jQuery(this).attr('data-siqo-applied-code') === code;
+	}).remove();
+	siqo_pay_set_coupon_applied(code, false);
+	if (!jQuery('[data-siqo-applied-code]').length) {
+		jQuery('[data-siqo-pay-applied]').prop('hidden', true);
+	}
+	siqo_pay_quote_coupons();
+}
+
+function siqo_pay_filter_coupons() {
+	var term = jQuery('[data-siqo-pay-coupon-search]').val();
+	term = term ? String(term).toLowerCase().trim() : '';
+	jQuery('[data-siqo-coupon]').each(function () {
+		var haystack = [
+			jQuery(this).attr('data-code'),
+			jQuery(this).attr('data-label'),
+			jQuery(this).attr('title')
+		].join(' ').toLowerCase();
+		jQuery(this).toggle(!term || haystack.indexOf(term) !== -1);
+	});
+}
+
+function SIQO_refresh_pay_discounts() {
+	var email = siqo_pay_customer_email();
+	var customerGroup = jQuery('[data-siqo-pay-coupon-customer]');
+	var customerEmpty = jQuery('[data-siqo-pay-coupon-customer-empty]');
+	var matched = 0;
+
+	customerGroup.find('[data-siqo-coupon]').each(function () {
+		var emails = siqo_parse_json(jQuery(this).attr('data-emails'));
+		var allowed = !!email && emails.some(function (pattern) {
+			return siqo_coupon_email_match(pattern, email);
+		});
+		jQuery(this).toggle(allowed);
+		if (allowed) {
+			matched++;
+		}
+	});
+
+	customerGroup.prop('hidden', !email);
+	customerEmpty.prop('hidden', !email || matched > 0);
+	jQuery('[data-siqo-pay-customer-count]').text(matched ? matched : '');
+
+	jQuery('[data-siqo-applied-code]').each(function () {
+		var code = jQuery(this).attr('data-siqo-applied-code');
+		var button = siqo_pay_coupon_buttons(code).first();
+		if (!button.length) {
+			return;
+		}
+		var emails = siqo_parse_json(button.attr('data-emails'));
+		if (!emails.length) {
+			return;
+		}
+		var allowed = !!email && emails.some(function (pattern) {
+			return siqo_coupon_email_match(pattern, email);
+		});
+		if (!allowed) {
+			jQuery(this).remove();
+			siqo_pay_set_coupon_applied(code, false);
+		}
+	});
+
+	if (!jQuery('[data-siqo-applied-code]').length) {
+		jQuery('[data-siqo-pay-applied]').prop('hidden', true);
+	}
+
+	siqo_pay_filter_coupons();
+	jQuery('[data-siqo-pay-general-count]').text(jQuery('[data-siqo-pay-coupon-available] [data-siqo-coupon]:visible').length || '');
+}
+
+function siqo_pay_quote_coupons() {
+	var codes = siqo_pay_coupon_codes();
+	var base = parseFloat(jQuery('.fo_pay_total').data('siqo-base-total')) || 0;
+	var discountLine = jQuery('[data-siqo-pay-discount-line]');
+	var symbol = jQuery('.fo_woo_symb').text();
+
+	if (!codes.length) {
+		jQuery('.fo_pay_total').text(base.toFixed(2) + symbol);
+		discountLine.prop('hidden', true).text('');
+		siqo_pay_coupon_message('');
+		return;
+	}
+
+	var items = [];
+	jQuery('.fo_list_items .fo_tab_prod').each(function () {
+		var productId = parseInt(jQuery(this).attr('foprodid'), 10) || 0;
+		var qty = parseInt(jQuery(this).find('[fo_tab_target="qty"]').val(), 10) || 1;
+		var price = parseFloat(jQuery(this).find('[fo_tab_target="price"]').val()) || 0;
+		if (productId) {
+			items.push({ product_id: productId, qty: qty, price: price });
+		}
+	});
+
+	if (!items.length || typeof siqo_ajax_view_orders_vars === 'undefined') {
+		return;
+	}
+
+	jQuery('.fo_pay_total').addClass('is-loading');
+	jQuery.ajax({
+		type: 'POST',
+		url: siqo_ajax_view_orders_vars.ajaxurl,
+		dataType: 'json',
+		data: {
+			action: 'SIQO_pay_coupon_quote',
+			nonce: siqo_ajax_view_orders_vars.nonce,
+			items: items,
+			coupons: codes,
+			customer_email: siqo_pay_customer_email()
+		}
+	}).done(function (response) {
+		if (!response || !response.success || !response.data) {
+			siqo_pay_coupon_message(response && response.data && response.data.message ? response.data.message : 'Impossibile calcolare lo sconto.');
+			return;
+		}
+		var data = response.data;
+		jQuery('.fo_pay_total').text(parseFloat(data.total).toFixed(2) + symbol);
+		if (parseFloat(data.discount_total) > 0) {
+			discountLine.text('- ' + parseFloat(data.discount_total).toFixed(2) + symbol).prop('hidden', false);
+		} else {
+			discountLine.prop('hidden', true).text('');
+		}
+		if (data.errors && data.errors.length) {
+			siqo_pay_coupon_message(data.errors.map(function (error) {
+				return error.message;
+			}).join(' '));
+		} else {
+			siqo_pay_coupon_message('');
+		}
+	}).fail(function () {
+		siqo_pay_coupon_message('Impossibile calcolare lo sconto. Riprova.');
+	}).always(function () {
+		jQuery('.fo_pay_total').removeClass('is-loading');
+	});
+}
+
+function SIQO_init_pay_discounts() {
+	jQuery('[data-siqo-pay-applied-list]').empty();
+	jQuery('[data-siqo-pay-applied]').prop('hidden', true);
+	jQuery('[data-siqo-pay-discount-line]').prop('hidden', true).text('');
+	jQuery('[data-siqo-pay-coupon-message]').prop('hidden', true).text('');
+	jQuery('[data-siqo-pay-coupon-search]').val('');
+	jQuery('[data-siqo-coupon]').removeClass('is-applied').attr('aria-pressed', 'false')
+		.find('.siqo-pay-coupon-action').text('Aggiungi');
+	SIQO_refresh_pay_discounts();
+	setTimeout(function () {
+		jQuery('.fot_pay_search_customer .focatsearchall').each(function () {
+			this.style.setProperty('width', '100%', 'important');
+		});
+	}, 50);
+}
+
+function SIQO_reset_pay_discounts() {
+	jQuery('[data-siqo-pay-applied-list]').empty();
+	jQuery('[data-siqo-pay-applied]').prop('hidden', true);
+	jQuery('[data-siqo-pay-discount-line]').prop('hidden', true).text('');
+	jQuery('[data-siqo-pay-coupon-message]').prop('hidden', true).text('');
+	jQuery('[data-siqo-coupon]').removeClass('is-applied').attr('aria-pressed', 'false')
+		.find('.siqo-pay-coupon-action').text('Aggiungi');
+}
+
+jQuery(document)
+	.off('click.siqoPayCoupon', '[data-siqo-coupon]')
+	.on('click.siqoPayCoupon', '[data-siqo-coupon]', function (event) {
+		event.preventDefault();
+		if (jQuery(this).hasClass('is-applied')) {
+			siqo_pay_remove_coupon(jQuery(this).attr('data-code'));
+			return;
+		}
+		siqo_pay_add_coupon(this);
+	})
+	.off('click.siqoPayCouponRemove', '[data-siqo-remove-coupon]')
+	.on('click.siqoPayCouponRemove', '[data-siqo-remove-coupon]', function (event) {
+		event.preventDefault();
+		siqo_pay_remove_coupon(jQuery(this).attr('data-siqo-remove-coupon'));
+	})
+	.off('input.siqoPayCouponSearch', '[data-siqo-pay-coupon-search]')
+	.on('input.siqoPayCouponSearch', '[data-siqo-pay-coupon-search]', function () {
+		siqo_pay_filter_coupons();
+	})
+	.off('input.siqoPayCouponSearchKeyup', '[data-siqo-pay-coupon-search]')
+	.on('keyup.siqoPayCouponSearchKeyup', '[data-siqo-pay-coupon-search]', function () {
+		siqo_pay_filter_coupons();
+	});
 
 function SIQO_order_tab_pay_ajax(){
 	// jQuery('.FO_flash_tab_order_pay_container .FOloadingCardPublic').show();
@@ -2570,15 +2902,12 @@ function SIQO_settings_hide(){
 
 
 function fo_tab_show_keyboard_button(){
-	if ( window.screen.width <= 1100 ) {
-		if ( jQuery('.fo_tab_col_3').attr('fo_show') == 'hide' ) {
-			jQuery('.fo_tab_col_3').show();
-			jQuery('.fo_tab_col_3').attr('fo_show','show');
-		} else{
-			jQuery('.fo_tab_col_3').hide();
-			jQuery('.fo_tab_col_3').attr('fo_show','hide');
-		}
-		
+	if ( jQuery('.fo_tab_col_3').attr('fo_show') == 'hide' ) {
+		jQuery('.fo_tab_col_3').show();
+		jQuery('.fo_tab_col_3').attr('fo_show','show');
+	} else{
+		jQuery('.fo_tab_col_3').hide();
+		jQuery('.fo_tab_col_3').attr('fo_show','hide');
 	}
 }
 
@@ -2630,40 +2959,150 @@ function SIQO_list_view_sel(input){
 	jQuery('.foProdCard').attr('foview',jQuery(input).val());
 }
 
-function SIQO_print_receipt(order_id){
-	if (typeof wooprintAdmin !== 'undefined' && wooprintAdmin.ajaxUrl) {
-		jQuery.post(wooprintAdmin.ajaxUrl, {
-			action: 'wooprint_get_receipt',
-			order_id: order_id,
-			security: wooprintAdmin.nonce
-		}, function(response) {
-			if (response.success && response.data) {
-				var win = window.open('', '_blank');
-				win.document.write(response.data);
-				win.document.close();
-				win.focus();
-			}
-		});
-	} else if (typeof WooPrint === 'function') {
-		var btn = document.createElement('button');
-		btn.setAttribute('fotarget', 'ordertype');
-		btn.setAttribute('orderid', order_id);
-		WooPrint(btn, 'fo-order');
-	} else {
-		window.print();
+function SIQO_document_config(){
+	if (typeof siqo_documents_vars !== 'undefined') {
+		return siqo_documents_vars;
 	}
+	return {
+		ajaxurl: (typeof siqo_ajax_vars !== 'undefined') ? siqo_ajax_vars.ajaxurl : '',
+		nonce: ''
+	};
+}
+
+function SIQO_open_document_window(){
+	var win = window.open('', '_blank', 'width=440,height=760');
+	if (!win) {
+		return null;
+	}
+	win.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Documento</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f3ee;color:#2d2a26;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;box-sizing:border-box}.box{background:#fff;border-radius:14px;padding:24px;box-shadow:0 18px 50px rgba(45,42,38,.12);max-width:340px;text-align:center;font-size:14px;line-height:1.5}.error{color:#a6462f}</style></head><body><div class="box" id="siqo-document-message">Preparazione documento…</div></body></html>');
+	win.document.close();
+	return win;
+}
+
+function SIQO_document_message(win, message, is_error){
+	if (!win || win.closed) {
+		return;
+	}
+	win.document.open();
+	win.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Documento</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f3ee;color:#2d2a26;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;box-sizing:border-box}.box{background:#fff;border-radius:14px;padding:24px;box-shadow:0 18px 50px rgba(45,42,38,.12);max-width:340px;text-align:center;font-size:14px;line-height:1.5}.error{color:#a6462f}</style></head><body><div class="box' + (is_error ? ' error' : '') + '" id="siqo-document-message"></div></body></html>');
+	win.document.close();
+	win.document.getElementById('siqo-document-message').textContent = message;
+}
+
+function SIQO_request_document(payload){
+	var cfg = SIQO_document_config();
+	if (!cfg.ajaxurl || !cfg.nonce) {
+		window.alert('Configurazione stampa non disponibile. Ricarica la pagina.');
+		return;
+	}
+
+	var win = SIQO_open_document_window();
+	var data = jQuery.extend({
+		action: 'siqo_print_document',
+		nonce: cfg.nonce
+	}, payload || {});
+
+	jQuery.post(cfg.ajaxurl, data).done(function(response){
+		if (!response || !response.success || !response.data) {
+			SIQO_document_message(win, (response && response.data && response.data.message) ? response.data.message : 'Impossibile preparare il documento.', true);
+			return;
+		}
+
+		if (response.data.queued) {
+			SIQO_document_message(win, response.data.message || 'Documento inviato in stampa.', false);
+			window.setTimeout(function(){ if (win && !win.closed) { win.close(); } }, 1400);
+			return;
+		}
+
+		if (!response.data.html) {
+			SIQO_document_message(win, 'Documento vuoto.', true);
+			return;
+		}
+
+		if (!win || win.closed) {
+			win = window.open('', '_blank', 'width=440,height=760');
+		}
+		if (!win) {
+			window.alert('Abilita i popup per stampare il documento.');
+			return;
+		}
+
+		win.document.open();
+		win.document.write(response.data.html);
+		win.document.close();
+		win.focus();
+		window.setTimeout(function(){
+			if (win && !win.closed) {
+				win.print();
+			}
+		}, 450);
+	}).fail(function(xhr){
+		var message = 'Errore di comunicazione con il server.';
+		if (xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
+			message = xhr.responseJSON.data.message;
+		}
+		SIQO_document_message(win, message, true);
+	});
+}
+
+function SIQO_print_receipt(order_id){
+	if (!order_id) {
+		return;
+	}
+	SIQO_request_document({
+		type: 'receipt',
+		order_id: order_id
+	});
 }
 
 function SIQO_print_receipts(btn){
-	var ids = [];
-	jQuery(btn).closest('.fo_tool_story').find('[orderid]').each(function(){
-		ids.push(jQuery(this).attr('orderid'));
-	});
-	if (ids.length) {
-		SIQO_print_receipt(ids[0]);
-	} else {
-		window.print();
+	var table = jQuery('input[name="table_ID"]').val() || '';
+	if (!table) {
+		table = jQuery(btn).closest('[fotableid]').attr('fotableid') || '';
 	}
+	if (!table) {
+		table = jQuery('.fo_pay_ajax_container').closest('[fotableid]').attr('fotableid') || '';
+	}
+
+	var ids = [];
+	var seen = {};
+	var push_id = function(value){
+		value = String(value || '').replace(/[^0-9]/g, '');
+		if (value && !seen[value]) {
+			seen[value] = true;
+			ids.push(value);
+		}
+	};
+
+	if (table) {
+		jQuery('.fo_order_table_story[fotableid="' + table + '"]').each(function(){
+			push_id(jQuery(this).attr('fo_order_id'));
+		});
+	}
+
+	if (!ids.length) {
+		jQuery(btn).closest('.fo_tool_story').find('[fo_order_id]').each(function(){
+			push_id(jQuery(this).attr('fo_order_id'));
+		});
+	}
+
+	if (!ids.length) {
+		jQuery('.fo_pay_ajax_container .fo_list_final_order input').each(function(){
+			push_id(jQuery(this).val());
+		});
+	}
+
+	if (!ids.length && !table) {
+		window.alert('Nessun ordine da stampare per questo tavolo.');
+		return;
+	}
+
+	SIQO_request_document({
+		type: 'preconto',
+		table_id: table,
+		order_ids: ids,
+		table_name: jQuery('input[name="table_name_cpt"]').val() || ''
+	});
 }
 
 

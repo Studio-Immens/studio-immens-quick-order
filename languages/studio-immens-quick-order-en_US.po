@@ -598,7 +598,7 @@ msgid "INGREDIENTI"
 msgstr "INGREDIENTS"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti"
+msgid "Il prodotto é già tra i favoriti"
 msgstr "The product is already among the favorites"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
@@ -934,11 +934,11 @@ msgid "Per poter creare il QRcode, devi inserire il contenuto nel campo content!
 msgstr "To create the QRcode, you must enter the content in the content field!"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l'accesso!"
+msgid "Per poter effettuare ordini su questa pagina, é necessario Effettuare l'accesso!"
 msgstr "To place orders on this page, you must log in!"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â© necessario effettuare l'accesso."
+msgid "Per poter effettuare ordini su questa pagina, é necessario effettuare l'accesso."
 msgstr "To place orders on this page, you must log in."
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
@@ -1026,11 +1026,11 @@ msgid "Scarica Immagine"
 msgstr "Download Image"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Scegli fra i piÃƒÆ’Ã‚Â¹ usati"
+msgid "Scegli fra i più usati"
 msgstr "Choose from the most used"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "Scegli fra le piÃƒÆ’Ã‚Â¹ usate"
+msgid "Scegli fra le più usate"
 msgstr "Choose from the most used"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
@@ -1138,7 +1138,7 @@ msgid "Si"
 msgstr "Yes"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/template/front-order-ajax.php
-msgid "Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile"
+msgid "Siamo spiacenti ma il prodotto non é al momento disponibile"
 msgstr "Sorry, the product is currently unavailable"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
@@ -1530,7 +1530,7 @@ msgid "imposta il numero di ore"
 msgstr "sets the number of hours"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/public/studio-immens-quick-order-public.php
-msgid "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalitÃƒÆ’Ã‚Â "
+msgid "imposta il sito a schermo intero..... clicca nuovamente per uscire dalla modalità"
 msgstr "set the site to full screen..... click again to exit full screen mode"
 
 #: C:/Users/mauro/Local Sites/local/app/public/wp-content/plugins/studio-immens-quick-order/admin/pages/general-settings.php

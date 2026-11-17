@@ -104,7 +104,7 @@ html.siqo-operator-mode #main .entry-content {
     position: sticky;
     top: 0;
     z-index: 60;
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 16px;
     min-height: 76px;
@@ -620,12 +620,7 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 #SIQO_Front_Content .fo_column_story .fo_tab_tool_section {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 0 0 auto;
-    margin-left: auto;
-    padding: 0 !important;
+    display: none !important;
 }
 
 #SIQO_Front_Content .fo_column_story .fo_tab_tool_section .fo_button_thin {
@@ -723,6 +718,14 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 @media (min-width: 1000px) {
+    #SIQO_Front_Content .fo_tab_col_3[fo_show="hide"] {
+        display: none !important;
+    }
+
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_3[fo_show="hide"]) {
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 300px) !important;
+    }
+
     .FO_flash_tab_body > .fo_tab_col_1 {
         height: 100% !important;
         min-height: 0 !important;
@@ -1116,11 +1119,11 @@ body.siqo-table-open .FO_flash_tab_order_container {
     gap: 8px;
 }
 
-#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3 > * {
+#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3[fo_show="hide"] > * {
     display: none !important;
 }
 
-#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3::before {
+#SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3[fo_show="hide"]::before {
     content: "Il tastierino si attiva quando selezioni un prodotto o modifichi la quantit\00e0.";
     padding: 18px 12px;
     border: 1px dashed var(--siqo-sand-strong);
@@ -1336,9 +1339,22 @@ body.siqo-table-open .FO_flash_tab_order_container {
     opacity: 0.65;
 }
 
-.FO_flash_tab_footer .fo_variant_show_button,
-.FO_flash_tab_footer .fo_pay_show_keyboard_button {
+.FO_flash_tab_footer .fo_variant_show_button {
     display: none !important;
+}
+
+.FO_flash_tab_footer .fo_pay_show_keyboard_button {
+    display: flex !important;
+    position: static !important;
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0 !important;
+    border: 1px solid var(--siqo-sand) !important;
+    border-radius: 12px !important;
+    background: #f0e9df !important;
+    color: var(--siqo-espresso) !important;
 }
 
 .siqo-footer-summary {
@@ -1445,12 +1461,16 @@ body.siqo-table-open .FO_flash_tab_order_container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) {
-        grid-template-columns: minmax(0, 1fr);
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty):has(.fo_tab_col_3[fo_show="hide"]) {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty):has(.fo_tab_col_3[fo_show="show"]) {
+        grid-template-columns: minmax(0, 1fr) minmax(200px, 0.72fr) !important;
     }
 
     #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_2,
-    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3 {
+    #SIQO_Front_Content .FO_flash_tab_body:has(.fo_tab_col_2.siqo-variants-empty) .fo_tab_col_3[fo_show="hide"] {
         display: none !important;
     }
 }
@@ -1624,7 +1644,9 @@ body.siqo-table-open .FO_flash_tab_order_container {
     }
 
     #SIQO_Front_Content .fo_column_story {
-        display: none !important;
+        display: flex !important;
+        order: 0;
+        min-height: 56px;
     }
 
     #SIQO_Front_Content .fo_column_products {
@@ -2224,6 +2246,7 @@ body.siqo-table-open .FO_flash_tab_order_container {
 
 .FO_flash_tab_order_pay_container .fo_pay_body {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
     flex-wrap: nowrap !important;
     gap: 12px;
@@ -2368,6 +2391,10 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 .FO_flash_tab_order_pay_container .fot_pay_search_customer {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
     margin: 0 !important;
     padding: 12px !important;
     border: 1px solid var(--siqo-sand) !important;
@@ -2376,8 +2403,10 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 .FO_flash_tab_order_pay_container .fot_pay_search_customer > strong {
+    grid-column: 1 / -1;
     display: block;
-    margin-bottom: 8px;
+    width: 100%;
+    margin: 0;
     color: var(--siqo-muted);
     font-size: 10px;
     font-weight: 800;
@@ -2386,7 +2415,9 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 .FO_flash_tab_order_pay_container .fot_pay_search_customer input[type="search"] {
+    grid-column: 1;
     width: 100% !important;
+    min-width: 0;
     height: 42px;
     padding: 0 12px !important;
     border: 1px solid var(--siqo-sand-strong) !important;
@@ -2394,12 +2425,39 @@ body.siqo-table-open .FO_flash_tab_order_container {
     background: var(--siqo-white) !important;
     color: var(--siqo-espresso) !important;
     font-size: 13px !important;
+    text-align: left !important;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_search_customer .FO_clear_input {
+    grid-column: 2;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0;
+    border-radius: 10px !important;
+    background: var(--siqo-red-soft) !important;
+    color: var(--siqo-terracotta) !important;
+    font-size: 0 !important;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.FO_flash_tab_order_pay_container .fot_pay_search_customer .FO_clear_input::before {
+    content: "\00d7";
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .FO_flash_tab_order_pay_container .FO_customer_list {
+    grid-column: 1 / -1;
     width: 100% !important;
     max-height: 230px;
-    margin-top: 8px;
+    margin-top: 0 !important;
     overflow: auto;
     border: 1px solid var(--siqo-sand) !important;
     border-radius: 10px;
@@ -2409,13 +2467,64 @@ body.siqo-table-open .FO_flash_tab_order_container {
 .FO_flash_tab_order_pay_container .FO_customer_target_search {
     width: 100% !important;
     height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     padding: 10px 12px !important;
     border-bottom: 1px solid var(--siqo-sand);
+    background: var(--siqo-white) !important;
     cursor: pointer;
 }
 
 .FO_flash_tab_order_pay_container .FO_customer_target_search:hover {
-    background: var(--siqo-cream);
+    background: var(--siqo-cream) !important;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    min-width: 0;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname div {
+    display: block;
+    max-width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 0 !important;
+    background: transparent !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 12px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname div:first-child {
+    order: 0;
+    flex: 0 0 auto;
+    padding: 2px 6px !important;
+    border-radius: 999px !important;
+    background: var(--siqo-red-soft) !important;
+    color: var(--siqo-terracotta) !important;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname div:nth-child(2) {
+    order: 1;
+    flex: 1 1 auto;
+    font-weight: 800;
+}
+
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname div:nth-child(3),
+.FO_flash_tab_order_pay_container .FO_customer_target_search .foname div:nth-child(4) {
+    order: 2;
+    flex: 1 1 100%;
+    color: var(--siqo-muted) !important;
+    font-size: 11px;
 }
 
 .FO_flash_tab_order_pay_container .FO_customers_container {
@@ -2507,6 +2616,224 @@ body.siqo-table-open .FO_flash_tab_order_container {
 
 .FO_flash_tab_order_pay_container .FO_pay_customer_card input[type="hidden"] {
     display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-discounts {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--siqo-sand);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-discounts .fo_pay_section_head {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-search input {
+    width: 100% !important;
+    height: 40px;
+    padding: 0 12px !important;
+    border: 1px solid var(--siqo-sand-strong) !important;
+    border-radius: 10px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-espresso) !important;
+    font-size: 12px !important;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-label {
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    padding: 5px 6px 5px 9px;
+    border: 1px solid rgba(166, 70, 47, 0.22);
+    border-radius: 999px;
+    background: var(--siqo-red-soft);
+    color: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-code {
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-value {
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-applied-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(166, 70, 47, 0.12);
+    color: var(--siqo-terracotta);
+    font: inherit;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-group[hidden],
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-empty[hidden],
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-message[hidden],
+.FO_flash_tab_order_pay_container .siqo-pay-applied[hidden],
+.FO_flash_tab_order_pay_container .siqo-pay-discount-line[hidden] {
+    display: none !important;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-group-count {
+    min-width: 20px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--siqo-cream);
+    color: var(--siqo-muted);
+    text-align: center;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-group-count:empty {
+    display: none;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-list {
+    display: grid;
+    gap: 6px;
+    max-height: 190px;
+    padding-right: 2px;
+    overflow: auto;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--siqo-sand);
+    border-radius: 10px;
+    background: var(--siqo-white);
+    color: var(--siqo-espresso);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon:hover {
+    border-color: var(--siqo-sand-strong);
+    background: var(--siqo-cream);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon.is-applied {
+    border-color: rgba(166, 70, 47, 0.32);
+    background: var(--siqo-red-soft);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-code {
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-meta {
+    color: var(--siqo-terracotta);
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-action {
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon.is-applied .siqo-pay-coupon-action {
+    color: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-empty,
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-message {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: var(--siqo-cream);
+    color: var(--siqo-muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-coupon-message {
+    border: 1px solid rgba(166, 70, 47, 0.2);
+    background: var(--siqo-red-soft);
+    color: var(--siqo-terracotta);
+}
+
+.FO_flash_tab_order_pay_container .siqo-pay-discount-line {
+    color: var(--siqo-terracotta);
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.FO_flash_tab_order_pay_container .fo_pay_total.is-loading {
+    opacity: 0.55;
 }
 
 .FO_flash_tab_order_pay_container .fo_pay_footer {
@@ -2716,3 +3043,273 @@ body.siqo-table-open .FO_flash_tab_order_container {
         align-content: start;
     }
 }
+
+/* Storico ordine: pannello di dettaglio */
+body.siqo-story-open {
+    overflow: hidden !important;
+}
+
+.siqo-story-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.siqo-story-sheet.is-open {
+    display: flex;
+}
+
+.siqo-story-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(20, 17, 15, 0.46);
+    backdrop-filter: blur(3px);
+    cursor: pointer;
+}
+
+.siqo-story-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(540px, 100%);
+    max-height: min(84dvh, 720px);
+    overflow: hidden;
+    border-radius: 22px 22px 0 0;
+    background: var(--siqo-white);
+    color: var(--siqo-espresso);
+    box-shadow: 0 -18px 60px rgba(36, 29, 25, 0.28);
+}
+
+.siqo-story-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 20px 18px 0;
+}
+
+.siqo-story-eyebrow {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--siqo-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.siqo-story-head h2 {
+    margin: 0;
+    color: var(--siqo-espresso);
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.siqo-story-close {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid var(--siqo-sand-strong);
+    border-radius: 999px;
+    background: #f0e9df;
+    color: var(--siqo-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.siqo-story-meta {
+    margin: 10px 18px 0;
+    color: var(--siqo-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.siqo-story-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0 0;
+    padding: 0 18px 16px;
+    overflow-y: auto;
+    list-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.siqo-story-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(160, 132, 103, 0.18);
+}
+
+.siqo-story-item:last-child {
+    border-bottom: 0;
+}
+
+.siqo-story-item-qty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 28px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #f0e9df;
+    color: var(--siqo-espresso);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.siqo-story-item-body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.siqo-story-item-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.siqo-story-item-thumb {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    border-radius: 9px;
+    background: #f0e9df;
+}
+
+.siqo-story-item-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.siqo-story-item-name {
+    color: var(--siqo-espresso);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.siqo-story-item-note {
+    color: var(--siqo-muted);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.siqo-story-item-price {
+    color: var(--siqo-espresso);
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.siqo-story-empty {
+    padding: 18px 0;
+    color: var(--siqo-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.siqo-story-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px calc(16px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--siqo-sand);
+    background: #fbf7f1;
+}
+
+@media (max-width: 899.98px) {
+    .siqo-story-panel {
+        padding-bottom: 54px;
+    }
+}
+
+.siqo-story-foot span {
+    color: var(--siqo-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.siqo-story-foot strong {
+    color: var(--siqo-espresso);
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+@media (min-width: 900px) {
+    .siqo-story-sheet {
+        align-items: center;
+        padding: 24px;
+    }
+
+    .siqo-story-panel {
+        max-height: min(80vh, 720px);
+        border-radius: 22px;
+        box-shadow: 0 24px 80px rgba(36, 29, 25, 0.32);
+    }
+
+    .siqo-story-head {
+        padding-top: 24px;
+    }
+}
+
+/* Legacy dark outline from the public stylesheet makes operator labels unreadable on light cards. */
+#SIQO_Front_Content .fo_table_cell,
+#SIQO_Front_Content .fo_table_cell *,
+#SIQO_Front_Content .fo_table_name,
+#SIQO_Front_Content .fo_table_name *,
+#SIQO_Front_Content .fo_tab_table_name {
+    text-shadow: none !important;
+}
+
+#SIQO_Front_Content .fo_table_name {
+    gap: 2px !important;
+}
+
+#SIQO_Front_Content .fo_table_name > strong:first-child {
+    font-size: 8px !important;
+    letter-spacing: 0.14em;
+    opacity: 0.78;
+}
+
+#SIQO_Front_Content .fo_table_name .fo_tab_table_name {
+    font-size: 15px !important;
+    line-height: 1.1 !important;
+}
+
+#SIQO_Front_Content .Advanced_Card_Close_float {
+    font-size: 0 !important;
+}
+
+#SIQO_Front_Content .Advanced_Card_Close_float::before {
+    content: "\2190  TAVOLI";
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+

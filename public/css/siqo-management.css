@@ -1,4 +1,4 @@
-﻿:root {
+:root {
 	--siqo-brand: #a6462f;
 	--siqo-accent: #c98a00;
 	--siqo-ink: #1c1714;
@@ -67,9 +67,8 @@ body.siqo-customer-mode .entry-content {
 }
 
 .siqo-bar {
-	position: sticky;
-	top: 0;
-	z-index: 60;
+	position: relative;
+	z-index: 100;
 	display: flex;
 	flex-wrap: nowrap;
 	align-items: center;
@@ -189,7 +188,7 @@ body.siqo-customer-mode .entry-content {
 	position: absolute;
 	top: calc(100% + 0.45rem);
 	left: 0;
-	z-index: 80;
+	z-index: 110;
 	display: grid;
 	gap: 0.12rem;
 	min-width: 232px;
@@ -203,6 +202,15 @@ body.siqo-customer-mode .entry-content {
 	transform: translateY(-4px);
 	pointer-events: none;
 	transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+}
+
+.siqo-nav-menu::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -0.45rem;
+	height: 0.45rem;
 }
 
 .siqo-nav-group.is-open .siqo-nav-menu,
@@ -294,6 +302,78 @@ body.siqo-customer-mode .entry-content {
 	height: 16px;
 }
 
+.siqo-account-action {
+	gap: 0.5rem;
+}
+
+.siqo-account-avatar {
+	display: block;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.siqo-account-name {
+	max-width: 14ch;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.siqo-account-panel {
+	max-width: 760px;
+}
+
+.siqo-account-head {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding-bottom: 18px;
+	margin-bottom: 18px;
+	border-bottom: 1px solid var(--siqo-line);
+}
+
+.siqo-account-head > div {
+	display: grid;
+	gap: 4px;
+}
+
+.siqo-account-avatar-lg {
+	display: block;
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex: 0 0 auto;
+}
+
+.siqo-account-avatar-fallback {
+	display: grid;
+	place-items: center;
+	background: var(--siqo-bg);
+	border: 1px solid var(--siqo-line);
+}
+
+.siqo-account-role {
+	color: var(--siqo-brand);
+	font-size: 0.78rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.siqo-form-status {
+	margin: 0;
+	font-size: 0.82rem;
+	font-weight: 700;
+	color: var(--siqo-muted);
+}
+
+.siqo-form-status.is-error {
+	color: #c0392b;
+}
+
 .siqo-bar-context {
 	gap: 0.5rem;
 	flex: 1;
@@ -336,6 +416,52 @@ body.siqo-customer-mode .entry-content {
 .siqo-dashboard {
 	display: grid;
 	gap: 1rem;
+}
+
+.siqo-view {
+	display: grid;
+	gap: 1rem;
+}
+
+.siqo-view-head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.siqo-view-head h1 {
+	margin: 0;
+	color: var(--siqo-ink);
+	font-size: clamp(2rem, 3.4vw, 3rem);
+	font-weight: 750;
+	letter-spacing: -0.035em;
+	line-height: 1;
+}
+
+.siqo-view-head .siqo-eyebrow {
+	margin-bottom: 0.45rem;
+}
+
+.siqo-view-head .siqo-muted {
+	margin: 0.55rem 0 0;
+}
+
+.siqo-view-tables #SIQO_Front_Content.siqo-embed {
+	min-height: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.siqo-view-tables #SIQO_Front_Content.siqo-embed .FO_table_grid {
+	padding: 0;
+}
+
+.siqo-view-stations #siqo-station-orders {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
 }
 
 .siqo-hero {
@@ -794,7 +920,8 @@ body.siqo-customer-mode .entry-content {
 	.siqo-bar-actions .siqo-bar-action span:last-child {
 		display: none;
 	}
-	.siqo-hero {
+	.siqo-hero,
+	.siqo-view-head {
 		flex-direction: column;
 		align-items: flex-start;
 	}
@@ -813,3 +940,113 @@ body.siqo-customer-mode .entry-content {
 	}
 }
 
+
+.siqo-plan-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	padding: 16px 20px 0;
+}
+
+.siqo-plan-switch {
+	display: inline-flex;
+	padding: 4px;
+	border-radius: 999px;
+	background: #f1e8dc;
+}
+
+.siqo-plan-switch button {
+	border: 0;
+	border-radius: 999px;
+	padding: 8px 14px;
+	background: transparent;
+	color: #5c5148;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.siqo-plan-switch button.is-active {
+	background: #fff;
+	color: #2b241f;
+	box-shadow: 0 1px 3px rgba(28, 23, 20, 0.14);
+}
+
+.siqo-plan-edit {
+	border: 1px solid #d8cbbd;
+	border-radius: 999px;
+	padding: 8px 16px;
+	background: #fff;
+	color: #2b241f;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.siqo-plan-edit.is-active {
+	border-color: #a6462f;
+	background: #a6462f;
+	color: #fff;
+}
+
+.siqo-plan-status {
+	font-size: 13px;
+	font-weight: 600;
+	color: #5b6b57;
+}
+
+.siqo-plan-status.is-error {
+	color: #a6462f;
+}
+
+#SIQO_Front_Content .FO_table_plan {
+	display: none;
+	position: relative;
+	margin: 16px 20px 24px;
+	border: 1px solid #e4d9cb;
+	border-radius: 18px;
+	background-color: #faf7f2;
+	background-image:
+		linear-gradient(rgba(166, 70, 47, 0.06) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(166, 70, 47, 0.06) 1px, transparent 1px);
+	background-size: 40px 40px;
+	overflow: auto;
+}
+
+#SIQO_Front_Content .FO_table_plan.is-active {
+	display: block;
+}
+
+#SIQO_Front_Content .FO_table_grid.is-plan-hidden {
+	display: none !important;
+}
+
+#SIQO_Front_Content .FO_table_plan .fo_table_cell {
+	position: absolute !important;
+	margin: 0 !important;
+	width: 180px;
+	height: 120px;
+	overflow: hidden;
+	touch-action: none;
+	user-select: none;
+}
+
+#SIQO_Front_Content .FO_table_plan.is-editing .fo_table_cell {
+	cursor: grab;
+	outline: 2px dashed rgba(166, 70, 47, 0.45);
+	outline-offset: -2px;
+	box-shadow: 0 10px 24px rgba(28, 23, 20, 0.14);
+}
+
+#SIQO_Front_Content .FO_table_plan.is-editing .fo_table_cell:active {
+	cursor: grabbing;
+}
+
+@media (max-width: 782px) {
+	.siqo-plan-toolbar {
+		padding: 12px 14px 0;
+	}
+
+	#SIQO_Front_Content .FO_table_plan {
+		margin: 12px 14px 20px;
+	}
+}

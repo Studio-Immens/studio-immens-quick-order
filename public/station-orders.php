@@ -105,10 +105,11 @@ function siqo_station_user_can_access() {
 
 add_shortcode( 'SIQO_station_orders_section', 'siqo_station_orders_shortcode' );
 function siqo_station_orders_shortcode() {
-	if ( ! siqo_station_user_can_access() ) {
-		return '<div class="siqo-station-denied">' . esc_html__( 'Non hai i permessi per visualizzare gli ordini dei reparti.', 'studio-immens-quick-order' ) . '</div>';
-	}
+	siqo_station_enqueue_assets();
+	return siqo_station_orders_render();
+}
 
+function siqo_station_enqueue_assets() {
 	wp_enqueue_style(
 		'siqo-station-orders',
 		plugins_url( 'css/siqo-station-orders.css', __FILE__ ),
@@ -123,6 +124,12 @@ function siqo_station_orders_shortcode() {
 		SIQO_STATION_VERSION,
 		true
 	);
+}
+
+function siqo_station_orders_render( $embedded = false ) {
+	if ( ! siqo_station_user_can_access() ) {
+		return '<div class="siqo-station-denied">' . esc_html__( 'Non hai i permessi per visualizzare gli ordini dei reparti.', 'studio-immens-quick-order' ) . '</div>';
+	}
 
 	$station = '__all';
 	if ( isset( $_GET['station'] ) ) {
@@ -136,10 +143,12 @@ function siqo_station_orders_shortcode() {
 	$counts = siqo_station_get_counts( $data );
 
 	ob_start();
+	if ( ! $embedded ) {
+		echo '<div id="siqo-app" class="siqo-app siqo-app-staff siqo-station-app" data-theme="dark">';
+		SIQO_Management::render_bar( 'staff' );
+		echo '<main class="siqo-main">';
+	}
 	?>
-	<div id="siqo-app" class="siqo-app siqo-app-staff siqo-station-app" data-theme="dark">
-	<?php SIQO_Management::render_bar( 'staff' ); ?>
-	<main class="siqo-main">
 	<div id="siqo-station-orders"
 		data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 		data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_station_orders' ) ); ?>"
@@ -165,9 +174,11 @@ function siqo_station_orders_shortcode() {
 			<?php echo siqo_station_render_list( $data, $station ); ?>
 		</div>
 	</div>
-	</main>
-	<?php SIQO_Management::render_shell_end(); ?>
 	<?php
+	if ( ! $embedded ) {
+		echo '</main>';
+		SIQO_Management::render_shell_end();
+	}
 	return ob_get_clean();
 }
 

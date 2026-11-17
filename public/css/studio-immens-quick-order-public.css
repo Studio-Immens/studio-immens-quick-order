@@ -2573,8 +2573,8 @@ background: linear-gradient(90deg, var(--fo-bg4-color) 0%, var(--fo-invert-color
 	width: 100%;
 	height: 100%;
 	position: fixed;
-	background-color: black;
-	opacity: 0.8;
+	background-color: rgba(20, 17, 15, 0.52);
+	opacity: 1;
 	top: 0;
 	left: 0;
 	right: 0;

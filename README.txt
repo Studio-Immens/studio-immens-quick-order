@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -94,6 +94,35 @@ Yes. English and Italian translations are included. The plugin is translation-re
 5. Style customization page with CSS variable controls
 
 == Changelog ==
+
+= 1.1.6 =
+* Added the internal non-fiscal receipt and pre-bill engine with archive and reprint
+* Added 80/58 mm receipt layouts, receipt settings and optional auto-print after payment
+* Fixed receipt totals to include line taxes, fees and shipping
+* Linked merged-table receipts to every order included in the document
+* Fixed table opening and closing persistence in the custom tables schema
+* Fixed an authentication bypass in the table order AJAX handler
+* Restricted table payment and reset endpoints to authenticated staff
+* Prevented empty table records for takeaway orders
+* Improved the default receipt printer selector
+
+= 1.1.5 =
+* Redesigned the customer Quick Menu with search, categories, favorites and a responsive order drawer
+* Renamed the customer page to /quick-menu/ and redirected legacy /flash-orders-ajax/ links
+
+= 1.1.4 =
+* Added coupon and customer discount selection to the table payment modal
+* Added live discount quote before completing the payment
+* Fixed pay modal line totals to include product quantity
+* Fixed customer search colors inside the payment modal
+* Fixed staff navigation dropdown hover gap
+* Raised the table history sheet above the payment footer
+
+= 1.1.3 =
+* Added table management and station orders as native views inside /gestione/
+* Made the management status bar static with corrected stacking for menus and table modals
+* Updated dashboard table links to open the embedded table view
+* Fixed table history order chips not opening order details and hid the broken story total
 
 = 1.1.2 =
 * Added frontend users and Quick Order role management to /gestione/

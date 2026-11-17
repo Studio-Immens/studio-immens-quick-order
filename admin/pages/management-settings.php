@@ -114,7 +114,7 @@ $page_url = admin_url( 'admin.php?page=si-quick-order_settings' );
 								'gestione'      => 'gestione',
 								'manage-tables' => 'manage-tables',
 								'ordini-reparti'=> 'ordini-reparti',
-								'flash-orders-ajax' => 'flash-orders-ajax',
+								'quick-menu'    => 'Quick Menu',
 							);
 							foreach ( $pages as $slug => $label ) :
 								$page = get_page_by_path( $slug );
@@ -186,8 +186,58 @@ $page_url = admin_url( 'admin.php?page=si-quick-order_settings' );
 				<div class="siqo-admin-section">
 					<h2><?php esc_html_e( 'Comande e ricevute', 'studio-immens-quick-order' ); ?></h2>
 					<p><?php esc_html_e( 'Quick Order stampa comande di reparto e ricevute non fiscali. Non gestisce scontrini fiscali, RT o IVA.', 'studio-immens-quick-order' ); ?></p>
-					<p><strong><?php esc_html_e( 'Stato modulo:', 'studio-immens-quick-order' ); ?></strong> <?php echo class_exists( 'SIQO_Receipts' ) ? esc_html__( 'installato', 'studio-immens-quick-order' ) : esc_html__( 'non installato', 'studio-immens-quick-order' ); ?></p>
-					<a class="button button-primary" href="<?php echo esc_url( SIQO_Management::page_url( array( 'view' => 'receipts' ) ) ); ?>"><?php esc_html_e( 'Apri ricevute', 'studio-immens-quick-order' ); ?></a>
+					<p><strong><?php esc_html_e( 'Stato modulo:', 'studio-immens-quick-order' ); ?></strong> <?php echo esc_html__( 'integrato', 'studio-immens-quick-order' ); ?></p>
+					<p><?php esc_html_e( 'Preconto e ricevuta usano il motore interno: non serve WooPrint né ReceiptJet.', 'studio-immens-quick-order' ); ?></p>
+				</div>
+				<div class="siqo-admin-section">
+					<h2><?php esc_html_e( 'Formato documento', 'studio-immens-quick-order' ); ?></h2>
+					<?php
+					$receipt_printer_id      = absint( get_option( 'siqo_receipt_printer_id', 0 ) );
+					$receipt_printer_options = array();
+					if ( class_exists( 'SIQO_Printers' ) && method_exists( 'SIQO_Printers', 'get_printers' ) ) {
+						foreach ( SIQO_Printers::get_printers() as $receipt_printer ) {
+							if ( in_array( $receipt_printer->type, array( 'network', 'printnode' ), true ) ) {
+								$receipt_printer_options[ (int) $receipt_printer->id ] = $receipt_printer->name;
+							}
+						}
+					}
+					?>
+					<form method="post">
+						<?php wp_nonce_field( 'siqo_management_settings', '_siqo_management_nonce' ); ?>
+						<input type="hidden" name="siqo_management_action" value="save">
+						<label><?php esc_html_e( 'Larghezza carta', 'studio-immens-quick-order' ); ?>
+							<select name="siqo_receipt_paper_width">
+								<option value="80"<?php selected( get_option( 'siqo_receipt_paper_width', '80' ), '80' ); ?>><?php esc_html_e( '80 mm', 'studio-immens-quick-order' ); ?></option>
+								<option value="58"<?php selected( get_option( 'siqo_receipt_paper_width', '80' ), '58' ); ?>><?php esc_html_e( '58 mm', 'studio-immens-quick-order' ); ?></option>
+							</select>
+						</label>
+						<label><?php esc_html_e( 'Logo in testata', 'studio-immens-quick-order' ); ?>
+							<select name="siqo_receipt_show_logo">
+								<option value="yes"<?php selected( get_option( 'siqo_receipt_show_logo', 'yes' ), 'yes' ); ?>><?php esc_html_e( 'Sì', 'studio-immens-quick-order' ); ?></option>
+								<option value="no"<?php selected( get_option( 'siqo_receipt_show_logo', 'yes' ), 'no' ); ?>><?php esc_html_e( 'No', 'studio-immens-quick-order' ); ?></option>
+							</select>
+						</label>
+						<label><?php esc_html_e( 'Stampa automatica conto pagato', 'studio-immens-quick-order' ); ?>
+							<select name="siqo_receipt_auto_print">
+								<option value="no"<?php selected( get_option( 'siqo_receipt_auto_print', 'no' ), 'no' ); ?>><?php esc_html_e( 'No', 'studio-immens-quick-order' ); ?></option>
+								<option value="yes"<?php selected( get_option( 'siqo_receipt_auto_print', 'no' ), 'yes' ); ?>><?php esc_html_e( 'Sì, con licenza Pro', 'studio-immens-quick-order' ); ?></option>
+							</select>
+						</label>
+						<label><?php esc_html_e( 'Stampante predefinita', 'studio-immens-quick-order' ); ?>
+							<?php if ( $receipt_printer_options ) : ?>
+								<select name="siqo_receipt_printer_id">
+									<option value="0"><?php esc_html_e( 'Nessuna', 'studio-immens-quick-order' ); ?></option>
+									<?php foreach ( $receipt_printer_options as $receipt_printer_option_id => $receipt_printer_option_name ) : ?>
+										<option value="<?php echo esc_attr( $receipt_printer_option_id ); ?>"<?php selected( $receipt_printer_id, $receipt_printer_option_id ); ?>><?php echo esc_html( $receipt_printer_option_name ); ?></option>
+									<?php endforeach; ?>
+								</select>
+							<?php else : ?>
+								<input type="number" min="0" step="1" name="siqo_receipt_printer_id" value="<?php echo esc_attr( $receipt_printer_id ); ?>" class="small-text">
+							<?php endif; ?>
+						</label>
+						<p class="description"><?php esc_html_e( 'La stampa automatica richiede Quick Order Pro con licenza attiva. La stampa browser resta sempre disponibile.', 'studio-immens-quick-order' ); ?></p>
+						<?php submit_button( __( 'Salva impostazioni ricevute', 'studio-immens-quick-order' ) ); ?>
+					</form>
 				</div>
 				<div class="siqo-admin-section">
 					<h2><?php esc_html_e( 'Testo ricevuta', 'studio-immens-quick-order' ); ?></h2>

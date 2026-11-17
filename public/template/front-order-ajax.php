@@ -39,6 +39,11 @@ $table_id_valid = 0;
 $table_name     = '';
 $table_notice   = '';
 $table_link_id  = '0';
+$product_count  = 0;
+
+foreach ( $products as $category_products ) {
+	$product_count += count( $category_products );
+}
 
 
 if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'SIQO_check_table_nonce' ) ) {
@@ -70,7 +75,7 @@ if ( $table_link_id ) {
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
 		<script type="text/javascript">
 			jQuery(window).on('load', function() {
-	        	jQuery('header').css('display','none');
+	        	jQuery('#header, .ct-header, .site-header').css('display','none');
 	        });
 		</script>
 	<?php }
@@ -78,7 +83,7 @@ if ( $table_link_id ) {
 	if (isset($settings->showFoot) && $settings->showFoot == 'no' ) { ?>
 		<script type="text/javascript">
 			jQuery(window).on('load', function() {
-	        	jQuery('footer').css('display','none');
+	        	jQuery('#footer, .ct-footer, .site-footer').css('display','none');
 	        });
 		</script>
 	<?php }
@@ -115,16 +120,12 @@ if ( $table_link_id ) {
 	);
 	?>
 
-	<?php  if (isset($settings->showQR) && $settings->showQR == 'yes' ) {
-		echo SIQO_create_post_QR_code();
-	}?>
-	
 	<div style="display:none!important;">
 		<div id="FO_select_variant_alert"><?php esc_html_e( 'Seleziona prima la variante', 'studio-immens-quick-order' );?></div>
-		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non ÃƒÂ© al momento disponibile', 'studio-immens-quick-order' );?></div>
-		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, ÃƒÂ© necessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
+		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non é al momento disponibile', 'studio-immens-quick-order' );?></div>
+		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, é necessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
 
-		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto ÃƒÂ© giÃƒÂ  tra i favoriti', 'studio-immens-quick-order' );?></div>
+		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto é già tra i favoriti', 'studio-immens-quick-order' );?></div>
 
 		<div id="FO_home_url"><?php echo esc_attr(get_home_url());?></div>
 
@@ -137,80 +138,82 @@ if ( $table_link_id ) {
 		</style>
 	</div>
 
-	<span class="FObuttListRapidView dashicons dashicons-menu-alt3" onclick="Show_SIQOListRapidView()"></span>
+	<div class="siqo-customer-shell">
+		<section class="siqo-customer-hero">
+			<div class="siqo-customer-hero-copy">
+				<p class="siqo-eyebrow"><?php echo $table_name ? esc_html( $table_name ) : esc_html__( 'Menù digitale', 'studio-immens-quick-order' ); ?></p>
+				<h1><?php esc_html_e( 'Cosa desideri?', 'studio-immens-quick-order' ); ?></h1>
+				<p class="siqo-customer-sub"><?php esc_html_e( 'Sfoglia il menù, aggiungi i piatti e invia l’ordine dal tuo tavolo.', 'studio-immens-quick-order' ); ?></p>
+			</div>
+			<?php if ( $table_name ) { ?>
+				<span class="siqo-hero-table">
+					<span class="dashicons dashicons-location" aria-hidden="true"></span>
+					<?php echo esc_html( $table_name ); ?>
+				</span>
+			<?php } ?>
+		</section>
 
-	<div class="FOListRapidView" style="left:-200px;">
-		<div class="Hide_FOListRapidView" onclick="Hide_SIQOListRapidView()">
-			<?php esc_html_e( 'CHIUDI', 'studio-immens-quick-order' ); ?>
+		<div class="siqo-customer-toolbar">
+			<label class="siqo-search-field">
+				<span class="dashicons dashicons-search" aria-hidden="true"></span>
+				<input id="siqo-menu-search" type="search" oninput="SIQO_search_for_all(this)" placeholder="<?php esc_attr_e( 'Cerca nel menù…', 'studio-immens-quick-order' ); ?>" autocomplete="off">
+			</label>
+			<span class="siqo-toolbar-note"><?php echo esc_html( $product_count ); ?> <?php esc_html_e( 'prodotti', 'studio-immens-quick-order' ); ?></span>
 		</div>
-		<a class="FOListRapidView_cathead" href="#FO_favourite" style="background-color:var(--fo-main-color)!important;backdrop-filter: opacity(20%);"><?php esc_html_e('Prodotti Preferiti','studio-immens-quick-order' );?>
-		</a>
-		<?php foreach ($products as $key => $value) { 
-			$term = get_term_by('name', $key, 'product_cat');
-			$term_meta = (SIQOcheck($term))? get_term_meta($term->term_id):false;
-			$image = ( isset($term_meta['thumbnail_id']) )? wp_get_attachment_image_src($term_meta['thumbnail_id'][0] ):array('0');
-			$stylec = '';
-			if ($image[0]!= null) {
-				$stylec = 'background: url('.esc_attr($image[0]).')!important;';
-			}
-			?>
-			<a class="FOListRapidView_cathead" href="#<?php echo esc_attr($key);?>" style="background-color: var(--fo-main-color)!important;backdrop-filter: opacity(20%);<?php echo esc_attr($stylec);?>"><?php echo esc_attr($key);?></a>
-		<?php } ?>
 
+		<div class="siqo-customer-layout">
+			<aside class="siqo-customer-sidebar">
+				<p class="siqo-sidebar-label"><?php esc_html_e( 'Categorie', 'studio-immens-quick-order' ); ?></p>
+				<nav class="siqo-category-nav" aria-label="<?php esc_attr_e( 'Categorie del menù', 'studio-immens-quick-order' ); ?>">
+					<a class="siqo-cat-link" data-category-link="FO_favourite" data-fav-link href="#FO_favourite" hidden>
+						<span class="siqo-cat-icon dashicons dashicons-heart" aria-hidden="true"></span>
+						<span class="siqo-cat-name"><?php esc_html_e( 'Preferiti', 'studio-immens-quick-order' ); ?></span>
+					</a>
+					<?php foreach ( $products as $key => $value ) {
+						$term = get_term_by( 'name', $key, 'product_cat' );
+						$term_meta = ( SIQOcheck( $term ) ) ? get_term_meta( $term->term_id ) : false;
+						$image = ( isset( $term_meta['thumbnail_id'] ) ) ? wp_get_attachment_image_src( $term_meta['thumbnail_id'][0] ) : array( '0' );
+						$thumb_url = ( ! empty( $image[0] ) && '0' !== (string) $image[0] ) ? $image[0] : '';
+						$cat_id = 'cat-' . sanitize_title( $key );
+						?>
+						<a class="siqo-cat-link" data-category-link="<?php echo esc_attr( $cat_id ); ?>" href="#<?php echo esc_attr( $cat_id ); ?>">
+							<?php if ( $thumb_url ) { ?>
+								<img class="siqo-cat-thumb" src="<?php echo esc_url( $thumb_url ); ?>" alt="" loading="lazy">
+							<?php } else { ?>
+								<span class="siqo-cat-dot" aria-hidden="true"></span>
+							<?php } ?>
+							<span class="siqo-cat-name"><?php echo esc_html( $key ); ?></span>
+							<small><?php echo esc_html( count( $value ) ); ?></small>
+						</a>
+					<?php } ?>
+				</nav>
+				<div class="siqo-sidebar-foot">
+					<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
+					<p><?php esc_html_e( 'Tocca un piatto per ingredienti e varianti.', 'studio-immens-quick-order' ); ?></p>
+				</div>
+			</aside>
+
+			<main class="siqo-customer-menu">
+				<div id="products_container" class="siqo-menu-sections">
+					<section class="siqo-menu-section siqo-favourites-section" id="FO_favourite" data-category="FO_favourite" hidden>
+						<header class="siqo-menu-section-head">
+							<span class="siqo-menu-section-icon dashicons dashicons-heart" aria-hidden="true"></span>
+							<div class="siqo-menu-section-title">
+								<p class="siqo-eyebrow"><?php esc_html_e( 'La tua selezione', 'studio-immens-quick-order' ); ?></p>
+								<h2><?php esc_html_e( 'Preferiti', 'studio-immens-quick-order' ); ?></h2>
+							</div>
+						</header>
+						<div class="FO_favourites_container SIQO_favourites_container siqo-menu-grid"></div>
+					</section>
+
+					<?php SIQO_products_for_div_loop( $products ); ?>
+				</div>
+				<p class="siqo-search-empty" id="siqo-search-empty" hidden>
+					<?php esc_html_e( 'Nessun piatto trovato. Prova con un altro termine.', 'studio-immens-quick-order' ); ?>
+				</p>
+			</main>
+		</div>
 	</div>
-
-		<div id="products_container" class="foflex">
-
-			<div class="focathead FO_list_view_selector" style="background-color: var(--fo-main-color)!important;">
-				<input type="search" onkeyup="SIQO_refine_search(this, 'hide')" fotargetcat="search" class="focatsearchall" placeholder="<?php esc_html_e('Cerchi Qualcosa?','studio-immens-quick-order' );?>">
-
-				<select onchange="jQuery('.foProdCard').attr('foview',jQuery(this).val())" foview="normal">
-					<option value="list">
-						<span class="dashicons dashicons-list-view"> List View </span>
-					</option>
-					<option value="small">
-						<span class="dashicons dashicons-grid-view"> Small View </span>
-					</option>
-					<option value="normal" selected>
-						<span class="dashicons dashicons-format-image"> Normal View </span>
-					</option>
-				</select>
-
-			</div>
-			<div class="FO_search_container">
-				<?php 
-				foreach ($products as $cat_slug => $cat_products) {
-					foreach ($cat_products as $product) {
-						SIQO_product_to_div_loop( $product );
-					}
-				}
-				?>
-			</div>
-
-			<div class="focathead" id="FO_favourite" style="background-color: var(--fo-main-color)!important;">
-				<div class="title" style="font-weight:800;font-size:30px;z-index:10;">
-					<?php esc_html_e('Prodotti Preferiti','studio-immens-quick-order' );?>
-				</div>
-				<input type="search" fotargetcat="FO_favourite" onkeyup="SIQO_refine_search(this)" class="focatsearch" placeholder="Cerca..." style="z-index:10;">
-				<div class="fo_button" onclick="SIQO_toggle_Favourite(this);">
-					<span class="dashicons dashicons-arrow-down-alt2"></span>
-				</div>
-			</div>
-			<div class="FO_favourites_container"></div>
-			<?php 
-					$fav_prod = get_user_meta($user_id, 'FO_favourite_products');
-					if (isset($fav_prod) && $fav_prod != '') {
-						$fav_prod_arr = json_decode($fav_prod);
-						foreach ($fav_prod_arr as $key => $value) {
-							
-						}
-					}
-
-				?>
-
-			<?php SIQO_products_for_div_loop( $products ); ?>
-
-		</div>
 
 
 
@@ -225,12 +228,17 @@ if ( $table_link_id ) {
 		<?php SIQO_Advanced_prod_card(); ?>
 		
 		<div id="FO_Front_Float">
-			<div class="Hide_FO_Front_Float" onclick="Hide_SIQO_Front_Float()">
+			<button type="button" class="Hide_FO_Front_Float" onclick="Hide_SIQO_Front_Float()" aria-label="<?php esc_attr_e( 'Chiudi', 'studio-immens-quick-order' ); ?>">
 				<?php esc_html_e( 'CHIUDI', 'studio-immens-quick-order' ); ?>
-			</div>
+			</button>
 	<!-- .unbind("hover"); -->
 	<!-- onclick="jQuery(this).animate({left:'0%'});" -->
 	
+			<header class="siqo-drawer-head">
+				<p class="siqo-eyebrow"><?php esc_html_e( 'Ordine', 'studio-immens-quick-order' ); ?></p>
+				<h2><?php esc_html_e( 'Il tuo ordine', 'studio-immens-quick-order' ); ?></h2>
+			</header>
+
 			<div id="FO_sum_order">
 			</div>
 
@@ -288,6 +296,76 @@ if ( $table_link_id ) {
 			jQuery(window).on('load', function() {
 				jQuery(".FOloadingCardPublicMain").fadeOut(200);
 			});
+
+			(function(){
+				var cartLink = document.querySelector('[data-siqo-cart]');
+				if (cartLink) {
+					cartLink.addEventListener('click', function(event){
+						event.preventDefault();
+						if (typeof Show_SIQO_Front_Float === 'function') {
+							Show_SIQO_Front_Float();
+						}
+					});
+				}
+
+				var liveCount = document.getElementById('FO_order_live_count');
+				var cartBadge = document.querySelector('[data-siqo-cart-count]');
+				if (liveCount && cartBadge) {
+					var syncCart = function(){
+						cartBadge.textContent = (liveCount.textContent || '0').trim() || '0';
+					};
+					new MutationObserver(syncCart).observe(liveCount, { childList: true, subtree: true, characterData: true });
+					syncCart();
+				}
+
+				var favourites = document.querySelector('.FO_favourites_container');
+				var favouritesSection = document.querySelector('.siqo-favourites-section');
+				var favouritesLink = document.querySelector('[data-fav-link]');
+				var refreshFavourites = function(){
+					var hasFavourites = !!(favourites && favourites.querySelector('.foProdCard'));
+					if (favouritesSection) {
+						favouritesSection.hidden = !hasFavourites;
+					}
+					if (favouritesLink) {
+						favouritesLink.hidden = !hasFavourites;
+					}
+				};
+				if (favourites) {
+					new MutationObserver(refreshFavourites).observe(favourites, { childList: true });
+					refreshFavourites();
+				}
+
+				var categoryLinks = Array.prototype.slice.call(document.querySelectorAll('.siqo-cat-link[data-category-link]'));
+				var categorySections = Array.prototype.slice.call(document.querySelectorAll('.siqo-menu-section[data-category]'));
+				var setActiveCategory = function(id){
+					categoryLinks.forEach(function(link){
+						link.classList.toggle('is-active', link.getAttribute('data-category-link') === id);
+					});
+				};
+				var updateActiveCategory = function(){
+					var threshold = window.scrollY + 180;
+					var current = '';
+					categorySections.forEach(function(section){
+						if (!section.hidden && section.getBoundingClientRect().top + window.scrollY <= threshold) {
+							current = section.id;
+						}
+					});
+					setActiveCategory(current);
+				};
+				window.addEventListener('scroll', updateActiveCategory, { passive: true });
+				window.addEventListener('resize', updateActiveCategory);
+				categoryLinks.forEach(function(link){
+					link.addEventListener('click', function(){
+						var searchInput = document.getElementById('siqo-menu-search');
+						if (searchInput && searchInput.value !== '' && typeof SIQO_search_for_all === 'function') {
+							searchInput.value = '';
+							SIQO_search_for_all(searchInput);
+						}
+						setActiveCategory(link.getAttribute('data-category-link'));
+					});
+				});
+				updateActiveCategory();
+			})();
 		</script>
 	</div>
 </div>

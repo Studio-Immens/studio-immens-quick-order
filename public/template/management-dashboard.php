@@ -31,7 +31,7 @@ foreach ( $modules as $module ) {
 				<span class="dashicons dashicons-update" aria-hidden="true"></span>
 				<?php esc_html_e( 'Aggiorna', 'studio-immens-quick-order' ); ?>
 			</a>
-			<a class="siqo-btn" href="<?php echo esc_url( SIQO_Management::get_page_url( 'manage-tables' ) ?: admin_url() ); ?>">
+			<a class="siqo-btn" href="<?php echo esc_url( SIQO_Management::page_url( array( 'view' => 'tables' ) ) ); ?>">
 				<span class="dashicons dashicons-plus-alt" aria-hidden="true"></span>
 				<?php esc_html_e( 'Apri tavolo', 'studio-immens-quick-order' ); ?>
 			</a>
@@ -105,7 +105,7 @@ foreach ( $modules as $module ) {
 					<p class="siqo-eyebrow"><?php esc_html_e( 'Sala', 'studio-immens-quick-order' ); ?></p>
 					<h2><?php esc_html_e( 'Tavoli', 'studio-immens-quick-order' ); ?></h2>
 				</div>
-				<a class="siqo-text-link" href="<?php echo esc_url( SIQO_Management::get_page_url( 'manage-tables' ) ?: '#' ); ?>"><?php esc_html_e( 'Vedi tutti', 'studio-immens-quick-order' ); ?></a>
+				<a class="siqo-text-link" href="<?php echo esc_url( SIQO_Management::page_url( array( 'view' => 'tables' ) ) ); ?>"><?php esc_html_e( 'Vedi tutti', 'studio-immens-quick-order' ); ?></a>
 			</div>
 			<div class="siqo-room-grid">
 				<?php
@@ -119,7 +119,7 @@ foreach ( $modules as $module ) {
 						$status = function_exists( 'SIQO_get_meta' ) ? SIQO_get_meta( 'status_table_' . $table->ID ) : '';
 						$open   = $status && ! in_array( strtolower( (string) $status ), array( '0', 'free', 'libero' ), true );
 						?>
-						<a class="siqo-room<?php echo $open ? ' is-open' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'table_id', $table->ID, SIQO_Management::get_page_url( 'manage-tables' ) ?: '#' ) ); ?>">
+						<a class="siqo-room<?php echo $open ? ' is-open' : ''; ?>" href="<?php echo esc_url( add_query_arg( 'table_id', $table->ID, SIQO_Management::page_url( array( 'view' => 'tables' ) ) ) ); ?>">
 							<span><?php echo esc_html( $table->post_title ); ?></span>
 							<small><?php echo $open ? esc_html__( 'Aperto', 'studio-immens-quick-order' ) : esc_html__( 'Libero', 'studio-immens-quick-order' ); ?></small>
 						</a>
