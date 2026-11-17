@@ -131,7 +131,6 @@ if ( $table_id_valid && ! $table_session_active ) {
 			'table_name'    => $table_name,
 			'account_url'   => $account_url,
 			'account_label' => $account_text,
-			'title'         => $table_notice,
 		)
 	);
 	?>
@@ -266,10 +265,10 @@ if ( $table_id_valid && ! $table_session_active ) {
 ?>
 			<div id="order_actions">
 				<input type="hidden" id="FO_order_index" name="FO_order_index" value="10000">
-				<?php if ($net_info['is_local']) {
-					$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
-    				echo '<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="'.esc_attr($nonce).'" />';
-				} ?>
+				<?php
+				$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
+				?>
+				<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="<?php echo esc_attr( $nonce ); ?>" />
 
 				<p><?php esc_html_e( 'Varianti Prodotti', 'studio-immens-quick-order' );?>
 					<div id="FOProdNumber" style="margin-left:15px">0</div>
@@ -280,13 +279,14 @@ if ( $table_id_valid && ! $table_session_active ) {
 						<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
 					<?php } ?>
 					<select class="fo-select" name="table_name_cpt">
-						<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
-						<?php foreach ($tavoli as $tavolo) { ?>
-							<?php $is_table_active = class_exists( 'SIQO_Table_Sessions' ) ? SIQO_Table_Sessions::is_active( $tavolo->ID ) : false; ?>
-							<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>>
-								<?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' — ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?>
-							</option>
-						<?php } ?>
+					<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
+					<?php
+					$active_ids = class_exists( 'SIQO_Table_Sessions' ) ? SIQO_Table_Sessions::active_table_ids() : array();
+					foreach ( $tavoli as $tavolo ) {
+						$is_table_active = in_array( (int) $tavolo->ID, $active_ids, true );
+						?>
+						<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>><?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' — ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?></option>
+					<?php } ?>
 					</select>
 				</div>
 

@@ -159,6 +159,17 @@ class SIQO_Table_Sessions {
 		return strtotime( $session->expires_at . ' UTC' ) > time();
 	}
 
+	public static function active_table_ids() {
+		global $wpdb;
+		$ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT table_id FROM " . self::table_name() . " WHERE status IN ('open','awaiting_approval') AND expires_at > %s",
+				self::now()
+			)
+		);
+		return array_map( 'absint', $ids );
+	}
+
 	public static function open( $table_id, $user_id = 0, $via = 'list', $ttl = 0 ) {
 		$table_id = absint( $table_id );
 		if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) ) {
