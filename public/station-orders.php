@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/template/station-table-sessions.php';
 
-define( 'SIQO_STATION_VERSION', '1.0.2' );
+define( 'SIQO_STATION_VERSION', '1.0.3' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
@@ -265,8 +265,6 @@ function siqo_station_ajax_update_status() {
 
 add_action( 'wp_ajax_siqo_order_approve', 'siqo_order_approval_ajax' );
 add_action( 'wp_ajax_siqo_order_reject', 'siqo_order_approval_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_order_approve', 'siqo_order_approval_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_order_reject', 'siqo_order_approval_ajax' );
 function siqo_order_approval_ajax() {
 	$hook      = preg_replace( '/^wp_ajax_(?:nopriv_)?/', '', (string) current_action() );
 	$operation = '';
@@ -300,8 +298,20 @@ function siqo_order_approval_ajax() {
 		wp_send_json_error( array( 'message' => __( 'Ordine non trovato.', 'studio-immens-quick-order' ) ), 404 );
 	}
 
-	if ( 'pending' !== $order->get_meta( '_siqo_approval' ) ) {
+	$siqo_sources = array( 'pending', 'on-hold', 'failed' );
+	if ( 'pending' !== (string) $order->get_meta( '_siqo_approval' ) || ! in_array( $order->get_status(), $siqo_sources, true ) ) {
 		wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+	}
+
+	global $wpdb;
+
+	$siqo_lock = 'siqo_approval_lock_' . $order_id;
+	if ( ! add_option( $siqo_lock, time(), '', false ) ) {
+		$siqo_locked_at = (int) get_option( $siqo_lock );
+		if ( $siqo_locked_at && ( time() - $siqo_locked_at ) < 120 ) {
+			wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+		}
+		update_option( $siqo_lock, time(), false );
 	}
 
 	$session_id = (int) $order->get_meta( '_siqo_session_id' );
@@ -311,15 +321,18 @@ function siqo_order_approval_ajax() {
 		$order->update_meta_data( '_siqo_approval', 'approved' );
 		$order->update_status( 'processing', __( 'Ordine confermato dall\'operatore.', 'studio-immens-quick-order' ) );
 		$order->save();
+		delete_option( $siqo_lock );
 
 		if ( $session ) {
-			global $wpdb;
-			$wpdb->query(
+			$reopened = $wpdb->query(
 				$wpdb->prepare(
 					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
 					$session_id
 				)
 			);
+			if ( ! $reopened ) {
+				error_log( sprintf( 'SIQO: approvazione ordine %d, sessione %d non in awaiting_approval (nessuna riga aggiornata).', $order_id, $session_id ) );
+			}
 		}
 
 		do_action( 'siqo_order_approved', $order_id );
@@ -335,14 +348,13 @@ function siqo_order_approval_ajax() {
 	$order->update_meta_data( '_siqo_approval', 'rejected' );
 	$order->update_status( 'cancelled', __( 'Ordine rifiutato dall\'operatore.', 'studio-immens-quick-order' ) );
 	$order->save();
+	delete_option( $siqo_lock );
 
 	if ( $session ) {
-		global $wpdb;
-		$new_total = max( 0, round( (float) $session->session_total - (float) $order->get_total(), 2 ) );
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = %f WHERE id = %d AND status = 'awaiting_approval'",
-				$new_total,
+				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				(float) $order->get_total(),
 				$session_id
 			)
 		);

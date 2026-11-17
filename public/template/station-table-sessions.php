@@ -115,7 +115,9 @@ function siqo_table_session_render_bar() {
 					$siqo_active   = in_array( $siqo_table_id, $active_ids, true );
 					$siqo_expires  = $siqo_active && isset( $expiries[ $siqo_table_id ] ) ? (string) $expiries[ $siqo_table_id ] : '';
 					$siqo_label    = $siqo_active
-						? sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), $siqo_expires ? wp_date( 'H:i', strtotime( $siqo_expires . ' UTC' ) ) : '' )
+						? ( $siqo_expires
+							? sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), wp_date( 'H:i', strtotime( $siqo_expires . ' UTC' ) ) )
+							: __( 'Attivo', 'studio-immens-quick-order' ) )
 						: __( 'Non attivo', 'studio-immens-quick-order' );
 					?>
 					<li class="siqo-table-chip<?php echo $siqo_active ? ' is-active' : ''; ?>" data-table-id="<?php echo esc_attr( $siqo_table_id ); ?>" data-expires="<?php echo esc_attr( $siqo_expires ); ?>">
