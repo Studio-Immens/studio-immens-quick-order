@@ -91,6 +91,10 @@ if ( $table_id_valid && ! $table_session_active ) {
 $table_arm_mode  = isset( $_GET['arm'] ) && '1' === sanitize_text_field( wp_unslash( $_GET['arm'] ) );
 $table_arm_panel = $table_arm_mode && $table_id_valid && class_exists( 'SIQO_Management' ) && SIQO_Management::can( 'manage_tables' );
 
+if ( $table_arm_mode ) {
+	nocache_headers();
+}
+
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
 		<script type="text/javascript">
 			jQuery(window).on('load', function() {

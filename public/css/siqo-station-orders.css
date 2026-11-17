@@ -350,6 +350,53 @@
     margin-left: auto;
 }
 
+#siqo-station-orders .siqo-order-approval {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    padding: 10px 14px;
+    border-top: 1px solid #f0e6da;
+    background: #fdf3e7;
+}
+
+#siqo-station-orders .siqo-order-approval-head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+#siqo-station-orders .siqo-order-approval-title {
+    color: var(--siqo-station-terracotta);
+    font-size: 12px;
+    font-weight: 850;
+}
+
+#siqo-station-orders .siqo-order-approval-status {
+    color: var(--siqo-station-muted);
+    font-size: 10px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+#siqo-station-orders .siqo-order-approval-status:empty {
+    display: none;
+}
+
+#siqo-station-orders .siqo-order-approval-status.is-error {
+    color: #8f3b27;
+    font-weight: 700;
+}
+
+#siqo-station-orders .siqo-order-approval-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
 #siqo-station-orders .siqo-station-action {
     height: 36px;
     padding: 0 13px;
@@ -489,6 +536,10 @@
 
     #siqo-station-orders .siqo-station-order-foot {
         padding: 9px 11px 11px;
+    }
+
+    #siqo-station-orders .siqo-order-approval {
+        padding: 9px 11px;
     }
 
     #siqo-station-orders .siqo-station-action {

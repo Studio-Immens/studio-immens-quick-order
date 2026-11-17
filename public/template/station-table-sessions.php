@@ -15,7 +15,25 @@ function siqo_table_session_ajax() {
 	}
 
 	$table_id = isset( $_POST['table_id'] ) ? absint( wp_unslash( $_POST['table_id'] ) ) : 0;
-	$action   = isset( $_POST['do'] ) ? sanitize_key( wp_unslash( $_POST['do'] ) ) : 'open';
+
+	$hook   = preg_replace( '/^wp_ajax_(?:nopriv_)?/', '', (string) current_action() );
+	$action = '';
+	if ( 'siqo_table_open' === $hook ) {
+		$action = 'open';
+	} elseif ( 'siqo_table_close' === $hook ) {
+		$action = 'close';
+	}
+
+	if ( '' === $action ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
+	if ( isset( $_POST['do'] ) ) {
+		$posted_action = sanitize_key( wp_unslash( $_POST['do'] ) );
+		if ( ! in_array( $posted_action, array( 'open', 'close' ), true ) || $posted_action !== $action ) {
+			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+		}
+	}
 
 	if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) ) {
 		wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
@@ -67,6 +85,13 @@ function siqo_table_session_render_bar() {
 		)
 	);
 	$active_ids = class_exists( 'SIQO_Table_Sessions' ) ? SIQO_Table_Sessions::active_table_ids() : array();
+	$expiries   = array();
+	foreach ( $active_ids as $active_id ) {
+		$active_session = SIQO_Table_Sessions::get_active_for_table( $active_id );
+		if ( $active_session ) {
+			$expiries[ (int) $active_id ] = $active_session->expires_at;
+		}
+	}
 
 	ob_start();
 	?>
@@ -86,14 +111,19 @@ function siqo_table_session_render_bar() {
 			<ul class="siqo-table-grid">
 				<?php foreach ( $tables as $siqo_table ) : ?>
 					<?php
-					$siqo_active = in_array( (int) $siqo_table->ID, $active_ids, true );
+					$siqo_table_id = (int) $siqo_table->ID;
+					$siqo_active   = in_array( $siqo_table_id, $active_ids, true );
+					$siqo_expires  = $siqo_active && isset( $expiries[ $siqo_table_id ] ) ? (string) $expiries[ $siqo_table_id ] : '';
+					$siqo_label    = $siqo_active
+						? sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), $siqo_expires ? wp_date( 'H:i', strtotime( $siqo_expires . ' UTC' ) ) : '' )
+						: __( 'Non attivo', 'studio-immens-quick-order' );
 					?>
-					<li class="siqo-table-chip<?php echo $siqo_active ? ' is-active' : ''; ?>" data-table-id="<?php echo esc_attr( $siqo_table->ID ); ?>">
+					<li class="siqo-table-chip<?php echo $siqo_active ? ' is-active' : ''; ?>" data-table-id="<?php echo esc_attr( $siqo_table_id ); ?>" data-expires="<?php echo esc_attr( $siqo_expires ); ?>">
 						<span class="siqo-table-chip-body">
 							<span class="siqo-table-chip-name"><?php echo esc_html( $siqo_table->post_title ); ?></span>
-							<span class="siqo-table-chip-status"><?php echo $siqo_active ? esc_html__( 'Attivo', 'studio-immens-quick-order' ) : esc_html__( 'Non attivo', 'studio-immens-quick-order' ); ?></span>
+							<span class="siqo-table-chip-status"><?php echo esc_html( $siqo_label ); ?></span>
 						</span>
-						<button type="button" class="siqo-table-toggle<?php echo $siqo_active ? ' is-close' : ' is-open'; ?>" data-do="<?php echo $siqo_active ? 'close' : 'open'; ?>">
+						<button type="button" class="siqo-table-toggle<?php echo $siqo_active ? ' is-close' : ' is-open'; ?>" data-do="<?php echo $siqo_active ? 'close' : 'open'; ?>" aria-pressed="<?php echo $siqo_active ? 'true' : 'false'; ?>">
 							<?php echo $siqo_active ? esc_html__( 'Chiudi', 'studio-immens-quick-order' ) : esc_html__( 'Apri', 'studio-immens-quick-order' ); ?>
 						</button>
 					</li>

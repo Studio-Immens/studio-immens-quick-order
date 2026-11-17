@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/template/station-table-sessions.php';
 
-define( 'SIQO_STATION_VERSION', '1.0.1' );
+define( 'SIQO_STATION_VERSION', '1.0.2' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
@@ -259,6 +259,99 @@ function siqo_station_ajax_update_status() {
 			'station'  => $station,
 			'status'   => $status,
 			'label'    => siqo_station_status_label( $status ),
+		)
+	);
+}
+
+add_action( 'wp_ajax_siqo_order_approve', 'siqo_order_approval_ajax' );
+add_action( 'wp_ajax_siqo_order_reject', 'siqo_order_approval_ajax' );
+add_action( 'wp_ajax_nopriv_siqo_order_approve', 'siqo_order_approval_ajax' );
+add_action( 'wp_ajax_nopriv_siqo_order_reject', 'siqo_order_approval_ajax' );
+function siqo_order_approval_ajax() {
+	$hook      = preg_replace( '/^wp_ajax_(?:nopriv_)?/', '', (string) current_action() );
+	$operation = '';
+	if ( 'siqo_order_approve' === $hook ) {
+		$operation = 'approve';
+	} elseif ( 'siqo_order_reject' === $hook ) {
+		$operation = 'reject';
+	}
+
+	if ( '' === $operation ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
+	if ( ! isset( $_POST['_siqo_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_siqo_nonce'] ) ), 'siqo_order_approval' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+
+	$order_id = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
+	$decision = isset( $_POST['decision'] ) ? sanitize_key( wp_unslash( $_POST['decision'] ) ) : '';
+
+	if ( ! in_array( $decision, array( 'approve', 'reject' ), true ) || $decision !== $operation ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
+	$order = ( $order_id && function_exists( 'wc_get_order' ) ) ? wc_get_order( $order_id ) : false;
+	if ( ! $order ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine non trovato.', 'studio-immens-quick-order' ) ), 404 );
+	}
+
+	if ( 'pending' !== $order->get_meta( '_siqo_approval' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+	}
+
+	$session_id = (int) $order->get_meta( '_siqo_session_id' );
+	$session    = ( $session_id && class_exists( 'SIQO_Table_Sessions' ) ) ? SIQO_Table_Sessions::get( $session_id ) : null;
+
+	if ( 'approve' === $operation ) {
+		$order->update_meta_data( '_siqo_approval', 'approved' );
+		$order->update_status( 'processing', __( 'Ordine confermato dall\'operatore.', 'studio-immens-quick-order' ) );
+		$order->save();
+
+		if ( $session ) {
+			global $wpdb;
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					$session_id
+				)
+			);
+		}
+
+		do_action( 'siqo_order_approved', $order_id );
+
+		wp_send_json_success(
+			array(
+				'order_id' => $order_id,
+				'approval' => 'approved',
+			)
+		);
+	}
+
+	$order->update_meta_data( '_siqo_approval', 'rejected' );
+	$order->update_status( 'cancelled', __( 'Ordine rifiutato dall\'operatore.', 'studio-immens-quick-order' ) );
+	$order->save();
+
+	if ( $session ) {
+		global $wpdb;
+		$new_total = max( 0, round( (float) $session->session_total - (float) $order->get_total(), 2 ) );
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = %f WHERE id = %d AND status = 'awaiting_approval'",
+				$new_total,
+				$session_id
+			)
+		);
+	}
+
+	wp_send_json_success(
+		array(
+			'order_id' => $order_id,
+			'approval' => 'rejected',
 		)
 	);
 }
@@ -608,6 +701,21 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<?php if ( 'pending' === $order->get_meta( '_siqo_approval' ) ) : ?>
+			<div class="siqo-order-approval"
+				data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
+				data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_order_approval' ) ); ?>">
+				<div class="siqo-order-approval-head">
+					<strong class="siqo-order-approval-title"><?php esc_html_e( 'Da confermare', 'studio-immens-quick-order' ); ?></strong>
+					<span class="siqo-order-approval-status" role="status" aria-live="polite"></span>
+				</div>
+				<div class="siqo-order-approval-actions">
+					<button type="button" class="siqo-station-action siqo-approve" data-order-id="<?php echo esc_attr( $order_id ); ?>"><?php esc_html_e( 'Conferma', 'studio-immens-quick-order' ); ?></button>
+					<button type="button" class="siqo-station-action siqo-station-action--reset siqo-reject" data-order-id="<?php echo esc_attr( $order_id ); ?>"><?php esc_html_e( 'Rifiuta', 'studio-immens-quick-order' ); ?></button>
+				</div>
+			</div>
+		<?php endif; ?>
 
 		<footer class="siqo-station-order-foot">
 			<span class="siqo-station-total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
