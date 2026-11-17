@@ -3337,7 +3337,7 @@ body.siqo-story-open {
 }
 
 
-/* Round usabilit‡: temperature, modifiche, storico, disposizione */
+/* Round usabilit√†: temperature, modifiche, storico, disposizione */
 #SIQO_Front_Content .FO_flash_tab_temperature .fo_button_thin.is-selected,
 #SIQO_Front_Content .FO_flash_tab_temperature .fo_button_thin:has(input:checked) {
     background: var(--siqo-terracotta) !important;
@@ -3464,6 +3464,12 @@ body.siqo-story-open {
     #SIQO_Front_Content .fo_tab_col_2[fo_show="show"],
     #SIQO_Front_Content .fo_tab_col_3[fo_show="show"] {
         z-index: 1500 !important;
-        padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+        padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
+    }
+
+    /* Il footer resta cliccabile sopra il pannello varianti */
+    .FO_flash_tab_footer {
+        position: relative;
+        z-index: 1600;
     }
 }

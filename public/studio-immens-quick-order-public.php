@@ -4120,6 +4120,14 @@ if (isset($_POST['foserialmap'])) {
 					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_temperature-'.$index, $index.' | '.$element );
 				}
 			}
+			if (isset($item['Temperature'])) {
+				$temp_key = sanitize_text_field( (string) array_key_first( $item['Temperature'] ) );
+				$temp_val = sanitize_text_field( (string) array_values( $item['Temperature'] )[0] );
+				if ( '' !== $temp_key && '' !== $temp_val ) {
+					$info_string['siqo_temperatures'][$temp_key] = $temp_val;
+					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$temp_key.'_temperature-'.$temp_key, $temp_key.' | '.$temp_val );
+				}
+			}
 			if (isset($item['searched'])) {
 				$info_string['searched'] = sanitize_text_field( array_values( $item['searched'] )[0] );
 			}
@@ -4394,7 +4402,7 @@ do_action( 'SIQO_flash_tab_order_ajax', $order_id );
 			// 'post' => $_POST,
 			'table_id' => $table_id,
 			'order_id'=> wp_json_encode($order_id),
-			'order_date' => $order->get_date_created() ? date_i18n( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
+			'order_date' => $order->get_date_created() ? wp_date( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
 			'order_total'=> (string)$order->get_total(),
 			'price_array' => $price_array,
 			// 'vari_arr' => $vari_arr
@@ -4404,7 +4412,7 @@ do_action( 'SIQO_flash_tab_order_ajax', $order_id );
 		wp_send_json(array(
 			'table_id' => $table_id,
 			'order_id'=> wp_json_encode($order_id),
-			'order_date' => $order->get_date_created() ? date_i18n( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
+			'order_date' => $order->get_date_created() ? wp_date( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
 			'order_total'=> (string)$order->get_total(),
 			//'price_array' => $price_array,
 		));

@@ -2106,7 +2106,7 @@ function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flas
 
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'" ][fo_status="Loading"]').attr('fo_order_id', response.order_id);
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').attr('onclick', 'fo_filter_tab_story(this,`'+response.order_id+'`)');
-			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').html( '<span class="siqo-history-id">#'+response.order_id+'</span><span class="siqo-history-date">'+(response.order_date || '')+'</span>' );
+			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').html( '<span class="siqo-history-id">#'+response.order_id+'</span> <span class="siqo-history-date">'+(response.order_date || '')+'</span>' );
 
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'" ][fo_status="Loading"]').attr('fo_status', 'completed');
 
