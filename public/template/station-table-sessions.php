@@ -22,6 +22,8 @@ function siqo_table_session_ajax() {
 		$action = 'open';
 	} elseif ( 'siqo_table_close' === $hook ) {
 		$action = 'close';
+	} elseif ( 'siqo_tables_close_all' === $hook ) {
+		$action = 'close_all';
 	}
 
 	if ( '' === $action ) {
@@ -30,9 +32,29 @@ function siqo_table_session_ajax() {
 
 	if ( isset( $_POST['do'] ) ) {
 		$posted_action = sanitize_key( wp_unslash( $_POST['do'] ) );
-		if ( ! in_array( $posted_action, array( 'open', 'close' ), true ) || $posted_action !== $action ) {
+		$allowed_do    = 'close_all' === $action ? array( 'close_all' ) : array( 'open', 'close' );
+		if ( ! in_array( $posted_action, $allowed_do, true ) || $posted_action !== $action ) {
 			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
 		}
+	}
+
+	if ( 'close_all' === $action ) {
+		$closed = SIQO_Table_Sessions::close_all();
+		if ( $closed > 0 ) {
+			$message = sprintf(
+				/* translators: %d: number of closed tables. */
+				_n( '%d tavolo chiuso.', '%d tavoli chiusi.', $closed, 'studio-immens-quick-order' ),
+				$closed
+			);
+		} else {
+			$message = __( 'Nessun tavolo attivo da chiudere.', 'studio-immens-quick-order' );
+		}
+		wp_send_json_success(
+			array(
+				'closed'  => (int) $closed,
+				'message' => $message,
+			)
+		);
 	}
 
 	if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) ) {
@@ -67,6 +89,7 @@ function siqo_table_session_ajax() {
 }
 add_action( 'wp_ajax_siqo_table_open', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_table_close', 'siqo_table_session_ajax' );
+add_action( 'wp_ajax_siqo_tables_close_all', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_nopriv_siqo_table_open', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_nopriv_siqo_table_close', 'siqo_table_session_ajax' );
 
@@ -99,10 +122,18 @@ function siqo_table_session_render_bar() {
 		data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 		data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
 		data-label-open="<?php esc_attr_e( 'Apri', 'studio-immens-quick-order' ); ?>"
-		data-label-close="<?php esc_attr_e( 'Chiudi', 'studio-immens-quick-order' ); ?>">
+		data-label-close="<?php esc_attr_e( 'Chiudi', 'studio-immens-quick-order' ); ?>"
+		data-confirm-close-all="<?php esc_attr_e( 'Chiudere tutti i tavoli attivi?', 'studio-immens-quick-order' ); ?>">
 		<div class="siqo-table-session-head">
-			<h2 class="siqo-table-session-title"><?php esc_html_e( 'Tavoli', 'studio-immens-quick-order' ); ?></h2>
-			<p class="siqo-table-session-help"><?php esc_html_e( 'Apri un tavolo per permettere agli ospiti di ordinare dal menù.', 'studio-immens-quick-order' ); ?></p>
+			<div class="siqo-table-session-head-text">
+				<h2 class="siqo-table-session-title"><?php esc_html_e( 'Tavoli', 'studio-immens-quick-order' ); ?></h2>
+				<p class="siqo-table-session-help"><?php esc_html_e( 'Apri un tavolo per permettere agli ospiti di ordinare dal menù.', 'studio-immens-quick-order' ); ?></p>
+			</div>
+			<?php if ( ! empty( $tables ) ) : ?>
+				<button type="button" class="siqo-table-close-all" data-table-close-all<?php disabled( empty( $active_ids ) ); ?>>
+					<?php esc_html_e( 'Chiudi tutti', 'studio-immens-quick-order' ); ?>
+				</button>
+			<?php endif; ?>
 		</div>
 
 		<?php if ( empty( $tables ) ) : ?>

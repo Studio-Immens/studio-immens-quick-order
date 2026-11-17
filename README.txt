@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.7
+Stable tag: 1.1.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -94,6 +94,14 @@ Yes. English and Italian translations are included. The plugin is translation-re
 5. Style customization page with CSS variable controls
 
 == Changelog ==
+
+= 1.1.8 =
+* Added per-table keys so each QR code opens the menu with its own table preselected
+* Added table sessions with expiry, order limits and automatic closing on payment
+* Added first-order approval: the first order of a session waits for an operator before printing
+* Deferred printing until approval, then printed through the configured print rules
+* Added the order author badge on station cards and documents
+* Added "Chiudi tutti" to close every active table session at once, with the closed count
 
 = 1.1.7 =
 * Open the active staff navigation group by default so "Tavoli" is visible on /gestione/ without hovering "Sala"

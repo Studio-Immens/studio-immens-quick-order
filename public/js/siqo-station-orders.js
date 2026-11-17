@@ -269,6 +269,11 @@
                 }
 
                 setTableBarStatus(bar, isActive ? 'Tavolo aperto.' : 'Tavolo chiuso.', false);
+
+                var closeAll = bar.querySelector('[data-table-close-all]');
+                if (closeAll) {
+                    closeAll.disabled = !bar.querySelector('.siqo-table-chip.is-active');
+                }
             })
             .catch(function (error) {
                 setTableBarStatus(bar, error.message || 'Errore di comunicazione.', true);
@@ -278,7 +283,81 @@
             });
     }
 
+    function closeAllTables(button) {
+        var bar = button.closest('.siqo-table-session-bar');
+        if (!bar || button.disabled) {
+            return;
+        }
+
+        if (!bar.querySelector('.siqo-table-chip.is-active')) {
+            setTableBarStatus(bar, 'Nessun tavolo attivo.', false);
+            return;
+        }
+
+        var confirmMessage = bar.getAttribute('data-confirm-close-all') || 'Chiudere tutti i tavoli attivi?';
+        if (!window.confirm(confirmMessage)) {
+            return;
+        }
+
+        var endpoint = bar.getAttribute('data-ajax-url') || ajaxUrl;
+        var labelOpen = bar.getAttribute('data-label-open') || 'Apri';
+        var body = new FormData();
+
+        body.append('action', 'siqo_tables_close_all');
+        body.append('_siqo_nonce', bar.getAttribute('data-nonce') || '');
+
+        button.disabled = true;
+        setTableBarStatus(bar, 'Chiusura…', false);
+
+        fetch(endpoint, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                if (!json || !json.success) {
+                    throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+                }
+
+                Array.prototype.forEach.call(bar.querySelectorAll('.siqo-table-chip'), function (chip) {
+                    chip.classList.remove('is-active');
+                    chip.setAttribute('data-expires', '');
+
+                    var toggle = chip.querySelector('.siqo-table-toggle');
+                    if (toggle) {
+                        toggle.setAttribute('data-do', 'open');
+                        toggle.setAttribute('aria-pressed', 'false');
+                        toggle.classList.remove('is-close');
+                        toggle.classList.add('is-open');
+                        toggle.textContent = labelOpen;
+                    }
+
+                    var statusLabel = chip.querySelector('.siqo-table-chip-status');
+                    if (statusLabel) {
+                        statusLabel.textContent = 'Non attivo';
+                    }
+                });
+
+                setTableBarStatus(bar, json.data.message || ((json.data.closed || 0) + ' tavoli chiusi.'), false);
+            })
+            .catch(function (error) {
+                setTableBarStatus(bar, error.message || 'Errore di comunicazione.', true);
+            })
+            .then(function () {
+                button.disabled = !bar.querySelector('.siqo-table-chip.is-active');
+            });
+    }
+
     root.addEventListener('click', function (event) {
+        var closeAllButton = event.target.closest('[data-table-close-all]');
+        if (closeAllButton) {
+            closeAllTables(closeAllButton);
+            return;
+        }
+
         var approvalButton = event.target.closest('.siqo-approve, .siqo-reject');
         if (approvalButton) {
             handleApproval(approvalButton);

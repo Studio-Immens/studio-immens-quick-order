@@ -6,10 +6,51 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/template/station-table-sessions.php';
 
-define( 'SIQO_STATION_VERSION', '1.0.3' );
+define( 'SIQO_STATION_VERSION', '1.0.4' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
+
+/**
+ * Close the table session behind a paid order.
+ *
+ * The table payment flow (FO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
+ * $clear = true) fires `siqo_table_paid`; gateways that mark an order as paid fire
+ * `woocommerce_payment_complete`. Both carry the order's `_siqo_session_id`, so the
+ * session is the source of truth and closing it twice is a no-op.
+ *
+ * `woocommerce_order_status_processing` is intentionally NOT hooked: approving the
+ * first order moves it to `processing` while the table must stay open.
+ *
+ * @param int $order_id Order ID.
+ * @return bool True when a table session was closed by this call.
+ */
+function siqo_station_close_paid_table_session( $order_id ) {
+	$order_id = absint( $order_id );
+	if ( ! $order_id || ! class_exists( 'SIQO_Table_Sessions' ) || ! function_exists( 'wc_get_order' ) ) {
+		return false;
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return false;
+	}
+
+	$session_id = (int) $order->get_meta( '_siqo_session_id' );
+	if ( ! $session_id ) {
+		return false;
+	}
+
+	$session = SIQO_Table_Sessions::get( $session_id );
+	if ( ! $session || ! in_array( (string) $session->status, array( 'open', 'awaiting_approval' ), true ) ) {
+		return false;
+	}
+
+	SIQO_Table_Sessions::close( (int) $session->table_id, 'closed' );
+	return true;
+}
+add_action( 'siqo_table_paid', 'siqo_station_close_paid_table_session', 20, 1 );
+add_action( 'woocommerce_payment_complete', 'siqo_station_close_paid_table_session', 20, 1 );
 
 add_action( 'init', 'siqo_station_register_taxonomy', 0 );
 function siqo_station_register_taxonomy() {

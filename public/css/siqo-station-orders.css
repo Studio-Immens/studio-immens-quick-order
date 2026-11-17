@@ -574,6 +574,44 @@
     margin-bottom: 12px;
 }
 
+#siqo-station-orders .siqo-table-session-head-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+#siqo-station-orders .siqo-table-close-all {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 999px;
+    background: #efe4d7;
+    color: var(--siqo-station-espresso);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 150ms ease, color 150ms ease, transform 150ms ease, opacity 150ms ease;
+}
+
+#siqo-station-orders .siqo-table-close-all:hover {
+    transform: translateY(-1px);
+}
+
+#siqo-station-orders .siqo-table-close-all:active {
+    transform: translateY(1px);
+}
+
+#siqo-station-orders .siqo-table-close-all:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+}
+
+
 #siqo-station-orders .siqo-table-session-title {
     margin: 0;
     color: var(--siqo-station-espresso);
