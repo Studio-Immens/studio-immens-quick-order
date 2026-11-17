@@ -11,11 +11,75 @@ class SIQO_Table_Sessions {
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'maybe_install' ) );
+		add_action( 'init', array( __CLASS__, 'maybe_backfill_keys' ), 20 );
+		add_action( 'save_post_siqo_tables', array( __CLASS__, 'on_save_table' ), 10, 3 );
 		add_action( 'siqo_table_session_gc', array( __CLASS__, 'gc' ) );
 
 		if ( ! wp_next_scheduled( 'siqo_table_session_gc' ) ) {
 			wp_schedule_event( time() + 300, 'hourly', 'siqo_table_session_gc' );
 		}
+	}
+
+	public static function ensure_key( $table_id ) {
+		$table_id = absint( $table_id );
+		$key      = get_post_meta( $table_id, '_siqo_table_key', true );
+		if ( $key && preg_match( '/^[a-z0-9]{12}$/', $key ) ) {
+			return $key;
+		}
+		$key = strtolower( wp_generate_password( 12, false, false ) );
+		update_post_meta( $table_id, '_siqo_table_key', $key );
+		return $key;
+	}
+
+	public static function key_for_table( $table_id ) {
+		return self::ensure_key( $table_id );
+	}
+
+	public static function find_table_by_key( $key ) {
+		$key = preg_replace( '/[^a-z0-9]/', '', strtolower( (string) $key ) );
+		if ( 12 !== strlen( $key ) ) {
+			return 0;
+		}
+		$found = get_posts(
+			array(
+				'post_type'      => 'siqo_tables',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_key'       => '_siqo_table_key',
+				'meta_value'     => $key,
+			)
+		);
+		return $found ? (int) $found[0] : 0;
+	}
+
+	public static function table_url( $table_id ) {
+		$page = get_page_by_path( 'quick-menu' );
+		$base = $page ? get_permalink( $page ) : home_url( '/quick-menu/' );
+		return add_query_arg( 't', self::ensure_key( $table_id ), $base );
+	}
+
+	public static function maybe_backfill_keys() {
+		if ( '1' === get_option( 'siqo_table_keys_backfill' ) ) {
+			return;
+		}
+		$tables = get_posts(
+			array(
+				'post_type'      => 'siqo_tables',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			)
+		);
+		foreach ( $tables as $table_id ) {
+			self::ensure_key( $table_id );
+		}
+		update_option( 'siqo_table_keys_backfill', '1', false );
+	}
+
+	public static function on_save_table( $post_id, $post, $update ) {
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		self::ensure_key( $post_id );
 	}
 
 	public static function table_name() {
