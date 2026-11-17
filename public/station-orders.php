@@ -12,6 +12,43 @@ define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
 
 /**
+ * Un ordine in attesa di approvazione pagato non deve restare bloccato.
+ *
+ * Il flusso di pagamento porta l'ordine fuori dagli stati accettati dal
+ * gestore di approvazione (409) mentre Pro non stampa gli ordini `pending`:
+ * soldi incassati, nulla stampato. Al pagamento lo stato viene quindi
+ * promosso ad `approved` e viene emesso `siqo_order_approved`, cosi' le
+ * regole di stampa esistenti possono girare. Questo callback non stampa
+ * nulla direttamente ed e' idempotente (agisce solo su `pending`).
+ *
+ * @param int $order_id       Order ID.
+ * @param int $table_id       Unused, kept for the hook signature.
+ * @param int $table_name_cpt Unused, kept for the hook signature.
+ * @return void
+ */
+function siqo_station_auto_approve_paid_order( $order_id, $table_id = 0, $table_name_cpt = 0 ) {
+	$order_id = absint( $order_id );
+	if ( ! $order_id || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+
+	if ( 'pending' !== (string) $order->get_meta( '_siqo_approval' ) ) {
+		return;
+	}
+
+	$order->update_meta_data( '_siqo_approval', 'approved' );
+	$order->add_order_note( __( 'Approvato automaticamente al pagamento.', 'studio-immens-quick-order' ) );
+	$order->save();
+
+	do_action( 'siqo_order_approved', $order_id );
+}
+
+/**
  * Close the table session behind a paid order.
  *
  * The table payment flow (FO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
@@ -59,6 +96,8 @@ function siqo_station_close_paid_table_session( $order_id, $table_id = 0, $table
 
 	return false;
 }
+add_action( 'siqo_table_paid', 'siqo_station_auto_approve_paid_order', 15, 3 );
+add_action( 'woocommerce_payment_complete', 'siqo_station_auto_approve_paid_order', 15, 1 );
 add_action( 'siqo_table_paid', 'siqo_station_close_paid_table_session', 20, 3 );
 add_action( 'woocommerce_payment_complete', 'siqo_station_close_paid_table_session', 20, 1 );
 

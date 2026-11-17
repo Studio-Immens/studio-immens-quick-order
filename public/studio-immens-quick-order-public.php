@@ -3884,6 +3884,12 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = fal
 		if ( ! $requested_table_id || 'siqo_tables' !== get_post_type( $requested_table_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Seleziona un tavolo attivo prima di ordinare.', 'studio-immens-quick-order' ) ), 400 );
 		}
+
+		$siqo_table_key     = isset( $_POST['t'] ) ? sanitize_text_field( wp_unslash( $_POST['t'] ) ) : '';
+		$siqo_key_table_id  = ( $siqo_table_key && class_exists( 'SIQO_Table_Sessions' ) ) ? (int) SIQO_Table_Sessions::find_table_by_key( $siqo_table_key ) : 0;
+		if ( ! $siqo_table_key || ! $siqo_key_table_id || $siqo_key_table_id !== (int) $requested_table_id ) {
+			wp_send_json_error( array( 'message' => __( 'Tavolo non valido: scansiona il QR del tavolo.', 'studio-immens-quick-order' ) ), 403 );
+		}
 	}
 
 	if ( $clear && $requested_table_id ) {

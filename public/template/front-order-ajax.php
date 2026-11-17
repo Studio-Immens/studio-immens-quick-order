@@ -39,6 +39,7 @@ $table_id_valid = 0;
 $table_name     = '';
 $table_notice   = '';
 $table_link_id  = '0';
+$table_key_id   = 0;
 $product_count  = 0;
 $table_session_active = false;
 
@@ -52,6 +53,7 @@ $table_link_key = isset( $_GET['t'] ) ? sanitize_text_field( wp_unslash( $_GET['
 if ( $table_link_key && class_exists( 'SIQO_Table_Sessions' ) ) {
 	$key_table_id = SIQO_Table_Sessions::find_table_by_key( $table_link_key );
 	if ( $key_table_id ) {
+		$table_key_id   = (int) $key_table_id;
 		$table_id_valid = (int) $key_table_id;
 		$table_name     = get_the_title( $key_table_id );
 	}
@@ -87,6 +89,9 @@ $table_session_active = ( $table_id_valid && class_exists( 'SIQO_Table_Sessions'
 if ( $table_id_valid && ! $table_session_active ) {
 	$table_notice = __( 'Questo tavolo non è ancora attivo. Chiama un operatore per farti aprire il tavolo.', 'studio-immens-quick-order' );
 }
+
+// La chiave va inviata col form solo quando ha risolto proprio il tavolo selezionato.
+$table_key_field = ( $table_link_key && $table_key_id && (int) $table_key_id === (int) $table_id_valid ) ? $table_link_key : '';
 
 $table_arm_mode  = isset( $_GET['arm'] ) && '1' === sanitize_text_field( wp_unslash( $_GET['arm'] ) );
 $table_arm_panel = $table_arm_mode && $table_id_valid && class_exists( 'SIQO_Management' ) && SIQO_Management::can( 'manage_tables' );
@@ -421,6 +426,7 @@ if ( $table_arm_mode ) {
 				$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
 				?>
 				<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="<?php echo esc_attr( $nonce ); ?>" />
+				<input type="hidden" name="t" value="<?php echo esc_attr( $table_key_field ); ?>" />
 
 				<p><?php esc_html_e( 'Varianti Prodotti', 'studio-immens-quick-order' );?>
 					<div id="FOProdNumber" style="margin-left:15px">0</div>

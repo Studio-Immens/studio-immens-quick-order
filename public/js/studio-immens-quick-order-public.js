@@ -1133,6 +1133,7 @@ console.log(foserialmap);
 		data: {
 		    action: 'SIQO_submit_order_ajax',
 		    nonce: siqo_ajax_view_orders_vars.nonce,
+		    t: jQuery('input[name="t"]').val(),
 		    table_id: jQuery('[name="table_name_cpt"]').val(),
 		    table_name_cpt: jQuery('[name="table_name_cpt"] option:selected').text().trim(),
 		    order_note: jQuery('#orderNote').val(),
