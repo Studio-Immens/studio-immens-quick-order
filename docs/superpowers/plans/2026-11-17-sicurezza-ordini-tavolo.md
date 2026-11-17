@@ -39,7 +39,7 @@
   - `SIQO_Table_Sessions::close_all(): int`
   - `SIQO_Table_Sessions::reserve_order( int $table_id, float $total = 0 ): object|WP_Error` (prenotazione atomica: count + intervallo + tetto importo)
   - `SIQO_Table_Sessions::register_order( int $session_id, float $total = 0 ): bool` (update condizionale atomico, usato da `reserve_order`)
-  - `SIQO_Table_Sessions::add_order_total( int $session_id, float $total ): void`
+  - `SIQO_Table_Sessions::add_order_total( int $session_id, float $total ): bool` (condizionale sul tetto importo)
   - `SIQO_Table_Sessions::gc(): int`
   - `SIQO_Table_Sessions::is_active( int $table_id ): bool`
 
@@ -240,13 +240,22 @@ class SIQO_Table_Sessions {
 
 	public static function add_order_total( $session_id, $total ) {
 		global $wpdb;
-		$wpdb->query(
+		$session = self::get( $session_id );
+		if ( ! $session ) {
+			return false;
+		}
+		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
+		$affected  = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET session_total = session_total + %f WHERE id = %d",
+				"UPDATE " . self::table_name() . " SET session_total = session_total + %f
+				 WHERE id = %d AND session_total + %f <= %f",
 				(float) $total,
-				absint( $session_id )
+				absint( $session_id ),
+				(float) $total,
+				$max_total
 			)
 		);
+		return 1 === (int) $affected;
 	}
 
 	public static function gc() {
@@ -570,11 +579,8 @@ Subito dopo `$order = wc_get_order( $order_id );` (~4231) e prima del ricalcolo 
 
 ```php
 	if ( 'customer_session' === $siqo_source && $siqo_session ) {
-		SIQO_Table_Sessions::add_order_total( $siqo_session->id, (float) $order->get_total() );
-		$siqo_fresh     = SIQO_Table_Sessions::get( $siqo_session->id );
-		$siqo_max_total = (float) apply_filters( 'siqo_order_max_total', SIQO_Table_Sessions::MAX_TOTAL, $siqo_fresh );
-		if ( $siqo_fresh && (float) $siqo_fresh->session_total > $siqo_max_total ) {
-			SIQO_Table_Sessions::add_order_total( $siqo_session->id, -1 * (float) $order->get_total() );
+		$siqo_added = SIQO_Table_Sessions::add_order_total( $siqo_session->id, (float) $order->get_total() );
+		if ( ! $siqo_added ) {
 			$order->update_meta_data( '_siqo_approval', 'rejected' );
 			$order->update_status( 'cancelled' );
 			$order->save();
@@ -586,7 +592,7 @@ Subito dopo `$order = wc_get_order( $order_id );` (~4231) e prima del ricalcolo 
 	}
 ```
 
-Se il tetto viene superato: l'importo viene riaccollato (sottratto), la sessione torna `open` (non resta bloccata in `awaiting_approval`) e l'ordine è annullato con `_siqo_approval = rejected`. Il contatore `orders_count` resta incrementato: overcount di 1, innocuo e voluto come valvola anti-abuso.
+`add_order_total()` è condizionale: somma l'importo solo se `session_total + importo <= max`, altrimenti ritorna `false` senza toccare il totale. Se fallisce: ordine annullato con `_siqo_approval = rejected`, sessione riportata a `open` (non resta bloccata in `awaiting_approval`), nessuna sottrazione da fare perché il totale non è stato modificato. Il contatore `orders_count` resta incrementato: overcount di 1, innocuo e voluto come valvola anti-abuso.
 
 - [ ] **Step 4: Lint + test manuale**
 
