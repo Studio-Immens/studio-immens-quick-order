@@ -40,11 +40,22 @@ $table_name     = '';
 $table_notice   = '';
 $table_link_id  = '0';
 $product_count  = 0;
+$table_session_active = false;
 
 foreach ( $products as $category_products ) {
 	$product_count += count( $category_products );
 }
 
+
+// Risoluzione del tavolo dalla chiave pubblica ?t=.
+$table_link_key = isset( $_GET['t'] ) ? sanitize_text_field( wp_unslash( $_GET['t'] ) ) : '';
+if ( $table_link_key && class_exists( 'SIQO_Table_Sessions' ) ) {
+	$key_table_id = SIQO_Table_Sessions::find_table_by_key( $table_link_key );
+	if ( $key_table_id ) {
+		$table_id_valid = (int) $key_table_id;
+		$table_name     = get_the_title( $key_table_id );
+	}
+}
 
 if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'SIQO_check_table_nonce' ) ) {
 // get table_id from link
@@ -70,6 +81,11 @@ if ( $table_link_id ) {
 	if ( ! $table_id_valid && '0' !== (string) $table_link_id ) {
 		$table_notice = __( 'Il tavolo richiesto non è disponibile. Selezionalo qui sotto.', 'studio-immens-quick-order' );
 	}
+}
+
+$table_session_active = ( $table_id_valid && class_exists( 'SIQO_Table_Sessions' ) ) ? SIQO_Table_Sessions::is_active( $table_id_valid ) : false;
+if ( $table_id_valid && ! $table_session_active ) {
+	$table_notice = __( 'Questo tavolo non è ancora attivo. Chiama un operatore per farti aprire il tavolo.', 'studio-immens-quick-order' );
 }
 
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
@@ -259,27 +275,24 @@ if ( $table_link_id ) {
 					<div id="FOProdNumber" style="margin-left:15px">0</div>
 				</p>
 
-				<?php if ( $net_info['is_local'] ) { ?>
-					<div id="table_input"> 
-						<?php if ( $table_notice ) { ?>
-							<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
+				<div id="table_input">
+					<?php if ( $table_notice ) { ?>
+						<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
+					<?php } ?>
+					<select class="fo-select" name="table_name_cpt">
+						<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
+						<?php foreach ($tavoli as $tavolo) { ?>
+							<?php $is_table_active = class_exists( 'SIQO_Table_Sessions' ) ? SIQO_Table_Sessions::is_active( $tavolo->ID ) : false; ?>
+							<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>>
+								<?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' — ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?>
+							</option>
 						<?php } ?>
-						<select class="fo-select" name="table_name_cpt">
-							<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
-							<?php foreach ($tavoli as $tavolo) { ?>
-								<option value="<?php echo esc_attr($tavolo->ID);?>"<?php selected( $table_id_valid, $tavolo->ID ); ?>>
-									<?php echo esc_attr($tavolo->post_title);?>
-								</option>
-							<?php } ?>
-						</select>
-					</div>
-				<?php } ?>
+					</select>
+				</div>
 
-				<?php if ( $net_info['is_local'] ) { ?>
-					<div class="FO_order_sub" id="submit_order" onclick="SIQO_validate_order_form_ajax(this);">
-						<?php esc_html_e( 'AVVIA ORDINE', 'studio-immens-quick-order' ); ?>
-					</div>
-				<?php } ?>
+				<div class="FO_order_sub" id="submit_order" onclick="SIQO_validate_order_form_ajax(this);">
+					<?php esc_html_e( 'AVVIA ORDINE', 'studio-immens-quick-order' ); ?>
+				</div>
 
 			</div>
 		</div>
