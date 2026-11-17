@@ -48,7 +48,7 @@ function SIQO_manage_table( $embedded = false ){
         if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
             <script type="text/javascript">
                 jQuery(window).on('load', function() {
-                    jQuery('header').css('display','none');
+                    jQuery('header').not('.siqo-app-header').css('display','none');
                 });
             </script>
         <?php }
@@ -56,7 +56,7 @@ function SIQO_manage_table( $embedded = false ){
         if (isset($settings->showFoot) && $settings->showFoot == 'no' ) { ?>
             <script type="text/javascript">
                 jQuery(window).on('load', function() {
-                    jQuery('footer').css('display','none');
+                    jQuery('footer').not('.siqo-story-foot').css('display','none');
                 });
             </script>
         <?php }
@@ -122,7 +122,7 @@ function SIQO_manage_table( $embedded = false ){
         <?php }?>
     <?php endif; ?>
 
-    <?php if ( ! $embedded && ! empty( $tavoli ) ) : ?>
+    <?php if ( ! empty( $tavoli ) ) : ?>
         <div class="siqo-plan-toolbar" data-plan-toolbar>
             <div class="siqo-plan-switch" role="group" aria-label="<?php esc_attr_e( 'Vista tavoli', 'studio-immens-quick-order' ); ?>">
                 <button type="button" class="is-active" data-plan-view="grid"><?php esc_html_e( 'Griglia', 'studio-immens-quick-order' ); ?></button>
@@ -217,7 +217,7 @@ function SIQO_manage_table( $embedded = false ){
         });
     </script>
 
-    <?php if ( ! $embedded && ! empty( $tavoli ) ) : ?>
+    <?php if ( ! empty( $tavoli ) ) : ?>
     <script type="text/javascript">
     (function () {
         var toolbar = document.querySelector('[data-plan-toolbar]');
@@ -234,6 +234,7 @@ function SIQO_manage_table( $embedded = false ){
         var nonceEl = document.getElementById('_siqononce_insert_post_ajax_nonce');
         var editing = false;
         var drag = null;
+        var suppressClick = false;
         var statusTimer = null;
 
         function setStatus(text, isError) {
@@ -290,6 +291,7 @@ function SIQO_manage_table( $embedded = false ){
                 editBtn.classList.remove('is-active');
                 editBtn.textContent = 'Modifica disposizione';
                 cards.forEach(function (card) {
+                    card.classList.remove('is-selected');
                     card.style.left = '';
                     card.style.top = '';
                     card.style.width = '';
@@ -351,8 +353,35 @@ function SIQO_manage_table( $embedded = false ){
             editBtn.textContent = editing ? 'Fine modifica' : 'Modifica disposizione';
             if (editing) {
                 setStatus('Trascina i tavoli per sistemare la sala', false);
+            } else {
+                cards.forEach(function (card) {
+                    card.classList.remove('is-selected');
+                });
             }
         });
+
+        plan.addEventListener('click', function (event) {
+            var card = event.target.closest('.fo_table_cell');
+            if (!card || !plan.contains(card)) {
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            if (suppressClick) {
+                suppressClick = false;
+                return;
+            }
+            if (editing) {
+                cards.forEach(function (item) {
+                    item.classList.toggle('is-selected', item === card);
+                });
+                return;
+            }
+            if (typeof window.SIQO_tab_Card_show === 'function') {
+                setView('grid');
+                window.SIQO_tab_Card_show(card);
+            }
+        }, true);
 
         plan.addEventListener('pointerdown', function (event) {
             if (!editing) {
@@ -406,6 +435,10 @@ function SIQO_manage_table( $embedded = false ){
             }
             drag = null;
             if (moved) {
+                suppressClick = true;
+                window.setTimeout(function () {
+                    suppressClick = false;
+                }, 400);
                 card.addEventListener('click', function (clickEvent) {
                     clickEvent.preventDefault();
                     clickEvent.stopPropagation();

@@ -1882,6 +1882,31 @@ function SIQO_create_post_QR_code_shortcode( $atts ) {
 }
 add_shortcode( 'siqo_qr_code', 'SIQO_create_post_QR_code_shortcode' );
 
+add_shortcode( 'siqo_table_qr', 'SIQO_table_qr_shortcode' );
+function SIQO_table_qr_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array( 'table' => 0, 'size' => 200 ),
+		$atts,
+		'siqo_table_qr'
+	);
+	$table_id = absint( $atts['table'] );
+	if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) || 'publish' !== get_post_status( $table_id ) ) {
+		return '';
+	}
+	$size = min( 600, max( 80, absint( $atts['size'] ) ) );
+	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/qrlib.php';
+	$url      = SIQO_Table_Sessions::table_url( $table_id );
+	$qr_dir   = SIQO_get_qr_dir();
+	$hash     = substr( md5( $url ), 0, 8 );
+	$filename = $qr_dir . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png';
+	$scale    = max( 1, min( 10, (int) round( $size / 20 ) ) );
+	if ( ! file_exists( $filename ) ) {
+		QRcode::png( $url, $filename, 'L', $scale, 2 );
+	}
+	$qr_url = esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/table_' . $table_id . '_' . $size . '_' . $hash . '.png' );
+	return '<img src="' . esc_attr( $qr_url ) . '" width="' . $size . '" height="' . $size . '" alt="' . esc_attr( get_the_title( $table_id ) ) . '">';
+}
+
 function SIQO_create_any_QR_code( $atts ) {
 // The file responsible for defining qr code generator library
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/qrlib.php';
@@ -3850,6 +3875,23 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = fal
 	if ( $verified && $requested_table_id && 'siqo_tables' !== get_post_type( $requested_table_id ) ) {
 		wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
 	}
+
+	$siqo_is_operator = ( ! $verified || $clear ) && class_exists( 'SIQO_Management' ) && SIQO_Management::can( 'manage_tables' );
+	$siqo_source      = $siqo_is_operator ? 'operator' : 'customer_session';
+	$siqo_reserved    = null;
+
+	if ( ! $siqo_is_operator ) {
+		if ( ! $requested_table_id || 'siqo_tables' !== get_post_type( $requested_table_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Seleziona un tavolo attivo prima di ordinare.', 'studio-immens-quick-order' ) ), 400 );
+		}
+
+		$siqo_table_key     = isset( $_POST['t'] ) ? sanitize_text_field( wp_unslash( $_POST['t'] ) ) : '';
+		$siqo_key_table_id  = ( $siqo_table_key && class_exists( 'SIQO_Table_Sessions' ) ) ? (int) SIQO_Table_Sessions::find_table_by_key( $siqo_table_key ) : 0;
+		if ( ! $siqo_table_key || ! $siqo_key_table_id || $siqo_key_table_id !== (int) $requested_table_id ) {
+			wp_send_json_error( array( 'message' => __( 'Tavolo non valido: scansiona il QR del tavolo.', 'studio-immens-quick-order' ) ), 403 );
+		}
+	}
+
 	if ( $clear && $requested_table_id ) {
 		global $wpdb;
 		$last_table = $wpdb->get_row( $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}siqo_tables WHERE table_id = %s ORDER BY last_update DESC, id DESC LIMIT 1", $requested_table_id ) );
@@ -3919,6 +3961,7 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = fal
 
 	$info_string = array(); $vari_arr = array(); 
 	$price_array = array(); $prod_args = array();
+	$siqo_order_items = array();
 $siqo_serialmap = isset( $_POST['foserialmap'] ) ? wp_json_encode( wp_unslash( $_POST['foserialmap'] ) ) : '';
 $order->update_meta_data( 'foserialmap', sanitize_text_field( $siqo_serialmap ) );
 $total_fee = 0.0;
@@ -4025,8 +4068,24 @@ if (isset($_POST['foserialmap'])) {
 				// 	$total = $total * $p_qty;
 				// 	$total = number_format((float)$total, 2, '.', '');
 				// }
-				$order->add_product( $product, $p_qty, ( null === $total ) ? array() : array('total'=>$total) );
+				$order_item = $order->add_product( $product, $p_qty, ( null === $total ) ? array() : array('total'=>$total) );
+				if ( $order_item && is_numeric( $order_item ) ) {
+					$order_item = $order->get_item( (int) $order_item );
+				}
+				if ( $order_item instanceof WC_Order_Item ) {
+					$siqo_order_items[ (string) $product_key ] = $order_item;
+				}
 				$info_string[sanitize_text_field(key($item['id']))] = sanitize_text_field(array_values($item['id'])[0]);
+			}
+			if (isset($item['item_note'])) {
+				$note_key  = sanitize_text_field( (string) key($item['item_note']) );
+				$item_note = sanitize_text_field( (string) array_values( $item['item_note'] )[0] );
+				if ( '' !== $item_note && isset( $siqo_order_items[ $note_key ] ) ) {
+					$siqo_order_items[ $note_key ]->add_meta_data( '_siqo_item_note', $item_note );
+					$siqo_order_items[ $note_key ]->save();
+				}
+				$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$note_key.'_modification-', $item_note );
+				$info_string['modification'][ $note_key ] = $item_note;
 			}
 			if (isset($item['note'])) {
 				$order->update_meta_data('{'.substr($pos,1).'}prod-'.sanitize_text_field(key($item['note'])).'_note-',sanitize_text_field(array_values($item['note'])[0]));
@@ -4059,6 +4118,14 @@ if (isset($_POST['foserialmap'])) {
 					$element = is_scalar( $element ) ? sanitize_text_field( (string) $element ) : '';
 					$info_string['siqo_temperatures'][$index] = $element;
 					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$index.'_temperature-'.$index, $index.' | '.$element );
+				}
+			}
+			if (isset($item['Temperature'])) {
+				$temp_key = sanitize_text_field( (string) array_key_first( $item['Temperature'] ) );
+				$temp_val = sanitize_text_field( (string) array_values( $item['Temperature'] )[0] );
+				if ( '' !== $temp_key && '' !== $temp_val ) {
+					$info_string['siqo_temperatures'][$temp_key] = $temp_val;
+					$order->update_meta_data( '{'.substr($pos,1).'}prod-'.$temp_key.'_temperature-'.$temp_key, $temp_key.' | '.$temp_val );
 				}
 			}
 			if (isset($item['searched'])) {
@@ -4181,10 +4248,51 @@ if ( ! $verified && $order->get_items()!=null) {
 	if ( $verified && 0 === count( $order->get_items() ) ) {
 		wp_send_json_error( array( 'message' => __( 'Ordine senza articoli validi.', 'studio-immens-quick-order' ) ), 400 );
 	}
-	$order->calculate_totals();	//Recalculate the totals. IMPORTANT!
-	$order->save();
+	if ( ! $siqo_is_operator ) {
+		$siqo_reserved = SIQO_Table_Sessions::reserve_order( $requested_table_id );
+		if ( is_wp_error( $siqo_reserved ) ) {
+			wp_send_json_error( array( 'message' => $siqo_reserved->get_error_message() ), 403 );
+		}
+	}
+	try {
+		$order->calculate_totals();	//Recalculate the totals. IMPORTANT!
+		$order->save();
+	} catch ( Exception $siqo_create_error ) {
+		if ( $siqo_reserved && ! is_wp_error( $siqo_reserved ) ) {
+			SIQO_Table_Sessions::release_order( (int) $siqo_reserved->id );
+		}
+		wp_send_json_error( array( 'message' => __( 'Impossibile creare l\'ordine. Riprova.', 'studio-immens-quick-order' ) ), 500 );
+	}
 
 	$order_id = $order->get_id();
+
+	$siqo_session  = $siqo_reserved ? $siqo_reserved : SIQO_Table_Sessions::get_active_for_table( $requested_table_id );
+	$siqo_approval = 'auto_approved';
+	if ( 'customer_session' === $siqo_source && $siqo_reserved && (int) $siqo_reserved->orders_count === 1 ) {
+		$siqo_approval = 'pending';
+	}
+	$order->update_meta_data( '_siqo_inserted_by', get_current_user_id() );
+	$order->update_meta_data( '_siqo_order_source', $siqo_source );
+	$order->update_meta_data( '_siqo_session_id', $siqo_session ? (int) $siqo_session->id : 0 );
+	$order->update_meta_data( '_siqo_approval', $siqo_approval );
+	$order->save();
+
+	if ( 'pending' === $siqo_approval && $siqo_session ) {
+		global $wpdb;
+		$siqo_transitioned = (int) $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'awaiting_approval' WHERE id = %d AND status IN ('open','awaiting_approval')",
+				(int) $siqo_session->id
+			)
+		);
+		if ( 0 === $siqo_transitioned ) {
+			$order->update_meta_data( '_siqo_approval', 'rejected' );
+			$order->update_status( 'cancelled', __( 'Sessione del tavolo non più attiva.', 'studio-immens-quick-order' ) );
+			$order->save();
+			SIQO_Table_Sessions::release_order( (int) $siqo_session->id );
+			wp_send_json_error( array( 'message' => __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
+		}
+	}
 
 	$siqo_previous_order_ids = array();
 	if ( ! empty( $info_string['orders'] ) && is_array( $info_string['orders'] ) ) {
@@ -4221,6 +4329,25 @@ if ( ! $verified && $order->get_items()!=null) {
 	}
 
 	$order = wc_get_order($order_id);
+
+	if ( 'customer_session' === $siqo_source && $siqo_session ) {
+		$siqo_added = SIQO_Table_Sessions::add_order_total( $siqo_session->id, (float) $order->get_total() );
+		if ( ! $siqo_added ) {
+			$order->update_meta_data( '_siqo_approval', 'rejected' );
+			$order->update_status( 'cancelled' );
+			$order->save();
+			SIQO_Table_Sessions::release_order( (int) $siqo_session->id );
+			global $wpdb;
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					(int) $siqo_session->id
+				)
+			);
+			$order->add_order_note( __( 'Annullato: superato il limite importo della sessione tavolo.', 'studio-immens-quick-order' ) );
+			wp_send_json_error( array( 'message' => __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
+		}
+	}
 
 	// if ($c_index == 1) {
 	// 	$order->set_customer_id($user_id);
@@ -4275,6 +4402,7 @@ do_action( 'SIQO_flash_tab_order_ajax', $order_id );
 			// 'post' => $_POST,
 			'table_id' => $table_id,
 			'order_id'=> wp_json_encode($order_id),
+			'order_date' => $order->get_date_created() ? wp_date( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
 			'order_total'=> (string)$order->get_total(),
 			'price_array' => $price_array,
 			// 'vari_arr' => $vari_arr
@@ -4284,6 +4412,7 @@ do_action( 'SIQO_flash_tab_order_ajax', $order_id );
 		wp_send_json(array(
 			'table_id' => $table_id,
 			'order_id'=> wp_json_encode($order_id),
+			'order_date' => $order->get_date_created() ? wp_date( 'd/m/Y H:i', $order->get_date_created()->getTimestamp() ) : '',
 			'order_total'=> (string)$order->get_total(),
 			//'price_array' => $price_array,
 		));
@@ -4615,6 +4744,11 @@ function FO_flash_tab_order( $tavoli = array() ){
 							foreach ((array)$story as $story_v) {
 								$order = wc_get_order( absint( $story_v ) );
 								if ( ! $order ) { continue; }
+								$history_dt = $order->get_date_created();
+								if ( ! $history_dt ) {
+									$history_dt = $order->get_date_paid();
+								}
+								$history_date = $history_dt ? $history_dt->date_i18n( 'd/m/Y H:i' ) : '';
 								?>
 								<div class="fo_button fo_story fo_order_table_story <?php if ($order->get_created_via()=='menu_ajax'){echo 'fo_story_menu_ajax';} ?>" fotableid="<?php echo esc_attr($tavolo->ID);?>"  ondblclick="siqo_change_order_status(<?php echo "'".esc_attr($order->get_id())."'";?>, 'processing' );" onclick="siqo_filter_tab_story(this,<?php echo "'".esc_attr($order->get_id())."'";?>)" fo_order_id="<?php echo esc_attr($order->get_id());?>" fo_order_total="<?php echo esc_attr($order->get_total());?>" fo_order_subtotal="<?php echo esc_attr($order->get_subtotal());?>"
 									fo_order_date_created="<?php echo esc_attr($order->get_date_created());?>"
@@ -4625,7 +4759,8 @@ function FO_flash_tab_order( $tavoli = array() ){
 									fo_order_created_via="<?php echo esc_attr($order->get_created_via());?>"
 									fo_order_customer_note="<?php echo esc_attr($order->get_customer_note());?>"
 									fo_order_status="<?php echo esc_attr($order->get_status());?>">
-									<?php echo esc_attr($order->get_id());?>
+									<span class="siqo-history-id">#<?php echo esc_attr($order->get_id());?></span>
+									<span class="siqo-history-date"><?php echo esc_html( $history_date );?></span>
 								</div>
 								<?php //fo_change_order_status
 							} 
@@ -4644,6 +4779,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 									$qty = (isset($meta_value['qty'])) ? $meta_value['qty'] : '';
 									$total = (isset($meta_value['total'])) ? $meta_value['total'] : '';
 									$note = (isset($meta_value['note'])) ? $meta_value['note'] : '';
+									$modification = (isset($meta_value['modification'])) ? $meta_value['modification'] : '';
 									$searched = (isset($meta_value['searched'])) ? $meta_value['searched'] : '';
 									$ingredient = (isset($meta_value['ingredient'])) ? $meta_value['ingredient'] : '';
 									$allergeni = (isset($meta_value['siqo_allergens'])) ? $meta_value['siqo_allergens'] : '';
@@ -4659,7 +4795,7 @@ function FO_flash_tab_order( $tavoli = array() ){
 									$slang_title = ( SIQOcheck(get_post_meta($prod_id,'slang_title') ) && get_post_meta($prod_id,'slang_title')[0]!='' )?get_post_meta($prod_id,'slang_title')[0]:$short_title;
 									$order_index++;
 									$style = '';
-										if ( SIQOcheck($temperature) || SIQOcheck($note) ) {
+										if ( SIQOcheck($temperature) || SIQOcheck($note) || SIQOcheck($modification) ) {
 											$style = 'background-color:var(--siqo-modified);';
 										}
 										?>
@@ -4667,6 +4803,9 @@ function FO_flash_tab_order( $tavoli = array() ){
 											<div class="FO_prod_name_manage fo_text_fix">
 												<?php echo esc_attr($slang_title);?>
 											</div>
+											<?php if ( $modification !== '' ) : ?>
+												<div class="siqo-row-item-note"><?php echo esc_html( $modification ); ?></div>
+											<?php endif; ?>
 											<div class="FO_prod_img" style="border-radius:5px;">
 												<?php echo wp_kses_post($product->get_image());?>
 											</div>
@@ -4677,11 +4816,12 @@ function FO_flash_tab_order( $tavoli = array() ){
 
 											<!-- <input fo_tab_target="siqo_allergens" type="hidden" name="[<?php echo esc_attr($meta_index);?>][Allergeni][<?php echo esc_attr($prod_id);?>]" value="<?php ?>"> -->
 
-											<input fo_tab_target="siqo_temperatures" type="hidden" name="[<?php echo esc_attr($meta_index);?>][Temperature][<?php echo esc_attr($prod_id);?>]" value="<?php echo esc_attr($temperature);?>">
+											<input fo_tab_target="Temperature" type="hidden" name="[<?php echo esc_attr($meta_index);?>][Temperature][<?php echo esc_attr($prod_id);?>]" value="<?php echo esc_attr($temperature);?>">
 
 											<input fo_tab_target="price" type="hidden" name="[<?php echo esc_attr($meta_index);?>][price][<?php echo esc_attr($prod_id);?>]" value="<?php echo esc_attr($total);?>">
 
 											<input fo_tab_target="note" type="hidden" name="[<?php echo esc_attr($meta_index);?>][note][<?php echo esc_attr($prod_id);?>]" value="<?php echo esc_attr($note);?>">
+											<input fo_tab_target="item_note" type="hidden" name="[<?php echo esc_attr($meta_index);?>][item_note][<?php echo esc_attr($prod_id);?>]" value="<?php echo esc_attr($modification);?>">
 											<?php 
 								// SIQO_debug($meta_data);
 								// SIQO_debug($meta_array);
@@ -4785,10 +4925,11 @@ function FO_flash_tab_order( $tavoli = array() ){
 								<input fo_tab_target="id" type="hidden" name="[id][<?php echo esc_attr($product->get_id());?>]" value="1">
 								<input fo_tab_target="qty" type="hidden" name="[qty][<?php echo esc_attr($product->get_id());?>]" value="1">
 								<input fo_tab_target="siqo_ingredients" type="hidden" name="[Ingredienti][<?php echo esc_attr($product->get_id());?>]" value="">
-								<input fo_tab_target="siqo_temperatures" type="hidden" name="[Temperature][<?php echo esc_attr($product->get_id());?>]" value="">
+								<input fo_tab_target="Temperature" type="hidden" name="[Temperature][<?php echo esc_attr($product->get_id());?>]" value="">
 								<input fo_tab_target="price" type="hidden" name="[price][<?php echo esc_attr($product->get_id());?>]" value="<?php echo esc_attr($product->get_price());?>" regularPrice="<?php echo esc_attr($product->get_price());?>" price_added="">
 
 								<input fo_tab_target="note" type="hidden" name="[note][<?php echo esc_attr($product->get_id());?>]" value="">
+								<input fo_tab_target="item_note" type="hidden" name="[item_note][<?php echo esc_attr($product->get_id());?>]" value="">
 								<?php 
 								$product_attr = $product->get_attributes();
 								foreach ($product_attr as $k => $v) {
@@ -4894,6 +5035,16 @@ function FO_flash_tab_order( $tavoli = array() ){
 					<script type="text/javascript">
 						jQuery('.fo_target_note_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_note(jQuery('.fo_target_note_prod'));
+						});
+					</script>
+				</div>
+
+				<div class="FO_flash_tab_item_note" style="display:none;">
+					<strong style="flex-basis:100%;"><?php esc_html_e('Modifiche','studio-immens-quick-order');?></strong>
+					<textarea class="fo_target_item_note_prod" oninput="siqo_tab_parse_item_note(this);" onchange="siqo_tab_parse_item_note(this);" placeholder="<?php esc_html_e('Modifiche del prodotto...','studio-immens-quick-order');?>"></textarea>
+					<script type="text/javascript">
+						jQuery('.fo_target_item_note_prod').on('DOMSubtreeModified', function(){
+						  siqo_tab_parse_item_note(jQuery('.fo_target_item_note_prod'));
 						});
 					</script>
 				</div>
@@ -6831,6 +6982,9 @@ function SIQO_extract_meta_object( $meta ){
 			}
 			if ( str_contains( (string)$value->meta_key, 'note' ) ) {
 				$array[$index]['note'] = $value->meta_value;
+			}
+			if ( str_contains( (string)$value->meta_key, 'modification' ) ) {
+				$array[$index]['modification'] = $value->meta_value;
 			}
 			if ( str_contains( (string)$value->meta_key, 'searched' ) ) {
 				$array[$index]['searched'] = $value->meta_value;

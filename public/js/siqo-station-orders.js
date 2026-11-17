@@ -154,7 +154,223 @@
         }
     }
 
+    async function handleApproval(button) {
+        var box = button.closest('.siqo-order-approval');
+        if (!box) {
+            return;
+        }
+
+        var buttons = box.querySelectorAll('.siqo-approve, .siqo-reject');
+        var status = box.querySelector('.siqo-order-approval-status');
+        var isApprove = button.classList.contains('siqo-approve');
+        var endpoint = box.getAttribute('data-ajax-url') || ajaxUrl;
+        var body = new FormData();
+
+        body.append('action', isApprove ? 'siqo_order_approve' : 'siqo_order_reject');
+        body.append('_siqo_nonce', box.getAttribute('data-nonce') || '');
+        body.append('order_id', button.getAttribute('data-order-id') || '');
+        body.append('decision', isApprove ? 'approve' : 'reject');
+
+        Array.prototype.forEach.call(buttons, function (node) {
+            node.disabled = true;
+        });
+
+        if (status) {
+            status.classList.remove('is-error');
+            status.textContent = 'Invio…';
+        }
+
+        try {
+            var response = await fetch(endpoint, {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: body
+            });
+            var json = await readJson(response);
+
+            if (!json || !json.success) {
+                throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+            }
+
+            window.location.reload();
+        } catch (error) {
+            var message = error.message || 'Errore di comunicazione.';
+
+            if (status) {
+                status.textContent = message;
+                status.classList.add('is-error');
+            } else {
+                window.alert(message);
+            }
+
+            Array.prototype.forEach.call(buttons, function (node) {
+                node.disabled = false;
+            });
+        }
+    }
+
+    function setTableBarStatus(bar, message, isError) {
+        var status = bar.querySelector('.siqo-table-session-status');
+        if (!status) {
+            return;
+        }
+        status.textContent = message || '';
+        status.classList.toggle('is-error', !!isError);
+    }
+
+    function toggleTable(button) {
+        var bar = button.closest('.siqo-table-session-bar');
+        var chip = button.closest('.siqo-table-chip');
+        if (!bar || !chip) {
+            return;
+        }
+
+        var doAction = button.getAttribute('data-do') === 'close' ? 'close' : 'open';
+        var labelOpen = bar.getAttribute('data-label-open') || 'Apri';
+        var labelClose = bar.getAttribute('data-label-close') || 'Chiudi';
+        var tableId = chip.getAttribute('data-table-id') || '';
+        var endpoint = bar.getAttribute('data-ajax-url') || ajaxUrl;
+        var body = new FormData();
+
+        body.append('action', doAction === 'close' ? 'siqo_table_close' : 'siqo_table_open');
+        body.append('_siqo_nonce', bar.getAttribute('data-nonce') || '');
+        body.append('table_id', tableId);
+        body.append('do', doAction);
+
+        button.disabled = true;
+        setTableBarStatus(bar, doAction === 'close' ? 'Chiusura…' : 'Apertura…', false);
+
+        fetch(endpoint, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                if (!json || !json.success) {
+                    throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+                }
+
+                var isActive = !!json.data.active;
+                var statusLabel = chip.querySelector('.siqo-table-chip-status');
+
+                chip.classList.toggle('is-active', isActive);
+                chip.setAttribute('data-expires', isActive ? (json.data.expires_at || '') : '');
+                button.setAttribute('data-do', isActive ? 'close' : 'open');
+                button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                button.classList.toggle('is-open', !isActive);
+                button.classList.toggle('is-close', isActive);
+                button.textContent = isActive ? labelClose : labelOpen;
+
+                if (statusLabel) {
+                    statusLabel.textContent = isActive ? (json.data.label || 'Attivo') : 'Non attivo';
+                }
+
+                setTableBarStatus(bar, isActive ? 'Tavolo aperto.' : 'Tavolo chiuso.', false);
+
+                var closeAll = bar.querySelector('[data-table-close-all]');
+                if (closeAll) {
+                    closeAll.disabled = !bar.querySelector('.siqo-table-chip.is-active');
+                }
+            })
+            .catch(function (error) {
+                setTableBarStatus(bar, error.message || 'Errore di comunicazione.', true);
+            })
+            .then(function () {
+                button.disabled = false;
+            });
+    }
+
+    function closeAllTables(button) {
+        var bar = button.closest('.siqo-table-session-bar');
+        if (!bar || button.disabled) {
+            return;
+        }
+
+        if (!bar.querySelector('.siqo-table-chip.is-active')) {
+            setTableBarStatus(bar, 'Nessun tavolo attivo.', false);
+            return;
+        }
+
+        var confirmMessage = bar.getAttribute('data-confirm-close-all') || 'Chiudere tutti i tavoli attivi?';
+        if (!window.confirm(confirmMessage)) {
+            return;
+        }
+
+        var endpoint = bar.getAttribute('data-ajax-url') || ajaxUrl;
+        var labelOpen = bar.getAttribute('data-label-open') || 'Apri';
+        var body = new FormData();
+
+        body.append('action', 'siqo_tables_close_all');
+        body.append('do', 'close_all');
+        body.append('_siqo_nonce', bar.getAttribute('data-nonce') || '');
+
+        button.disabled = true;
+        setTableBarStatus(bar, 'Chiusura…', false);
+
+        fetch(endpoint, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                if (!json || !json.success) {
+                    throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+                }
+
+                Array.prototype.forEach.call(bar.querySelectorAll('.siqo-table-chip'), function (chip) {
+                    chip.classList.remove('is-active');
+                    chip.setAttribute('data-expires', '');
+
+                    var toggle = chip.querySelector('.siqo-table-toggle');
+                    if (toggle) {
+                        toggle.setAttribute('data-do', 'open');
+                        toggle.setAttribute('aria-pressed', 'false');
+                        toggle.classList.remove('is-close');
+                        toggle.classList.add('is-open');
+                        toggle.textContent = labelOpen;
+                    }
+
+                    var statusLabel = chip.querySelector('.siqo-table-chip-status');
+                    if (statusLabel) {
+                        statusLabel.textContent = 'Non attivo';
+                    }
+                });
+
+                setTableBarStatus(bar, json.data.message || ((json.data.closed || 0) + ' tavoli chiusi.'), false);
+            })
+            .catch(function (error) {
+                setTableBarStatus(bar, error.message || 'Errore di comunicazione.', true);
+            })
+            .then(function () {
+                button.disabled = !bar.querySelector('.siqo-table-chip.is-active');
+            });
+    }
+
     root.addEventListener('click', function (event) {
+        var closeAllButton = event.target.closest('[data-table-close-all]');
+        if (closeAllButton) {
+            closeAllTables(closeAllButton);
+            return;
+        }
+
+        var approvalButton = event.target.closest('.siqo-approve, .siqo-reject');
+        if (approvalButton) {
+            handleApproval(approvalButton);
+            return;
+        }
+
+        var tableButton = event.target.closest('.siqo-table-toggle');
+        if (tableButton) {
+            toggleTable(tableButton);
+            return;
+        }
+
         var tab = event.target.closest('[data-station-target]');
         if (tab) {
             var station = tab.getAttribute('data-station-target');

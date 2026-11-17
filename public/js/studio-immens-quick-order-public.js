@@ -755,8 +755,7 @@ function Hide_SIQO_Front_Float(){
 function Show_SIQOListRapidView(){
 	jQuery('.SIQOListRapidView').css('left','0px');
 	jQuery('.SIQOListRapidView').css('opacity','1');
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 	// SIQO_toggle_header_footer();
 }
 
@@ -771,8 +770,7 @@ function Hide_SIQOListRapidView(){
 function SIQO_Advanced_Prod_Card( input ){
 	jQuery('.Advanced_Card').fadeIn();
 	jQuery('.Advanced_Card_background').fadeIn();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 
 	var AC_ID = jQuery(input).closest('.foProdCard').attr('foid');
 	var AC_Name = jQuery(input).closest('.foProdCard').attr('foname');
@@ -1122,14 +1120,20 @@ foserialmap = foserial.map(item => {
 
 console.log(foserialmap);
 	console.log(' order submitted sucessfully !!! ');
+	var previous_error = jQuery('#order_actions').find('.siqo-order-error').first();
+	if ( previous_error.length ) {
+		previous_error.text('');
+		previous_error.get(0).style.setProperty( 'display', 'none', 'important' );
+	}
 		jQuery.ajax({
 		type: 'POST',
 		url: siqo_ajax_view_orders_vars.ajaxurl,
 		data: {
 		    action: 'SIQO_submit_order_ajax',
 		    nonce: siqo_ajax_view_orders_vars.nonce,
+		    t: jQuery('input[name="t"]').val(),
 		    table_id: jQuery('[name="table_name_cpt"]').val(),
-		    table_name_cpt: jQuery('[name="table_name_cpt"]').text(),
+		    table_name_cpt: jQuery('[name="table_name_cpt"] option:selected').text().trim(),
 		    order_note: jQuery('#orderNote').val(),
 		    foserial: foserial,
 		    foserialmap: foserialmap,
@@ -1147,8 +1151,23 @@ console.log(foserialmap);
 				jQuery('.FO_show_order_summary img').hide();
 				jQuery('#orderNote').empty();
 				Hide_SIQO_Front_Float();
-				jQuery('.FOloadingMessage').fadeOut();
+				jQuery('.FOloadingMessage').stop(true, true).fadeOut();
 			return;
+		}
+	}).fail(function (xhr) {
+		console.log(xhr);
+		var msg = xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message ? xhr.responseJSON.data.message : (xhr.responseJSON && xhr.responseJSON.data && typeof xhr.responseJSON.data === 'string' ? xhr.responseJSON.data : '');
+		jQuery('.FOloadingMessage').stop(true, true).fadeOut();
+		var submit_button = jQuery('#submit_order');
+		submit_button.removeClass('disabled fo_disabled').css({ 'pointer-events': '', 'opacity': '' });
+		if ( msg ) {
+			var error_box = jQuery('#order_actions').find('.siqo-order-error').first();
+			if ( ! error_box.length ) {
+				error_box = jQuery('<p class="siqo-order-error" role="alert" style="color:#b32d2e;margin:6px 0;font-size:14px;"></p>');
+				submit_button.before( error_box );
+			}
+			error_box.text( msg );
+			error_box.get(0).style.setProperty( 'display', 'block', 'important' );
 		}
 	});
 }
@@ -1399,11 +1418,16 @@ function SIQO_filter_tab_variant( input, slug_target ){
 	jQuery('.fo_tab_variantcont[foprodidtarget="'+slug_target+'"]').show();
 
 //temperature --------------------------------------
-	jQuery('.FO_flash_tab_temperature[foprodidtarget="'+slug_target+'"]').find('input').prop('checked', false);
-	jQuery('.FO_flash_tab_temperature[foprodidtarget="'+slug_target+'"]').find('input[value="'+jQuery(input).find('[fo_tab_target="Temperature"]').val()+'"]').prop('checked', true);
-	jQuery('.FO_flash_tab_temperature[foprodidtarget="'+slug_target+'"]').attr('fo_modificable',jQuery(input).attr('fo_modificable') );
+	var tempValue = jQuery(input).find('[fo_tab_target="Temperature"]').val();
+	var tempPanel = jQuery('.FO_flash_tab_temperature[foprodidtarget="'+slug_target+'"]');
+	tempPanel.find('input').prop('checked', false);
+	tempPanel.find('.fo_button_thin').removeClass('is-selected');
+	if ( tempValue ) {
+		tempPanel.find('input[value="'+tempValue+'"]').prop('checked', true).closest('.fo_button_thin').addClass('is-selected');
+	}
+	tempPanel.attr('fo_modificable',jQuery(input).attr('fo_modificable') );
 	jQuery('.FO_flash_tab_temperature').hide();
-	jQuery('.FO_flash_tab_temperature[foprodidtarget="'+slug_target+'"]').show();
+	tempPanel.show();
 
 //name ---------------------------------------------
 	var name = jQuery(input).find('.FO_prod_name_manage').text();
@@ -1439,6 +1463,11 @@ function SIQO_filter_tab_variant( input, slug_target ){
 	jQuery('.fo_target_note_prod').val(jQuery(input).find('[fo_tab_target="note"]').val());
 	jQuery('.fo_target_note_prod').attr('fo_modificable',jQuery(input).attr('fo_modificable'));
 	jQuery('.FO_flash_tab_note').show();
+
+//modifiche ---------------------------------------------
+	jQuery('.fo_target_item_note_prod').val(jQuery(input).find('[fo_tab_target="item_note"]').val());
+	jQuery('.fo_target_item_note_prod').attr('fo_modificable',jQuery(input).attr('fo_modificable'));
+	jQuery('.FO_flash_tab_item_note').show();
 	
 	if ( jQuery(input).attr('fo_type') == 'new' ) {
 		fo_tab_add_product_to_order();
@@ -1446,12 +1475,12 @@ function SIQO_filter_tab_variant( input, slug_target ){
 	SIQO_calc_totals();
 	if ( jQuery(input).attr('fo_modificable') == 'false' ) {
 		jQuery('input[type="radio"]').attr('onclick','return false;');
-		jQuery('.fo_target_note_prod, .fo_target_qty_prod').attr('disabled',true);
+		jQuery('.fo_target_note_prod, .fo_target_qty_prod, .fo_target_item_note_prod').attr('disabled',true);
 		jQuery('.fo_tab_col_2, .fo_tab_col_3').removeClass('FO_new_background');
 		jQuery('.fo_tab_col_2, .fo_tab_col_3').addClass('FO_story_background');
 	} else{
 		jQuery('input[type="radio"]').attr('onclick','');
-		jQuery('.fo_target_note_prod, .fo_target_qty_prod').attr('disabled',false);
+		jQuery('.fo_target_note_prod, .fo_target_qty_prod, .fo_target_item_note_prod').attr('disabled',false);
 		jQuery('.fo_tab_col_2, .fo_tab_col_3').removeClass('FO_story_background');
 		jQuery('.fo_tab_col_2, .fo_tab_col_3').addClass('FO_new_background');
 	}
@@ -1587,11 +1616,21 @@ function siqo_tab_parse_note( input ){
 	}
 }
 
+function siqo_tab_parse_item_note( input ){
+	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
+	if ( jQuery(prod).attr('fo_modificable') == 'true' ) {
+		if ( prod.attr('fo_special') != 'Special' &&  prod.attr('fo_special') != 'Sconto' ) {
+			prod.find('input[fo_tab_target="item_note"]').val(jQuery(input).val());
+		}
+	}
+}
+
 function siqo_tab_parse_temp( input ){
 	var prod = jQuery('.fo_tab_prod[foprodid="'+jQuery('.fo_actual_prod').text()+'"][fo_index="'+jQuery('.fo_actual_index').text()+'"][fo_index_story="'+jQuery('.fo_actual_index_story').text()+'"]');
 	if ( jQuery(prod).attr('fo_modificable') == 'true' ) {
 		if ( prod.attr('fo_special') != 'Special' &&  prod.attr('fo_special') != 'Sconto' ) {
 			prod.find('input[fo_tab_target="Temperature"]').val(jQuery(input).val());
+			jQuery(input).closest('.fo_button_thin').addClass('is-selected').siblings('.fo_button_thin').removeClass('is-selected');
 		}
 	}
 }
@@ -1776,9 +1815,9 @@ jQuery('.fo_column_riepilogo .fo_tab_prod_special[foprodid="'+text+index+'"]').c
 
 function SIQO_tab_Card_show( target ){
 	jQuery('.fo_tab_show').show();
+	SIQO_capture_theme_chrome();
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 
 	jQuery('.fo_story').hide();
 	jQuery('.fo_story').removeClass('fo_tab_prod_story');
@@ -1815,15 +1854,12 @@ function SIQO_tab_Card_show( target ){
 }
 function SIQO_tab_Card_hide(){
 	jQuery('.fo_tab_show').hide();
-	// jQuery('header').css('display','');
-	// jQuery('footer').css('display','');
-	SIQO_toggle_header_footer();
+	SIQO_restore_theme_chrome();
 }
 
 function SIQO_confirm( call_b, text, text_v = '', text_f = '' ){
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 	// jQuery('.fo_tab_show').hide();
 	if (text_v == '') {text_v = ' si '}
 	if (text_f == '') {text_f = ' no '}
@@ -1844,8 +1880,7 @@ function SIQO_confirm( call_b, text, text_v = '', text_f = '' ){
 
 function SIQO_alert( call_b, text, text_v = '' ){
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 	// jQuery('.fo_tab_show').hide();
 	if (text_v == '') {text_v = ' OK '}
 	var ELconfirm = '';
@@ -2071,7 +2106,7 @@ function SIQO_order_tab_ajax(input = '.fo_column_riepilogo', action = 'SIQO_flas
 
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'" ][fo_status="Loading"]').attr('fo_order_id', response.order_id);
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').attr('onclick', 'fo_filter_tab_story(this,`'+response.order_id+'`)');
-			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').text( response.order_id );
+			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'"][fo_status="Loading"]').html( '<span class="siqo-history-id">#'+response.order_id+'</span> <span class="siqo-history-date">'+(response.order_date || '')+'</span>' );
 
 			jQuery('.fo_order_table_story[fotableid="'+response.table_id+'" ][fo_status="Loading"]').attr('fo_status', 'completed');
 
@@ -2194,8 +2229,7 @@ function SIQO_pay_tab_Card_show( input ){
 	jQuery('.fo_pay_tab_show').show();
 	jQuery('.fo_tab_prod').removeClass('fo_tab_prod_story');
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 	
 	jQuery('.fo_list_items').empty();
 	jQuery('.fo_list_final_order').empty();
@@ -2679,6 +2713,45 @@ function siqo_change_order_status( order_id = '', status = '' ){
 
 
 
+function SIQO_theme_header(){
+	return jQuery('header').not('.siqo-app-header');
+}
+
+
+function SIQO_theme_footer(){
+	return jQuery('footer').not('.siqo-story-foot');
+}
+
+
+function SIQO_set_theme_chrome( visible ){
+	SIQO_theme_header().css('display', visible ? '' : 'none');
+	SIQO_theme_footer().css('display', visible ? '' : 'none');
+}
+
+var SIQO_theme_chrome_snapshot = null;
+
+function SIQO_capture_theme_chrome(){
+	if ( SIQO_theme_chrome_snapshot !== null ) { return; }
+	SIQO_theme_chrome_snapshot = [];
+	jQuery('header, footer').not('.siqo-app-header').not('.siqo-story-foot').each(function(){
+		SIQO_theme_chrome_snapshot.push({ el: this, display: this.style.display });
+	});
+}
+
+function SIQO_restore_theme_chrome(){
+	if ( SIQO_theme_chrome_snapshot === null ) {
+		SIQO_set_theme_chrome( true );
+		return;
+	}
+	jQuery.each( SIQO_theme_chrome_snapshot, function( i, entry ){
+		if ( entry.el && document.contains( entry.el ) ) {
+			entry.el.style.display = entry.display;
+		}
+	});
+	SIQO_theme_chrome_snapshot = null;
+}
+
+
 function SIQO_toggle_header_footer( check = false ){
 	if (check) {
 		if (jQuery('.SIQO_toggle_header_footer').val() == 'true') {
@@ -2688,16 +2761,9 @@ function SIQO_toggle_header_footer( check = false ){
 		}
 	}
 	if ( jQuery('.SIQO_toggle_header_footer').val() == 'true') {
-		if (jQuery('header').css('display') == 'none') {
-			jQuery('header').css('display','');
-			jQuery('footer').css('display','');
-		}else{
-			jQuery('header').css('display','none');
-			jQuery('footer').css('display','none');
-		}
+		SIQO_set_theme_chrome( SIQO_theme_header().css('display') === 'none' );
 	} else{
-		jQuery('header').css('display','none');
-		jQuery('footer').css('display','none');
+		SIQO_set_theme_chrome( false );
 	}
 }
 
@@ -2743,8 +2809,7 @@ function SIQO_customer_pay(input){
 
 function SIQO_catering_show(){
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 
 	jQuery('.SIQOP_tab_catering_fixed_window').show();
 }
@@ -2852,8 +2917,7 @@ function SIQO_catering_delete( input_id, def_confirm = false ){
 
 function SIQO_settings_show(){
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 	jQuery('#SIQO_active_settings').animate({
 		right: '0px',
 	}, 300);
@@ -2865,8 +2929,7 @@ function SIQO_settings_show(){
 
 function SIQO_statistics_show(){
 	SIQO_toggle_header_footer();
-	jQuery('header').css('display','none');
-	jQuery('footer').css('display','none');
+	SIQO_set_theme_chrome( false );
 
 	fo_stat_filter_table();
 	jQuery('.fo_stat_container').slideDown();

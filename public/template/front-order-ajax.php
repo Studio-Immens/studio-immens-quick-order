@@ -39,12 +39,25 @@ $table_id_valid = 0;
 $table_name     = '';
 $table_notice   = '';
 $table_link_id  = '0';
+$table_key_id   = 0;
 $product_count  = 0;
+$table_session_active = false;
 
 foreach ( $products as $category_products ) {
 	$product_count += count( $category_products );
 }
 
+
+// Risoluzione del tavolo dalla chiave pubblica ?t=.
+$table_link_key = isset( $_GET['t'] ) ? sanitize_text_field( wp_unslash( $_GET['t'] ) ) : '';
+if ( $table_link_key && class_exists( 'SIQO_Table_Sessions' ) ) {
+	$key_table_id = SIQO_Table_Sessions::find_table_by_key( $table_link_key );
+	if ( $key_table_id ) {
+		$table_key_id   = (int) $key_table_id;
+		$table_id_valid = (int) $key_table_id;
+		$table_name     = get_the_title( $key_table_id );
+	}
+}
 
 if ( isset($_GET['_siqononce_tab_check']) && wp_verify_nonce( sanitize_text_field(wp_unslash( $_GET['_siqononce_tab_check'])), 'SIQO_check_table_nonce' ) ) {
 // get table_id from link
@@ -70,6 +83,21 @@ if ( $table_link_id ) {
 	if ( ! $table_id_valid && '0' !== (string) $table_link_id ) {
 		$table_notice = __( 'Il tavolo richiesto non è disponibile. Selezionalo qui sotto.', 'studio-immens-quick-order' );
 	}
+}
+
+$table_session_active = ( $table_id_valid && class_exists( 'SIQO_Table_Sessions' ) ) ? SIQO_Table_Sessions::is_active( $table_id_valid ) : false;
+if ( $table_id_valid && ! $table_session_active ) {
+	$table_notice = __( 'Questo tavolo non è ancora attivo. Chiama un operatore per farti aprire il tavolo.', 'studio-immens-quick-order' );
+}
+
+// La chiave va inviata col form solo quando ha risolto proprio il tavolo selezionato.
+$table_key_field = ( $table_link_key && $table_key_id && (int) $table_key_id === (int) $table_id_valid ) ? $table_link_key : '';
+
+$table_arm_mode  = isset( $_GET['arm'] ) && '1' === sanitize_text_field( wp_unslash( $_GET['arm'] ) );
+$table_arm_panel = $table_arm_mode && $table_id_valid && class_exists( 'SIQO_Management' ) && SIQO_Management::can( 'manage_tables' );
+
+if ( $table_arm_mode ) {
+	nocache_headers();
 }
 
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
@@ -115,10 +143,154 @@ if ( $table_link_id ) {
 			'table_name'    => $table_name,
 			'account_url'   => $account_url,
 			'account_label' => $account_text,
-			'title'         => $table_notice,
 		)
 	);
 	?>
+
+	<?php if ( $table_arm_panel ) : ?>
+		<style type="text/css">
+			.siqo-arm-panel {
+				max-width: 520px;
+				margin: 16px auto;
+				padding: 16px;
+				border: 1px solid #a6462f;
+				border-radius: 16px;
+				background: #fffdf9;
+				color: #241d19;
+				box-shadow: 0 6px 20px rgba(36, 29, 25, 0.08);
+				font-family: inherit;
+				box-sizing: border-box;
+			}
+			.siqo-arm-panel .siqo-arm-eyebrow {
+				margin: 0 0 4px;
+				color: #a6462f;
+				font-size: 10px;
+				font-weight: 800;
+				letter-spacing: 0.16em;
+				text-transform: uppercase;
+			}
+			.siqo-arm-panel .siqo-arm-title {
+				margin: 0;
+				font-size: 22px;
+				font-weight: 800;
+				line-height: 1.1;
+			}
+			.siqo-arm-panel .siqo-arm-note {
+				margin: 8px 0 12px;
+				color: #826f61;
+				font-size: 13px;
+				line-height: 1.4;
+			}
+			.siqo-arm-panel .siqo-arm-open {
+				display: block;
+				width: 100%;
+				min-height: 50px;
+				padding: 0 20px;
+				border: 0;
+				border-radius: 999px;
+				background: #a6462f;
+				color: #fff;
+				font: inherit;
+				font-size: 16px;
+				font-weight: 800;
+				cursor: pointer;
+			}
+			.siqo-arm-panel .siqo-arm-open:disabled {
+				opacity: 0.6;
+				cursor: default;
+			}
+			.siqo-arm-panel .siqo-arm-status {
+				min-height: 16px;
+				margin: 10px 0 0;
+				color: #3f7d5a;
+				font-size: 12px;
+				font-weight: 700;
+			}
+			.siqo-arm-panel .siqo-arm-status:empty {
+				display: none;
+			}
+			.siqo-arm-panel .siqo-arm-status.is-error {
+				color: #a6462f;
+			}
+		</style>
+		<div class="siqo-arm-panel" id="siqo-arm-panel"
+			data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
+			data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
+			data-table-id="<?php echo esc_attr( $table_id_valid ); ?>"
+			data-table-name="<?php echo esc_attr( $table_name ); ?>">
+			<p class="siqo-arm-eyebrow"><?php esc_html_e( 'Modalità operatore', 'studio-immens-quick-order' ); ?></p>
+			<h2 class="siqo-arm-title"><?php echo esc_html( $table_name ); ?></h2>
+			<?php if ( $table_session_active ) : ?>
+				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo è già attivo.', 'studio-immens-quick-order' ); ?></p>
+			<?php else : ?>
+				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo non è attivo: aprilo per consentire gli ordini.', 'studio-immens-quick-order' ); ?></p>
+				<button type="button" class="siqo-arm-open"><?php esc_html_e( 'Apri questo tavolo', 'studio-immens-quick-order' ); ?></button>
+			<?php endif; ?>
+			<p class="siqo-arm-status" role="status" aria-live="polite"></p>
+		</div>
+		<script type="text/javascript">
+			(function () {
+				var panel = document.getElementById('siqo-arm-panel');
+				if (!panel) {
+					return;
+				}
+				var button = panel.querySelector('.siqo-arm-open');
+				if (!button) {
+					return;
+				}
+				button.addEventListener('click', function () {
+					var status = panel.querySelector('.siqo-arm-status');
+					var tableId = panel.getAttribute('data-table-id');
+					var body = new FormData();
+
+					body.append('action', 'siqo_table_open');
+					body.append('_siqo_nonce', panel.getAttribute('data-nonce') || '');
+					body.append('table_id', tableId);
+					body.append('do', 'open');
+
+					button.disabled = true;
+					status.classList.remove('is-error');
+					status.textContent = 'Apertura…';
+
+					fetch(panel.getAttribute('data-ajax-url'), {
+						method: 'POST',
+						credentials: 'same-origin',
+						body: body
+					})
+						.then(function (response) {
+							return response.json();
+						})
+						.then(function (json) {
+							if (!json || !json.success) {
+								throw new Error(json && json.data && json.data.message ? json.data.message : 'Errore di comunicazione.');
+							}
+
+							panel.hidden = true;
+
+							var notice = document.querySelector('#table_input .siqo-table-notice');
+							if (notice) {
+								notice.textContent = 'Tavolo attivo.';
+							}
+
+							var select = document.querySelector('#table_input select');
+							if (select) {
+								var option = select.querySelector('option[value="' + tableId + '"]');
+								if (option) {
+									option.disabled = false;
+									option.textContent = panel.getAttribute('data-table-name') || option.textContent;
+								}
+								select.value = tableId;
+							}
+						})
+						.catch(function (error) {
+							status.textContent = error.message || 'Errore di comunicazione.';
+							status.classList.add('is-error');
+							button.disabled = false;
+						});
+				});
+			})();
+		</script>
+	<?php endif; ?>
 
 	<div style="display:none!important;">
 		<div id="FO_select_variant_alert"><?php esc_html_e( 'Seleziona prima la variante', 'studio-immens-quick-order' );?></div>
@@ -250,36 +422,35 @@ if ( $table_link_id ) {
 ?>
 			<div id="order_actions">
 				<input type="hidden" id="FO_order_index" name="FO_order_index" value="10000">
-				<?php if ($net_info['is_local']) {
-					$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
-    				echo '<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="'.esc_attr($nonce).'" />';
-				} ?>
+				<?php
+				$nonce = wp_create_nonce( 'SIQO_front_order_ajax' );
+				?>
+				<input type="hidden" id="_siqononce_front_order_ajax" name="_siqononce_front_order_ajax" value="<?php echo esc_attr( $nonce ); ?>" />
+				<input type="hidden" name="t" value="<?php echo esc_attr( $table_key_field ); ?>" />
 
 				<p><?php esc_html_e( 'Varianti Prodotti', 'studio-immens-quick-order' );?>
 					<div id="FOProdNumber" style="margin-left:15px">0</div>
 				</p>
 
-				<?php if ( $net_info['is_local'] ) { ?>
-					<div id="table_input"> 
-						<?php if ( $table_notice ) { ?>
-							<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
-						<?php } ?>
-						<select class="fo-select" name="table_name_cpt">
-							<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
-							<?php foreach ($tavoli as $tavolo) { ?>
-								<option value="<?php echo esc_attr($tavolo->ID);?>"<?php selected( $table_id_valid, $tavolo->ID ); ?>>
-									<?php echo esc_attr($tavolo->post_title);?>
-								</option>
-							<?php } ?>
-						</select>
-					</div>
-				<?php } ?>
+				<div id="table_input">
+					<?php if ( $table_notice ) { ?>
+						<p class="siqo-table-notice"><?php echo esc_html( $table_notice ); ?></p>
+					<?php } ?>
+					<select class="fo-select" name="table_name_cpt">
+					<option value=""> <?php esc_html_e( 'Seleziona il Tavolo', 'studio-immens-quick-order' );?> </option>
+					<?php
+					$active_ids = class_exists( 'SIQO_Table_Sessions' ) ? SIQO_Table_Sessions::active_table_ids() : array();
+					foreach ( $tavoli as $tavolo ) {
+						$is_table_active = in_array( (int) $tavolo->ID, $active_ids, true );
+						?>
+						<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>><?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' — ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?></option>
+					<?php } ?>
+					</select>
+				</div>
 
-				<?php if ( $net_info['is_local'] ) { ?>
-					<div class="FO_order_sub" id="submit_order" onclick="SIQO_validate_order_form_ajax(this);">
-						<?php esc_html_e( 'AVVIA ORDINE', 'studio-immens-quick-order' ); ?>
-					</div>
-				<?php } ?>
+				<div class="FO_order_sub" id="submit_order" onclick="SIQO_validate_order_form_ajax(this);">
+					<?php esc_html_e( 'AVVIA ORDINE', 'studio-immens-quick-order' ); ?>
+				</div>
 
 			</div>
 		</div>

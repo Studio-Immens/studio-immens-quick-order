@@ -4,10 +4,186 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SIQO_STATION_VERSION', '1.0.0' );
+require_once __DIR__ . '/template/station-table-sessions.php';
+
+define( 'SIQO_STATION_VERSION', '1.0.4' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
+
+/**
+ * Un ordine in attesa di approvazione pagato non deve restare bloccato.
+ *
+ * Il flusso di pagamento porta l'ordine fuori dagli stati accettati dal
+ * gestore di approvazione (409) mentre Pro non stampa gli ordini `pending`:
+ * soldi incassati, nulla stampato. Al pagamento lo stato viene quindi
+ * promosso ad `approved` e viene emesso `siqo_order_approved`, cosi' le
+ * regole di stampa esistenti possono girare. Questo callback non stampa
+ * nulla direttamente ed e' idempotente (agisce solo su `pending`).
+ *
+ * @param int $order_id       Order ID.
+ * @param int $table_id       Unused, kept for the hook signature.
+ * @param int $table_name_cpt Unused, kept for the hook signature.
+ * @return void
+ */
+function siqo_station_auto_approve_paid_order( $order_id, $table_id = 0, $table_name_cpt = 0 ) {
+	$order_id = absint( $order_id );
+	if ( ! $order_id || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+
+	$siqo_dead_statuses = array( 'cancelled', 'refunded', 'failed', 'trash' );
+	if ( in_array( (string) $order->get_status(), $siqo_dead_statuses, true ) ) {
+		return;
+	}
+
+	if ( 'pending' !== (string) $order->get_meta( '_siqo_approval' ) ) {
+		return;
+	}
+
+	$siqo_lock = 'siqo_approval_lock_' . $order_id;
+	if ( ! add_option( $siqo_lock, time(), '', false ) ) {
+		$siqo_locked_at = (int) get_option( $siqo_lock );
+		if ( $siqo_locked_at && ( time() - $siqo_locked_at ) < 120 ) {
+			return;
+		}
+		update_option( $siqo_lock, time(), false );
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order || in_array( (string) $order->get_status(), $siqo_dead_statuses, true ) || 'pending' !== (string) $order->get_meta( '_siqo_approval' ) ) {
+		delete_option( $siqo_lock );
+		return;
+	}
+
+	$order->update_meta_data( '_siqo_approval', 'approved' );
+	$order->add_order_note( __( 'Approvato automaticamente al pagamento.', 'studio-immens-quick-order' ) );
+	$order->save();
+
+	do_action( 'siqo_order_approved', $order_id );
+
+	delete_option( $siqo_lock );
+}
+
+/**
+ * Recupera la sessione quando un ordine in attesa di approvazione viene
+ * annullato, rimborsato o cestinato fuori dalla postazione (wp-admin, plugin
+ * o gateway).
+ *
+ * Senza questo recupero la sessione resterebbe in `awaiting_approval`, il
+ * meta `_siqo_approval` resterebbe `pending` (l'endpoint di approvazione
+ * risponde 409 e Pro non stampa gli ordini `pending`) e, poiche'
+ * register_order() richiede `status = 'open'`, ogni nuovo ordine del tavolo
+ * verrebbe rifiutato fino alla scadenza della sessione.
+ *
+ * Il meta viene scritto per primo: una seconda esecuzione (doppio hook o
+ * doppio evento) trova `rejected` e non tocca piu' i contatori.
+ *
+ * @param int           $order_id Order ID.
+ * @param WC_Order|null $order    Order instance when the hook provides it.
+ * @return void
+ */
+function siqo_station_release_cancelled_order( $order_id, $order = null ) {
+	$order_id = absint( $order_id );
+	if ( ! $order_id || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
+	if ( ! $order instanceof WC_Order || $order->get_id() !== $order_id ) {
+		$order = wc_get_order( $order_id );
+	}
+	if ( ! $order ) {
+		return;
+	}
+
+	if ( 'pending' !== (string) $order->get_meta( '_siqo_approval' ) ) {
+		return;
+	}
+
+	$session_id = (int) $order->get_meta( '_siqo_session_id' );
+	$total      = (float) $order->get_total();
+
+	$order->update_meta_data( '_siqo_approval', 'rejected' );
+	$order->save_meta_data();
+	$order->add_order_note( __( 'Ordine annullato fuori dalla postazione.', 'studio-immens-quick-order' ) );
+
+	if ( ! $session_id || ! class_exists( 'SIQO_Table_Sessions' ) ) {
+		return;
+	}
+
+	SIQO_Table_Sessions::release_order( $session_id, $total );
+
+	global $wpdb;
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+			$session_id
+		)
+	);
+}
+
+/**
+ * Close the table session behind a paid order.
+ *
+ * The table payment flow (FO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
+ * $clear = true) fires `siqo_table_paid`; gateways that mark an order as paid fire
+ * `woocommerce_payment_complete`. Both carry the order's `_siqo_session_id`, so the
+ * session is the source of truth and closing it twice is a no-op. When the meta is
+ * missing (legacy or admin order) the table post ID passed by `siqo_table_paid` is
+ * used as a fallback.
+ *
+ * `woocommerce_order_status_processing` is intentionally NOT hooked: approving the
+ * first order moves it to `processing` while the table must stay open.
+ *
+ * @param int $order_id       Order ID.
+ * @param int $table_id       Table post ID passed by `siqo_table_paid`.
+ * @param int $table_name_cpt Unused, kept for the hook signature.
+ * @return bool True when a table session was closed by this call.
+ */
+function siqo_station_close_paid_table_session( $order_id, $table_id = 0, $table_name_cpt = 0 ) {
+	$order_id = absint( $order_id );
+	if ( ! $order_id || ! class_exists( 'SIQO_Table_Sessions' ) || ! function_exists( 'wc_get_order' ) ) {
+		return false;
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return false;
+	}
+
+	$session_id = (int) $order->get_meta( '_siqo_session_id' );
+	if ( $session_id ) {
+		$session = SIQO_Table_Sessions::get( $session_id );
+		if ( ! $session || ! in_array( (string) $session->status, array( 'open', 'awaiting_approval' ), true ) ) {
+			return false;
+		}
+
+		SIQO_Table_Sessions::close( (int) $session->table_id, 'closed' );
+		return true;
+	}
+
+	$table_id = absint( $table_id );
+	if ( $table_id && 'siqo_tables' === get_post_type( $table_id ) && SIQO_Table_Sessions::get_active_for_table( $table_id ) ) {
+		SIQO_Table_Sessions::close( $table_id, 'closed' );
+		return true;
+	}
+
+	return false;
+}
+add_action( 'siqo_table_paid', 'siqo_station_auto_approve_paid_order', 15, 3 );
+add_action( 'woocommerce_payment_complete', 'siqo_station_auto_approve_paid_order', 15, 1 );
+add_action( 'siqo_table_paid', 'siqo_station_close_paid_table_session', 20, 3 );
+add_action( 'woocommerce_payment_complete', 'siqo_station_close_paid_table_session', 20, 1 );
+add_action( 'woocommerce_order_status_cancelled', 'siqo_station_release_cancelled_order', 20, 2 );
+add_action( 'woocommerce_order_status_refunded', 'siqo_station_release_cancelled_order', 20, 2 );
+// `woocommerce_order_status_trashed` non esiste: entrambi i data store (CPT e HPOS) usano `woocommerce_trash_order`.
+add_action( 'woocommerce_before_trash_order', 'siqo_station_release_cancelled_order', 20, 2 );
+add_action( 'woocommerce_trash_order', 'siqo_station_release_cancelled_order', 20, 1 );
 
 add_action( 'init', 'siqo_station_register_taxonomy', 0 );
 function siqo_station_register_taxonomy() {
@@ -166,6 +342,8 @@ function siqo_station_orders_render( $embedded = false ) {
 			</button>
 		</header>
 
+		<?php echo siqo_table_session_render_bar(); ?>
+
 		<nav class="siqo-station-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Filtra per punto di preparazione', 'studio-immens-quick-order' ); ?>">
 			<?php echo siqo_station_render_tabs( $station, $counts ); ?>
 		</nav>
@@ -259,6 +437,118 @@ function siqo_station_ajax_update_status() {
 	);
 }
 
+add_action( 'wp_ajax_siqo_order_approve', 'siqo_order_approval_ajax' );
+add_action( 'wp_ajax_siqo_order_reject', 'siqo_order_approval_ajax' );
+function siqo_order_approval_ajax() {
+	$hook      = preg_replace( '/^wp_ajax_(?:nopriv_)?/', '', (string) current_action() );
+	$operation = '';
+	if ( 'siqo_order_approve' === $hook ) {
+		$operation = 'approve';
+	} elseif ( 'siqo_order_reject' === $hook ) {
+		$operation = 'reject';
+	}
+
+	if ( '' === $operation ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
+	if ( ! isset( $_POST['_siqo_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_siqo_nonce'] ) ), 'siqo_order_approval' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+
+	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+	}
+
+	$order_id = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
+	$decision = isset( $_POST['decision'] ) ? sanitize_key( wp_unslash( $_POST['decision'] ) ) : '';
+
+	if ( ! in_array( $decision, array( 'approve', 'reject' ), true ) || $decision !== $operation ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 400 );
+	}
+
+	$order = ( $order_id && function_exists( 'wc_get_order' ) ) ? wc_get_order( $order_id ) : false;
+	if ( ! $order ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine non trovato.', 'studio-immens-quick-order' ) ), 404 );
+	}
+
+	$siqo_sources = array( 'pending', 'on-hold', 'failed' );
+	if ( 'pending' !== (string) $order->get_meta( '_siqo_approval' ) || ! in_array( $order->get_status(), $siqo_sources, true ) ) {
+		wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+	}
+
+	global $wpdb;
+
+	$siqo_lock = 'siqo_approval_lock_' . $order_id;
+	if ( ! add_option( $siqo_lock, time(), '', false ) ) {
+		$siqo_locked_at = (int) get_option( $siqo_lock );
+		if ( $siqo_locked_at && ( time() - $siqo_locked_at ) < 120 ) {
+			wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+		}
+		update_option( $siqo_lock, time(), false );
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order || 'pending' !== (string) $order->get_meta( '_siqo_approval' ) || ! in_array( $order->get_status(), $siqo_sources, true ) ) {
+		delete_option( $siqo_lock );
+		wp_send_json_error( array( 'message' => __( 'Ordine già gestito.', 'studio-immens-quick-order' ) ), 409 );
+	}
+
+	$session_id = (int) $order->get_meta( '_siqo_session_id' );
+	$session    = ( $session_id && class_exists( 'SIQO_Table_Sessions' ) ) ? SIQO_Table_Sessions::get( $session_id ) : null;
+
+	if ( 'approve' === $operation ) {
+		$order->update_meta_data( '_siqo_approval', 'approved' );
+		$order->update_status( 'processing', __( 'Ordine confermato dall\'operatore.', 'studio-immens-quick-order' ) );
+		$order->save();
+
+		if ( $session ) {
+			$reopened = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					$session_id
+				)
+			);
+			if ( ! $reopened ) {
+				error_log( sprintf( 'SIQO: approvazione ordine %d, sessione %d non in awaiting_approval (nessuna riga aggiornata).', $order_id, $session_id ) );
+			}
+		}
+
+		do_action( 'siqo_order_approved', $order_id );
+		delete_option( $siqo_lock );
+
+		wp_send_json_success(
+			array(
+				'order_id' => $order_id,
+				'approval' => 'approved',
+			)
+		);
+	}
+
+	$order->update_meta_data( '_siqo_approval', 'rejected' );
+	$order->update_status( 'cancelled', __( 'Ordine rifiutato dall\'operatore.', 'studio-immens-quick-order' ) );
+	$order->save();
+
+	if ( $session ) {
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				(float) $order->get_total(),
+				$session_id
+			)
+		);
+	}
+
+	delete_option( $siqo_lock );
+
+	wp_send_json_success(
+		array(
+			'order_id' => $order_id,
+			'approval' => 'rejected',
+		)
+	);
+}
+
 function siqo_station_get_orders_data() {
 	$args = array(
 		'status'       => array( 'pending', 'processing', 'on-hold' ),
@@ -281,7 +571,7 @@ function siqo_station_get_orders_data() {
 		$items = array();
 		foreach ( $order->get_items() as $item ) {
 			$stations = siqo_station_get_item_terms( $item );
-			$details  = siqo_station_get_item_details( $order, $item->get_product_id() );
+			$details  = siqo_station_get_item_details( $order, $item->get_product_id(), $item );
 
 			$items[] = array(
 				'name'     => $item->get_name(),
@@ -331,13 +621,18 @@ function siqo_station_get_item_terms( $item ) {
 	return $result;
 }
 
-function siqo_station_get_item_details( $order, $product_id ) {
+function siqo_station_get_item_details( $order, $product_id, $item = null ) {
 	$details = array(
-		'variant'     => array(),
-		'temperature' => array(),
-		'ingredients' => array(),
-		'note'        => '',
+		'variant'      => array(),
+		'temperature'  => array(),
+		'ingredients'  => array(),
+		'note'         => '',
+		'modification' => '',
 	);
+
+	if ( $item instanceof WC_Order_Item ) {
+		$details['modification'] = trim( (string) $item->get_meta( '_siqo_item_note' ) );
+	}
 
 	$needle = 'prod-' . (int) $product_id . '_';
 
@@ -563,6 +858,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				<?php if ( $time ) : ?>
 					<time><?php echo esc_html( $time ); ?></time>
 				<?php endif; ?>
+				<?php echo siqo_render_author_badge( $order ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</div>
 			<?php if ( $is_filter ) : ?>
 				<span class="siqo-station-badge siqo-station-badge--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( siqo_station_status_label( $status ) ); ?></span>
@@ -585,6 +881,9 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				if ( ! empty( $item['details']['note'] ) ) {
 					$detail_parts[] = $item['details']['note'];
 				}
+				if ( ! empty( $item['details']['modification'] ) ) {
+					$detail_parts[] = sprintf( __( 'Modifiche: %s', 'studio-immens-quick-order' ), $item['details']['modification'] );
+				}
 				?>
 				<li class="siqo-station-item">
 					<span class="siqo-station-item-qty"><?php echo esc_html( $item['quantity'] ); ?>×</span>
@@ -604,6 +903,21 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<?php if ( 'pending' === $order->get_meta( '_siqo_approval' ) ) : ?>
+			<div class="siqo-order-approval"
+				data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
+				data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_order_approval' ) ); ?>">
+				<div class="siqo-order-approval-head">
+					<strong class="siqo-order-approval-title"><?php esc_html_e( 'Da confermare', 'studio-immens-quick-order' ); ?></strong>
+					<span class="siqo-order-approval-status" role="status" aria-live="polite"></span>
+				</div>
+				<div class="siqo-order-approval-actions">
+					<button type="button" class="siqo-station-action siqo-approve" data-order-id="<?php echo esc_attr( $order_id ); ?>"><?php esc_html_e( 'Conferma', 'studio-immens-quick-order' ); ?></button>
+					<button type="button" class="siqo-station-action siqo-station-action--reset siqo-reject" data-order-id="<?php echo esc_attr( $order_id ); ?>"><?php esc_html_e( 'Rifiuta', 'studio-immens-quick-order' ); ?></button>
+				</div>
+			</div>
+		<?php endif; ?>
 
 		<footer class="siqo-station-order-foot">
 			<span class="siqo-station-total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
