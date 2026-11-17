@@ -158,7 +158,19 @@ class SIQO_Table_Sessions {
 			return new WP_Error( 'session_expired', __( 'Sessione del tavolo scaduta. Chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
 		if ( ! self::register_order( $session->id, $total ) ) {
-			return new WP_Error( 'rate_limited', __( 'Ordine non accettato: attendi o chiama un operatore.', 'studio-immens-quick-order' ) );
+			$fresh = self::get( $session->id );
+			if ( ! $fresh || ! in_array( $fresh->status, array( 'open', 'awaiting_approval' ), true ) ) {
+				return new WP_Error( 'no_session', __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) );
+			}
+			$max_orders = max( 1, (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $fresh ) );
+			if ( (int) $fresh->orders_count >= $max_orders ) {
+				return new WP_Error( 'too_many_orders', __( 'Troppi ordini per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
+			}
+			$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $fresh );
+			if ( (float) $fresh->session_total + (float) $total > $max_total ) {
+				return new WP_Error( 'total_cap', __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
+			}
+			return new WP_Error( 'too_fast', __( 'Attendi qualche secondo prima di inviare un altro ordine.', 'studio-immens-quick-order' ) );
 		}
 		return self::get( $session->id );
 	}
@@ -170,7 +182,7 @@ class SIQO_Table_Sessions {
 		if ( ! $session ) {
 			return false;
 		}
-		$max_orders = (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session );
+		$max_orders = max( 1, (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session ) );
 		$interval   = (int) apply_filters( 'siqo_order_min_interval', self::MIN_INTERVAL, $session );
 		$max_total  = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
 		$threshold  = gmdate( 'Y-m-d H:i:s', time() - $interval );
@@ -178,12 +190,14 @@ class SIQO_Table_Sessions {
 			$wpdb->prepare(
 				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
 				 WHERE id = %d AND status IN ('open','awaiting_approval')
+				 AND expires_at > %s
 				 AND orders_count < %d
 				 AND (last_order_at IS NULL OR last_order_at < %s)
 				 AND session_total + %f <= %f",
 				self::now(),
 				(float) $total,
 				absint( $session_id ),
+				self::now(),
 				$max_orders,
 				$threshold,
 				(float) $total,
@@ -195,13 +209,22 @@ class SIQO_Table_Sessions {
 
 	public static function add_order_total( $session_id, $total ) {
 		global $wpdb;
-		$wpdb->query(
+		$session = self::get( $session_id );
+		if ( ! $session ) {
+			return false;
+		}
+		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
+		$affected  = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET session_total = session_total + %f WHERE id = %d",
+				"UPDATE " . self::table_name() . " SET session_total = session_total + %f
+				 WHERE id = %d AND session_total + %f <= %f",
 				(float) $total,
-				absint( $session_id )
+				absint( $session_id ),
+				(float) $total,
+				$max_total
 			)
 		);
+		return 1 === (int) $affected;
 	}
 
 	public static function gc() {
