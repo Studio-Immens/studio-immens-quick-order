@@ -37,8 +37,9 @@
   - `SIQO_Table_Sessions::open( int $table_id, int $user_id, string $via = 'list', int $ttl = 0 ): array|WP_Error`
   - `SIQO_Table_Sessions::close( int $table_id, string $status = 'closed' ): void`
   - `SIQO_Table_Sessions::close_all(): int`
-  - `SIQO_Table_Sessions::can_accept_order( int $table_id ): true|WP_Error`
-  - `SIQO_Table_Sessions::register_order( int $session_id, float $total ): void`
+  - `SIQO_Table_Sessions::reserve_order( int $table_id, float $total = 0 ): object|WP_Error` (prenotazione atomica: count + intervallo + tetto importo)
+  - `SIQO_Table_Sessions::register_order( int $session_id, float $total = 0 ): bool` (update condizionale atomico, usato da `reserve_order`)
+  - `SIQO_Table_Sessions::add_order_total( int $session_id, float $total ): void`
   - `SIQO_Table_Sessions::gc(): int`
   - `SIQO_Table_Sessions::is_active( int $table_id ): bool`
 
@@ -193,7 +194,7 @@ class SIQO_Table_Sessions {
 		);
 	}
 
-	public static function can_accept_order( $table_id ) {
+	public static function reserve_order( $table_id, $total = 0 ) {
 		$session = self::get_active_for_table( $table_id );
 		if ( ! $session ) {
 			return new WP_Error( 'no_session', __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) );
@@ -201,28 +202,47 @@ class SIQO_Table_Sessions {
 		if ( strtotime( $session->expires_at . ' UTC' ) <= time() ) {
 			return new WP_Error( 'session_expired', __( 'Sessione del tavolo scaduta. Chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
-		$max_orders = (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session );
-		if ( (int) $session->orders_count >= $max_orders ) {
-			return new WP_Error( 'too_many_orders', __( 'Troppi ordini per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
+		if ( ! self::register_order( $session->id, $total ) ) {
+			return new WP_Error( 'rate_limited', __( 'Ordine non accettato: attendi o chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
-		$interval = (int) apply_filters( 'siqo_order_min_interval', self::MIN_INTERVAL, $session );
-		if ( $session->last_order_at && ( time() - strtotime( $session->last_order_at . ' UTC' ) ) < $interval ) {
-			return new WP_Error( 'too_fast', __( 'Attendi qualche secondo prima di inviare un altro ordine.', 'studio-immens-quick-order' ) );
-		}
-		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
-		if ( (float) $session->session_total >= $max_total ) {
-			return new WP_Error( 'total_cap', __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
-		}
-		return true;
+		return self::get( $session->id );
 	}
 
 	public static function register_order( $session_id, $total = 0 ) {
 		global $wpdb;
-		$table = self::table_name();
+		$table      = self::table_name();
+		$session    = self::get( $session_id );
+		if ( ! $session ) {
+			return false;
+		}
+		$max_orders = (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session );
+		$interval   = (int) apply_filters( 'siqo_order_min_interval', self::MIN_INTERVAL, $session );
+		$max_total  = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
+		$threshold  = gmdate( 'Y-m-d H:i:s', time() - $interval );
+		$affected   = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
+				 WHERE id = %d AND status IN ('open','awaiting_approval')
+				 AND orders_count < %d
+				 AND (last_order_at IS NULL OR last_order_at < %s)
+				 AND session_total + %f <= %f",
+				self::now(),
+				(float) $total,
+				absint( $session_id ),
+				$max_orders,
+				$threshold,
+				(float) $total,
+				$max_total
+			)
+		);
+		return 1 === (int) $affected;
+	}
+
+	public static function add_order_total( $session_id, $total ) {
+		global $wpdb;
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f WHERE id = %d",
-				self::now(),
+				"UPDATE " . self::table_name() . " SET session_total = session_total + %f WHERE id = %d",
 				(float) $total,
 				absint( $session_id )
 			)
@@ -495,7 +515,7 @@ git commit -m "feat: resolve table key and gate menu on active session"
 - Modify: `public/studio-immens-quick-order-public.php` (`SIQO_flash_tab_order_ajax`, ~3833-4292)
 
 **Interfaces:**
-- Consumes: `SIQO_Table_Sessions::can_accept_order()`, `::register_order()`, `::get_active_for_table()`
+- Consumes: `SIQO_Table_Sessions::reserve_order()`, `::get_active_for_table()`, `::get()`, `::add_order_total()`
 - Produces: order meta `_siqo_inserted_by`, `_siqo_order_source`, `_siqo_session_id`, `_siqo_approval`
 
 - [ ] **Step 1: Bloccare il submit cliente senza sessione**
@@ -505,29 +525,30 @@ Dentro `SIQO_flash_tab_order_ajax()`, subito dopo il controllo `if ( $verified &
 ```php
 	$siqo_is_operator = ( ! $verified && class_exists( 'SIQO_Management' ) && SIQO_Management::can( 'manage_tables' ) );
 	$siqo_source      = $siqo_is_operator ? 'operator' : 'customer_session';
+	$siqo_reserved    = null;
 
 	if ( ! $siqo_is_operator ) {
 		if ( ! $requested_table_id ) {
 			wp_send_json_error( array( 'message' => __( 'Seleziona un tavolo attivo prima di ordinare.', 'studio-immens-quick-order' ) ), 400 );
 		}
-		$siqo_gate = SIQO_Table_Sessions::can_accept_order( $requested_table_id );
-		if ( is_wp_error( $siqo_gate ) ) {
-			wp_send_json_error( array( 'message' => $siqo_gate->get_error_message() ), 403 );
+		$siqo_reserved = SIQO_Table_Sessions::reserve_order( $requested_table_id );
+		if ( is_wp_error( $siqo_reserved ) ) {
+			wp_send_json_error( array( 'message' => $siqo_reserved->get_error_message() ), 403 );
 		}
 	}
 ```
 
-Nota: `$verified === true` = chiamata cliente (da `FO_submit_order_ajax`), `$verified === false` = operatore.
+Nota: `$verified === true` = chiamata cliente (da `FO_submit_order_ajax`), `$verified === false` = operatore. `reserve_order()` è atomico (incrementa `orders_count` e `last_order_at` solo se count, intervallo e tetto importo sono rispettati): la prenotazione avviene **prima** di creare l'ordine, così due richieste parallele non possono superare i limiti.
 
 - [ ] **Step 2: Registrare autore, sessione e approvazione dopo il save**
 
 Dopo `$order_id = $order->get_id();` (riga ~4189) e prima di `$siqo_previous_order_ids = array();`:
 
 ```php
-	$siqo_session = SIQO_Table_Sessions::get_active_for_table( $requested_table_id );
+	$siqo_session  = $siqo_reserved ? $siqo_reserved : SIQO_Table_Sessions::get_active_for_table( $requested_table_id );
 	$siqo_approval = 'auto_approved';
-	if ( 'customer_session' === $siqo_source ) {
-		$siqo_approval = ( $siqo_session && (int) $siqo_session->orders_count === 0 ) ? 'pending' : 'auto_approved';
+	if ( 'customer_session' === $siqo_source && $siqo_reserved && (int) $siqo_reserved->orders_count === 1 ) {
+		$siqo_approval = 'pending';
 	}
 	$order->update_meta_data( '_siqo_inserted_by', get_current_user_id() );
 	$order->update_meta_data( '_siqo_order_source', $siqo_source );
@@ -535,14 +556,13 @@ Dopo `$order_id = $order->get_id();` (riga ~4189) e prima di `$siqo_previous_ord
 	$order->update_meta_data( '_siqo_approval', $siqo_approval );
 	$order->save();
 
-	if ( $siqo_session ) {
-		SIQO_Table_Sessions::register_order( $siqo_session->id, (float) $order->get_total() );
-	}
-	if ( 'pending' === $siqo_approval ) {
+	if ( 'pending' === $siqo_approval && $siqo_session ) {
 		global $wpdb;
 		$wpdb->update( SIQO_Table_Sessions::table_name(), array( 'status' => 'awaiting_approval' ), array( 'id' => (int) $siqo_session->id ), array( '%s' ), array( '%d' ) );
 	}
 ```
+
+Nota: `orders_count` è già stato incrementato da `reserve_order()`, quindi il **primo** ordine della sessione ha `orders_count === 1`. Nessuna chiamata a `register_order()` qui: il conteggio è già avvenuto; l'importo viene sommato nello Step 3.
 
 - [ ] **Step 3: Tetto importo dopo i totali**
 
@@ -550,15 +570,23 @@ Subito dopo `$order = wc_get_order( $order_id );` (~4231) e prima del ricalcolo 
 
 ```php
 	if ( 'customer_session' === $siqo_source && $siqo_session ) {
-		$siqo_max_total = (float) apply_filters( 'siqo_order_max_total', SIQO_Table_Sessions::MAX_TOTAL, $siqo_session );
-		$siqo_new_total = (float) $siqo_session->session_total + (float) $order->get_total();
-		if ( $siqo_new_total > $siqo_max_total ) {
+		SIQO_Table_Sessions::add_order_total( $siqo_session->id, (float) $order->get_total() );
+		$siqo_fresh     = SIQO_Table_Sessions::get( $siqo_session->id );
+		$siqo_max_total = (float) apply_filters( 'siqo_order_max_total', SIQO_Table_Sessions::MAX_TOTAL, $siqo_fresh );
+		if ( $siqo_fresh && (float) $siqo_fresh->session_total > $siqo_max_total ) {
+			SIQO_Table_Sessions::add_order_total( $siqo_session->id, -1 * (float) $order->get_total() );
+			$order->update_meta_data( '_siqo_approval', 'rejected' );
 			$order->update_status( 'cancelled' );
+			$order->save();
+			global $wpdb;
+			$wpdb->update( SIQO_Table_Sessions::table_name(), array( 'status' => 'open' ), array( 'id' => (int) $siqo_session->id ), array( '%s' ), array( '%d' ) );
 			$order->add_order_note( __( 'Annullato: superato il limite importo della sessione tavolo.', 'studio-immens-quick-order' ) );
 			wp_send_json_error( array( 'message' => __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
 		}
 	}
 ```
+
+Se il tetto viene superato: l'importo viene riaccollato (sottratto), la sessione torna `open` (non resta bloccata in `awaiting_approval`) e l'ordine è annullato con `_siqo_approval = rejected`. Il contatore `orders_count` resta incrementato: overcount di 1, innocuo e voluto come valvola anti-abuso.
 
 - [ ] **Step 4: Lint + test manuale**
 
@@ -925,9 +953,11 @@ Eseguire i punti 1-9 della checklist QA della spec, incluso: sessione scaduta (f
 - [ ] **Step 5: Commit**
 
 ```bash
-git add -A
+git add studio-immens-quick-order.php readme.txt public/station-orders.php public/js/siqo-station-orders.js public/css/siqo-station-orders.css
 git commit -m "feat: table session lifecycle and 1.0.11"
 ```
+
+Nota: mai `git add -A` in questo repo — il working tree contiene modifiche non correlate che restano non committate.
 
 ---
 
