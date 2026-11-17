@@ -26,7 +26,18 @@ class SIQO_Table_Sessions {
 		if ( $key && preg_match( '/^[a-z0-9]{12}$/', $key ) ) {
 			return $key;
 		}
-		$key = strtolower( wp_generate_password( 12, false, false ) );
+		$key = '';
+		for ( $attempt = 0; $attempt < 5; $attempt++ ) {
+			$raw       = strtolower( wp_generate_password( 12, false, false ) );
+			$candidate = preg_replace( '/[^a-z0-9]/', '', $raw );
+			if ( 12 === strlen( $candidate ) ) {
+				$key = $candidate;
+				break;
+			}
+		}
+		if ( '' === $key ) {
+			$key = substr( md5( uniqid( (string) $table_id, true ) ), 0, 12 );
+		}
 		update_post_meta( $table_id, '_siqo_table_key', $key );
 		return $key;
 	}
@@ -43,6 +54,7 @@ class SIQO_Table_Sessions {
 		$found = get_posts(
 			array(
 				'post_type'      => 'siqo_tables',
+				'post_status'    => 'publish',
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 				'meta_key'       => '_siqo_table_key',

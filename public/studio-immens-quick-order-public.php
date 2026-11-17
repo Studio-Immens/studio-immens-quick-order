@@ -1890,18 +1890,20 @@ function SIQO_table_qr_shortcode( $atts ) {
 		'siqo_table_qr'
 	);
 	$table_id = absint( $atts['table'] );
-	if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) ) {
+	if ( ! $table_id || 'siqo_tables' !== get_post_type( $table_id ) || 'publish' !== get_post_status( $table_id ) ) {
 		return '';
 	}
-	$size = absint( $atts['size'] );
+	$size = min( 600, max( 80, absint( $atts['size'] ) ) );
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/qrlib.php';
 	$url      = SIQO_Table_Sessions::table_url( $table_id );
 	$qr_dir   = SIQO_get_qr_dir();
-	$filename = $qr_dir . 'table_' . $table_id . '(' . $size . ').png';
+	$hash     = substr( md5( $url ), 0, 8 );
+	$filename = $qr_dir . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png';
+	$scale    = max( 1, min( 10, (int) round( $size / 20 ) ) );
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $url, $filename, 'L', 10, 2 );
+		QRcode::png( $url, $filename, 'L', $scale, 2 );
 	}
-	$qr_url = esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/table_' . $table_id . '(' . $size . ').png' );
+	$qr_url = esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/table_' . $table_id . '_' . $size . '_' . $hash . '.png' );
 	return '<img src="' . esc_attr( $qr_url ) . '" width="' . $size . '" height="' . $size . '" alt="' . esc_attr( get_the_title( $table_id ) ) . '">';
 }
 
