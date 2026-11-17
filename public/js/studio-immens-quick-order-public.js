@@ -1129,7 +1129,7 @@ console.log(foserialmap);
 		    action: 'SIQO_submit_order_ajax',
 		    nonce: siqo_ajax_view_orders_vars.nonce,
 		    table_id: jQuery('[name="table_name_cpt"]').val(),
-		    table_name_cpt: jQuery('[name="table_name_cpt"]').text(),
+		    table_name_cpt: jQuery('[name="table_name_cpt"] option:selected').text().trim(),
 		    order_note: jQuery('#orderNote').val(),
 		    foserial: foserial,
 		    foserialmap: foserialmap,
