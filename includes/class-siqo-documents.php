@@ -351,6 +351,7 @@ class SIQO_Documents {
 	.meta { padding: 7px 0; border-bottom: 1px dashed #555; }
 	.meta-row, .total-row { display: flex; justify-content: space-between; gap: 8px; }
 	.meta-row span:first-child { color: #444; }
+	.doc-author { font-weight: 700; overflow-wrap: anywhere; }
 	.items { padding: 6px 0; border-bottom: 1px dashed #555; }
 	.item { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; }
 	.item-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
@@ -378,6 +379,12 @@ class SIQO_Documents {
 
 	<div class="meta">
 		<div class="meta-row"><span><?php esc_html_e( 'Documento', 'studio-immens-quick-order' ); ?></span><strong><?php echo esc_html( $data['number'] ); ?></strong></div>
+		<?php
+		$document_author = ! empty( $data['orders'][0] ) ? html_entity_decode( wp_strip_all_tags( siqo_render_author_badge( $data['orders'][0] ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		if ( '' !== $document_author ) :
+			?>
+			<div class="doc-author"><?php echo esc_html( $document_author ); ?></div>
+		<?php endif; ?>
 		<div class="meta-row"><span><?php esc_html_e( 'Data', 'studio-immens-quick-order' ); ?></span><span><?php echo esc_html( $data['created_at'] ); ?></span></div>
 		<?php if ( $data['table'] ) : ?><div class="meta-row"><span><?php esc_html_e( 'Tavolo', 'studio-immens-quick-order' ); ?></span><strong><?php echo esc_html( $data['table'] ); ?></strong></div><?php endif; ?>
 		<?php if ( $data['operator'] ) : ?><div class="meta-row"><span><?php esc_html_e( 'Operatore', 'studio-immens-quick-order' ); ?></span><span><?php echo esc_html( $data['operator'] ); ?></span></div><?php endif; ?>
@@ -445,6 +452,12 @@ class SIQO_Documents {
 
 		$lines[] = str_repeat( '-', $width );
 		$lines[] = self::line( __( 'Documento', 'studio-immens-quick-order' ), $data['number'], $width );
+		$author  = ! empty( $data['orders'][0] ) ? html_entity_decode( trim( wp_strip_all_tags( siqo_render_author_badge( $data['orders'][0] ) ) ), ENT_QUOTES, 'UTF-8' ) : '';
+		if ( '' !== $author ) {
+			foreach ( explode( "\n", wordwrap( self::ascii( $author ), $width, "\n", true ) ) as $author_line ) {
+				$lines[] = $author_line;
+			}
+		}
 		$lines[] = self::line( __( 'Data', 'studio-immens-quick-order' ), $data['created_at'], $width );
 		if ( $data['table'] ) {
 			$lines[] = self::line( __( 'Tavolo', 'studio-immens-quick-order' ), $data['table'], $width );
@@ -691,5 +704,60 @@ class SIQO_Documents {
 		}
 
 		return $left . str_repeat( ' ', $space ) . $right;
+	}
+}
+
+if ( ! function_exists( 'siqo_render_author_badge' ) ) {
+	/**
+	 * Render the author badge for an order.
+	 *
+	 * Operator orders show the operator avatar and name; customer orders show
+	 * the table label instead. Orders without source metadata (legacy) fall
+	 * back to the customer label.
+	 *
+	 * @param WC_Order $order Order object.
+	 * @return string
+	 */
+	function siqo_render_author_badge( $order ) {
+		if ( ! is_object( $order ) || ! method_exists( $order, 'get_meta' ) ) {
+			return '';
+		}
+
+		$source  = (string) $order->get_meta( '_siqo_order_source' );
+		$user_id = (int) $order->get_meta( '_siqo_inserted_by' );
+		$parts   = array();
+
+		$table_cpt  = trim( (string) $order->get_meta( 'Table_cpt' ) );
+		$table_meta = trim( (string) $order->get_meta( 'Table' ) );
+
+		if ( '' !== $table_cpt ) {
+			$parts[] = $table_cpt;
+		}
+		if ( '' !== $table_meta && $table_meta !== $table_cpt ) {
+			$parts[] = $table_meta;
+		}
+
+		$table = implode( ' ', $parts );
+
+		if ( 'operator' === $source && $user_id ) {
+			$user   = get_userdata( $user_id );
+			$name   = $user ? $user->display_name : __( 'Operatore', 'studio-immens-quick-order' );
+			$avatar = get_avatar_url( $user_id, array( 'size' => 56 ) );
+			$label  = sprintf( __( 'Operatore: %s', 'studio-immens-quick-order' ), $name );
+		} else {
+			$avatar = '';
+			$label  = $table
+				? sprintf( __( 'Cliente — %s', 'studio-immens-quick-order' ), $table )
+				: __( 'Cliente', 'studio-immens-quick-order' );
+		}
+
+		$html = '<span class="siqo-author' . ( $avatar ? ' has-avatar' : '' ) . '">';
+		if ( $avatar ) {
+			$html .= '<img src="' . esc_url( $avatar ) . '" alt="" width="28" height="28">';
+		}
+		$html .= '<span class="siqo-author-name">' . esc_html( $label ) . '</span>';
+		$html .= '</span>';
+
+		return $html;
 	}
 }

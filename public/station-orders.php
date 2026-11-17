@@ -679,6 +679,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				<?php if ( $time ) : ?>
 					<time><?php echo esc_html( $time ); ?></time>
 				<?php endif; ?>
+				<?php echo siqo_render_author_badge( $order ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</div>
 			<?php if ( $is_filter ) : ?>
 				<span class="siqo-station-badge siqo-station-badge--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( siqo_station_status_label( $status ) ); ?></span>
