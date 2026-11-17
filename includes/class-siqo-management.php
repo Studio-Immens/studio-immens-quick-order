@@ -438,8 +438,8 @@ class SIQO_Management {
 						}
 						$menu_id = 'siqo-nav-menu-' . $group['id'];
 						?>
-						<div class="siqo-nav-group<?php echo $group_active ? ' is-active' : ''; ?>" data-siqo-nav-group>
-							<button type="button" class="siqo-nav-trigger<?php echo $group_active ? ' is-active' : ''; ?>" aria-expanded="false" aria-controls="<?php echo esc_attr( $menu_id ); ?>" aria-haspopup="true">
+						<div class="siqo-nav-group<?php echo $group_active ? ' is-active is-open' : ''; ?>" data-siqo-nav-group>
+							<button type="button" class="siqo-nav-trigger<?php echo $group_active ? ' is-active' : ''; ?>" aria-expanded="<?php echo $group_active ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr( $menu_id ); ?>" aria-haspopup="true">
 								<span class="dashicons dashicons-<?php echo esc_attr( $group['icon'] ); ?>" aria-hidden="true"></span>
 								<span><?php echo esc_html( $group['label'] ); ?></span>
 								<span class="dashicons dashicons-arrow-down-alt2 siqo-nav-caret" aria-hidden="true"></span>

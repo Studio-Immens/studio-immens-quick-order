@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -94,6 +94,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 5. Style customization page with CSS variable controls
 
 == Changelog ==
+
+= 1.1.7 =
+* Open the active staff navigation group by default so "Tavoli" is visible on /gestione/ without hovering "Sala"
 
 = 1.1.6 =
 * Added the internal non-fiscal receipt and pre-bill engine with archive and reprint
