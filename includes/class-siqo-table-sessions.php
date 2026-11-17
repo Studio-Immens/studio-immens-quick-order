@@ -265,11 +265,12 @@ class SIQO_Table_Sessions {
 		return self::get( $session->id );
 	}
 
-	public static function release_order( $session_id ) {
+	public static function release_order( $session_id, $total = 0 ) {
 		global $wpdb;
 		$affected = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET orders_count = IF(orders_count > 0, orders_count - 1, 0) WHERE id = %d",
+				"UPDATE " . self::table_name() . " SET orders_count = IF(orders_count > 0, orders_count - 1, 0), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d",
+				(float) $total,
 				absint( $session_id )
 			)
 		);
