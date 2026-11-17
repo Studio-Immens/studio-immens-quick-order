@@ -97,7 +97,10 @@ class SIQO_Table_Sessions {
 		self::close( $table_id, 'expired' );
 
 		global $wpdb;
-		$ttl      = $ttl > 0 ? absint( $ttl ) : (int) apply_filters( 'siqo_table_session_ttl', self::DEFAULT_TTL, $table_id );
+		$ttl = $ttl > 0 ? absint( $ttl ) : (int) apply_filters( 'siqo_table_session_ttl', self::DEFAULT_TTL, $table_id );
+		if ( $ttl <= 0 ) {
+			$ttl = self::DEFAULT_TTL;
+		}
 		$opened   = self::now();
 		$expires  = gmdate( 'Y-m-d H:i:s', strtotime( $opened . ' UTC' ) + $ttl );
 		$token    = bin2hex( random_bytes( 16 ) );
@@ -146,7 +149,7 @@ class SIQO_Table_Sessions {
 		);
 	}
 
-	public static function can_accept_order( $table_id ) {
+	public static function reserve_order( $table_id, $total = 0 ) {
 		$session = self::get_active_for_table( $table_id );
 		if ( ! $session ) {
 			return new WP_Error( 'no_session', __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) );
@@ -154,28 +157,47 @@ class SIQO_Table_Sessions {
 		if ( strtotime( $session->expires_at . ' UTC' ) <= time() ) {
 			return new WP_Error( 'session_expired', __( 'Sessione del tavolo scaduta. Chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
-		$max_orders = (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session );
-		if ( (int) $session->orders_count >= $max_orders ) {
-			return new WP_Error( 'too_many_orders', __( 'Troppi ordini per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
+		if ( ! self::register_order( $session->id, $total ) ) {
+			return new WP_Error( 'rate_limited', __( 'Ordine non accettato: attendi o chiama un operatore.', 'studio-immens-quick-order' ) );
 		}
-		$interval = (int) apply_filters( 'siqo_order_min_interval', self::MIN_INTERVAL, $session );
-		if ( $session->last_order_at && ( time() - strtotime( $session->last_order_at . ' UTC' ) ) < $interval ) {
-			return new WP_Error( 'too_fast', __( 'Attendi qualche secondo prima di inviare un altro ordine.', 'studio-immens-quick-order' ) );
-		}
-		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
-		if ( (float) $session->session_total >= $max_total ) {
-			return new WP_Error( 'total_cap', __( 'Limite importo raggiunto per questo tavolo. Chiama un operatore.', 'studio-immens-quick-order' ) );
-		}
-		return true;
+		return self::get( $session->id );
 	}
 
 	public static function register_order( $session_id, $total = 0 ) {
 		global $wpdb;
-		$table = self::table_name();
+		$table      = self::table_name();
+		$session    = self::get( $session_id );
+		if ( ! $session ) {
+			return false;
+		}
+		$max_orders = (int) apply_filters( 'siqo_order_max_orders', self::MAX_ORDERS, $session );
+		$interval   = (int) apply_filters( 'siqo_order_min_interval', self::MIN_INTERVAL, $session );
+		$max_total  = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
+		$threshold  = gmdate( 'Y-m-d H:i:s', time() - $interval );
+		$affected   = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
+				 WHERE id = %d AND status IN ('open','awaiting_approval')
+				 AND orders_count < %d
+				 AND (last_order_at IS NULL OR last_order_at < %s)
+				 AND session_total + %f <= %f",
+				self::now(),
+				(float) $total,
+				absint( $session_id ),
+				$max_orders,
+				$threshold,
+				(float) $total,
+				$max_total
+			)
+		);
+		return 1 === (int) $affected;
+	}
+
+	public static function add_order_total( $session_id, $total ) {
+		global $wpdb;
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f WHERE id = %d",
-				self::now(),
+				"UPDATE " . self::table_name() . " SET session_total = session_total + %f WHERE id = %d",
 				(float) $total,
 				absint( $session_id )
 			)
