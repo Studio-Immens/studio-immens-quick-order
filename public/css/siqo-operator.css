@@ -904,12 +904,35 @@ body.siqo-table-open .FO_flash_tab_order_container {
 }
 
 #SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod_remove {
-    top: 2px !important;
-    right: 2px !important;
-    width: 22px !important;
-    height: 22px !important;
-    font-size: 15px !important;
-    line-height: 22px !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 6px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translateY(-50%);
+    border: 1px solid var(--siqo-sand-strong) !important;
+    border-radius: 999px !important;
+    background: var(--siqo-white) !important;
+    color: var(--siqo-terracotta) !important;
+    box-shadow: 0 4px 10px -6px rgba(28, 23, 20, 0.45);
+    font-size: 20px !important;
+    line-height: 1 !important;
+    cursor: pointer;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod_remove:hover,
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod_remove:focus-visible {
+    background: var(--siqo-red-soft) !important;
+    border-color: var(--siqo-terracotta) !important;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod {
+    padding-right: 52px !important;
 }
 
 #SIQO_Front_Content .fo_column_riepilogo.siqo-cart-empty::after {
@@ -3313,3 +3336,134 @@ body.siqo-story-open {
     letter-spacing: 0.08em;
 }
 
+
+/* Round usabilità: temperature, modifiche, storico, disposizione */
+#SIQO_Front_Content .FO_flash_tab_temperature .fo_button_thin.is-selected,
+#SIQO_Front_Content .FO_flash_tab_temperature .fo_button_thin:has(input:checked) {
+    background: var(--siqo-terracotta) !important;
+    border-color: var(--siqo-terracotta) !important;
+    color: var(--siqo-white) !important;
+}
+
+#SIQO_Front_Content .FO_flash_tab_item_note {
+    margin-top: 10px;
+}
+
+#SIQO_Front_Content .FO_flash_tab_item_note textarea {
+    width: 100%;
+    min-height: 54px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .fo_tab_prod.has-item-note {
+    height: auto !important;
+    min-height: 58px;
+    flex-wrap: wrap;
+    row-gap: 2px;
+}
+
+#SIQO_Front_Content .fo_column_riepilogo .siqo-cart-item-note {
+    order: 2;
+    flex: 0 0 100%;
+    overflow: hidden;
+    color: var(--siqo-terracotta);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#SIQO_Front_Content .fo_story .siqo-row-item-note {
+    margin: 2px 0 0;
+    color: var(--siqo-terracotta);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+#SIQO_Front_Content .fo_order_table_story {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    height: auto !important;
+    min-height: 34px;
+    padding: 6px 10px !important;
+}
+
+#SIQO_Front_Content .fo_order_table_story .siqo-history-id {
+    color: var(--siqo-muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+#SIQO_Front_Content .fo_order_table_story .siqo-history-date {
+    color: var(--siqo-espresso);
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.siqo-story-item-modification {
+    color: var(--siqo-terracotta);
+    font-weight: 700;
+}
+
+.siqo-story-backdrop {
+    background: rgba(20, 17, 15, 0.12);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+#SIQO_Front_Content .FO_table_plan.is-editing .fo_table_cell.is-selected {
+    outline: 3px solid var(--siqo-terracotta);
+    outline-offset: -3px;
+    box-shadow: 0 0 0 3px rgba(166, 70, 47, 0.22), 0 10px 24px rgba(28, 23, 20, 0.18);
+}
+
+/* Barra di stato sempre visibile sopra la finestra ordine */
+.siqo-app-header {
+    z-index: 10000000000;
+}
+
+.FO_flash_tab_order_container {
+    top: var(--siqo-app-header-offset, 0px) !important;
+    height: calc(100dvh - var(--siqo-app-header-offset, 0px)) !important;
+}
+
+/* Righe storico: niente ombra di testo, larghezza intrinseca */
+#SIQO_Front_Content .fo_order_table_story,
+#SIQO_Front_Content .fo_order_table_story .siqo-history-id,
+#SIQO_Front_Content .fo_order_table_story .siqo-history-date {
+    text-shadow: none !important;
+}
+
+#SIQO_Front_Content .fo_order_table_story {
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+#SIQO_Front_Content .fo_order_table_story .siqo-history-date {
+    white-space: nowrap;
+}
+
+/* Ordine di impilamento entro i limiti dei browser (i valori enormi vengono clampati) */
+.siqo-app-header {
+    z-index: 2147483647;
+}
+
+.FO_flash_tab_order_container {
+    z-index: 2147483000;
+}
+
+@media (max-width: 999.98px) {
+    /* Il pannello varianti deve stare sopra il footer e non finire sotto i suoi pulsanti */
+    #SIQO_Front_Content .fo_tab_col_2[fo_show="show"],
+    #SIQO_Front_Content .fo_tab_col_3[fo_show="show"] {
+        z-index: 1500 !important;
+        padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+    }
+}

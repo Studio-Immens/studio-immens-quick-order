@@ -27,6 +27,7 @@
             fo_tab_parse_price: 'siqo_tab_parse_price',
             fo_tab_parse_qty: 'siqo_tab_parse_qty',
             fo_tab_parse_temp: 'siqo_tab_parse_temp',
+            fo_tab_parse_item_note: 'siqo_tab_parse_item_note',
             fo_tab_prod_remove: 'siqo_tab_prod_remove',
             fo_tab_hystory_space: 'siqo_tab_hystory_space',
             fo_keyboard_price: 'siqo_keyboard_price',
@@ -139,6 +140,20 @@
                 'data-qty-label': qty + '×',
                 'data-price-label': currency.format(price * qty)
             });
+
+            var itemNote = text($item.find('[fo_tab_target="item_note"]').first().val());
+            var $note = $item.find('.siqo-cart-item-note');
+
+            if (itemNote !== '') {
+                if (!$note.length) {
+                    $note = $('<span class="siqo-cart-item-note"></span>').appendTo($item);
+                }
+                $note.text(itemNote);
+                $item.addClass('has-item-note');
+            } else {
+                $note.remove();
+                $item.removeClass('has-item-note');
+            }
         });
 
         $cart.toggleClass('siqo-cart-empty', $items.length === 0);
@@ -339,12 +354,12 @@
             return String(value);
         }
 
-        return date.toLocaleString('it-IT', {
-            day: '2-digit',
-            month: 'short',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        function pad(number) {
+            return number < 10 ? '0' + number : String(number);
+        }
+
+        return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + '/' + date.getFullYear() +
+            ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
     }
 
     function storyItemData($item) {
@@ -364,6 +379,7 @@
             qty: qty,
             price: price,
             note: text($item.find('[fo_tab_target="note"]').first().val()),
+            modification: text($item.find('[fo_tab_target="item_note"]').first().val()),
             image: text($item.find('.FO_prod_img img').first().attr('src'))
         };
     }
@@ -463,6 +479,9 @@
             if (item.note) {
                 $copy.append($('<span class="siqo-story-item-note"></span>').text(item.note));
             }
+            if (item.modification) {
+                $copy.append($('<span class="siqo-story-item-note siqo-story-item-modification"></span>').text('Modifiche: ' + item.modification));
+            }
             $body.append($copy);
             $li.append($body);
             $li.append($price.text(currency.format(lineTotal)));
@@ -522,6 +541,16 @@
             }
         });
 
+        $('#SIQO_Front_Content .fo_tab_prod_remove').each(function () {
+            var $remove = $(this);
+            var label = text($remove.closest('.fo_tab_prod').find('.FO_prod_name_manage').first().text()) || 'prodotto';
+            $remove.attr({
+                role: 'button',
+                tabindex: '0',
+                'aria-label': 'Rimuovi ' + label
+            });
+        });
+
         $('#SIQO_Front_Content .fo_cat_butt').each(function () {
             var $button = $(this);
             if (!$button.attr('role')) {
@@ -563,8 +592,16 @@
         $button.addClass('siqo-active');
     }
 
+    function updateChromeOffset() {
+        var header = document.querySelector('.siqo-app-header');
+        var offset = header ? Math.round(header.getBoundingClientRect().height) : 0;
+
+        document.documentElement.style.setProperty('--siqo-app-header-offset', offset + 'px');
+    }
+
     function refresh() {
         defaultStatuses();
+        updateChromeOffset();
         updateSummary();
         ensureFooterSummary();
         normalizeQtyLabel();
@@ -642,6 +679,10 @@
 
         wrapGlobal('fo_tab_show_variation_button', null, function () {
             window.setTimeout(syncSheets, 0);
+        });
+
+        wrapGlobal('siqo_tab_parse_item_note', null, function () {
+            window.setTimeout(refresh, 0);
         });
 
         document.addEventListener('click', function (event) {

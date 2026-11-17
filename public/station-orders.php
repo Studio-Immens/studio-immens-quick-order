@@ -571,7 +571,7 @@ function siqo_station_get_orders_data() {
 		$items = array();
 		foreach ( $order->get_items() as $item ) {
 			$stations = siqo_station_get_item_terms( $item );
-			$details  = siqo_station_get_item_details( $order, $item->get_product_id() );
+			$details  = siqo_station_get_item_details( $order, $item->get_product_id(), $item );
 
 			$items[] = array(
 				'name'     => $item->get_name(),
@@ -621,13 +621,18 @@ function siqo_station_get_item_terms( $item ) {
 	return $result;
 }
 
-function siqo_station_get_item_details( $order, $product_id ) {
+function siqo_station_get_item_details( $order, $product_id, $item = null ) {
 	$details = array(
-		'variant'     => array(),
-		'temperature' => array(),
-		'ingredients' => array(),
-		'note'        => '',
+		'variant'      => array(),
+		'temperature'  => array(),
+		'ingredients'  => array(),
+		'note'         => '',
+		'modification' => '',
 	);
+
+	if ( $item instanceof WC_Order_Item ) {
+		$details['modification'] = trim( (string) $item->get_meta( '_siqo_item_note' ) );
+	}
 
 	$needle = 'prod-' . (int) $product_id . '_';
 
@@ -875,6 +880,9 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				}
 				if ( ! empty( $item['details']['note'] ) ) {
 					$detail_parts[] = $item['details']['note'];
+				}
+				if ( ! empty( $item['details']['modification'] ) ) {
+					$detail_parts[] = sprintf( __( 'Modifiche: %s', 'studio-immens-quick-order' ), $item['details']['modification'] );
 				}
 				?>
 				<li class="siqo-station-item">
