@@ -17,15 +17,19 @@ define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
  * The table payment flow (FO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
  * $clear = true) fires `siqo_table_paid`; gateways that mark an order as paid fire
  * `woocommerce_payment_complete`. Both carry the order's `_siqo_session_id`, so the
- * session is the source of truth and closing it twice is a no-op.
+ * session is the source of truth and closing it twice is a no-op. When the meta is
+ * missing (legacy or admin order) the table post ID passed by `siqo_table_paid` is
+ * used as a fallback.
  *
  * `woocommerce_order_status_processing` is intentionally NOT hooked: approving the
  * first order moves it to `processing` while the table must stay open.
  *
- * @param int $order_id Order ID.
+ * @param int $order_id       Order ID.
+ * @param int $table_id       Table post ID passed by `siqo_table_paid`.
+ * @param int $table_name_cpt Unused, kept for the hook signature.
  * @return bool True when a table session was closed by this call.
  */
-function siqo_station_close_paid_table_session( $order_id ) {
+function siqo_station_close_paid_table_session( $order_id, $table_id = 0, $table_name_cpt = 0 ) {
 	$order_id = absint( $order_id );
 	if ( ! $order_id || ! class_exists( 'SIQO_Table_Sessions' ) || ! function_exists( 'wc_get_order' ) ) {
 		return false;
@@ -37,19 +41,25 @@ function siqo_station_close_paid_table_session( $order_id ) {
 	}
 
 	$session_id = (int) $order->get_meta( '_siqo_session_id' );
-	if ( ! $session_id ) {
-		return false;
+	if ( $session_id ) {
+		$session = SIQO_Table_Sessions::get( $session_id );
+		if ( ! $session || ! in_array( (string) $session->status, array( 'open', 'awaiting_approval' ), true ) ) {
+			return false;
+		}
+
+		SIQO_Table_Sessions::close( (int) $session->table_id, 'closed' );
+		return true;
 	}
 
-	$session = SIQO_Table_Sessions::get( $session_id );
-	if ( ! $session || ! in_array( (string) $session->status, array( 'open', 'awaiting_approval' ), true ) ) {
-		return false;
+	$table_id = absint( $table_id );
+	if ( $table_id && 'siqo_tables' === get_post_type( $table_id ) && SIQO_Table_Sessions::get_active_for_table( $table_id ) ) {
+		SIQO_Table_Sessions::close( $table_id, 'closed' );
+		return true;
 	}
 
-	SIQO_Table_Sessions::close( (int) $session->table_id, 'closed' );
-	return true;
+	return false;
 }
-add_action( 'siqo_table_paid', 'siqo_station_close_paid_table_session', 20, 1 );
+add_action( 'siqo_table_paid', 'siqo_station_close_paid_table_session', 20, 3 );
 add_action( 'woocommerce_payment_complete', 'siqo_station_close_paid_table_session', 20, 1 );
 
 add_action( 'init', 'siqo_station_register_taxonomy', 0 );

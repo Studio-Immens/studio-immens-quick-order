@@ -304,6 +304,7 @@
         var body = new FormData();
 
         body.append('action', 'siqo_tables_close_all');
+        body.append('do', 'close_all');
         body.append('_siqo_nonce', bar.getAttribute('data-nonce') || '');
 
         button.disabled = true;
