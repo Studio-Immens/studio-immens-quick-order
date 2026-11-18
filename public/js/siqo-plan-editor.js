@@ -1396,6 +1396,7 @@
         refs.file = qs('[data-plan-file]');
         refs.zoomValue = qs('[data-plan-zoom-value]');
         refs.nonce = qs('[data-plan-nonce]');
+        refs.ajaxUrl = (window.SIQO_plan_editor && window.SIQO_plan_editor.ajaxUrl) || '/wp-admin/admin-ajax.php';
         var config = readConfig() || {};
         refs.floors = config.floors || [];
         if (!refs.toolbar || !refs.area || !refs.canvas || !refs.grid) {
