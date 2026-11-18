@@ -85,6 +85,7 @@ class SIQO_Plan_Layout {
 		add_action( 'wp_ajax_siqo_zone_update', array( __CLASS__, 'ajax_zone_update' ) );
 		add_action( 'wp_ajax_siqo_zone_delete', array( __CLASS__, 'ajax_zone_delete' ) );
 		add_action( 'wp_ajax_siqo_floors', array( __CLASS__, 'respond_floors' ) );
+		add_action( 'wp_ajax_siqo_zone_bg_upload', array( __CLASS__, 'ajax_zone_bg_upload' ) );
 	}
 
 	public static function floor_term( $floor_id ) {
@@ -650,6 +651,40 @@ class SIQO_Plan_Layout {
 		}
 		wp_delete_term( $id, self::ZONE_TAX );
 		wp_send_json_success( array( 'zones' => self::zones() ) );
+	}
+
+	public static function ajax_zone_bg_upload() {
+		self::guard();
+		$zone_id = isset( $_POST['zone_id'] ) ? absint( $_POST['zone_id'] ) : 0;
+		$term    = $zone_id ? get_term( $zone_id, self::ZONE_TAX ) : null;
+		if ( ! $term || is_wp_error( $term ) ) {
+			wp_send_json_error( array( 'message' => __( 'Zona inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		if ( empty( $_FILES['file'] ) || ! isset( $_FILES['file']['tmp_name'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Nessun file ricevuto.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		$file = $_FILES['file'];
+		if ( ! empty( $file['size'] ) && (int) $file['size'] > 2 * 1024 * 1024 ) {
+			wp_send_json_error( array( 'message' => __( 'Immagine troppo grande (max 2 MB).', 'studio-immens-quick-order' ) ), 400 );
+		}
+		$check = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'] );
+		if ( ! $check['type'] || ! in_array( $check['type'], array( 'image/jpeg', 'image/png', 'image/webp' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Formato immagine non supportato.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		$attachment = media_handle_upload( 'file', 0 );
+		if ( is_wp_error( $attachment ) ) {
+			wp_send_json_error( array( 'message' => $attachment->get_error_message() ), 400 );
+		}
+		update_term_meta( $zone_id, '_siqo_zone_bg', (int) $attachment );
+		wp_send_json_success(
+			array(
+				'zone'  => self::zone_payload( $zone_id ),
+				'zones' => self::zones(),
+			)
+		);
 	}
 
 	public static function respond_floors() {

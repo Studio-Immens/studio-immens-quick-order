@@ -1261,6 +1261,38 @@
                 window.location.reload();
             });
         }
+        if (refs.file) {
+            refs.file.addEventListener('change', function () {
+                var file = refs.file.files && refs.file.files[0];
+                if (!file || !state.selectedZone) {
+                    return;
+                }
+                var form = new FormData();
+                form.append('action', 'siqo_zone_bg_upload');
+                form.append('nonce', refs.nonce ? refs.nonce.value : '');
+                form.append('zone_id', state.selectedZone.getAttribute('data-zone-id'));
+                form.append('file', file);
+                refs.file.value = '';
+                setStatus('Caricamento sfondo...', false);
+                fetch(refs.ajaxUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: form
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (result) {
+                    if (result && result.success) {
+                        state.zones = result.data.zones || state.zones;
+                        renderZones();
+                        setStatus('Sfondo aggiornato', false);
+                    } else {
+                        setStatus(result && result.data && result.data.message ? result.data.message : 'Caricamento non riuscito', true);
+                    }
+                }).catch(function () {
+                    setStatus('Caricamento non riuscito', true);
+                });
+            });
+        }
         refs.canvas.addEventListener('pointerdown', startDraw, true);
         refs.canvas.addEventListener('pointerdown', onCanvasPointerDown);
         refs.canvas.addEventListener('click', onCanvasClick, true);
