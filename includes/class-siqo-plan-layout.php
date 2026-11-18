@@ -84,6 +84,7 @@ class SIQO_Plan_Layout {
 		add_action( 'wp_ajax_siqo_zone_create', array( __CLASS__, 'ajax_zone_create' ) );
 		add_action( 'wp_ajax_siqo_zone_update', array( __CLASS__, 'ajax_zone_update' ) );
 		add_action( 'wp_ajax_siqo_zone_delete', array( __CLASS__, 'ajax_zone_delete' ) );
+		add_action( 'wp_ajax_siqo_floors', array( __CLASS__, 'respond_floors' ) );
 	}
 
 	public static function floor_term( $floor_id ) {

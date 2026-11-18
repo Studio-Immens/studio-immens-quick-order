@@ -1355,3 +1355,104 @@ body.siqo-customer-mode .entry-content {
 	font-weight: 700;
 	cursor: pointer;
 }
+.siqo-plan-manager {
+	margin: 12px 20px 0;
+	max-width: 760px;
+	background: #fff;
+	border: 1px solid #e2d8ca;
+	border-radius: 14px;
+	padding: 14px 16px;
+	box-shadow: 0 10px 30px rgba(47, 42, 38, 0.12);
+}
+
+.siqo-plan-manager-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.siqo-plan-manager-head button {
+	border: 0;
+	background: transparent;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.siqo-plan-manager-cols {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+}
+
+.siqo-plan-manager h3 {
+	margin: 0 0 6px;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #6b5d50;
+}
+
+.siqo-plan-manager ul {
+	margin: 0 0 10px;
+	padding: 0;
+	list-style: none;
+}
+
+.siqo-plan-manager li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 0;
+	border-bottom: 1px solid #f0e8dd;
+	font-size: 13px;
+}
+
+.siqo-plan-manager li small {
+	color: #8a7a6a;
+	font-weight: 600;
+}
+
+.siqo-plan-manager-actions {
+	display: inline-flex;
+	gap: 6px;
+}
+
+.siqo-plan-manager-actions button {
+	border: 1px solid #d8cbbd;
+	border-radius: 6px;
+	background: #fff;
+	padding: 4px 8px;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.siqo-plan-manager [data-floor-add],
+.siqo-plan-manager [data-zone-add],
+.siqo-plan-manager [data-zone-draw] {
+	border: 1px solid #a6462f;
+	border-radius: 8px;
+	background: #fff;
+	color: #a6462f;
+	padding: 6px 12px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.siqo-plan-zone-ghost {
+	border: 2px dashed #1f6feb;
+	background: rgba(31, 111, 235, 0.12);
+}
+
+@media (max-width: 782px) {
+	.siqo-plan-manager {
+		margin: 10px 14px 0;
+	}
+
+	.siqo-plan-manager-cols {
+		grid-template-columns: 1fr;
+	}
+}

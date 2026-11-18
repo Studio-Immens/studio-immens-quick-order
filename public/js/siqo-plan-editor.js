@@ -17,7 +17,8 @@
         selectedZone: null,
         drag: null,
         pan: null,
-        suppressClick: false
+        suppressClick: false,
+        drawZone: false
     };
 
     var refs = {};
@@ -789,6 +790,8 @@
             return;
         }
         if (event.key === 'Escape') {
+            closeManager();
+            state.drawZone = false;
             selectCard(null);
             return;
         }
@@ -845,8 +848,8 @@
             return;
         }
         var handle = event.target.closest('[data-zone-handle]');
-        selectZone(el);
         selectCard(null);
+        selectZone(el);
         var dir = handle ? handle.getAttribute('data-zone-handle') : '';
         var origin = zoneGeometry(el);
         var start = pointToCanvas(event);
@@ -888,6 +891,284 @@
         el.addEventListener('pointermove', onMove);
         el.addEventListener('pointerup', onUp);
         el.addEventListener('pointercancel', onUp);
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function refreshConfig() {
+        return post('siqo_floors', {}).then(function (result) {
+            if (result && result.success) {
+                state.floors = result.data.floors || state.floors;
+                state.zones = result.data.zones || state.zones;
+                renderTabs();
+                renderZones();
+                renderManager();
+            }
+        });
+    }
+
+    function renderManager() {
+        if (!refs.manager) {
+            return;
+        }
+        var floorsHtml = state.floors.map(function (floor) {
+            return '<li><span>' + esc(floor.name) + ' <small>' + int(floor.free, 0) + '/' + int(floor.busy, 0) + '</small></span>' +
+                '<span class="siqo-plan-manager-actions">' +
+                (floor.virtual ? '' : '<button type="button" data-floor-rename="' + floor.id + '">Rinomina</button>' +
+                    '<button type="button" data-floor-delete="' + floor.id + '">Elimina</button>') +
+                '</span></li>';
+        }).join('');
+        var zonesHtml = state.zones.filter(function (zone) {
+            return Number(zone.floor) === state.floor;
+        }).map(function (zone) {
+            return '<li><span>' + esc(zone.name) + '</span><span class="siqo-plan-manager-actions">' +
+                '<button type="button" data-zone-rename="' + zone.id + '">Rinomina</button>' +
+                '<button type="button" data-zone-remove="' + zone.id + '">Elimina</button></span></li>';
+        }).join('');
+        refs.manager.innerHTML =
+            '<div class="siqo-plan-manager-head"><strong>Gestisci disposizione</strong>' +
+            '<button type="button" data-manager-close aria-label="Chiudi">&times;</button></div>' +
+            '<div class="siqo-plan-manager-cols">' +
+            '<section><h3>Piani</h3><ul>' + (floorsHtml || '<li>Nessun piano</li>') + '</ul>' +
+            '<button type="button" data-floor-add>Nuovo piano</button></section>' +
+            '<section><h3>Zone del piano</h3><ul>' + (zonesHtml || '<li>Nessuna zona</li>') + '</ul>' +
+            '<button type="button" data-zone-add>Nuova zona</button> ' +
+            '<button type="button" data-zone-draw>Disegna zona</button></section>' +
+            '</div>';
+
+        qs('[data-manager-close]', refs.manager).addEventListener('click', closeManager);
+        qsa('[data-floor-add]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', addFloor);
+        });
+        qsa('[data-floor-rename]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                renameFloor(int(btn.getAttribute('data-floor-rename'), 0));
+            });
+        });
+        qsa('[data-floor-delete]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                removeFloor(int(btn.getAttribute('data-floor-delete'), 0));
+            });
+        });
+        qsa('[data-zone-add]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', addZone);
+        });
+        qsa('[data-zone-draw]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                state.drawZone = true;
+                if (state.view !== 'plan') {
+                    setView('plan');
+                }
+                setEditing(true);
+                closeManager();
+                setStatus('Trascina sulla mappa per disegnare la zona', false);
+            });
+        });
+        qsa('[data-zone-rename]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                renameZone(int(btn.getAttribute('data-zone-rename'), 0));
+            });
+        });
+        qsa('[data-zone-remove]', refs.manager).forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                removeZone(int(btn.getAttribute('data-zone-remove'), 0));
+            });
+        });
+    }
+
+    function openManager() {
+        renderManager();
+        refs.manager.hidden = false;
+        refs.manage.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeManager() {
+        if (refs.manager) {
+            refs.manager.hidden = true;
+        }
+        if (refs.manage) {
+            refs.manage.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    function addFloor() {
+        var name = window.prompt('Nome del nuovo piano');
+        if (!name) {
+            return;
+        }
+        var copy = window.confirm('Copiare la disposizione dal piano corrente?') ? state.floor : '';
+        post('siqo_floor_create', { name: name, copy_from: copy }).then(function (result) {
+            if (result && result.success) {
+                state.floors = result.data.floors || state.floors;
+                state.zones = result.data.zones || state.zones;
+                renderTabs();
+                renderManager();
+                setStatus('Piano creato', false);
+            } else {
+                setStatus(result && result.data && result.data.message ? result.data.message : 'Creazione non riuscita', true);
+            }
+        });
+    }
+
+    function renameFloor(id) {
+        var floor = null;
+        state.floors.forEach(function (item) {
+            if (Number(item.id) === id) {
+                floor = item;
+            }
+        });
+        if (!floor) {
+            return;
+        }
+        var name = window.prompt('Nuovo nome del piano', floor.name);
+        if (!name) {
+            return;
+        }
+        post('siqo_floor_update', { id: id, name: name }).then(function (result) {
+            if (result && result.success) {
+                state.floors = result.data.floors || state.floors;
+                renderTabs();
+                renderManager();
+            } else {
+                setStatus('Rinomina non riuscita', true);
+            }
+        });
+    }
+
+    function removeFloor(id) {
+        if (!window.confirm('Eliminare il piano? Le zone del piano verranno rimosse.')) {
+            return;
+        }
+        post('siqo_floor_delete', { id: id }).then(function (result) {
+            if (result && result.success) {
+                state.floors = result.data.floors || state.floors;
+                state.zones = result.data.zones || state.zones;
+                if (state.floor === id) {
+                    setFloor(0);
+                }
+                renderManager();
+                setStatus('Piano eliminato', false);
+            } else if (result && result.data && result.data.tables) {
+                if (!window.confirm('Il piano contiene tavoli. Spostarli sul piano terra?')) {
+                    return;
+                }
+                post('siqo_floor_delete', { id: id, move_to: 0 }).then(function (moved) {
+                    if (moved && moved.success) {
+                        state.floors = moved.data.floors || state.floors;
+                        state.zones = moved.data.zones || state.zones;
+                        if (state.floor === id) {
+                            setFloor(0);
+                        }
+                        renderManager();
+                        setStatus('Piano eliminato', false);
+                    }
+                });
+            } else {
+                setStatus(result && result.data && result.data.message ? result.data.message : 'Eliminazione non riuscita', true);
+            }
+        });
+    }
+
+    function addZone() {
+        var name = window.prompt('Nome della nuova zona');
+        if (!name) {
+            return;
+        }
+        post('siqo_zone_create', { name: name, floor_id: state.floor }).then(function (result) {
+            if (result && result.success) {
+                state.zones = result.data.zones || state.zones;
+                renderZones();
+                renderManager();
+                setStatus('Zona creata', false);
+            } else {
+                setStatus(result && result.data && result.data.message ? result.data.message : 'Creazione non riuscita', true);
+            }
+        });
+    }
+
+    function renameZone(id) {
+        var zone = zoneById(id);
+        if (!zone) {
+            return;
+        }
+        var name = window.prompt('Nuovo nome della zona', zone.name);
+        if (!name) {
+            return;
+        }
+        applyZonePatch(zone, { name: name });
+        renderManager();
+    }
+
+    function removeZone(id) {
+        if (!window.confirm('Eliminare la zona?')) {
+            return;
+        }
+        post('siqo_zone_delete', { id: id }).then(function (result) {
+            if (result && result.success) {
+                state.zones = result.data.zones || state.zones;
+                selectZone(null);
+                renderZones();
+                renderManager();
+            }
+        });
+    }
+
+    function startDraw(event) {
+        if (!state.drawZone || !state.editing) {
+            return;
+        }
+        var target = event.target;
+        if (target.closest && (target.closest('.fo_table_cell') || target.closest('.siqo-plan-zone'))) {
+            return;
+        }
+        var start = pointToCanvas(event);
+        var ghost = document.createElement('div');
+        ghost.className = 'siqo-plan-zone siqo-plan-zone-ghost';
+        ghost.style.left = start.x + 'px';
+        ghost.style.top = start.y + 'px';
+        ghost.style.width = '0px';
+        ghost.style.height = '0px';
+        refs.zones.appendChild(ghost);
+        function onMove(ev) {
+            var p = pointToCanvas(ev);
+            var x = Math.max(0, Math.min(start.x, p.x));
+            var y = Math.max(0, Math.min(start.y, p.y));
+            ghost.style.left = x + 'px';
+            ghost.style.top = y + 'px';
+            ghost.style.width = Math.max(20, Math.abs(p.x - start.x)) + 'px';
+            ghost.style.height = Math.max(20, Math.abs(p.y - start.y)) + 'px';
+        }
+        function onUp(ev) {
+            document.removeEventListener('pointermove', onMove);
+            document.removeEventListener('pointerup', onUp);
+            var p = pointToCanvas(ev);
+            var geo = {
+                x: Math.max(0, Math.round(Math.min(start.x, p.x) / D.step) * D.step),
+                y: Math.max(0, Math.round(Math.min(start.y, p.y) / D.step) * D.step),
+                w: Math.max(D.minW, Math.round(Math.abs(p.x - start.x) / D.step) * D.step),
+                h: Math.max(D.minH, Math.round(Math.abs(p.y - start.y) / D.step) * D.step)
+            };
+            ghost.parentNode.removeChild(ghost);
+            state.drawZone = false;
+            var name = window.prompt('Nome della zona');
+            if (!name) {
+                return;
+            }
+            geo.name = name;
+            geo.floor_id = state.floor;
+            post('siqo_zone_create', geo).then(function (result) {
+                if (result && result.success) {
+                    state.zones = result.data.zones || state.zones;
+                    renderZones();
+                    renderManager();
+                    setStatus('Zona creata', false);
+                } else {
+                    setStatus('Creazione zona non riuscita', true);
+                }
+            });
+        }
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp);
         event.preventDefault();
         event.stopPropagation();
     }
@@ -980,8 +1261,18 @@
                 window.location.reload();
             });
         }
+        refs.canvas.addEventListener('pointerdown', startDraw, true);
         refs.canvas.addEventListener('pointerdown', onCanvasPointerDown);
         refs.canvas.addEventListener('click', onCanvasClick, true);
+        if (refs.manage) {
+            refs.manage.addEventListener('click', function () {
+                if (refs.manager.hidden) {
+                    openManager();
+                } else {
+                    closeManager();
+                }
+            });
+        }
         if (refs.zones) {
             refs.zones.addEventListener('pointerdown', onZonesPointerDown);
         }
@@ -1003,6 +1294,9 @@
         refs.edit = qs('[data-plan-edit]');
         refs.hint = qs('[data-plan-hint]');
         refs.inspector = qs('[data-plan-inspector]');
+        refs.manager = qs('[data-plan-manager]');
+        refs.manage = qs('[data-plan-manage]');
+        refs.file = qs('[data-plan-file]');
         refs.zoomValue = qs('[data-plan-zoom-value]');
         refs.nonce = qs('[data-plan-nonce]');
         var config = readConfig() || {};
@@ -1023,6 +1317,7 @@
         refs.area.hidden = true;
         renderTabs();
         renderZones();
+        renderManager();
         applyCanvas();
         bind();
         window.SIQO_plan = {
