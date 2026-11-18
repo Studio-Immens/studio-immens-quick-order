@@ -5,7 +5,7 @@ Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -94,6 +94,9 @@ Yes. English and Italian translations are included. The plugin is translation-re
 5. Style customization page with CSS variable controls
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed plan editor saving through the correct admin-ajax endpoint
 
 = 1.2.0 =
 * Added a plan editor with multiple floors, free table dragging and per floor layouts
