@@ -666,6 +666,8 @@ git commit -m "feat: plan editor markup with floors, zones and zoom toolbar"
 	}
 ```
 
+> Nota esecutiva: il nonce viaggia nel campo `nonce` (non `_ajax_nonce`), quindi `guard()` usa `check_ajax_referer( $action, 'nonce' )`. L'handler accetta sia `layout` (JSON unico, usato dall'editor) sia i parametri separati `floor_id`/`canvas`/`tables`/`zones`.
+
 **Step 3: verifica**
 
 Console del browser su `/manage-tables/`:

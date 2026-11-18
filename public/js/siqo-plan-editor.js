@@ -377,10 +377,12 @@
         return {
             action: 'siqo_save_table_layout',
             nonce: refs.nonce ? refs.nonce.value : '',
-            floor_id: String(state.floor),
-            canvas: JSON.stringify(state.canvas),
-            tables: JSON.stringify(tables),
-            zones: JSON.stringify([])
+            layout: JSON.stringify({
+                floor_id: state.floor,
+                canvas: state.canvas,
+                tables: tables,
+                zones: []
+            })
         };
     }
 

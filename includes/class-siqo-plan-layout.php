@@ -281,6 +281,140 @@ class SIQO_Plan_Layout {
 		}
 	}
 
+	public static function ajax_save_layout() {
+		self::guard();
+
+		$raw = isset( $_POST['layout'] ) ? wp_unslash( $_POST['layout'] ) : '';
+		if ( '' !== $raw ) {
+			$data = json_decode( (string) $raw, true );
+		} else {
+			$data = array(
+				'floor_id' => isset( $_POST['floor_id'] ) ? absint( $_POST['floor_id'] ) : 0,
+				'canvas'   => isset( $_POST['canvas'] ) ? json_decode( wp_unslash( $_POST['canvas'] ), true ) : array(),
+				'tables'   => isset( $_POST['tables'] ) ? json_decode( wp_unslash( $_POST['tables'] ), true ) : array(),
+				'zones'    => isset( $_POST['zones'] ) ? json_decode( wp_unslash( $_POST['zones'] ), true ) : array(),
+			);
+		}
+		if ( ! is_array( $data ) ) {
+			wp_send_json_error( array( 'message' => __( 'Dati disposizione non validi.', 'studio-immens-quick-order' ) ), 400 );
+		}
+
+		$legacy = isset( $data[0] );
+		if ( $legacy ) {
+			$data = array( 'floor_id' => 0, 'tables' => $data, 'zones' => array() );
+		}
+
+		$floor_id = isset( $data['floor_id'] ) ? absint( $data['floor_id'] ) : 0;
+		if ( $floor_id && ! self::floor_term( $floor_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Piano inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+
+		$raw_tables = isset( $data['tables'] ) && is_array( $data['tables'] ) ? $data['tables'] : array();
+		$raw_zones  = isset( $data['zones'] ) && is_array( $data['zones'] ) ? $data['zones'] : array();
+		if ( count( $raw_tables ) > 500 || count( $raw_zones ) > 200 ) {
+			wp_send_json_error( array( 'message' => __( 'Troppi elementi in una sola richiesta.', 'studio-immens-quick-order' ) ), 400 );
+		}
+
+		$canvas = isset( $data['canvas'] ) && is_array( $data['canvas'] ) ? $data['canvas'] : self::floor_layout( $floor_id );
+
+		$tables = array();
+		foreach ( $raw_tables as $item ) {
+			if ( ! is_array( $item ) ) {
+				wp_send_json_error( array( 'message' => __( 'Tavolo non valido.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$id   = isset( $item['id'] ) ? absint( $item['id'] ) : 0;
+			$post = $id ? get_post( $id ) : null;
+			if ( ! $post || 'siqo_tables' !== $post->post_type ) {
+				wp_send_json_error( array( 'message' => __( 'Tavolo inesistente.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$stored = get_post_meta( $id, '_siqo_plan_position', true );
+			$stored = is_array( $stored ) ? $stored : array();
+			$shape  = isset( $item['shape'] ) ? sanitize_key( $item['shape'] ) : '';
+			if ( ! in_array( $shape, array( 'rect', 'square', 'round' ), true ) ) {
+				$shape = (string) get_post_meta( $id, '_siqo_plan_shape', true );
+				$shape = in_array( $shape, array( 'rect', 'square', 'round' ), true ) ? $shape : 'rect';
+			}
+			$seats = isset( $item['seats'] ) ? (int) $item['seats'] : (int) get_post_meta( $id, '_siqo_plan_seats', true );
+			$zone  = isset( $item['zone_id'] ) ? absint( $item['zone_id'] ) : 0;
+			if ( $zone ) {
+				$zone_term = get_term( $zone, self::ZONE_TAX );
+				if ( ! $zone_term || is_wp_error( $zone_term ) || self::zone_floor( $zone ) !== $floor_id ) {
+					$zone = 0;
+				}
+			}
+			$tables[] = array(
+				'id'     => $id,
+				'x'      => max( 0, self::int_field( $item, 'x', isset( $stored['x'] ) ? (int) $stored['x'] : 40 ) ),
+				'y'      => max( 0, self::int_field( $item, 'y', isset( $stored['y'] ) ? (int) $stored['y'] : 40 ) ),
+				'w'      => max( self::MIN_W, self::int_field( $item, 'w', isset( $stored['w'] ) ? (int) $stored['w'] : 180 ) ),
+				'h'      => max( self::MIN_H, self::int_field( $item, 'h', isset( $stored['h'] ) ? (int) $stored['h'] : 120 ) ),
+				'shape'  => $shape,
+				'seats'  => max( 0, min( self::MAX_SEATS, $seats ) ),
+				'zone'   => $zone,
+				'legacy' => $legacy,
+			);
+		}
+
+		$zones = array();
+		foreach ( $raw_zones as $item ) {
+			if ( ! is_array( $item ) ) {
+				wp_send_json_error( array( 'message' => __( 'Zona non valida.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$id   = isset( $item['id'] ) ? absint( $item['id'] ) : 0;
+			$term = $id ? get_term( $id, self::ZONE_TAX ) : null;
+			if ( ! $term || is_wp_error( $term ) ) {
+				wp_send_json_error( array( 'message' => __( 'Zona inesistente.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$zones[] = array(
+				'id' => $id,
+				'x'  => max( 0, self::int_field( $item, 'x', 40 ) ),
+				'y'  => max( 0, self::int_field( $item, 'y', 40 ) ),
+				'w'  => max( self::MIN_W, self::int_field( $item, 'w', 240 ) ),
+				'h'  => max( self::MIN_H, self::int_field( $item, 'h', 160 ) ),
+			);
+		}
+
+		$canvas = self::grow_canvas( $canvas, array_merge( $tables, $zones ) );
+		foreach ( $tables as $i => $table ) {
+			$tables[ $i ]['x'] = min( $table['x'], max( 0, $canvas['w'] - $table['w'] ) );
+			$tables[ $i ]['y'] = min( $table['y'], max( 0, $canvas['h'] - $table['h'] ) );
+		}
+		foreach ( $zones as $i => $zone ) {
+			$zones[ $i ]['x'] = min( $zone['x'], max( 0, $canvas['w'] - $zone['w'] ) );
+			$zones[ $i ]['y'] = min( $zone['y'], max( 0, $canvas['h'] - $zone['h'] ) );
+		}
+
+		foreach ( $tables as $table ) {
+			$position = array( 'x' => $table['x'], 'y' => $table['y'] );
+			if ( ! $table['legacy'] ) {
+				$position['w'] = $table['w'];
+				$position['h'] = $table['h'];
+			}
+			update_post_meta( $table['id'], '_siqo_plan_position', $position );
+			if ( ! $table['legacy'] ) {
+				update_post_meta( $table['id'], '_siqo_plan_shape', $table['shape'] );
+				update_post_meta( $table['id'], '_siqo_plan_seats', $table['seats'] );
+				wp_set_object_terms( $table['id'], $floor_id ? array( (int) $floor_id ) : array(), self::FLOOR_TAX );
+				wp_set_object_terms( $table['id'], $table['zone'] ? array( $table['zone'] ) : array(), self::ZONE_TAX );
+			}
+		}
+		foreach ( $zones as $zone ) {
+			update_term_meta( $zone['id'], '_siqo_zone_bounds', array( 'x' => $zone['x'], 'y' => $zone['y'], 'w' => $zone['w'], 'h' => $zone['h'] ) );
+			if ( ! self::zone_floor( $zone['id'] ) ) {
+				update_term_meta( $zone['id'], '_siqo_zone_floor', $floor_id );
+			}
+		}
+
+		$canvas = self::save_canvas( $floor_id, $canvas );
+		wp_send_json_success(
+			array(
+				'saved'    => count( $tables ) + count( $zones ),
+				'floor_id' => $floor_id,
+				'canvas'   => $canvas,
+			)
+		);
+	}
+
 	public static function respond_floors() {
 		wp_send_json_success( array( 'floors' => self::floors(), 'zones' => self::zones() ) );
 	}
