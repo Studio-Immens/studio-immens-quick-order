@@ -78,6 +78,9 @@ class SIQO_Plan_Layout {
 	public static function take_over_layout_endpoint() {
 		remove_all_actions( 'wp_ajax_siqo_save_table_layout' );
 		add_action( 'wp_ajax_siqo_save_table_layout', array( __CLASS__, 'ajax_save_layout' ) );
+		add_action( 'wp_ajax_siqo_floor_create', array( __CLASS__, 'ajax_floor_create' ) );
+		add_action( 'wp_ajax_siqo_floor_update', array( __CLASS__, 'ajax_floor_update' ) );
+		add_action( 'wp_ajax_siqo_floor_delete', array( __CLASS__, 'ajax_floor_delete' ) );
 	}
 
 	public static function floor_term( $floor_id ) {
@@ -413,6 +416,135 @@ class SIQO_Plan_Layout {
 				'canvas'   => $canvas,
 			)
 		);
+	}
+
+	public static function next_floor_order() {
+		$max   = 0;
+		$terms = get_terms(
+			array(
+				'taxonomy'   => self::FLOOR_TAX,
+				'hide_empty' => false,
+			)
+		);
+		$terms = is_wp_error( $terms ) ? array() : $terms;
+		foreach ( $terms as $term ) {
+			$order = (int) get_term_meta( $term->term_id, '_siqo_floor_order', true );
+			$max   = max( $max, $order ? $order : (int) $term->term_id );
+		}
+		return $max + 1;
+	}
+
+	public static function ajax_floor_create() {
+		self::guard();
+		$name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		if ( '' === $name || mb_strlen( $name ) > 60 ) {
+			wp_send_json_error( array( 'message' => __( 'Nome piano non valido.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		if ( term_exists( $name, self::FLOOR_TAX ) ) {
+			wp_send_json_error( array( 'message' => __( 'Esiste già un piano con questo nome.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		$layout = array( 'w' => self::DEFAULT_W, 'h' => self::DEFAULT_H );
+		if ( isset( $_POST['copy_from'] ) ) {
+			$from = absint( $_POST['copy_from'] );
+			if ( $from ? self::floor_term( $from ) : true ) {
+				$layout = self::floor_layout( $from );
+			}
+		}
+		$inserted = wp_insert_term( $name, self::FLOOR_TAX );
+		if ( is_wp_error( $inserted ) ) {
+			wp_send_json_error( array( 'message' => $inserted->get_error_message() ), 400 );
+		}
+		update_term_meta( $inserted['term_id'], '_siqo_floor_order', self::next_floor_order() );
+		update_term_meta( $inserted['term_id'], '_siqo_floor_layout', $layout );
+		self::respond_floors();
+	}
+
+	public static function ajax_floor_update() {
+		self::guard();
+		$id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+		$term = self::floor_term( $id );
+		if ( ! $term ) {
+			wp_send_json_error( array( 'message' => __( 'Piano inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		if ( isset( $_POST['name'] ) ) {
+			$name = sanitize_text_field( wp_unslash( $_POST['name'] ) );
+			if ( '' === $name || mb_strlen( $name ) > 60 ) {
+				wp_send_json_error( array( 'message' => __( 'Nome piano non valido.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$clash = term_exists( $name, self::FLOOR_TAX );
+			if ( $clash && (int) $clash['term_id'] !== $id ) {
+				wp_send_json_error( array( 'message' => __( 'Esiste già un piano con questo nome.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$updated = wp_update_term( $id, self::FLOOR_TAX, array( 'name' => $name ) );
+			if ( is_wp_error( $updated ) ) {
+				wp_send_json_error( array( 'message' => $updated->get_error_message() ), 400 );
+			}
+		}
+		if ( isset( $_POST['order'] ) ) {
+			update_term_meta( $id, '_siqo_floor_order', absint( $_POST['order'] ) );
+		}
+		self::respond_floors();
+	}
+
+	public static function ajax_floor_delete() {
+		self::guard();
+		$id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+		$term = self::floor_term( $id );
+		if ( ! $term ) {
+			wp_send_json_error( array( 'message' => __( 'Piano inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+
+		$tables = self::tables_on_floor( $id );
+		$move   = isset( $_POST['move_to'] ) ? absint( $_POST['move_to'] ) : -1;
+		if ( $tables && $move < 0 ) {
+			$list = array();
+			foreach ( $tables as $table_id ) {
+				$list[] = array(
+					'id'   => $table_id,
+					'name' => get_the_title( $table_id ),
+				);
+			}
+			wp_send_json_error(
+				array(
+					'message' => __( 'Il piano contiene tavoli.', 'studio-immens-quick-order' ),
+					'tables'  => $list,
+				),
+				409
+			);
+		}
+		if ( $move >= 0 && $move !== $id && $move && ! self::floor_term( $move ) ) {
+			wp_send_json_error( array( 'message' => __( 'Piano di destinazione inesistente.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		if ( $move === $id ) {
+			$move = 0;
+		}
+		foreach ( $tables as $table_id ) {
+			wp_set_object_terms( $table_id, $move ? array( (int) $move ) : array(), self::FLOOR_TAX );
+		}
+
+		$zones = get_terms(
+			array(
+				'taxonomy'   => self::ZONE_TAX,
+				'hide_empty' => false,
+				'meta_query' => array(
+					array(
+						'key'   => '_siqo_zone_floor',
+						'value' => $id,
+					),
+				),
+			)
+		);
+		if ( ! is_wp_error( $zones ) ) {
+			foreach ( $zones as $zone ) {
+				wp_delete_term( $zone->term_id, self::ZONE_TAX );
+			}
+		}
+
+		$deleted = wp_delete_term( $id, self::FLOOR_TAX );
+		if ( ! $deleted || is_wp_error( $deleted ) ) {
+			wp_send_json_error( array( 'message' => __( 'Eliminazione non riuscita.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		self::respond_floors();
 	}
 
 	public static function respond_floors() {
