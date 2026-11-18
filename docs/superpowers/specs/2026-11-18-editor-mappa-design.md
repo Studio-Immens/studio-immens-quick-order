@@ -38,9 +38,9 @@ Le coordinate sono **relative al piano**, mai al viewport. Lo zoom non modifica 
 ### 3.2 Piano (taxonomy `siqo_floors`)
 
 - Taxonomy non pubblica, associata a `siqo_tables`, gerarchica disattivata, creazione/rinomina/eliminazione anche dal frontend (Sezione 5).
-- Ordine di visualizzazione = `menu_order` del term.
+- Ordine di visualizzazione = term meta `_siqo_floor_order` (intero; default = term id).
 - Term meta `_siqo_floor_layout` = `{w,h}` del canvas (default `1200x800`).
-- Il piano virtuale "Piano terra" non e' un term: rappresenta i tavoli senza `siqo_floors` e usa il canvas di default. Alla prima modifica di layout di quel piano viene creato il term reale.
+- Il piano virtuale "Piano terra" non e' un term: rappresenta i tavoli senza `siqo_floors`. Il suo canvas e' in option `siqo_plan_virtual_layout` (default `1200x800`); nessun term viene creato automaticamente.
 - Eliminando un piano, le sue zone vengono eliminate solo dopo conferma esplicita (il dialog di spostamento riguarda i tavoli).
 
 ### 3.3 Zona (taxonomy `siqo_zones`)
@@ -48,7 +48,7 @@ Le coordinate sono **relative al piano**, mai al viewport. Lo zoom non modifica 
 | Meta | Formato | Note |
 |---|---|---|
 | `_siqo_zone_floor` | term id `siqo_floors` | una zona appartiene a un solo piano |
-| `_siqo_zone_bounds` | `{x,y,w,h}` | assente = zona non disegnata |
+| `_siqo_zone_bounds` | `{x,y,w,h}` | assente = default `40,40,240x160` (zona visibile e modificabile) |
 | `_siqo_zone_bg` | attachment ID | opzionale |
 | `_siqo_zone_color` | hex | fallback di sfondo |
 
@@ -108,7 +108,7 @@ Due liste nella stessa barra, aperte da `Gestisci` (solo in modifica):
 
 ### 6.1 Zoom e pan
 
-- Zoom 50-200% a passi 25%, via pulsanti, `Ctrl/⌘ + rotella`, pinch a due dita; `Adatta` calcola il fit del contenuto.
+- Zoom 30-200% a passi 10%, via pulsanti, `Ctrl/⌘ + rotella`, pinch a due dita; `Adatta` calcola il fit del contenuto.
 - Implementazione: `transform: scale()` su un wrapper interno; coordinate salvate sempre in px del piano (`clientX` viene riconvertito dividendo per lo zoom).
 - Pan: drag su area vuota in modifica, barra spazio + drag da desktop, due dita su touch.
 
@@ -116,7 +116,7 @@ Due liste nella stessa barra, aperte da `Gestisci` (solo in modifica):
 
 - Drag con snap 10px e clamp al canvas; se il centro del tavolo entra in una zona il tavolo cambia zona (evidenziazione della zona sotto).
 - Handle `SE`, `E`, `S` (28px touch, 24px mouse); minimo 80x60; `square` e `round` bloccano le proporzioni (lato = min tra w/h); `rect` libero.
-- Sedie ridisegnate a ogni resize: rettangolo → distribuite sui quattro lati; rotondo → sul cerchio; pallini 10px con `aria-hidden`.
+- Sedie mostrate come badge testuale `N posti` nell'angolo della card (`aria-hidden`, aggiornato a ogni modifica); con 0 il badge non compare.
 
 ### 6.3 Zone
 
