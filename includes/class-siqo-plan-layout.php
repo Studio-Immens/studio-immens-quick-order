@@ -25,6 +25,36 @@ class SIQO_Plan_Layout {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_taxonomy' ), 9 );
 		add_action( 'init', array( __CLASS__, 'take_over_layout_endpoint' ), 20 );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+	}
+
+	public static function is_app_page() {
+		if ( is_page( 'manage-tables' ) ) {
+			return true;
+		}
+		$post = get_post();
+		return $post && false !== strpos( (string) $post->post_content, 'SIQO_manage_tables_section' );
+	}
+
+	public static function enqueue_assets() {
+		if ( ! self::is_app_page() ) {
+			return;
+		}
+		wp_enqueue_media();
+		wp_enqueue_script(
+			'siqo-plan-editor',
+			plugins_url( 'public/js/siqo-plan-editor.js', dirname( __FILE__ ) ),
+			array(),
+			STUDIO_IMMENS_QUICK_ORDER_VERSION,
+			true
+		);
+		wp_localize_script(
+			'siqo-plan-editor',
+			'SIQO_plan_editor',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
 	}
 
 	public static function register_taxonomy() {

@@ -998,10 +998,98 @@ body.siqo-customer-mode .entry-content {
 	color: #a6462f;
 }
 
-#SIQO_Front_Content .FO_table_plan {
-	display: none;
-	position: relative;
+.siqo-plan-manage,
+[data-plan-reload] {
+	border: 1px solid #d8cbbd;
+	border-radius: 999px;
+	padding: 8px 16px;
+	background: #fff;
+	color: #2b241f;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.siqo-plan-zoom {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border: 1px solid #d8cbbd;
+	border-radius: 999px;
+	padding: 4px 8px;
+	background: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	color: #2b241f;
+}
+
+.siqo-plan-zoom span {
+	min-width: 42px;
+	text-align: center;
+}
+
+.siqo-plan-zoom button {
+	border: 0;
+	background: transparent;
+	padding: 4px 6px;
+	font-weight: 700;
+	cursor: pointer;
+	color: #2b241f;
+}
+
+.siqo-plan-tabs {
+	display: flex;
+	gap: 8px;
+	width: 100%;
+	overflow-x: auto;
+	padding-bottom: 12px;
+}
+
+.siqo-plan-tabs button {
+	border: 1px solid #d8cbbd;
+	border-radius: 12px;
+	background: #fff;
+	padding: 8px 14px;
+	font-weight: 700;
+	color: #5c5148;
+	cursor: pointer;
+	white-space: nowrap;
+	text-align: left;
+}
+
+.siqo-plan-tabs button.is-active {
+	border-color: #a6462f;
+	background: #a6462f;
+	color: #fff;
+}
+
+.siqo-plan-tab-counts {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	opacity: 0.8;
+}
+
+.siqo-plan-hint {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 600;
+	color: #8a6b4f;
+}
+
+#SIQO_Front_Content .FO_table_grid[hidden],
+#SIQO_Front_Content .siqo-plan-area[hidden] {
+	display: none !important;
+}
+
+#SIQO_Front_Content .siqo-plan-area {
 	margin: 16px 20px 24px;
+}
+
+.siqo-plan-stage {
+	position: relative;
+	overflow: auto;
+	max-height: calc(100vh - 250px);
+	min-height: 340px;
 	border: 1px solid #e4d9cb;
 	border-radius: 18px;
 	background-color: #faf7f2;
@@ -1009,36 +1097,50 @@ body.siqo-customer-mode .entry-content {
 		linear-gradient(rgba(166, 70, 47, 0.06) 1px, transparent 1px),
 		linear-gradient(90deg, rgba(166, 70, 47, 0.06) 1px, transparent 1px);
 	background-size: 40px 40px;
-	overflow: auto;
+	touch-action: pan-x pan-y;
 }
 
-#SIQO_Front_Content .FO_table_plan.is-active {
-	display: block;
+.siqo-plan-canvas {
+	position: relative;
+	width: 1200px;
+	height: 800px;
+	transform-origin: 0 0;
 }
 
-#SIQO_Front_Content .FO_table_grid.is-plan-hidden {
-	display: none !important;
-}
-
-#SIQO_Front_Content .FO_table_plan .fo_table_cell {
+.siqo-plan-canvas .fo_table_cell {
 	position: absolute !important;
 	margin: 0 !important;
-	width: 180px;
-	height: 120px;
 	overflow: hidden;
 	touch-action: none;
 	user-select: none;
 }
 
-#SIQO_Front_Content .FO_table_plan.is-editing .fo_table_cell {
+.siqo-plan-canvas .fo_table_cell[data-plan-shape="round"] {
+	border-radius: 50%;
+}
+
+.siqo-plan-canvas .fo_table_cell[data-plan-shape="square"] {
+	border-radius: 10px;
+}
+
+.siqo-plan-canvas .fo_table_cell.is-offfloor {
+	display: none;
+}
+
+.siqo-plan-area.is-editing .fo_table_cell {
 	cursor: grab;
 	outline: 2px dashed rgba(166, 70, 47, 0.45);
 	outline-offset: -2px;
-	box-shadow: 0 10px 24px rgba(28, 23, 20, 0.14);
 }
 
-#SIQO_Front_Content .FO_table_plan.is-editing .fo_table_cell:active {
+.siqo-plan-area.is-editing .fo_table_cell:active {
 	cursor: grabbing;
+}
+
+.siqo-plan-canvas .fo_table_cell.is-selected {
+	outline: 3px solid #a6462f;
+	outline-offset: -3px;
+	box-shadow: 0 12px 28px rgba(28, 23, 20, 0.22);
 }
 
 @media (max-width: 782px) {
@@ -1046,7 +1148,11 @@ body.siqo-customer-mode .entry-content {
 		padding: 12px 14px 0;
 	}
 
-	#SIQO_Front_Content .FO_table_plan {
+	#SIQO_Front_Content .siqo-plan-area {
 		margin: 12px 14px 20px;
+	}
+
+	.siqo-plan-stage {
+		min-height: 260px;
 	}
 }

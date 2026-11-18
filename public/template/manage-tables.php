@@ -30,7 +30,7 @@ function SIQO_manage_table( $embedded = false ){
     }
     
     $nonce = wp_create_nonce( 'SIQO_insert_post_ajax_nonce' );
-    echo '<input type="hidden" id="_siqononce_insert_post_ajax_nonce" name="_siqononce_insert_post_ajax_nonce" value="'.esc_attr($nonce).'" />';
+    echo '<input type="hidden" id="_siqononce_insert_post_ajax_nonce" name="_siqononce_insert_post_ajax_nonce" data-plan-nonce value="'.esc_attr($nonce).'" />';
     
     if ( function_exists( 'SIQO_get_settings_head_manage_tables' ) ) {
         SIQO_get_settings_head_manage_tables();
@@ -125,16 +125,35 @@ function SIQO_manage_table( $embedded = false ){
     <?php if ( ! empty( $tavoli ) ) : ?>
         <div class="siqo-plan-toolbar" data-plan-toolbar>
             <div class="siqo-plan-switch" role="group" aria-label="<?php esc_attr_e( 'Vista tavoli', 'studio-immens-quick-order' ); ?>">
-                <button type="button" class="is-active" data-plan-view="grid"><?php esc_html_e( 'Griglia', 'studio-immens-quick-order' ); ?></button>
-                <button type="button" data-plan-view="plan"><?php esc_html_e( 'Disposizione', 'studio-immens-quick-order' ); ?></button>
+                <button type="button" class="is-active" data-plan-view="grid" aria-pressed="true"><?php esc_html_e( 'Griglia', 'studio-immens-quick-order' ); ?></button>
+                <button type="button" data-plan-view="plan" aria-pressed="false"><?php esc_html_e( 'Disposizione', 'studio-immens-quick-order' ); ?></button>
             </div>
-            <button type="button" class="siqo-plan-edit" data-plan-edit><?php esc_html_e( 'Modifica disposizione', 'studio-immens-quick-order' ); ?></button>
+            <button type="button" class="siqo-plan-edit" data-plan-edit aria-pressed="false"><?php esc_html_e( 'Modifica disposizione', 'studio-immens-quick-order' ); ?></button>
+            <button type="button" class="siqo-plan-manage" data-plan-manage aria-expanded="false" aria-controls="siqo-plan-manager"><?php esc_html_e( 'Gestisci', 'studio-immens-quick-order' ); ?></button>
+            <div class="siqo-plan-zoom" role="group" aria-label="<?php esc_attr_e( 'Zoom', 'studio-immens-quick-order' ); ?>">
+                <button type="button" data-plan-zoom="out" aria-label="<?php esc_attr_e( 'Riduci zoom', 'studio-immens-quick-order' ); ?>">&minus;</button>
+                <span data-plan-zoom-value>100%</span>
+                <button type="button" data-plan-zoom="in" aria-label="<?php esc_attr_e( 'Aumenta zoom', 'studio-immens-quick-order' ); ?>">+</button>
+                <button type="button" data-plan-zoom="fit"><?php esc_html_e( 'Adatta', 'studio-immens-quick-order' ); ?></button>
+            </div>
+            <button type="button" data-plan-reload><?php esc_html_e( 'Ricarica disposizione', 'studio-immens-quick-order' ); ?></button>
             <span class="siqo-plan-status" data-plan-status aria-live="polite"></span>
+            <div class="siqo-plan-tabs" data-plan-tabs role="tablist" aria-label="<?php esc_attr_e( 'Piani', 'studio-immens-quick-order' ); ?>"></div>
+            <p class="siqo-plan-hint" data-plan-hint hidden><?php esc_html_e( 'Modifica da computer o tablet', 'studio-immens-quick-order' ); ?></p>
         </div>
-        <div class="FO_table_plan" data-plan-area aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>"></div>
+        <div class="siqo-plan-area" data-plan-area aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>">
+            <div class="siqo-plan-stage" data-plan-stage>
+                <div class="siqo-plan-canvas" data-plan-canvas>
+                    <div class="siqo-plan-zones" data-plan-zones></div>
+                </div>
+            </div>
+        </div>
+        <div class="siqo-plan-inspector" data-plan-inspector hidden></div>
+        <div class="siqo-plan-manager" id="siqo-plan-manager" data-plan-manager hidden></div>
+        <input type="file" accept="image/jpeg,image/png,image/webp" data-plan-file hidden>
     <?php endif; ?>
 
-    <div class="FO_table_grid">
+    <div class="FO_table_grid" data-plan-grid>
         <div class="FOloadingMessage FOloadingCardPublic FOloadingCardPublicMain tab_fix_load" style="">
             <span style="animation: fospin 1s infinite;font-size:120px;width:120px;height:120px;" class="dashicons dashicons-update"></span>
         </div>
@@ -157,6 +176,13 @@ function SIQO_manage_table( $embedded = false ){
         $plan_position = get_post_meta( $tavolo->ID, '_siqo_plan_position', true );
         $plan_x = isset( $plan_position['x'] ) ? absint( $plan_position['x'] ) : 40 + ( $key % 4 ) * 220;
         $plan_y = isset( $plan_position['y'] ) ? absint( $plan_position['y'] ) : 40 + intdiv( $key, 4 ) * 160;
+        $plan_w = isset( $plan_position['w'] ) ? absint( $plan_position['w'] ) : 180;
+        $plan_h = isset( $plan_position['h'] ) ? absint( $plan_position['h'] ) : 120;
+        $plan_floor = SIQO_Plan_Layout::table_floor( $tavolo->ID );
+        $plan_zone = SIQO_Plan_Layout::table_zone( $tavolo->ID );
+        $plan_shape = get_post_meta( $tavolo->ID, '_siqo_plan_shape', true );
+        $plan_shape = in_array( $plan_shape, array( 'rect', 'square', 'round' ), true ) ? $plan_shape : 'rect';
+        $plan_seats = (int) get_post_meta( $tavolo->ID, '_siqo_plan_seats', true );
         // SIQO_debug($status);
         if ( $macro_status != false ) {
             if ($macro_status[0]->name == 'Libero' || $macro_status[0]->name == 'Aperto' || $macro_status[0]->name == 'Open') {
@@ -181,7 +207,7 @@ function SIQO_manage_table( $embedded = false ){
             // $tab_info = FO_get_table_by_table_id_status_last($tavolo->ID);
             // SIQO_debug( $tab_info);
             ?>
-            <div class="fo_table_cell relative" fotable="<?php echo esc_attr($tavolo->post_title);?>" fo_tableid="<?php echo esc_attr($tavolo->ID);?>" fotable_status="<?php echo esc_attr($status);?>" style="<?php echo esc_attr($Style);?>" onclick="SIQO_tab_Card_show( this )" table_start_time="" table_last_update="" table_orders="" table_info="" table_receipt="" table_other="" table_totals="" table_end_time="" table_table_tableid="" data-plan-id="<?php echo esc_attr($tavolo->ID);?>" data-plan-x="<?php echo esc_attr($plan_x);?>" data-plan-y="<?php echo esc_attr($plan_y);?>" data-plan-w="180" data-plan-h="120">
+            <div class="fo_table_cell relative" fotable="<?php echo esc_attr($tavolo->post_title);?>" fo_tableid="<?php echo esc_attr($tavolo->ID);?>" fotable_status="<?php echo esc_attr($status);?>" style="<?php echo esc_attr($Style);?>" onclick="SIQO_tab_Card_show( this )" table_start_time="" table_last_update="" table_orders="" table_info="" table_receipt="" table_other="" table_totals="" table_end_time="" table_table_tableid="" data-plan-id="<?php echo esc_attr($tavolo->ID);?>" data-plan-x="<?php echo esc_attr($plan_x);?>" data-plan-y="<?php echo esc_attr($plan_y);?>" data-plan-w="<?php echo esc_attr($plan_w);?>" data-plan-h="<?php echo esc_attr($plan_h);?>" data-plan-floor="<?php echo esc_attr($plan_floor);?>" data-plan-zone="<?php echo esc_attr($plan_zone);?>" data-plan-shape="<?php echo esc_attr($plan_shape);?>" data-plan-seats="<?php echo esc_attr($plan_seats);?>" data-table-name="<?php echo esc_attr($tavolo->post_title);?>" data-table-status-label="<?php echo esc_attr($status_string);?>">
 
                 <span class="fo_tab_notify" fo_not_counter="" onclick="" style="display:none;">0</span>
                 
@@ -218,246 +244,16 @@ function SIQO_manage_table( $embedded = false ){
     </script>
 
     <?php if ( ! empty( $tavoli ) ) : ?>
-    <script type="text/javascript">
-    (function () {
-        var toolbar = document.querySelector('[data-plan-toolbar]');
-        var plan = document.querySelector('[data-plan-area]');
-        var grid = document.querySelector('#SIQO_Front_Content .FO_table_grid');
-        if (!toolbar || !plan || !grid) {
-            return;
-        }
-        var cards = Array.prototype.slice.call(grid.querySelectorAll('.fo_table_cell'));
-        var anchor = grid.querySelector('.siqo-plan-anchor');
-        var status = toolbar.querySelector('[data-plan-status]');
-        var editBtn = toolbar.querySelector('[data-plan-edit]');
-        var viewBtns = Array.prototype.slice.call(toolbar.querySelectorAll('[data-plan-view]'));
-        var nonceEl = document.getElementById('_siqononce_insert_post_ajax_nonce');
-        var editing = false;
-        var drag = null;
-        var suppressClick = false;
-        var statusTimer = null;
-
-        function setStatus(text, isError) {
-            if (!status) {
-                return;
-            }
-            window.clearTimeout(statusTimer);
-            status.textContent = text || '';
-            status.classList.toggle('is-error', !!isError);
-            if (text) {
-                statusTimer = window.setTimeout(function () {
-                    status.textContent = '';
-                    status.classList.remove('is-error');
-                }, 3200);
-            }
-        }
-
-        function resizePlan() {
-            var max = 640;
-            cards.forEach(function (card) {
-                var y = parseInt(card.dataset.planY || '0', 10) + parseInt(card.dataset.planH || '120', 10) + 40;
-                if (y > max) {
-                    max = y;
-                }
-            });
-            plan.style.minHeight = max + 'px';
-        }
-
-        function applyPositions() {
-            cards.forEach(function (card) {
-                card.style.left = (parseInt(card.dataset.planX || '0', 10)) + 'px';
-                card.style.top = (parseInt(card.dataset.planY || '0', 10)) + 'px';
-                card.style.width = (parseInt(card.dataset.planW || '180', 10)) + 'px';
-                card.style.height = (parseInt(card.dataset.planH || '120', 10)) + 'px';
-            });
-        }
-
-        function setView(view) {
-            var isPlan = view === 'plan';
-            plan.classList.toggle('is-active', isPlan);
-            grid.classList.toggle('is-plan-hidden', isPlan);
-            viewBtns.forEach(function (btn) {
-                btn.classList.toggle('is-active', btn.dataset.planView === view);
-            });
-            if (isPlan) {
-                cards.forEach(function (card) {
-                    plan.appendChild(card);
-                });
-                applyPositions();
-                resizePlan();
-            } else {
-                editing = false;
-                plan.classList.remove('is-editing');
-                editBtn.classList.remove('is-active');
-                editBtn.textContent = 'Modifica disposizione';
-                cards.forEach(function (card) {
-                    card.classList.remove('is-selected');
-                    card.style.left = '';
-                    card.style.top = '';
-                    card.style.width = '';
-                    card.style.height = '';
-                    if (anchor) {
-                        grid.insertBefore(card, anchor);
-                    } else {
-                        grid.appendChild(card);
-                    }
-                });
-            }
-        }
-
-        function saveLayout() {
-            if (!nonceEl) {
-                return;
-            }
-            var layout = cards.map(function (card) {
-                return {
-                    id: parseInt(card.dataset.planId || '0', 10),
-                    x: parseInt(card.dataset.planX || '0', 10),
-                    y: parseInt(card.dataset.planY || '0', 10)
-                };
-            });
-            var body = new URLSearchParams();
-            body.set('action', 'siqo_save_table_layout');
-            body.set('nonce', nonceEl.value);
-            body.set('layout', JSON.stringify(layout));
-            fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
-                method: 'POST',
-                credentials: 'same-origin',
-                body: body
-            }).then(function (response) {
-                return response.json();
-            }).then(function (result) {
-                if (result && result.success) {
-                    setStatus('Disposizione salvata', false);
-                } else {
-                    setStatus('Salvataggio non riuscito', true);
-                }
-            }).catch(function () {
-                setStatus('Salvataggio non riuscito', true);
-            });
-        }
-
-        viewBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                setView(btn.dataset.planView);
-            });
-        });
-
-        editBtn.addEventListener('click', function () {
-            if (!plan.classList.contains('is-active')) {
-                setView('plan');
-            }
-            editing = !editing;
-            plan.classList.toggle('is-editing', editing);
-            editBtn.classList.toggle('is-active', editing);
-            editBtn.textContent = editing ? 'Fine modifica' : 'Modifica disposizione';
-            if (editing) {
-                setStatus('Trascina i tavoli per sistemare la sala', false);
-            } else {
-                cards.forEach(function (card) {
-                    card.classList.remove('is-selected');
-                });
-            }
-        });
-
-        plan.addEventListener('click', function (event) {
-            var card = event.target.closest('.fo_table_cell');
-            if (!card || !plan.contains(card)) {
-                return;
-            }
-            event.preventDefault();
-            event.stopPropagation();
-            if (suppressClick) {
-                suppressClick = false;
-                return;
-            }
-            if (editing) {
-                cards.forEach(function (item) {
-                    item.classList.toggle('is-selected', item === card);
-                });
-                return;
-            }
-            if (typeof window.SIQO_tab_Card_show === 'function') {
-                setView('grid');
-                window.SIQO_tab_Card_show(card);
-            }
-        }, true);
-
-        plan.addEventListener('pointerdown', function (event) {
-            if (!editing) {
-                return;
-            }
-            var card = event.target.closest('.fo_table_cell');
-            if (!card || !plan.contains(card)) {
-                return;
-            }
-            var cardRect = card.getBoundingClientRect();
-            var planRect = plan.getBoundingClientRect();
-            drag = {
-                card: card,
-                pointerId: event.pointerId,
-                offsetX: event.clientX - cardRect.left,
-                offsetY: event.clientY - cardRect.top,
-                startX: event.clientX,
-                startY: event.clientY,
-                moved: false,
-                planLeft: planRect.left + plan.scrollLeft,
-                planTop: planRect.top + plan.scrollTop
-            };
-            card.setPointerCapture(event.pointerId);
-            event.preventDefault();
-        });
-
-        document.addEventListener('pointermove', function (event) {
-            if (!drag || event.pointerId !== drag.pointerId) {
-                return;
-            }
-            if (Math.abs(event.clientX - drag.startX) > 4 || Math.abs(event.clientY - drag.startY) > 4) {
-                drag.moved = true;
-            }
-            var x = Math.max(0, Math.round((event.clientX - drag.planLeft - drag.offsetX) / 10) * 10);
-            var y = Math.max(0, Math.round((event.clientY - drag.planTop - drag.offsetY) / 10) * 10);
-            drag.card.style.left = x + 'px';
-            drag.card.style.top = y + 'px';
-            drag.card.dataset.planX = String(x);
-            drag.card.dataset.planY = String(y);
-            resizePlan();
-        });
-
-        document.addEventListener('pointerup', function (event) {
-            if (!drag || event.pointerId !== drag.pointerId) {
-                return;
-            }
-            var card = drag.card;
-            var moved = drag.moved;
-            if (card.hasPointerCapture(event.pointerId)) {
-                card.releasePointerCapture(event.pointerId);
-            }
-            drag = null;
-            if (moved) {
-                suppressClick = true;
-                window.setTimeout(function () {
-                    suppressClick = false;
-                }, 400);
-                card.addEventListener('click', function (clickEvent) {
-                    clickEvent.preventDefault();
-                    clickEvent.stopPropagation();
-                }, { capture: true, once: true });
-                saveLayout();
-            }
-        });
-
-        document.addEventListener('pointercancel', function (event) {
-            if (!drag || event.pointerId !== drag.pointerId) {
-                return;
-            }
-            if (drag.card.hasPointerCapture(event.pointerId)) {
-                drag.card.releasePointerCapture(event.pointerId);
-            }
-            drag = null;
-        });
-    })();
-    </script>
+        <?php
+        $siqo_plan_floor = SIQO_Plan_Layout::table_floor( $tavoli[0]->ID );
+        $siqo_plan_data  = array(
+            'floor'  => $siqo_plan_floor,
+            'canvas' => SIQO_Plan_Layout::floor_layout( $siqo_plan_floor ),
+            'floors' => SIQO_Plan_Layout::floors(),
+            'zones'  => SIQO_Plan_Layout::zones(),
+        );
+        ?>
+        <script type="application/json" id="siqo-plan-data"><?php echo wp_json_encode( $siqo_plan_data ); ?></script>
     <?php endif; ?>
 
 </div>
