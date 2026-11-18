@@ -173,6 +173,8 @@
             btn.setAttribute('role', 'tab');
             btn.setAttribute('data-floor', String(floor.id));
             btn.setAttribute('aria-selected', String(floor.id === state.floor));
+            btn.setAttribute('tabindex', floor.id === state.floor ? '0' : '-1');
+            btn.setAttribute('aria-controls', 'siqo-plan-canvas');
             btn.className = floor.id === state.floor ? 'is-active' : '';
             btn.textContent = floor.name;
             var badge = document.createElement('span');
@@ -184,6 +186,36 @@
             });
             refs.tabs.appendChild(btn);
         });
+    }
+
+    function onTabsKeyDown(event) {
+        var keys = { ArrowRight: 1, ArrowLeft: -1, Home: 0, End: 0 };
+        if (!(event.key in keys)) {
+            return;
+        }
+        var index = 0;
+        for (var i = 0; i < state.floors.length; i++) {
+            if (state.floors[i].id === state.floor) {
+                index = i;
+            }
+        }
+        var next = index;
+        if (event.key === 'Home') {
+            next = 0;
+        } else if (event.key === 'End') {
+            next = state.floors.length - 1;
+        } else {
+            next = (index + keys[event.key] + state.floors.length) % state.floors.length;
+        }
+        if (!state.floors[next]) {
+            return;
+        }
+        event.preventDefault();
+        setFloor(state.floors[next].id);
+        var focused = qs('[data-floor="' + state.floors[next].id + '"]', refs.tabs);
+        if (focused) {
+            focused.focus();
+        }
     }
 
     function setFloor(floorId) {
@@ -210,6 +242,9 @@
                 refs.canvas.appendChild(card);
                 writeCard(card);
             }
+            card.setAttribute('tabindex', isVisible ? '0' : '-1');
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', (card.getAttribute('data-table-name') || 'Tavolo') + ' — ' + (card.getAttribute('data-table-status-label') || ''));
             if (!isVisible && card.parentNode === refs.canvas) {
                 refs.grid.appendChild(card);
                 clearPosition(card);
@@ -461,6 +496,7 @@
             '<button type="button" data-zone-bg-clear>Rimuovi sfondo</button></div>' +
             '<button type="button" class="siqo-plan-danger" data-zone-delete>Elimina zona</button>';
         refs.inspector.hidden = false;
+        refs.inspector.setAttribute('aria-label', zone.name);
         qs('.siqo-plan-inspector-head strong', refs.inspector).textContent = zone.name;
         qs('[data-zone-name]', refs.inspector).value = zone.name;
         qs('[data-zone-color]', refs.inspector).value = zone.color || '#a6462f';
@@ -545,6 +581,7 @@
             '<label class="siqo-plan-field">Zona<select data-plan-zone-list>' + zoneOptions(c.zone) + '</select></label>' +
             '<p class="siqo-plan-inspector-meta"></p>';
         refs.inspector.hidden = false;
+        refs.inspector.setAttribute('aria-label', card.getAttribute('data-table-name') || 'Tavolo ' + c.id);
         qs('.siqo-plan-inspector-head strong', refs.inspector).textContent = card.getAttribute('data-table-name') || 'Tavolo ' + c.id;
         qs('.siqo-plan-inspector-meta', refs.inspector).textContent = card.getAttribute('data-table-status-label') || '';
         qs('[data-plan-shape]', refs.inspector).value = c.shape;
@@ -926,7 +963,7 @@
                 '<button type="button" data-zone-remove="' + zone.id + '">Elimina</button></span></li>';
         }).join('');
         refs.manager.innerHTML =
-            '<div class="siqo-plan-manager-head"><strong>Gestisci disposizione</strong>' +
+            '<div class="siqo-plan-manager-head"><strong id="siqo-plan-manager-title">Gestisci disposizione</strong>' +
             '<button type="button" data-manager-close aria-label="Chiudi">&times;</button></div>' +
             '<div class="siqo-plan-manager-cols">' +
             '<section><h3>Piani</h3><ul>' + (floorsHtml || '<li>Nessun piano</li>') + '</ul>' +
@@ -980,14 +1017,22 @@
         renderManager();
         refs.manager.hidden = false;
         refs.manage.setAttribute('aria-expanded', 'true');
+        var first = qs('button, input', refs.manager);
+        if (first) {
+            first.focus();
+        }
     }
 
     function closeManager() {
+        var hadFocus = refs.manager && refs.manager.contains(document.activeElement);
         if (refs.manager) {
             refs.manager.hidden = true;
         }
         if (refs.manage) {
             refs.manage.setAttribute('aria-expanded', 'false');
+            if (hadFocus) {
+                refs.manage.focus();
+            }
         }
     }
 
@@ -1294,6 +1339,23 @@
             });
         }
         refs.canvas.addEventListener('pointerdown', startDraw, true);
+        refs.canvas.addEventListener('focusin', function (event) {
+            var card = event.target.closest ? event.target.closest('.fo_table_cell') : null;
+            if (card && state.editing && state.view === 'plan') {
+                selectCard(card);
+            }
+        });
+        refs.canvas.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') {
+                return;
+            }
+            var card = event.target.closest ? event.target.closest('.fo_table_cell') : null;
+            if (!card) {
+                return;
+            }
+            event.preventDefault();
+            selectCard(card);
+        });
         refs.canvas.addEventListener('pointerdown', onCanvasPointerDown);
         refs.canvas.addEventListener('click', onCanvasClick, true);
         if (refs.manage) {
@@ -1304,6 +1366,9 @@
                     closeManager();
                 }
             });
+        }
+        if (refs.tabs) {
+            refs.tabs.addEventListener('keydown', onTabsKeyDown);
         }
         if (refs.zones) {
             refs.zones.addEventListener('pointerdown', onZonesPointerDown);

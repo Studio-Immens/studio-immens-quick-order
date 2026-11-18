@@ -141,15 +141,15 @@ function SIQO_manage_table( $embedded = false ){
             <div class="siqo-plan-tabs" data-plan-tabs role="tablist" aria-label="<?php esc_attr_e( 'Piani', 'studio-immens-quick-order' ); ?>"></div>
             <p class="siqo-plan-hint" data-plan-hint hidden><?php esc_html_e( 'Modifica da computer o tablet', 'studio-immens-quick-order' ); ?></p>
         </div>
-        <div class="siqo-plan-area" data-plan-area aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>">
+        <div class="siqo-plan-area" data-plan-area role="region" aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>">
             <div class="siqo-plan-stage" data-plan-stage>
-                <div class="siqo-plan-canvas" data-plan-canvas>
+                <div class="siqo-plan-canvas" id="siqo-plan-canvas" data-plan-canvas role="tabpanel" tabindex="-1">
                     <div class="siqo-plan-zones" data-plan-zones></div>
                 </div>
             </div>
         </div>
-        <div class="siqo-plan-inspector" data-plan-inspector hidden></div>
-        <div class="siqo-plan-manager" id="siqo-plan-manager" data-plan-manager hidden></div>
+        <div class="siqo-plan-inspector" data-plan-inspector role="dialog" aria-modal="false" aria-label="<?php esc_attr_e( 'Proprietà elemento', 'studio-immens-quick-order' ); ?>" hidden></div>
+        <div class="siqo-plan-manager" id="siqo-plan-manager" data-plan-manager role="dialog" aria-modal="false" aria-labelledby="siqo-plan-manager-title" hidden></div>
         <input type="file" accept="image/jpeg,image/png,image/webp" data-plan-file hidden>
     <?php endif; ?>
 
