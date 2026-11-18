@@ -109,7 +109,6 @@ class SIQO_Plan_Layout {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_taxonomy' ), 9 );
 		add_action( 'init', array( __CLASS__, 'take_over_layout_endpoint' ), 20 );
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 	}
 
 	public static function register_taxonomy() {
@@ -133,35 +132,6 @@ class SIQO_Plan_Layout {
 	public static function take_over_layout_endpoint() {
 		remove_all_actions( 'wp_ajax_siqo_save_table_layout' );
 		add_action( 'wp_ajax_siqo_save_table_layout', array( __CLASS__, 'ajax_save_layout' ) );
-		add_action( 'wp_ajax_siqo_floor_create', array( __CLASS__, 'ajax_floor_create' ) );
-		add_action( 'wp_ajax_siqo_floor_update', array( __CLASS__, 'ajax_floor_update' ) );
-		add_action( 'wp_ajax_siqo_floor_delete', array( __CLASS__, 'ajax_floor_delete' ) );
-		add_action( 'wp_ajax_siqo_zone_create', array( __CLASS__, 'ajax_zone_create' ) );
-		add_action( 'wp_ajax_siqo_zone_update', array( __CLASS__, 'ajax_zone_update' ) );
-		add_action( 'wp_ajax_siqo_zone_delete', array( __CLASS__, 'ajax_zone_delete' ) );
-		add_action( 'wp_ajax_siqo_zone_bg_upload', array( __CLASS__, 'ajax_zone_bg_upload' ) );
-	}
-
-	public static function is_app_page() {
-		if ( is_page( 'manage-tables' ) ) {
-			return true;
-		}
-		$post = get_post();
-		return $post && false !== strpos( (string) $post->post_content, 'SIQO_manage_tables_section' );
-	}
-
-	public static function enqueue_assets() {
-		if ( ! self::is_app_page() ) {
-			return;
-		}
-		wp_enqueue_media();
-		wp_enqueue_script(
-			'siqo-plan-editor',
-			plugins_url( 'public/js/siqo-plan-editor.js', dirname( __FILE__ ) ),
-			array(),
-			STUDIO_IMMENS_QUICK_ORDER_VERSION,
-			true
-		);
 	}
 
 	public static function floor_term( $floor_id ) {
@@ -348,6 +318,8 @@ class SIQO_Plan_Layout {
 	}
 }
 ```
+
+> Nota esecutiva: in questa task la classe contiene solo modello e helper. `is_app_page()`/`enqueue_assets()` e la registrazione degli handler AJAX vengono aggiunti nelle task che li usano (3, 4, 5, 7, 9).
 
 **Step 2: bootstrap**
 
@@ -721,6 +693,14 @@ git commit -m "feat: validated layout save endpoint with canvas growth"
 
 **File:** `includes/class-siqo-plan-layout.php`.
 
+**Step 0: registra gli handler** in `take_over_layout_endpoint()`:
+
+```php
+		add_action( 'wp_ajax_siqo_floor_create', array( __CLASS__, 'ajax_floor_create' ) );
+		add_action( 'wp_ajax_siqo_floor_update', array( __CLASS__, 'ajax_floor_update' ) );
+		add_action( 'wp_ajax_siqo_floor_delete', array( __CLASS__, 'ajax_floor_delete' ) );
+```
+
 **Step 1: helper ordine**
 
 ```php
@@ -875,6 +855,32 @@ git commit -m "feat: floor create update delete endpoints"
 **File:** crea `public/js/siqo-plan-editor.js`; modifica `public/template/manage-tables.php`.
 
 **Step 1: prepara il template**
+
+- Aggiungi `is_app_page()` e `enqueue_assets()` a `SIQO_Plan_Layout` e `add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) )` in `init()`:
+
+```php
+	public static function is_app_page() {
+		if ( is_page( 'manage-tables' ) ) {
+			return true;
+		}
+		$post = get_post();
+		return $post && false !== strpos( (string) $post->post_content, 'SIQO_manage_tables_section' );
+	}
+
+	public static function enqueue_assets() {
+		if ( ! self::is_app_page() ) {
+			return;
+		}
+		wp_enqueue_media();
+		wp_enqueue_script(
+			'siqo-plan-editor',
+			plugins_url( 'public/js/siqo-plan-editor.js', dirname( __FILE__ ) ),
+			array(),
+			STUDIO_IMMENS_QUICK_ORDER_VERSION,
+			true
+		);
+	}
+```
 
 - Aggiungi `data-plan-grid` al contenitore della griglia dei tavoli (quello che oggi viene nascosto quando si apre la mappa).
 - Aggiungi `data-plan-nonce` all'input hidden del nonce se manca.
@@ -1577,6 +1583,14 @@ git commit -m "feat: table resize, seats, inspector and keyboard support"
 
 **File:** `includes/class-siqo-plan-layout.php`, `public/js/siqo-plan-editor.js`, `public/css/siqo-management.css`.
 
+**Step 0: registra gli handler** in `take_over_layout_endpoint()`:
+
+```php
+		add_action( 'wp_ajax_siqo_zone_create', array( __CLASS__, 'ajax_zone_create' ) );
+		add_action( 'wp_ajax_siqo_zone_update', array( __CLASS__, 'ajax_zone_update' ) );
+		add_action( 'wp_ajax_siqo_zone_delete', array( __CLASS__, 'ajax_zone_delete' ) );
+```
+
 **Step 1: endpoint `siqo_zone_create`**
 
 ```php
@@ -2199,6 +2213,12 @@ git commit -m "feat: manage panel for floors and zones"
 ## Task 9 — Sfondo zona: upload e libreria media
 
 **File:** `includes/class-siqo-plan-layout.php`, `public/js/siqo-plan-editor.js`.
+
+**Step 0: registra l'handler** in `take_over_layout_endpoint()`:
+
+```php
+		add_action( 'wp_ajax_siqo_zone_bg_upload', array( __CLASS__, 'ajax_zone_bg_upload' ) );
+```
 
 **Step 1: endpoint upload**
 
