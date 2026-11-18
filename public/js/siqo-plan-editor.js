@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var D = { minW: 80, minH: 60, maxSeats: 20, step: 10, maxDim: 4000 };
+
     var state = {
         view: 'grid',
         editing: false,
@@ -8,6 +10,9 @@
         floor: 0,
         canvas: { w: 1200, h: 800 },
         cards: [],
+        floors: [],
+        zones: [],
+        selected: null,
         drag: null,
         pan: null,
         suppressClick: false
@@ -30,6 +35,12 @@
     function int(value, fallback) {
         var n = parseInt(value, 10);
         return isNaN(n) ? fallback : n;
+    }
+
+    function esc(text) {
+        return String(text).replace(/[&<>"]/g, function (ch) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
+        });
     }
 
     function setStatus(text, isError) {
@@ -63,12 +74,55 @@
         return int(card.dataset.planFloor, 0);
     }
 
-    function writeCard(card) {
-        card.style.left = int(card.dataset.planX, 0) + 'px';
-        card.style.top = int(card.dataset.planY, 0) + 'px';
-        card.style.width = int(card.dataset.planW, 180) + 'px';
-        card.style.height = int(card.dataset.planH, 120) + 'px';
-        card.dataset.planShape = card.dataset.planShape || 'rect';
+    function cardData(card) {
+        return {
+            id: int(card.dataset.planId, 0),
+            x: int(card.dataset.planX, 0),
+            y: int(card.dataset.planY, 0),
+            w: int(card.dataset.planW, 180),
+            h: int(card.dataset.planH, 120),
+            shape: card.dataset.planShape || 'rect',
+            seats: int(card.dataset.planSeats, 0),
+            zone: int(card.dataset.planZone, 0)
+        };
+    }
+
+    function cardSet(card, data) {
+        card.dataset.planX = String(data.x);
+        card.dataset.planY = String(data.y);
+        card.dataset.planW = String(data.w);
+        card.dataset.planH = String(data.h);
+        card.dataset.planShape = data.shape;
+        card.dataset.planSeats = String(data.seats);
+        card.dataset.planZone = String(data.zone);
+    }
+
+    function renderSeats(el, seats) {
+        var badge = el.querySelector('.siqo-plan-seats');
+        if (!seats) {
+            if (badge) {
+                badge.parentNode.removeChild(badge);
+            }
+            return;
+        }
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'siqo-plan-seats';
+            badge.setAttribute('aria-hidden', 'true');
+            el.appendChild(badge);
+        }
+        badge.textContent = seats + ' posti';
+    }
+
+    function writeCard(card, data) {
+        var c = data || cardData(card);
+        card.style.left = c.x + 'px';
+        card.style.top = c.y + 'px';
+        card.style.width = c.w + 'px';
+        card.style.height = c.h + 'px';
+        card.style.borderRadius = c.shape === 'round' ? '50%' : (c.shape === 'square' ? '10px' : '');
+        card.dataset.planShape = c.shape;
+        renderSeats(card, c.seats);
     }
 
     function clearPosition(card) {
@@ -76,6 +130,7 @@
         card.style.top = '';
         card.style.width = '';
         card.style.height = '';
+        card.style.borderRadius = '';
     }
 
     function visibleCards() {
@@ -99,7 +154,9 @@
         refs.canvas.style.transform = 'scale(' + state.zoom + ')';
         refs.stage.style.width = Math.round(state.canvas.w * state.zoom) + 'px';
         refs.stage.style.height = Math.round(state.canvas.h * state.zoom) + 'px';
-        refs.zoomValue.textContent = Math.round(state.zoom * 100) + '%';
+        if (refs.zoomValue) {
+            refs.zoomValue.textContent = Math.round(state.zoom * 100) + '%';
+        }
     }
 
     function renderTabs() {
@@ -107,12 +164,11 @@
             return;
         }
         refs.tabs.innerHTML = '';
-        var floors = (refs.config && refs.config.floors) || [];
-        floors.forEach(function (floor) {
+        state.floors.forEach(function (floor) {
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.setAttribute('role', 'tab');
-            btn.setAttribute('data-floor-id', String(floor.id));
+            btn.setAttribute('data-floor', String(floor.id));
             btn.setAttribute('aria-selected', String(floor.id === state.floor));
             btn.className = floor.id === state.floor ? 'is-active' : '';
             btn.textContent = floor.name;
@@ -129,13 +185,11 @@
 
     function setFloor(floorId) {
         state.floor = floorId;
-        if (refs.config && refs.config.floors) {
-            refs.config.floors.forEach(function (floor) {
-                if (floor.id === floorId && floor.layout) {
-                    state.canvas = { w: int(floor.layout.w, 1200), h: int(floor.layout.h, 800) };
-                }
-            });
-        }
+        state.floors.forEach(function (floor) {
+            if (floor.id === floorId && floor.layout) {
+                state.canvas = { w: int(floor.layout.w, 1200), h: int(floor.layout.h, 800) };
+            }
+        });
         renderTabs();
         if (state.view === 'plan') {
             mountCards();
@@ -181,12 +235,10 @@
             btn.setAttribute('aria-pressed', String(active));
         });
         if (isPlan) {
-            if (!state.editing) {
-                refs.edit.classList.remove('is-active');
-            }
             mountCards();
             applyCanvas();
         } else {
+            selectCard(null);
             setEditing(false);
             unmountCards();
         }
@@ -208,21 +260,118 @@
             refs.hint.hidden = true;
         }
         if (!enabled) {
-            state.cards.forEach(function (card) {
-                card.classList.remove('is-selected');
-            });
-            closeInspector();
+            selectCard(null);
         } else {
             setStatus('Trascina i tavoli per sistemare la sala', false);
         }
     }
 
-    function openInspector() {}
+    function removeHandles(el) {
+        qsa('.siqo-plan-handle', el).forEach(function (h) {
+            h.parentNode.removeChild(h);
+        });
+    }
 
-    function closeInspector() {
+    function addHandles(el) {
+        removeHandles(el);
+        var name = el.getAttribute('data-table-name') || 'tavolo';
+        ['se', 'e', 's'].forEach(function (dir) {
+            var handle = document.createElement('span');
+            handle.className = 'siqo-plan-handle siqo-plan-handle-' + dir;
+            handle.setAttribute('data-plan-handle', dir);
+            handle.setAttribute('aria-label', 'Ridimensiona ' + name);
+            handle.setAttribute('role', 'button');
+            handle.setAttribute('tabindex', '-1');
+            el.appendChild(handle);
+        });
+    }
+
+    function selectCard(el) {
+        if (state.selected === el) {
+            if (el) {
+                buildTableInspector(el);
+            }
+            return;
+        }
+        if (state.selected) {
+            state.selected.classList.remove('is-selected');
+            removeHandles(state.selected);
+        }
+        state.selected = el || null;
+        if (state.selected) {
+            state.selected.classList.add('is-selected');
+            if (state.editing) {
+                addHandles(state.selected);
+                buildTableInspector(state.selected);
+            }
+        } else {
+            hideInspector();
+        }
+    }
+
+    function hideInspector() {
         if (refs.inspector) {
             refs.inspector.hidden = true;
+            refs.inspector.innerHTML = '';
         }
+    }
+
+    function zoneOptions(selected) {
+        var html = '<option value="0">Nessuna</option>';
+        state.zones.forEach(function (z) {
+            if (Number(z.floor) !== state.floor) {
+                return;
+            }
+            html += '<option value="' + z.id + '"' + (Number(selected) === Number(z.id) ? ' selected' : '') + '>' + esc(z.name) + '</option>';
+        });
+        return html;
+    }
+
+    function applyCardPatch(card, patch) {
+        var current = cardData(card);
+        Object.keys(patch).forEach(function (key) {
+            current[key] = patch[key];
+        });
+        cardSet(card, current);
+        writeCard(card, current);
+        saveLayout();
+        return current;
+    }
+
+    function buildTableInspector(card) {
+        if (!refs.inspector) {
+            return;
+        }
+        var c = cardData(card);
+        refs.inspector.innerHTML =
+            '<div class="siqo-plan-inspector-head"><strong></strong>' +
+            '<button type="button" data-plan-close aria-label="Chiudi">&times;</button></div>' +
+            '<label class="siqo-plan-field">Forma<select data-plan-shape><option value="rect">Rettangolo</option><option value="square">Quadrato</option><option value="round">Rotondo</option></select></label>' +
+            '<label class="siqo-plan-field">Sedie<span class="siqo-plan-stepper"><button type="button" data-seats="-" aria-label="Meno sedie">&minus;</button><output data-seats-value></output><button type="button" data-seats="+" aria-label="Più sedie">+</button></span></label>' +
+            '<label class="siqo-plan-field">Zona<select data-plan-zone-list>' + zoneOptions(c.zone) + '</select></label>' +
+            '<p class="siqo-plan-inspector-meta"></p>';
+        refs.inspector.hidden = false;
+        qs('.siqo-plan-inspector-head strong', refs.inspector).textContent = card.getAttribute('data-table-name') || 'Tavolo ' + c.id;
+        qs('.siqo-plan-inspector-meta', refs.inspector).textContent = card.getAttribute('data-table-status-label') || '';
+        qs('[data-plan-shape]', refs.inspector).value = c.shape;
+        qs('[data-seats-value]', refs.inspector).textContent = c.seats;
+
+        qs('[data-plan-close]', refs.inspector).addEventListener('click', function () {
+            selectCard(null);
+        });
+        qs('[data-plan-shape]', refs.inspector).addEventListener('change', function (event) {
+            applyCardPatch(card, { shape: event.target.value });
+        });
+        qs('[data-plan-zone-list]', refs.inspector).addEventListener('change', function (event) {
+            applyCardPatch(card, { zone: int(event.target.value, 0) });
+        });
+        qsa('[data-seats]', refs.inspector).forEach(function (button) {
+            button.addEventListener('click', function () {
+                var value = clamp(cardData(card).seats + (button.getAttribute('data-seats') === '+' ? 1 : -1), 0, D.maxSeats);
+                qs('[data-seats-value]', refs.inspector).textContent = value;
+                applyCardPatch(card, { seats: value });
+            });
+        });
     }
 
     function setZoom(next) {
@@ -231,14 +380,14 @@
     }
 
     function fitZoom() {
-        if (!refs.stage) {
+        if (!refs.area) {
             return;
         }
         var rect = refs.area.getBoundingClientRect();
         var zx = (rect.width - 32) / state.canvas.w;
         var zy = (rect.height - 32) / state.canvas.h;
         setZoom(Math.min(zx, zy, 1));
-        refs.stage.parentNode.scrollTop = 0;
+        refs.stage.scrollTop = 0;
     }
 
     function pointToCanvas(event) {
@@ -247,6 +396,15 @@
             x: (event.clientX - rect.left) / state.zoom,
             y: (event.clientY - rect.top) / state.zoom
         };
+    }
+
+    function growFor(c) {
+        if (c.x + c.w + 40 > state.canvas.w) {
+            state.canvas.w = Math.min(D.maxDim, c.x + c.w + 40);
+        }
+        if (c.y + c.h + 40 > state.canvas.h) {
+            state.canvas.h = Math.min(D.maxDim, c.y + c.h + 40);
+        }
     }
 
     function finishDrag() {
@@ -268,7 +426,57 @@
         }
     }
 
+    function beginResize(event, handle, owner) {
+        selectCard(owner);
+        var dir = handle.getAttribute('data-plan-handle');
+        var origin = cardData(owner);
+        var start = pointToCanvas(event);
+        function onMove(ev) {
+            var p = pointToCanvas(ev);
+            var c = cardData(owner);
+            if (dir === 'se' || dir === 'e') {
+                c.w = origin.w + (p.x - start.x);
+            }
+            if (dir === 'se' || dir === 's') {
+                c.h = origin.h + (p.y - start.y);
+            }
+            c.w = Math.max(D.minW, Math.round(c.w / D.step) * D.step);
+            c.h = Math.max(D.minH, Math.round(c.h / D.step) * D.step);
+            if (c.shape !== 'rect') {
+                var side = Math.max(D.minW, Math.min(c.w, c.h));
+                c.w = side;
+                c.h = side;
+            }
+            cardSet(owner, c);
+            writeCard(owner, c);
+            growFor(c);
+            applyCanvas();
+        }
+        function onUp() {
+            owner.removeEventListener('pointermove', onMove);
+            owner.removeEventListener('pointerup', onUp);
+            owner.removeEventListener('pointercancel', onUp);
+            saveLayout();
+        }
+        if (owner.setPointerCapture) {
+            owner.setPointerCapture(event.pointerId);
+        }
+        owner.addEventListener('pointermove', onMove);
+        owner.addEventListener('pointerup', onUp);
+        owner.addEventListener('pointercancel', onUp);
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     function onCanvasPointerDown(event) {
+        var handle = event.target.closest ? event.target.closest('[data-plan-handle]') : null;
+        if (handle && state.editing) {
+            var owner = handle.closest('.fo_table_cell');
+            if (owner) {
+                beginResize(event, handle, owner);
+                return;
+            }
+        }
         var card = event.target.closest ? event.target.closest('.fo_table_cell') : null;
         if (!card || !refs.canvas.contains(card)) {
             if (refs.stage && refs.stage.contains(event.target) && state.view === 'plan') {
@@ -283,6 +491,7 @@
         if (!state.editing) {
             return;
         }
+        selectCard(card);
         var point = pointToCanvas(event);
         var rect = card.getBoundingClientRect();
         state.drag = {
@@ -313,13 +522,15 @@
         if (Math.abs(point.x - state.drag.startX) > 3 || Math.abs(point.y - state.drag.startY) > 3) {
             state.drag.moved = true;
         }
-        var x = Math.max(0, Math.round((point.x - state.drag.offsetX) / 10) * 10);
-        var y = Math.max(0, Math.round((point.y - state.drag.offsetY) / 10) * 10);
+        var x = Math.max(0, Math.round((point.x - state.drag.offsetX) / D.step) * D.step);
+        var y = Math.max(0, Math.round((point.y - state.drag.offsetY) / D.step) * D.step);
         var card = state.drag.card;
         card.dataset.planX = String(x);
         card.dataset.planY = String(y);
         card.style.left = x + 'px';
         card.style.top = y + 'px';
+        growFor(cardData(card));
+        applyCanvas();
     }
 
     function onPointerUp(event) {
@@ -338,16 +549,16 @@
     function onCanvasClick(event) {
         var card = event.target.closest ? event.target.closest('.fo_table_cell') : null;
         if (!card || !refs.canvas.contains(card)) {
+            if (state.editing) {
+                selectCard(null);
+            }
             return;
         }
         if (state.editing || state.suppressClick) {
             event.preventDefault();
             event.stopPropagation();
             if (state.editing && !state.suppressClick) {
-                state.cards.forEach(function (item) {
-                    item.classList.toggle('is-selected', item === card);
-                });
-                openInspector(card);
+                selectCard(card);
             }
             return;
         }
@@ -359,19 +570,87 @@
         }
     }
 
+    function onKeyDown(event) {
+        if (event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+            var index = -1;
+            for (var i = 0; i < state.floors.length; i++) {
+                if (Number(state.floors[i].id) === state.floor) {
+                    index = i;
+                }
+            }
+            if (index >= 0 && state.floors.length > 1) {
+                event.preventDefault();
+                var next = (index + (event.key === 'ArrowRight' ? 1 : -1) + state.floors.length) % state.floors.length;
+                setFloor(state.floors[next].id);
+                var tab = qs('[data-floor="' + state.floors[next].id + '"]', refs.tabs);
+                if (tab) {
+                    tab.focus();
+                }
+            }
+            return;
+        }
+        if (!state.editing) {
+            if (event.key === 'Enter' && state.selected) {
+                state.selected.click();
+            }
+            return;
+        }
+        if (event.key === 'Escape') {
+            selectCard(null);
+            return;
+        }
+        if (event.key === 'Tab' && state.view === 'plan') {
+            var order = visibleCards();
+            if (!order.length) {
+                return;
+            }
+            var current = order.indexOf(state.selected);
+            var step = event.shiftKey ? -1 : 1;
+            var target = order[(current + step + order.length) % order.length];
+            if (current === -1) {
+                target = order[0];
+            }
+            event.preventDefault();
+            selectCard(target);
+            return;
+        }
+        if (!state.selected || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(event.key) === -1) {
+            return;
+        }
+        event.preventDefault();
+        var delta = event.shiftKey ? 50 : D.step;
+        var c = cardData(state.selected);
+        if (event.key === 'ArrowLeft') {
+            c.x = Math.max(0, c.x - delta);
+        }
+        if (event.key === 'ArrowRight') {
+            c.x = c.x + delta;
+        }
+        if (event.key === 'ArrowUp') {
+            c.y = Math.max(0, c.y - delta);
+        }
+        if (event.key === 'ArrowDown') {
+            c.y = c.y + delta;
+        }
+        cardSet(state.selected, c);
+        writeCard(state.selected, c);
+        growFor(c);
+        applyCanvas();
+        saveLayout();
+    }
+
     function payload() {
-        var tables = state.cards.filter(function (card) {
-            return cardFloor(card) === state.floor;
-        }).map(function (card) {
+        var tables = visibleCards().map(function (card) {
+            var c = cardData(card);
             return {
-                id: int(card.dataset.planId, 0),
-                x: int(card.dataset.planX, 0),
-                y: int(card.dataset.planY, 0),
-                w: int(card.dataset.planW, 180),
-                h: int(card.dataset.planH, 120),
-                shape: card.dataset.planShape || 'rect',
-                seats: int(card.dataset.planSeats, 0),
-                zone_id: int(card.dataset.planZone, 0)
+                id: c.id,
+                x: c.x,
+                y: c.y,
+                w: c.w,
+                h: c.h,
+                shape: c.shape,
+                seats: c.seats,
+                zone_id: c.zone
             };
         });
         return {
@@ -413,10 +692,6 @@
         });
     }
 
-    function reloadLayout() {
-        window.location.reload();
-    }
-
     function bind() {
         qsa('[data-plan-view]', refs.toolbar).forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -443,13 +718,16 @@
         });
         var reload = qs('[data-plan-reload]', refs.toolbar);
         if (reload) {
-            reload.addEventListener('click', reloadLayout);
+            reload.addEventListener('click', function () {
+                window.location.reload();
+            });
         }
         refs.canvas.addEventListener('pointerdown', onCanvasPointerDown);
         refs.canvas.addEventListener('click', onCanvasClick, true);
         document.addEventListener('pointermove', onPointerMove);
         document.addEventListener('pointerup', onPointerUp);
         document.addEventListener('pointercancel', onPointerUp);
+        document.addEventListener('keydown', onKeyDown);
     }
 
     function init() {
@@ -466,17 +744,21 @@
         refs.inspector = qs('[data-plan-inspector]');
         refs.zoomValue = qs('[data-plan-zoom-value]');
         refs.nonce = qs('[data-plan-nonce]');
-        refs.config = readConfig() || { floors: [], canvas: { w: 1200, h: 800 } };
-        refs.ajaxUrl = (window.SIQO_plan_editor && window.SIQO_plan_editor.ajaxUrl) || '';
+        var config = readConfig() || {};
+        refs.floors = config.floors || [];
         if (!refs.toolbar || !refs.area || !refs.canvas || !refs.grid) {
             return;
         }
         state.cards = qsa('.fo_table_cell', refs.grid);
-        state.floor = int(refs.config.floor, 0);
-        if (refs.config.canvas) {
-            state.canvas = { w: int(refs.config.canvas.w, 1200), h: int(refs.config.canvas.h, 800) };
+        state.floors = refs.floors;
+        state.zones = config.zones || [];
+        state.floor = int(config.floor, 0);
+        if (config.canvas) {
+            state.canvas = { w: int(config.canvas.w, 1200), h: int(config.canvas.h, 800) };
         }
-        state.cards.forEach(writeCard);
+        state.cards.forEach(function (card) {
+            writeCard(card);
+        });
         refs.area.hidden = true;
         renderTabs();
         applyCanvas();
