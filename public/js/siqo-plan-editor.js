@@ -12,7 +12,9 @@
         cards: [],
         floors: [],
         zones: [],
+        zoneEls: {},
         selected: null,
+        selectedZone: null,
         drag: null,
         pan: null,
         suppressClick: false
@@ -191,6 +193,7 @@
             }
         });
         renderTabs();
+        renderZones();
         if (state.view === 'plan') {
             mountCards();
         }
@@ -287,6 +290,10 @@
     }
 
     function selectCard(el) {
+        if (el && state.selectedZone) {
+            state.selectedZone.classList.remove('is-selected');
+            state.selectedZone = null;
+        }
         if (state.selected === el) {
             if (el) {
                 buildTableInspector(el);
@@ -314,6 +321,192 @@
             refs.inspector.hidden = true;
             refs.inspector.innerHTML = '';
         }
+    }
+
+    function renderZones() {
+        if (!refs.zones) {
+            return;
+        }
+        refs.zones.innerHTML = '';
+        state.zoneEls = {};
+        state.zones.forEach(function (zone) {
+            if (Number(zone.floor) !== state.floor) {
+                return;
+            }
+            var el = document.createElement('div');
+            el.className = 'siqo-plan-zone';
+            el.setAttribute('role', 'group');
+            el.setAttribute('aria-label', zone.name);
+            el.setAttribute('data-zone-id', String(zone.id));
+            el.style.left = zone.x + 'px';
+            el.style.top = zone.y + 'px';
+            el.style.width = zone.w + 'px';
+            el.style.height = zone.h + 'px';
+            if (zone.bgUrl) {
+                el.style.backgroundImage = 'url("' + zone.bgUrl.replace(/"/g, '%22') + '")';
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition = 'center';
+            }
+            var tint = document.createElement('span');
+            tint.className = 'siqo-plan-zone-tint';
+            tint.style.background = zone.color || 'transparent';
+            var label = document.createElement('span');
+            label.className = 'siqo-plan-zone-label';
+            label.textContent = zone.name;
+            el.appendChild(tint);
+            el.appendChild(label);
+            ['se', 'e', 's'].forEach(function (dir) {
+                var handle = document.createElement('span');
+                handle.className = 'siqo-plan-handle siqo-plan-handle-' + dir;
+                handle.setAttribute('data-zone-handle', dir);
+                handle.setAttribute('aria-hidden', 'true');
+                el.appendChild(handle);
+            });
+            refs.zones.appendChild(el);
+            state.zoneEls[zone.id] = el;
+        });
+    }
+
+    function zoneById(id) {
+        for (var i = 0; i < state.zones.length; i++) {
+            if (Number(state.zones[i].id) === Number(id)) {
+                return state.zones[i];
+            }
+        }
+        return null;
+    }
+
+    function zoneGeometry(el) {
+        return {
+            id: int(el.getAttribute('data-zone-id'), 0),
+            x: Math.round(parseFloat(el.style.left) || 0),
+            y: Math.round(parseFloat(el.style.top) || 0),
+            w: Math.round(parseFloat(el.style.width) || 240),
+            h: Math.round(parseFloat(el.style.height) || 160)
+        };
+    }
+
+    function selectZone(el) {
+        if (state.selectedZone) {
+            state.selectedZone.classList.remove('is-selected');
+        }
+        state.selectedZone = el || null;
+        if (state.selectedZone) {
+            state.selectedZone.classList.add('is-selected');
+            buildZoneInspector(state.selectedZone);
+        } else if (state.editing && !state.selected) {
+            hideInspector();
+        }
+    }
+
+    function applyZonePatch(zone, patch) {
+        Object.keys(patch).forEach(function (key) {
+            zone[key] = patch[key];
+        });
+        var data = { id: zone.id };
+        Object.keys(patch).forEach(function (key) {
+            data[key] = patch[key];
+        });
+        post('siqo_zone_update', data).then(function (result) {
+            if (result && result.success) {
+                state.zones = result.data.zones || state.zones;
+                renderZones();
+                setStatus('Zona aggiornata', false);
+            } else {
+                setStatus('Aggiornamento zona non riuscito', true);
+            }
+        });
+    }
+
+    function saveZoneGeometry(zone) {
+        post('siqo_zone_update', { id: zone.id, x: zone.x, y: zone.y, w: zone.w, h: zone.h });
+    }
+
+    function post(action, data) {
+        if (!refs.nonce) {
+            return Promise.resolve(null);
+        }
+        var body = new URLSearchParams();
+        body.set('action', action);
+        body.set('nonce', refs.nonce.value);
+        Object.keys(data || {}).forEach(function (key) {
+            body.set(key, String(data[key]));
+        });
+        return fetch(refs.ajaxUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body
+        }).then(function (response) {
+            return response.json();
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    function buildZoneInspector(el) {
+        if (!refs.inspector) {
+            return;
+        }
+        var zone = zoneById(el.getAttribute('data-zone-id'));
+        if (!zone) {
+            return;
+        }
+        refs.inspector.innerHTML =
+            '<div class="siqo-plan-inspector-head"><strong></strong>' +
+            '<button type="button" data-plan-close aria-label="Chiudi">&times;</button></div>' +
+            '<label class="siqo-plan-field">Nome<input type="text" maxlength="60" data-zone-name></label>' +
+            '<label class="siqo-plan-field">Colore<input type="color" data-zone-color></label>' +
+            '<div class="siqo-plan-field"><button type="button" data-zone-bg>Sfondo</button>' +
+            '<button type="button" data-zone-bg-clear>Rimuovi sfondo</button></div>' +
+            '<button type="button" class="siqo-plan-danger" data-zone-delete>Elimina zona</button>';
+        refs.inspector.hidden = false;
+        qs('.siqo-plan-inspector-head strong', refs.inspector).textContent = zone.name;
+        qs('[data-zone-name]', refs.inspector).value = zone.name;
+        qs('[data-zone-color]', refs.inspector).value = zone.color || '#a6462f';
+
+        qs('[data-plan-close]', refs.inspector).addEventListener('click', function () {
+            selectZone(null);
+        });
+        qs('[data-zone-name]', refs.inspector).addEventListener('change', function (event) {
+            applyZonePatch(zone, { name: event.target.value });
+        });
+        qs('[data-zone-color]', refs.inspector).addEventListener('change', function (event) {
+            applyZonePatch(zone, { color: event.target.value });
+        });
+        qs('[data-zone-bg]', refs.inspector).addEventListener('click', function () {
+            if (window.wp && window.wp.media) {
+                var frame = window.wp.media({
+                    title: 'Sfondo zona',
+                    multiple: false,
+                    library: { type: 'image' }
+                });
+                frame.on('select', function () {
+                    var att = frame.state().get('selection').first().toJSON();
+                    applyZonePatch(zone, { bg: att.id });
+                });
+                frame.open();
+            } else if (refs.file) {
+                refs.file.click();
+            }
+        });
+        qs('[data-zone-bg-clear]', refs.inspector).addEventListener('click', function () {
+            applyZonePatch(zone, { bg: 0 });
+        });
+        qs('[data-zone-delete]', refs.inspector).addEventListener('click', function () {
+            if (!window.confirm('Eliminare la zona?')) {
+                return;
+            }
+            post('siqo_zone_delete', { id: zone.id }).then(function (result) {
+                if (result && result.success) {
+                    state.zones = result.data.zones || [];
+                    selectZone(null);
+                    renderZones();
+                    setStatus('Zona eliminata', false);
+                } else {
+                    setStatus('Eliminazione non riuscita', true);
+                }
+            });
+        });
     }
 
     function zoneOptions(selected) {
@@ -639,6 +832,66 @@
         saveLayout();
     }
 
+    function onZonesPointerDown(event) {
+        if (!state.editing || event.button !== 0) {
+            return;
+        }
+        var el = event.target.closest ? event.target.closest('.siqo-plan-zone') : null;
+        if (!el) {
+            return;
+        }
+        var zone = zoneById(el.getAttribute('data-zone-id'));
+        if (!zone) {
+            return;
+        }
+        var handle = event.target.closest('[data-zone-handle]');
+        selectZone(el);
+        selectCard(null);
+        var dir = handle ? handle.getAttribute('data-zone-handle') : '';
+        var origin = zoneGeometry(el);
+        var start = pointToCanvas(event);
+        function onMove(ev) {
+            var p = pointToCanvas(ev);
+            var dx = Math.round((p.x - start.x) / D.step) * D.step;
+            var dy = Math.round((p.y - start.y) / D.step) * D.step;
+            if (dir) {
+                var w = origin.w;
+                var h = origin.h;
+                if (dir === 'se' || dir === 'e') {
+                    w = Math.max(D.minW, origin.w + (p.x - start.x));
+                }
+                if (dir === 'se' || dir === 's') {
+                    h = Math.max(D.minH, origin.h + (p.y - start.y));
+                }
+                zone.w = Math.round(w / D.step) * D.step;
+                zone.h = Math.round(h / D.step) * D.step;
+            } else {
+                zone.x = Math.max(0, origin.x + dx);
+                zone.y = Math.max(0, origin.y + dy);
+            }
+            el.style.left = zone.x + 'px';
+            el.style.top = zone.y + 'px';
+            el.style.width = zone.w + 'px';
+            el.style.height = zone.h + 'px';
+            growFor({ x: zone.x, y: zone.y, w: zone.w, h: zone.h });
+            applyCanvas();
+        }
+        function onUp() {
+            el.removeEventListener('pointermove', onMove);
+            el.removeEventListener('pointerup', onUp);
+            el.removeEventListener('pointercancel', onUp);
+            saveZoneGeometry(zone);
+        }
+        if (el.setPointerCapture) {
+            el.setPointerCapture(event.pointerId);
+        }
+        el.addEventListener('pointermove', onMove);
+        el.addEventListener('pointerup', onUp);
+        el.addEventListener('pointercancel', onUp);
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     function payload() {
         var tables = visibleCards().map(function (card) {
             var c = cardData(card);
@@ -653,6 +906,11 @@
                 zone_id: c.zone
             };
         });
+        var zones = state.zones.filter(function (zone) {
+            return Number(zone.floor) === state.floor;
+        }).map(function (zone) {
+            return { id: zone.id, x: zone.x, y: zone.y, w: zone.w, h: zone.h };
+        });
         return {
             action: 'siqo_save_table_layout',
             nonce: refs.nonce ? refs.nonce.value : '',
@@ -660,7 +918,7 @@
                 floor_id: state.floor,
                 canvas: state.canvas,
                 tables: tables,
-                zones: []
+                zones: zones
             })
         };
     }
@@ -724,6 +982,9 @@
         }
         refs.canvas.addEventListener('pointerdown', onCanvasPointerDown);
         refs.canvas.addEventListener('click', onCanvasClick, true);
+        if (refs.zones) {
+            refs.zones.addEventListener('pointerdown', onZonesPointerDown);
+        }
         document.addEventListener('pointermove', onPointerMove);
         document.addEventListener('pointerup', onPointerUp);
         document.addEventListener('pointercancel', onPointerUp);
@@ -761,6 +1022,7 @@
         });
         refs.area.hidden = true;
         renderTabs();
+        renderZones();
         applyCanvas();
         bind();
         window.SIQO_plan = {

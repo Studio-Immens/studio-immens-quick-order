@@ -81,6 +81,9 @@ class SIQO_Plan_Layout {
 		add_action( 'wp_ajax_siqo_floor_create', array( __CLASS__, 'ajax_floor_create' ) );
 		add_action( 'wp_ajax_siqo_floor_update', array( __CLASS__, 'ajax_floor_update' ) );
 		add_action( 'wp_ajax_siqo_floor_delete', array( __CLASS__, 'ajax_floor_delete' ) );
+		add_action( 'wp_ajax_siqo_zone_create', array( __CLASS__, 'ajax_zone_create' ) );
+		add_action( 'wp_ajax_siqo_zone_update', array( __CLASS__, 'ajax_zone_update' ) );
+		add_action( 'wp_ajax_siqo_zone_delete', array( __CLASS__, 'ajax_zone_delete' ) );
 	}
 
 	public static function floor_term( $floor_id ) {
@@ -545,6 +548,107 @@ class SIQO_Plan_Layout {
 			wp_send_json_error( array( 'message' => __( 'Eliminazione non riuscita.', 'studio-immens-quick-order' ) ), 400 );
 		}
 		self::respond_floors();
+	}
+
+	public static function ajax_zone_create() {
+		self::guard();
+		$floor_id = isset( $_POST['floor_id'] ) ? absint( $_POST['floor_id'] ) : 0;
+		if ( $floor_id && ! self::floor_term( $floor_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Piano inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		$name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		if ( '' === $name || mb_strlen( $name ) > 60 ) {
+			wp_send_json_error( array( 'message' => __( 'Nome zona non valido.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		if ( term_exists( $name, self::ZONE_TAX ) ) {
+			wp_send_json_error( array( 'message' => __( 'Esiste già una zona con questo nome.', 'studio-immens-quick-order' ) ), 400 );
+		}
+		$bounds   = array(
+			'x' => max( 0, self::int_field( $_POST, 'x', 40 ) ),
+			'y' => max( 0, self::int_field( $_POST, 'y', 40 ) ),
+			'w' => max( self::MIN_W, self::int_field( $_POST, 'w', 240 ) ),
+			'h' => max( self::MIN_H, self::int_field( $_POST, 'h', 160 ) ),
+		);
+		$inserted = wp_insert_term( $name, self::ZONE_TAX );
+		if ( is_wp_error( $inserted ) ) {
+			wp_send_json_error( array( 'message' => $inserted->get_error_message() ), 400 );
+		}
+		$id = (int) $inserted['term_id'];
+		update_term_meta( $id, '_siqo_zone_floor', $floor_id );
+		update_term_meta( $id, '_siqo_zone_bounds', $bounds );
+		update_term_meta( $id, '_siqo_zone_color', '#a6462f' );
+		wp_send_json_success(
+			array(
+				'zone'  => self::zone_payload( $id ),
+				'zones' => self::zones(),
+			)
+		);
+	}
+
+	public static function ajax_zone_update() {
+		self::guard();
+		$id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+		$term = $id ? get_term( $id, self::ZONE_TAX ) : null;
+		if ( ! $term || is_wp_error( $term ) ) {
+			wp_send_json_error( array( 'message' => __( 'Zona inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		if ( isset( $_POST['name'] ) ) {
+			$name = sanitize_text_field( wp_unslash( $_POST['name'] ) );
+			if ( '' === $name || mb_strlen( $name ) > 60 ) {
+				wp_send_json_error( array( 'message' => __( 'Nome zona non valido.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$clash = term_exists( $name, self::ZONE_TAX );
+			if ( $clash && (int) $clash['term_id'] !== $id ) {
+				wp_send_json_error( array( 'message' => __( 'Esiste già una zona con questo nome.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			$updated = wp_update_term( $id, self::ZONE_TAX, array( 'name' => $name ) );
+			if ( is_wp_error( $updated ) ) {
+				wp_send_json_error( array( 'message' => $updated->get_error_message() ), 400 );
+			}
+		}
+		if ( isset( $_POST['color'] ) ) {
+			$color = sanitize_hex_color( wp_unslash( $_POST['color'] ) );
+			update_term_meta( $id, '_siqo_zone_color', $color ? $color : '' );
+		}
+		if ( isset( $_POST['x'] ) || isset( $_POST['y'] ) || isset( $_POST['w'] ) || isset( $_POST['h'] ) ) {
+			$bounds = get_term_meta( $id, '_siqo_zone_bounds', true );
+			$bounds = is_array( $bounds ) ? $bounds : array();
+			$bounds = array(
+				'x' => max( 0, self::int_field( $_POST, 'x', isset( $bounds['x'] ) ? (int) $bounds['x'] : 40 ) ),
+				'y' => max( 0, self::int_field( $_POST, 'y', isset( $bounds['y'] ) ? (int) $bounds['y'] : 40 ) ),
+				'w' => max( self::MIN_W, self::int_field( $_POST, 'w', isset( $bounds['w'] ) ? (int) $bounds['w'] : 240 ) ),
+				'h' => max( self::MIN_H, self::int_field( $_POST, 'h', isset( $bounds['h'] ) ? (int) $bounds['h'] : 160 ) ),
+			);
+			update_term_meta( $id, '_siqo_zone_bounds', $bounds );
+		}
+		if ( isset( $_POST['bg'] ) ) {
+			$bg = absint( $_POST['bg'] );
+			if ( $bg && 'image' !== substr( (string) get_post_mime_type( $bg ), 0, 5 ) ) {
+				wp_send_json_error( array( 'message' => __( 'Allegato non valido.', 'studio-immens-quick-order' ) ), 400 );
+			}
+			if ( $bg ) {
+				update_term_meta( $id, '_siqo_zone_bg', $bg );
+			} else {
+				delete_term_meta( $id, '_siqo_zone_bg' );
+			}
+		}
+		wp_send_json_success(
+			array(
+				'zone'  => self::zone_payload( $id ),
+				'zones' => self::zones(),
+			)
+		);
+	}
+
+	public static function ajax_zone_delete() {
+		self::guard();
+		$id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+		$term = $id ? get_term( $id, self::ZONE_TAX ) : null;
+		if ( ! $term || is_wp_error( $term ) ) {
+			wp_send_json_error( array( 'message' => __( 'Zona inesistente.', 'studio-immens-quick-order' ) ), 404 );
+		}
+		wp_delete_term( $id, self::ZONE_TAX );
+		wp_send_json_success( array( 'zones' => self::zones() ) );
 	}
 
 	public static function respond_floors() {

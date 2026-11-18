@@ -1296,3 +1296,62 @@ body.siqo-customer-mode .entry-content {
 		overflow: auto;
 	}
 }
+.siqo-plan-zones {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.siqo-plan-zone {
+	position: absolute;
+	pointer-events: auto;
+	border: 1px dashed rgba(166, 70, 47, 0.5);
+	border-radius: 12px;
+	overflow: hidden;
+	background: rgba(255, 255, 255, 0.4);
+}
+
+.siqo-plan-area.is-editing .siqo-plan-zone {
+	cursor: move;
+}
+
+.siqo-plan-zone-tint {
+	position: absolute;
+	inset: 0;
+	opacity: 0.16;
+	pointer-events: none;
+}
+
+.siqo-plan-zone-label {
+	position: absolute;
+	top: 6px;
+	left: 8px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #5c5148;
+	pointer-events: none;
+}
+
+.siqo-plan-zone.is-selected {
+	outline: 3px solid #a6462f;
+	outline-offset: -3px;
+}
+
+.siqo-plan-canvas .fo_table_cell {
+	z-index: 2;
+}
+
+.siqo-plan-danger {
+	margin-top: 8px;
+	width: 100%;
+	border: 1px solid #a6462f;
+	border-radius: 8px;
+	padding: 8px;
+	background: #fff;
+	color: #a6462f;
+	font-weight: 700;
+	cursor: pointer;
+}
