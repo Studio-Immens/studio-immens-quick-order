@@ -119,20 +119,20 @@
 
     function writeCard(card, data) {
         var c = data || cardData(card);
-        card.style.left = c.x + 'px';
-        card.style.top = c.y + 'px';
-        card.style.width = c.w + 'px';
-        card.style.height = c.h + 'px';
+        card.style.setProperty('left', c.x + 'px', 'important');
+        card.style.setProperty('top', c.y + 'px', 'important');
+        card.style.setProperty('width', c.w + 'px', 'important');
+        card.style.setProperty('height', c.h + 'px', 'important');
         card.style.borderRadius = c.shape === 'round' ? '50%' : (c.shape === 'square' ? '10px' : '');
         card.dataset.planShape = c.shape;
         renderSeats(card, c.seats);
     }
 
     function clearPosition(card) {
-        card.style.left = '';
-        card.style.top = '';
-        card.style.width = '';
-        card.style.height = '';
+        card.style.removeProperty('left');
+        card.style.removeProperty('top');
+        card.style.removeProperty('width');
+        card.style.removeProperty('height');
         card.style.borderRadius = '';
     }
 
@@ -758,8 +758,8 @@
         var card = state.drag.card;
         card.dataset.planX = String(x);
         card.dataset.planY = String(y);
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
+        card.style.setProperty('left', x + 'px', 'important');
+        card.style.setProperty('top', y + 'px', 'important');
         growFor(cardData(card));
         applyCanvas();
     }
@@ -820,16 +820,16 @@
             }
             return;
         }
-        if (!state.editing) {
-            if (event.key === 'Enter' && state.selected) {
-                state.selected.click();
-            }
-            return;
-        }
         if (event.key === 'Escape') {
             closeManager();
             state.drawZone = false;
             selectCard(null);
+            return;
+        }
+        if (!state.editing) {
+            if (event.key === 'Enter' && state.selected) {
+                state.selected.click();
+            }
             return;
         }
         if (event.key === 'Tab' && state.view === 'plan') {
@@ -1016,10 +1016,12 @@
     function openManager() {
         renderManager();
         refs.manager.hidden = false;
+        refs.manager.setAttribute('tabindex', '-1');
         refs.manage.setAttribute('aria-expanded', 'true');
-        var first = qs('button, input', refs.manager);
-        if (first) {
-            first.focus();
+        try {
+            refs.manager.focus({ preventScroll: true });
+        } catch (err) {
+            refs.manager.focus();
         }
     }
 
