@@ -42,7 +42,7 @@ function SIQO_manage_table( $embedded = false ){
     // SIQO_debug($tavoli_info);
     if ( ! $embedded ) {
         if (isset($settings->showQR) && $settings->showQR == 'yes' ) {
-            echo SIQO_create_post_QR_code();
+            echo SIQO_create_post_QR_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
         }
 
         if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>

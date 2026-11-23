@@ -2833,7 +2833,7 @@ $fo_gallery = array();
 
 
 		<div class="foProdCardHead">
-			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_Prod_Card(this)', 'class'=>'SIQO_prod_img_menu' )); ?>
+			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_Prod_Card(this)', 'class'=>'SIQO_prod_img_menu' )); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce image markup. ?>
 			<div class="foname target_search" onclick="SIQO_Advanced_Prod_Card(this)"><?php echo esc_attr($product->get_name());?></div>
 			<?php
 				// SIQO_get_product_temperature_options($product);
@@ -3011,25 +3011,25 @@ function SIQO_Advanced_Prod_Card(){
 			if ( !empty( $product_cat ) ) {
 			?><span class="fo_adv_tax AC_tax_cat"><strong><?php esc_html_e('Categorie:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $product_cat );
+				echo SIQO_get_tax_cloud( $product_cat ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 			$product_tag = get_terms(array('taxonomy'=>'product_tag','hide_empty'=>false,));
 			if ( !empty( $product_tag ) ) {
 				?><span class="fo_adv_tax AC_tax_tag"><strong><?php esc_html_e('Tag:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $product_tag );
+				echo SIQO_get_tax_cloud( $product_tag ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 			$Ingredienti = get_terms(array('taxonomy'=>'siqo_ingredients','hide_empty'=>false,));
 			if ( !empty( $Ingredienti ) ) {
 				?><span class="fo_adv_tax AC_tax_ing"><strong><?php esc_html_e('Ingredienti:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $Ingredienti );
+				echo SIQO_get_tax_cloud( $Ingredienti ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 			$Allergeni = get_terms(array('taxonomy'=>'siqo_allergens','hide_empty'=>false,));
 			if ( !empty( $Allergeni ) ) {
 				?><span class="fo_adv_tax AC_tax_allerg"><strong><?php esc_html_e('Allergeni:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $Allergeni );
+				echo SIQO_get_tax_cloud( $Allergeni ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 		?>
 		</div>

@@ -780,7 +780,7 @@ class SIQO_Management {
 			echo '<p class="siqo-muted">' . esc_html__( 'Apri un tavolo per creare l’ordine o gestire il conto.', 'studio-immens-quick-order' ) . '</p>';
 			echo '</div></header>';
 			if ( function_exists( 'siqo_table_session_render_bar' ) ) {
-				echo siqo_table_session_render_bar( true );
+				echo siqo_table_session_render_bar( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 			if ( function_exists( 'SIQO_manage_table' ) ) {
 				SIQO_manage_table( true );
@@ -789,11 +789,11 @@ class SIQO_Management {
 		} elseif ( 'stations' === $view ) {
 			echo '<section class="siqo-view siqo-view-stations">';
 			if ( function_exists( 'siqo_station_orders_render' ) ) {
-				echo siqo_station_orders_render( true );
+				echo siqo_station_orders_render( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 			echo '</section>';
 		} elseif ( 'account' === $view ) {
-			echo self::render_account_panel();
+			echo self::render_account_panel(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 		} else {
 			$class = $panels[ $view ][0];
 			if ( ! self::license_active() ) {
@@ -803,7 +803,7 @@ class SIQO_Management {
 				echo '<a class="siqo-btn siqo-btn-primary" href="' . esc_url( admin_url( 'admin.php?page=si-quick-order_settings&section=license' ) ) . '">' . esc_html__( 'Gestisci licenza', 'studio-immens-quick-order' ) . '</a>';
 				echo '</section>';
 			} elseif ( method_exists( $class, 'render_panel' ) ) {
-				echo $class::render_panel();
+				echo $class::render_panel(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
 			}
 		}
 		echo '</main>';

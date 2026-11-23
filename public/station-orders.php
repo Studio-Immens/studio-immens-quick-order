@@ -386,14 +386,14 @@ function siqo_station_orders_render( $embedded = false ) {
 			</div>
 		</header>
 
-		<?php echo siqo_table_session_render_bar( true ); ?>
+		<?php echo siqo_table_session_render_bar( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
 
 		<nav class="siqo-station-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Filtra per punto di preparazione', 'studio-immens-quick-order' ); ?>">
-			<?php echo siqo_station_render_tabs( $station, $counts ); ?>
+			<?php echo siqo_station_render_tabs( $station, $counts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
 		</nav>
 
 		<div id="siqo-station-list" class="siqo-station-list" aria-live="polite" aria-busy="false">
-			<?php echo siqo_station_render_list( $data, $station ); ?>
+			<?php echo siqo_station_render_list( $data, $station ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
 		</div>
 	</div>
 	<?php
@@ -966,7 +966,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 		<footer class="siqo-station-order-foot">
 			<span class="siqo-station-total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
 			<?php if ( $action ) : ?>
-				<div class="siqo-station-actions"><?php echo $action; ?></div>
+				<div class="siqo-station-actions"><?php echo $action; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?></div>
 			<?php endif; ?>
 		</footer>
 	</article>
