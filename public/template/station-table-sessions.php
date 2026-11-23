@@ -90,10 +90,8 @@ function siqo_table_session_ajax() {
 add_action( 'wp_ajax_siqo_table_open', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_table_close', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_tables_close_all', 'siqo_table_session_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_table_open', 'siqo_table_session_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_table_close', 'siqo_table_session_ajax' );
 
-function siqo_table_session_render_bar() {
+function siqo_table_session_render_bar( $compact = false ) {
 	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
 		return '';
 	}
@@ -118,7 +116,7 @@ function siqo_table_session_render_bar() {
 
 	ob_start();
 	?>
-	<div class="siqo-table-session-bar"
+	<div class="siqo-table-session-bar<?php echo $compact ? ' is-compact' : ''; ?>"
 		data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 		data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
 		data-label-open="<?php esc_attr_e( 'Apri', 'studio-immens-quick-order' ); ?>"

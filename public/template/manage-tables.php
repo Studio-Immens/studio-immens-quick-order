@@ -34,8 +34,8 @@ function SIQO_manage_table( $embedded = false ){
     
     if ( function_exists( 'SIQO_get_settings_head_manage_tables' ) ) {
         SIQO_get_settings_head_manage_tables();
-    } elseif ( function_exists( 'FO_get_settings_head_manage_tables' ) ) {
-        FO_get_settings_head_manage_tables();
+    } elseif ( function_exists( 'SIQO_get_settings_head_manage_tables' ) ) {
+        SIQO_get_settings_head_manage_tables();
     }
 
     // $tavoli_info = FO_get_all_tables_by_status_last();
@@ -141,7 +141,7 @@ function SIQO_manage_table( $embedded = false ){
             <div class="siqo-plan-tabs" data-plan-tabs role="tablist" aria-label="<?php esc_attr_e( 'Piani', 'studio-immens-quick-order' ); ?>"></div>
             <p class="siqo-plan-hint" data-plan-hint hidden><?php esc_html_e( 'Modifica da computer o tablet', 'studio-immens-quick-order' ); ?></p>
         </div>
-        <div class="siqo-plan-area" data-plan-area role="region" aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>">
+        <div class="siqo-plan-area" data-plan-area role="region" aria-label="<?php esc_attr_e( 'Disposizione tavoli', 'studio-immens-quick-order' ); ?>" hidden>
             <div class="siqo-plan-stage" data-plan-stage>
                 <div class="siqo-plan-canvas" id="siqo-plan-canvas" data-plan-canvas role="tabpanel" tabindex="-1">
                     <div class="siqo-plan-zones" data-plan-zones></div>
@@ -231,7 +231,7 @@ function SIQO_manage_table( $embedded = false ){
             </div>
         <?php } ?>
         <span class="siqo-plan-anchor" hidden></span>
-        <?php FO_flash_tab_order( $tavoli );?>
+        <?php SIQO_flash_tab_order( $tavoli );?>
     </div>
 
     <?php if ( ! $embedded && function_exists( 'FOP_tab_Catering_section' ) ) { FOP_tab_Catering_section(); } ?>

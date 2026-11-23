@@ -14,6 +14,7 @@ class SIQO_Management {
 		add_shortcode( 'SIQO_management_dashboard', array( __CLASS__, 'render_dashboard' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'admin_init', array( __CLASS__, 'handle_settings_save' ) );
 		add_action( 'admin_init', array( __CLASS__, 'redirect_legacy_pages' ) );
 		add_action( 'admin_post_siqo_create_pages', array( __CLASS__, 'handle_create_pages' ) );
@@ -231,6 +232,16 @@ class SIQO_Management {
 			siqo_station_enqueue_assets();
 		}
 
+		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'tables' === sanitize_key( wp_unslash( $_GET['view'] ) ) ) {
+			wp_enqueue_script(
+				'siqo-table-sessions',
+				plugins_url( 'public/js/siqo-table-sessions.js', dirname( __FILE__ ) ),
+				array(),
+				STUDIO_IMMENS_QUICK_ORDER_VERSION,
+				true
+			);
+		}
+
 		if ( $is_customer ) {
 			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', dirname( __FILE__ ) ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		}
@@ -253,6 +264,31 @@ class SIQO_Management {
 			return;
 		}
 		wp_enqueue_style( 'siqo-management-admin', plugins_url( 'admin/css/siqo-management-admin.css', dirname( __FILE__ ) ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+	}
+
+	public static function admin_menu() {
+		if ( ! class_exists( 'SIQO_Back_Office' ) || ! SIQO_Back_Office::can_access() ) {
+			return;
+		}
+		$capability = current_user_can( 'manage_options' ) ? 'manage_options' : 'siqo_manage_suppliers';
+		add_menu_page(
+			__( 'Back Office', 'studio-immens-quick-order' ),
+			__( 'Back Office', 'studio-immens-quick-order' ),
+			$capability,
+			'siqo-back-office',
+			array( __CLASS__, 'redirect_back_office' ),
+			'dashicons-businessman',
+			58
+		);
+	}
+
+	public static function redirect_back_office() {
+		if ( class_exists( 'SIQO_Back_Office' ) ) {
+			wp_safe_redirect( SIQO_Back_Office::url() );
+			exit;
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=si-quick-order' ) );
+		exit;
 	}
 
 	public static function default_modules( $modules ) {
@@ -742,6 +778,9 @@ class SIQO_Management {
 			echo '<h1>' . esc_html__( 'Gestione tavoli', 'studio-immens-quick-order' ) . '</h1>';
 			echo '<p class="siqo-muted">' . esc_html__( 'Apri un tavolo per creare l’ordine o gestire il conto.', 'studio-immens-quick-order' ) . '</p>';
 			echo '</div></header>';
+			if ( function_exists( 'siqo_table_session_render_bar' ) ) {
+				echo siqo_table_session_render_bar( true );
+			}
 			if ( function_exists( 'SIQO_manage_table' ) ) {
 				SIQO_manage_table( true );
 			}

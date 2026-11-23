@@ -32,6 +32,12 @@ class SIQO_Plan_Layout {
 		if ( is_page( 'manage-tables' ) ) {
 			return true;
 		}
+		if ( is_page( 'gestione' ) ) {
+			$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'dashboard';
+			if ( 'tables' === $view ) {
+				return true;
+			}
+		}
 		$post = get_post();
 		return $post && false !== strpos( (string) $post->post_content, 'SIQO_manage_tables_section' );
 	}

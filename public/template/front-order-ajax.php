@@ -12,7 +12,7 @@ SIQO_soft_access_denied();
 // $role = FO_access_autorization();
 $user_id = get_current_user();
 
-$net_info = FO_get_connection_info();
+$net_info = SIQO_get_connection_info();
 
 $settings = SIQO_get_meta( 'setting_page_id'.get_the_ID() );
 if ( isset($settings) && $settings != null ) {
@@ -456,13 +456,13 @@ if ( $table_arm_mode ) {
 		</div>
 	
 		<script type="text/javascript">
-			function fo_ajax_form_height(){
+			function SIQO_ajax_form_height(){
 				var formVal = window.innerHeight - jQuery("#order_actions").height() - 70;
 				jQuery("#FO_sum_order").css("height", formVal );
 			}
-			window.addEventListener('scroll', fo_ajax_form_height);
-			window.addEventListener('resize', fo_ajax_form_height);
-			fo_ajax_form_height();
+			window.addEventListener('scroll', SIQO_ajax_form_height);
+			window.addEventListener('resize', SIQO_ajax_form_height);
+			SIQO_ajax_form_height();
 
 			jQuery(window).on('load', function() {
 				jQuery(".FOloadingCardPublicMain").fadeOut(200);

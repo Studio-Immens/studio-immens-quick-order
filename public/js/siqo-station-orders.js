@@ -13,6 +13,218 @@
     var pollInterval = parseInt(root.getAttribute('data-poll-interval'), 10) || 30000;
     var requestController = null;
     var pollTimer = null;
+    var soundRoot = root.querySelector('[data-station-sound]');
+    var soundButton = soundRoot ? soundRoot.querySelector('[data-station-sound-toggle]') : null;
+    var soundPanel = soundRoot ? soundRoot.querySelector('[data-station-sound-panel]') : null;
+    var soundEnabled = soundRoot ? soundRoot.querySelector('[data-station-sound-enabled]') : null;
+    var soundIcon = soundRoot ? soundRoot.querySelector('[data-station-sound-icon]') : null;
+    var soundAudio = soundRoot ? soundRoot.querySelector('[data-station-sound-audio]') : null;
+    var soundChoices = soundRoot ? Array.prototype.slice.call(soundRoot.querySelectorAll('[data-station-sound-choice]')) : [];
+    var soundStorageKey = 'siqoStationSound';
+    var soundEnabledStorageKey = 'siqoStationSoundEnabled';
+    var lastTotalOrders = parseInt(root.getAttribute('data-total-orders'), 10) || 0;
+    var soundInitialized = true;
+    var soundUnlocked = false;
+
+    function readStored(key, fallback) {
+        try {
+            var value = window.localStorage.getItem(key);
+            return value === null ? fallback : value;
+        } catch (error) {
+            return fallback;
+        }
+    }
+
+    function storeValue(key, value) {
+        try {
+            window.localStorage.setItem(key, value);
+        } catch (error) {
+            // Storage can be unavailable in private mode.
+        }
+    }
+
+    function selectedSoundChoice() {
+        for (var i = 0; i < soundChoices.length; i += 1) {
+            if (soundChoices[i].checked) {
+                return soundChoices[i];
+            }
+        }
+        return soundChoices.length ? soundChoices[0] : null;
+    }
+
+    function applySoundSettings() {
+        if (!soundRoot) {
+            return;
+        }
+
+        var choice = selectedSoundChoice();
+        var enabled = !soundEnabled || soundEnabled.checked;
+
+        if (soundIcon) {
+            soundIcon.classList.toggle('dashicons-controls-volumeon', enabled);
+            soundIcon.classList.toggle('dashicons-controls-volumeoff', !enabled);
+        }
+
+        if (soundButton) {
+            soundButton.classList.toggle('is-muted', !enabled);
+        }
+
+        if (soundAudio && choice) {
+            var url = choice.getAttribute('data-sound-url') || '';
+            if (soundAudio.getAttribute('src') !== url) {
+                soundAudio.setAttribute('src', url);
+            }
+            soundAudio.volume = 0.65;
+        }
+    }
+
+    function playStationSound() {
+        if (!soundAudio || !soundEnabled || !soundEnabled.checked) {
+            return;
+        }
+
+        try {
+            soundAudio.currentTime = 0;
+            var attempt = soundAudio.play();
+            if (attempt && typeof attempt.catch === 'function') {
+                attempt.catch(function () {
+                    // Autoplay may be blocked until the operator interacts with the page.
+                });
+            }
+        } catch (error) {
+            // Ignore playback errors.
+        }
+    }
+
+    function unlockSound() {
+        if (soundUnlocked || !soundAudio || !soundEnabled || !soundEnabled.checked) {
+            return;
+        }
+
+        soundUnlocked = true;
+        var volume = soundAudio.volume;
+
+        try {
+            soundAudio.volume = 0;
+            var attempt = soundAudio.play();
+            if (attempt && typeof attempt.then === 'function') {
+                attempt.then(function () {
+                    soundAudio.pause();
+                    soundAudio.currentTime = 0;
+                    soundAudio.volume = volume;
+                }).catch(function () {
+                    soundAudio.volume = volume;
+                });
+            } else {
+                soundAudio.volume = volume;
+            }
+        } catch (error) {
+            soundAudio.volume = volume;
+        }
+    }
+
+    function setSoundPanel(open) {
+        if (!soundPanel || !soundButton) {
+            return;
+        }
+        soundPanel.hidden = !open;
+        soundButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+            var first = soundPanel.querySelector('input, button');
+            if (first) {
+                first.focus({ preventScroll: true });
+            }
+        }
+    }
+
+    function initSound() {
+        if (!soundRoot) {
+            return;
+        }
+
+        var storedSound = readStored(soundStorageKey, '');
+        var storedEnabled = readStored(soundEnabledStorageKey, '1');
+        var hasStoredSound = false;
+
+        soundChoices.forEach(function (choice) {
+            if (choice.value === storedSound) {
+                choice.checked = true;
+                hasStoredSound = true;
+            }
+        });
+
+        if (!hasStoredSound) {
+            var checked = selectedSoundChoice();
+            if (checked) {
+                storeValue(soundStorageKey, checked.value);
+            }
+        }
+
+        if (soundEnabled) {
+            soundEnabled.checked = storedEnabled !== '0';
+        }
+
+        applySoundSettings();
+    }
+
+    if (soundRoot) {
+        soundRoot.addEventListener('change', function (event) {
+            if (event.target === soundEnabled) {
+                storeValue(soundEnabledStorageKey, soundEnabled.checked ? '1' : '0');
+                applySoundSettings();
+                return;
+            }
+
+            if (event.target.matches('[data-station-sound-choice]')) {
+                storeValue(soundStorageKey, event.target.value);
+                applySoundSettings();
+            }
+        });
+
+        soundRoot.addEventListener('click', function (event) {
+            var toggle = event.target.closest('[data-station-sound-toggle]');
+            if (toggle) {
+                setSoundPanel(soundPanel.hidden);
+                return;
+            }
+
+            var preview = event.target.closest('[data-station-sound-preview]');
+            if (preview) {
+                var url = preview.getAttribute('data-station-sound-preview') || '';
+                if (!url) {
+                    return;
+                }
+                try {
+                    var audio = new Audio(url);
+                    audio.volume = 0.65;
+                    var attempt = audio.play();
+                    if (attempt && typeof attempt.catch === 'function') {
+                        attempt.catch(function () {});
+                    }
+                } catch (error) {
+                    // Ignore preview errors.
+                }
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!soundPanel.hidden && !soundRoot.contains(event.target)) {
+                setSoundPanel(false);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !soundPanel.hidden) {
+                setSoundPanel(false);
+                soundButton.focus({ preventScroll: true });
+            }
+        });
+
+        initSound();
+
+        document.addEventListener('pointerdown', unlockSound, { once: true });
+        document.addEventListener('keydown', unlockSound, { once: true });
+    }
 
     function setBusy(isBusy) {
         list.setAttribute('aria-busy', isBusy ? 'true' : 'false');
@@ -118,6 +330,17 @@
 
             list.innerHTML = json.data.html;
             updateCounts(json.data.counts);
+
+            var nextTotalOrders = json.data.counts && typeof json.data.counts.__all !== 'undefined'
+                ? parseInt(json.data.counts.__all, 10) || 0
+                : lastTotalOrders;
+
+            if (soundInitialized && nextTotalOrders > lastTotalOrders) {
+                playStationSound();
+            }
+
+            lastTotalOrders = nextTotalOrders;
+            soundInitialized = true;
             setActiveStation(json.data.station);
         } catch (error) {
             if (error.name === 'AbortError') {

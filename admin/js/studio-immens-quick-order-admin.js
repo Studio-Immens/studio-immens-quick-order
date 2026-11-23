@@ -4,7 +4,7 @@ $.noConflict();
 
 })( jQuery );
 
-function FO_adm_restore_prev_prev( target, value ){
+function SIQO_adm_restore_prev_prev( target, value ){
 	target.previousElementSibling.value = value;
 	jQuery(target).closest('.FOsettingStyle').css('backgroundColor',value);
 }
@@ -45,7 +45,7 @@ function FOsettingSync(input){
 	jQuery(input).parent().parent().css('background-color', jQuery(this).val());
 }
 
-function FO_settings_navigations( target ){
+function SIQO_settings_navigations( target ){
 	
 	jQuery('#settSection form').slideUp();
 
@@ -53,7 +53,7 @@ function FO_settings_navigations( target ){
 }
 
 // console.log(window);
-function FO_create_refresh_pages(){
+function SIQO_create_refresh_pages(){
 	jQuery.ajax({
 		type: 'POST',
 		url: ajaxurl,
@@ -70,7 +70,7 @@ function FO_create_refresh_pages(){
 	});
 }
 
-function FO_delete_page( page ){
+function SIQO_delete_page( page ){
 	console.log(jQuery('#_siqononce_manage_pages').val());
 	jQuery.ajax({
 		type: 'POST',
@@ -88,7 +88,7 @@ function FO_delete_page( page ){
 	});
 }
 
-function fo_create_QR( target ){
+function SIQO_create_QR( target ){
 	var size = '150';
 	 size = jQuery(target).find('input[name="NEW_QR_size"]').val();
 	var content = '';
@@ -111,7 +111,7 @@ function fo_create_QR( target ){
 	});
 }
 
-function FO_delete_QR_images( target ){
+function SIQO_delete_QR_images( target ){
 	var del_path = jQuery(target).attr('del_path');
 	jQuery.ajax({
 		type: 'POST',
@@ -129,7 +129,7 @@ function FO_delete_QR_images( target ){
 	});
 }
 
-function fo_search_for_file(input, def = 'show'){
+function SIQO_search_for_file(input, def = 'show'){
 	var searchVal = jQuery(input).val();
 	var target = jQuery(input).attr('target');
 	var items = jQuery('.'+target);
@@ -163,21 +163,21 @@ function fo_search_for_file(input, def = 'show'){
 	});
 }
 
-function FO_show_pages_rapid_impost( pageId ){
+function SIQO_admin_show_pages_rapid_impost( pageId ){
 	jQuery('[fo_page_id="'+pageId+'"]').slideDown();
 }
 
-function FO_hide_pages_rapid_impost( pageId ){
+function SIQO_admin_hide_pages_rapid_impost( pageId ){
 	jQuery('[fo_page_id="'+pageId+'"]').slideUp();
 }
 
-function FO_toggle_pages_rapid_impost( pageId ){
+function SIQO_admin_toggle_pages_rapid_impost( pageId ){
 	jQuery('[fo_page_id="'+pageId+'"]').slideToggle();
 }
 
 
 
-function FO_condition_setting(input){
+function SIQO_condition_setting(input){
 	var bool = jQuery(input).attr('siqo_bool') || jQuery(input).attr('fo_bool');
 	if (jQuery(input).val() == bool) {
 		jQuery( jQuery(input).attr('target_bool') ).slideDown();
@@ -188,7 +188,7 @@ function FO_condition_setting(input){
 
 
 
-function FO_hide_condition_setting(input){
+function SIQO_hide_condition_setting(input){
 	var dep = jQuery(input).attr('siqo_dep') || jQuery(input).attr('fo_dep');
 	var val = jQuery(dep).attr('siqo_val') || jQuery(dep).attr('fo_val');
 	if ( val != 'yes' && val != 'si') {
@@ -198,15 +198,15 @@ function FO_hide_condition_setting(input){
 	}
 }
 
-window.SIQO_adm_restore_prev_prev = FO_adm_restore_prev_prev;
-window.SIQO_settings_navigations = FO_settings_navigations;
-window.SIQO_create_refresh_pages = FO_create_refresh_pages;
-window.SIQO_delete_page = FO_delete_page;
-window.siqo_create_QR = fo_create_QR;
-window.SIQO_delete_QR_images = FO_delete_QR_images;
-window.siqo_search_for_file = fo_search_for_file;
-window.SIQO_toggle_pages_rapid_impost = FO_toggle_pages_rapid_impost;
-window.SIQO_condition_setting = FO_condition_setting;
+window.SIQO_adm_restore_prev_prev = SIQO_adm_restore_prev_prev;
+window.SIQO_settings_navigations = SIQO_settings_navigations;
+window.SIQO_create_refresh_pages = SIQO_create_refresh_pages;
+window.SIQO_delete_page = SIQO_delete_page;
+window.siqo_create_QR = SIQO_create_QR;
+window.SIQO_delete_QR_images = SIQO_delete_QR_images;
+window.siqo_search_for_file = SIQO_search_for_file;
+window.SIQO_toggle_pages_rapid_impost = SIQO_admin_toggle_pages_rapid_impost;
+window.SIQO_condition_setting = SIQO_condition_setting;
 
 
 
