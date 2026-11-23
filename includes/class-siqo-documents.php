@@ -752,8 +752,8 @@ if ( ! function_exists( 'siqo_render_author_badge' ) ) {
 			$label  = sprintf( __( 'Operatore: %s', 'studio-immens-quick-order' ), $name );
 		} else {
 			$avatar = '';
-			/* translators: %s: table name. */
 			$label  = $table
+				/* translators: %s: table name. */
 				? sprintf( __( 'Cliente — %s', 'studio-immens-quick-order' ), $table )
 				: __( 'Cliente', 'studio-immens-quick-order' );
 		}
