@@ -78,14 +78,15 @@ function siqo_table_session_ajax() {
 	}
 
 	$session = $result['session'];
-	wp_send_json_success(
-		array(
-			'table_id'   => $table_id,
-			'active'     => true,
-			'expires_at' => $session->expires_at,
-			'label'      => sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), wp_date( 'H:i', strtotime( $session->expires_at . ' UTC' ) ) ),
-		)
-	);
+		/* translators: %s: session expiry time. */
+		wp_send_json_success(
+			array(
+				'table_id'   => $table_id,
+				'active'     => true,
+				'expires_at' => $session->expires_at,
+				'label'      => sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), wp_date( 'H:i', strtotime( $session->expires_at . ' UTC' ) ) ),
+			)
+		);
 }
 add_action( 'wp_ajax_siqo_table_open', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_table_close', 'siqo_table_session_ajax' );

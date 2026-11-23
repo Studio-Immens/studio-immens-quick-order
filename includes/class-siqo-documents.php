@@ -748,9 +748,11 @@ if ( ! function_exists( 'siqo_render_author_badge' ) ) {
 			$user   = get_userdata( $user_id );
 			$name   = $user ? $user->display_name : __( 'Operatore', 'studio-immens-quick-order' );
 			$avatar = get_avatar_url( $user_id, array( 'size' => 56 ) );
+			/* translators: %s: operator display name. */
 			$label  = sprintf( __( 'Operatore: %s', 'studio-immens-quick-order' ), $name );
 		} else {
 			$avatar = '';
+			/* translators: %s: table name. */
 			$label  = $table
 				? sprintf( __( 'Cliente — %s', 'studio-immens-quick-order' ), $table )
 				: __( 'Cliente', 'studio-immens-quick-order' );

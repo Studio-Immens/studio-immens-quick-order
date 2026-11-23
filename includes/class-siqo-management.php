@@ -518,6 +518,7 @@ class SIQO_Management {
 						$account_label = $current_user->display_name ? $current_user->display_name : $current_user->user_login;
 						$avatar_url    = get_avatar_url( $current_user->ID, array( 'size' => 48 ) );
 						?>
+						<?php /* translators: %s: account display name. */ ?>
 						<a class="siqo-bar-action siqo-account-action" href="<?php echo esc_url( self::page_url( array( 'view' => 'account' ) ) ); ?>" title="<?php echo esc_attr( sprintf( __( 'Account di %s', 'studio-immens-quick-order' ), $account_label ) ); ?>">
 							<?php if ( $avatar_url ) : ?>
 								<img class="siqo-account-avatar" src="<?php echo esc_url( $avatar_url ); ?>" alt="" width="24" height="24" loading="lazy">

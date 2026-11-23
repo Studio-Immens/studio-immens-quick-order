@@ -1996,7 +1996,7 @@ function SIQO_delete_QR_images(){
         $real_path = realpath($del_path);
         $real_qr_dir = realpath($qr_dir);
         if ($real_path && $real_qr_dir && strpos($real_path, rtrim($real_qr_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) === 0 && file_exists($real_path)) {
-            unlink($real_path);
+            wp_delete_file( $real_path );
         }
     }
 
@@ -4326,6 +4326,7 @@ if ( ! $verified && $order->get_items()!=null) {
 			if ( ! in_array( $siqo_previous_order->get_status(), array( 'pending', 'on-hold', 'failed' ), true ) ) {
 				continue;
 			}
+			/* translators: %d: order ID. */
 			$siqo_previous_order->add_order_note( sprintf( __( 'Unito all’ordine #%d.', 'studio-immens-quick-order' ), $order_id ) );
 			$siqo_previous_order->set_status( 'cancelled' );
 			$siqo_previous_order->save();

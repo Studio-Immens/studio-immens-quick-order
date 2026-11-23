@@ -922,6 +922,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 					$detail_parts[] = $item['details']['note'];
 				}
 				if ( ! empty( $item['details']['modification'] ) ) {
+					/* translators: %s: order modification details. */
 					$detail_parts[] = sprintf( __( 'Modifiche: %s', 'studio-immens-quick-order' ), $item['details']['modification'] );
 				}
 				?>

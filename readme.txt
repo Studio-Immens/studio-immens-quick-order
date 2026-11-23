@@ -3,7 +3,7 @@ Contributors: innovazioneweb
 Tags: restaurant, food ordering, woocommerce, table management, qr code
 Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
-Tested up to: 7.1.5
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.2.4
 License: GPLv3

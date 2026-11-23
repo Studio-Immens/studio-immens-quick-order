@@ -22,6 +22,7 @@ $cards = array(
 	),
 	array(
 		'title' => __( 'Tavoli', 'studio-immens-quick-order' ),
+		/* translators: %d: number of published tables. */
 		'text'  => sprintf( __( '%d tavoli pubblicati.', 'studio-immens-quick-order' ), $tables_count ),
 		'url'   => SIQO_Management::page_url( array( 'view' => 'tables' ) ),
 		'cta'   => __( 'Apri tavoli', 'studio-immens-quick-order' ),
@@ -36,6 +37,7 @@ $cards = array(
 	),
 	array(
 		'title' => __( 'Catering', 'studio-immens-quick-order' ),
+		/* translators: %d: number of published events. */
 		'text'  => sprintf( __( '%d eventi pubblicati.', 'studio-immens-quick-order' ), $catering_count ),
 		'url'   => SIQO_Management::page_url( array( 'view' => 'catering' ) ),
 		'cta'   => __( 'Gestisci catering', 'studio-immens-quick-order' ),
