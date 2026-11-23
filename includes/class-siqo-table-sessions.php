@@ -163,7 +163,8 @@ class SIQO_Table_Sessions {
 		global $wpdb;
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT table_id FROM " . self::table_name() . " WHERE status IN ('open','awaiting_approval') AND expires_at > %s",
+				"SELECT DISTINCT table_id FROM %i WHERE status IN ('open','awaiting_approval') AND expires_at > %s",
+				self::table_name(),
 				self::now()
 			)
 		);
@@ -269,7 +270,8 @@ class SIQO_Table_Sessions {
 		global $wpdb;
 		$affected = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET orders_count = IF(orders_count > 0, orders_count - 1, 0), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d",
+				"UPDATE %i SET orders_count = IF(orders_count > 0, orders_count - 1, 0), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d",
+				self::table_name(),
 				(float) $total,
 				absint( $session_id )
 			)
@@ -318,10 +320,11 @@ class SIQO_Table_Sessions {
 		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
 		$affected  = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET session_total = session_total + %f
+				"UPDATE %i SET session_total = session_total + %f
 				 WHERE id = %d AND session_total + %f <= %f
 				 AND status IN ('open','awaiting_approval')
 				 AND expires_at > %s",
+				self::table_name(),
 				(float) $total,
 				absint( $session_id ),
 				(float) $total,

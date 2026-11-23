@@ -4293,7 +4293,8 @@ if ( ! $verified && $order->get_items()!=null) {
 		global $wpdb;
 		$siqo_transitioned = (int) $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'awaiting_approval' WHERE id = %d AND status IN ('open','awaiting_approval')",
+				"UPDATE %i SET status = 'awaiting_approval' WHERE id = %d AND status IN ('open','awaiting_approval')",
+				SIQO_Table_Sessions::table_name(),
 				(int) $siqo_session->id
 			)
 		);
@@ -4353,7 +4354,8 @@ if ( ! $verified && $order->get_items()!=null) {
 			global $wpdb;
 			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					"UPDATE %i SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					SIQO_Table_Sessions::table_name(),
 					(int) $siqo_session->id
 				)
 			);

@@ -565,7 +565,8 @@ class SIQO_Documents {
 		if ( $id ) {
 			$row = $wpdb->get_row(
 				$wpdb->prepare(
-					'SELECT * FROM ' . self::$table . ' WHERE id = %d',
+					'SELECT * FROM %i WHERE id = %d',
+					self::$table,
 					$id
 				)
 			);
@@ -576,7 +577,8 @@ class SIQO_Documents {
 
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				'SELECT * FROM ' . self::$table . ' WHERE order_id = %d OR ( JSON_VALID(order_ids) AND JSON_CONTAINS(order_ids, %s) ) ORDER BY id DESC LIMIT 1',
+				'SELECT * FROM %i WHERE order_id = %d OR ( JSON_VALID(order_ids) AND JSON_CONTAINS(order_ids, %s) ) ORDER BY id DESC LIMIT 1',
+				self::$table,
 				absint( $order_id ),
 				(string) absint( $order_id )
 			)

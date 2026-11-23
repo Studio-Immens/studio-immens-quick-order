@@ -121,7 +121,8 @@ function siqo_station_release_cancelled_order( $order_id, $order = null ) {
 	global $wpdb;
 	$wpdb->query(
 		$wpdb->prepare(
-			"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+			"UPDATE %i SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+			SIQO_Table_Sessions::table_name(),
 			$session_id
 		)
 	);
@@ -548,7 +549,8 @@ function siqo_order_approval_ajax() {
 		if ( $session ) {
 			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					"UPDATE %i SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					SIQO_Table_Sessions::table_name(),
 					$session_id
 				)
 			);
@@ -572,7 +574,8 @@ function siqo_order_approval_ajax() {
 	if ( $session ) {
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				"UPDATE %i SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				SIQO_Table_Sessions::table_name(),
 				(float) $order->get_total(),
 				$session_id
 			)
