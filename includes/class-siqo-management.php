@@ -668,9 +668,11 @@ class SIQO_Management {
 		$email        = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 		$first_name   = isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
 		$last_name    = isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Passwords must preserve special characters; wp_unslash() is applied.
 		$password     = isset( $_POST['user_pass'] ) ? (string) wp_unslash( $_POST['user_pass'] ) : '';
 		$confirm      = isset( $_POST['user_pass_confirm'] ) ? (string) wp_unslash( $_POST['user_pass_confirm'] ) : '';
 		$current_pass = isset( $_POST['user_pass_current'] ) ? (string) wp_unslash( $_POST['user_pass_current'] ) : '';
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( '' === $display_name ) {
 			wp_send_json_error( array( 'message' => 'Il nome visualizzato è obbligatorio.' ), 400 );
@@ -915,8 +917,7 @@ class SIQO_Management {
 			wp_send_json_error( array( 'message' => 'Accesso negato.' ), 403 );
 		}
 
-		$raw    = isset( $_POST['layout'] ) ? wp_unslash( $_POST['layout'] ) : '';
-		$layout = json_decode( $raw, true );
+		$layout = siqo_json_post( 'layout' );
 		if ( ! is_array( $layout ) ) {
 			wp_send_json_error( array( 'message' => 'Disposizione non valida.' ), 400 );
 		}

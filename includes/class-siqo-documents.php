@@ -113,6 +113,7 @@ class SIQO_Documents {
 		$table_id = isset( $_POST['table_id'] ) ? absint( $_POST['table_id'] ) : 0;
 		$table    = isset( $_POST['table_name'] ) ? sanitize_text_field( wp_unslash( $_POST['table_name'] ) ) : '';
 		$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_order_ids() validates every ID.
 		$order_ids = self::sanitize_order_ids( isset( $_POST['order_ids'] ) ? wp_unslash( $_POST['order_ids'] ) : array() );
 
 		if ( $order_id ) {

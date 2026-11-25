@@ -179,6 +179,27 @@ if ( ! function_exists( 'siqo_ajax_capability_guard' ) ) {
 	}
 }
 
+if ( ! function_exists( 'siqo_json_post' ) ) {
+	/**
+	 * Read a JSON POST field and return a validated array.
+	 *
+	 * @param string $key POST field name.
+	 * @return array
+	 */
+	function siqo_json_post( $key ) {
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return array();
+		}
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON is decoded and each field is sanitized by the caller.
+		$raw = wp_unslash( $_POST[ $key ] );
+		if ( is_array( $raw ) ) {
+			return array_map( 'sanitize_text_field', $raw );
+		}
+		$decoded = json_decode( (string) $raw, true );
+		return is_array( $decoded ) ? $decoded : array();
+	}
+}
+
 if ( ! function_exists( 'siqo_str_contains' ) ) {
 	/**
 	 * PHP 7.4-compatible replacement for siqo_str_contains().

@@ -315,6 +315,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
             return;
         }
         if ( isset( $_POST[$args] ) ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Recursive sanitizer is applied immediately.
             $sany_args = SIQO_recursive_sanitize_text_field(wp_unslash($_POST[$args]));
             foreach ($sany_args as $key => $value) {
                 SIQO_update_meta( sanitize_text_field(wp_unslash($key)), sanitize_text_field(wp_unslash($value)), $assoc_id );
