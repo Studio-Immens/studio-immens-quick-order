@@ -997,8 +997,8 @@ class SIQO_Management {
 			wp_die( esc_html__( 'Accesso negato.', 'studio-immens-quick-order' ) );
 		}
 		check_admin_referer( 'siqo_create_pages' );
-		if ( class_exists( 'Studio_Immens_Quick_Order_Activator' ) ) {
-			Studio_Immens_Quick_Order_Activator::activate();
+		if ( class_exists( 'SIQO_Activator' ) ) {
+			SIQO_Activator::activate();
 		}
 		self::ensure_page();
 		wp_safe_redirect( add_query_arg( 'siqo_saved', '1', admin_url( 'admin.php?page=si-quick-order_settings&section=pages' ) ) );

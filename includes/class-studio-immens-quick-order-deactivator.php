@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @subpackage Studio_Immens_Quick_Order/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
-class Studio_Immens_Quick_Order_Deactivator {
+class SIQO_Deactivator {
 
 	/**
 	 * Short Description. (use period)

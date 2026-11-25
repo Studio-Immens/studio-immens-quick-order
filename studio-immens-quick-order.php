@@ -194,7 +194,7 @@ if ( ! function_exists( 'siqo_str_contains' ) ) {
  */
 function siqo_activate_plugin() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order-activator.php';
-	Studio_Immens_Quick_Order_Activator::activate();
+	SIQO_Activator::activate();
 }
 
 /**
@@ -203,7 +203,7 @@ function siqo_activate_plugin() {
  */
 function siqo_deactivate_plugin() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order-deactivator.php';
-	Studio_Immens_Quick_Order_Deactivator::deactivate();
+	SIQO_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'siqo_activate_plugin' );

@@ -1,7 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 
 $disp_general = 'display:none;';
 

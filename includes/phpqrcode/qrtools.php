@@ -87,7 +87,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			QRtools::markTime('before_build_cache');
 			
 			$mask = new QRmask();
-            for ($a=1; $a <= QRSPEC_VERSION_MAX; $a++) {
+            for ($a=1; $a <= SIQO_QR_QRSPEC_VERSION_MAX; $a++) {
                 $frame = QRspec::newFrame($a);
                 if (SIQO_QR_IMAGE) {
                     $fileName = SIQO_QR_CACHE_DIR.'frame_'.$a.'.png';
@@ -134,10 +134,10 @@ if ( ! defined( 'ABSPATH' ) ) {
             list($usec, $sec) = explode(" ", microtime());
             $time = ((float)$usec + (float)$sec);
             
-            if (!isset($GLOBALS['qr_time_bench']))
-                $GLOBALS['qr_time_bench'] = array();
+            if (!isset($GLOBALS['siqo_qr_time_bench']))
+                $GLOBALS['siqo_qr_time_bench'] = array();
             
-            $GLOBALS['qr_time_bench'][$markerId] = $time;
+            $GLOBALS['siqo_qr_time_bench'][$markerId] = $time;
         }
         
         //----------------------------------------------------------------------
@@ -153,7 +153,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <thead><tr style="border-bottom:1px solid silver"><td colspan="2" style="text-align:center">BENCHMARK</td></tr></thead>
                     <tbody>';
 
-            foreach($GLOBALS['qr_time_bench'] as $markerId=>$thisTime) {
+            foreach($GLOBALS['siqo_qr_time_bench'] as $markerId=>$thisTime) {
                 if ($p > 0) {
                     echo '<tr><th style="text-align:right">till '.esc_attr($markerId).': </th><td>'.number_format($thisTime-$lastTime, 6).'s</td></tr>';
                 } else {

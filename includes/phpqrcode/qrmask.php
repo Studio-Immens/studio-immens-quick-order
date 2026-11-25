@@ -31,10 +31,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-	define('N1', 3);
-	define('N2', 3);
-	define('N3', 40);
-	define('N4', 10);
+	define('SIQO_QR_N1', 3);
+	define('SIQO_QR_N2', 3);
+	define('SIQO_QR_N3', 40);
+	define('SIQO_QR_N4', 10);
 
 	class QRmask {
 	
@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		//----------------------------------------------------------------------
 		public function __construct() 
         {
-            $this->runLength = array_fill(0, QRSPEC_WIDTH_MAX + 1, 0);
+            $this->runLength = array_fill(0, SIQO_QR_QRSPEC_WIDTH_MAX + 1, 0);
         }
         
         //----------------------------------------------------------------------
@@ -199,7 +199,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             for($i=0; $i<$length; $i++) {
                 
                 if($this->runLength[$i] >= 5) {
-                    $demerit += (N1 + ($this->runLength[$i] - 5));
+                    $demerit += (SIQO_QR_N1 + ($this->runLength[$i] - 5));
                 }
                 if($i & 1) {
                     if(($i >= 3) && ($i < ($length-2)) && ($this->runLength[$i] % 3 == 0)) {
@@ -209,9 +209,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                            ($this->runLength[$i+1] == $fact) &&
                            ($this->runLength[$i+2] == $fact)) {
                             if(($this->runLength[$i-3] < 0) || ($this->runLength[$i-3] >= (4 * $fact))) {
-                                $demerit += N3;
+                                $demerit += SIQO_QR_N3;
                             } else if((($i+3) >= $length) || ($this->runLength[$i+3] >= (4 * $fact))) {
-                                $demerit += N3;
+                                $demerit += SIQO_QR_N3;
                             }
                         }
                     }
@@ -241,7 +241,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         $w22 = ord($frameY[$x]) | ord($frameY[$x-1]) | ord($frameYM[$x]) | ord($frameYM[$x-1]);
                         
                         if(($b22 | ($w22 ^ 1))&1) {                                                                     
-                            $demerit += N2;
+                            $demerit += SIQO_QR_N2;
                         }
                     }
                     if(($x == 0) && (ord($frameY[$x]) & 1)) {
@@ -317,7 +317,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $blacks  = $this->makeMaskNo($i, $width, $frame, $mask);
                 $blacks += $this->writeFormatInformation($width, $mask, $i, $level);
                 $blacks  = (int)(100 * $blacks / ($width * $width));
-                $demerit = (int)((int)(abs($blacks - 50) / 5) * N4);
+                $demerit = (int)((int)(abs($blacks - 50) / 5) * SIQO_QR_N4);
                 $demerit += $this->evaluateSymbol($width, $mask);
                 
                 if($demerit < $minDemerit) {

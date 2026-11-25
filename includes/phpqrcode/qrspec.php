@@ -37,13 +37,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-    define('QRSPEC_VERSION_MAX', 40);
-    define('QRSPEC_WIDTH_MAX',   177);
+    define('SIQO_QR_QRSPEC_VERSION_MAX', 40);
+    define('SIQO_QR_QRSPEC_WIDTH_MAX',   177);
 
-    define('QRCAP_WIDTH',        0);
-    define('QRCAP_WORDS',        1);
-    define('QRCAP_REMINDER',     2);
-    define('QRCAP_EC',           3);
+    define('SIQO_QR_QRCAP_WIDTH',        0);
+    define('SIQO_QR_QRCAP_WORDS',        1);
+    define('SIQO_QR_QRCAP_REMINDER',     2);
+    define('SIQO_QR_QRCAP_EC',           3);
 
     class QRspec {
     
@@ -94,33 +94,33 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function getDataLength($version, $level)
         {
-            return self::$capacity[$version][QRCAP_WORDS] - self::$capacity[$version][QRCAP_EC][$level];
+            return self::$capacity[$version][SIQO_QR_QRCAP_WORDS] - self::$capacity[$version][SIQO_QR_QRCAP_EC][$level];
         }
         
         //----------------------------------------------------------------------
         public static function getECCLength($version, $level)
         {
-            return self::$capacity[$version][QRCAP_EC][$level];
+            return self::$capacity[$version][SIQO_QR_QRCAP_EC][$level];
         }
         
         //----------------------------------------------------------------------
         public static function getWidth($version)
         {
-            return self::$capacity[$version][QRCAP_WIDTH];
+            return self::$capacity[$version][SIQO_QR_QRCAP_WIDTH];
         }
         
         //----------------------------------------------------------------------
         public static function getRemainder($version)
         {
-            return self::$capacity[$version][QRCAP_REMINDER];
+            return self::$capacity[$version][SIQO_QR_QRCAP_REMINDER];
         }
         
         //----------------------------------------------------------------------
         public static function getMinimumVersion($size, $level)
         {
 
-            for($i=1; $i<= QRSPEC_VERSION_MAX; $i++) {
-                $words  = self::$capacity[$i][QRCAP_WORDS] - self::$capacity[$i][QRCAP_EC][$level];
+            for($i=1; $i<= SIQO_QR_QRSPEC_VERSION_MAX; $i++) {
+                $words  = self::$capacity[$i][SIQO_QR_QRCAP_WORDS] - self::$capacity[$i][SIQO_QR_QRCAP_EC][$level];
                 if($words >= $size) 
                     return $i;
             }
@@ -344,7 +344,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		// Version information pattern (BCH coded).
         // See Table 1 in Appendix D (pp.68) of JIS X0510:2004.
         
-		// size: [QRSPEC_VERSION_MAX - 6]
+		// size: [SIQO_QR_QRSPEC_VERSION_MAX - 6]
 		
         public static $versionPattern = array(
             0x07c94, 0x085bc, 0x09a99, 0x0a4d3, 0x0bbf6, 0x0c762, 0x0d847, 0x0e60d,
@@ -357,7 +357,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function getVersionPattern($version)
         {
-            if($version < 7 || $version > QRSPEC_VERSION_MAX)
+            if($version < 7 || $version > SIQO_QR_QRSPEC_VERSION_MAX)
                 return 0;
 
             return self::$versionPattern[$version -7];
@@ -415,7 +415,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function createFrame($version)
         {
-            $width = self::$capacity[$version][QRCAP_WIDTH];
+            $width = self::$capacity[$version][SIQO_QR_QRCAP_WIDTH];
             $frameLine = str_repeat ("\0", $width);
             $frame = array_fill(0, $width, $frameLine);
 
@@ -505,7 +505,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function newFrame($version)
         {
-            if($version < 1 || $version > QRSPEC_VERSION_MAX) 
+            if($version < 1 || $version > SIQO_QR_QRSPEC_VERSION_MAX) 
                 return null;
 
             if(!isset(self::$frames[$version])) {

@@ -168,7 +168,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public function encodeMask(QRinput $input, $mask)
         {
-            if($input->getVersion() < 0 || $input->getVersion() > QRSPEC_VERSION_MAX) {
+            if($input->getVersion() < 0 || $input->getVersion() > SIQO_QR_QRSPEC_VERSION_MAX) {
                 throw new Exception('wrong version');
             }
             if($input->getErrorCorrectionLevel() > SIQO_QR_ECLEVEL_H) {

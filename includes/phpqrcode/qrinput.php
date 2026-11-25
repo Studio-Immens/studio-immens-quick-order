@@ -31,8 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-    define('STRUCTURE_HEADER_BITS',  20);
-    define('MAX_STRUCTURED_SYMBOLS', 16);
+    define('SIQO_QR_STRUCTURE_HEADER_BITS',  20);
+    define('SIQO_QR_MAX_STRUCTURED_SYMBOLS', 16);
 
     class QRinputItem {
     
@@ -211,7 +211,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 case SIQO_QR_MODE_AN:        $bits = QRinput::estimateBitsModeAn($this->size);    break;
                 case SIQO_QR_MODE_8:            $bits = QRinput::estimateBitsMode8($this->size);    break;
                 case SIQO_QR_MODE_KANJI:        $bits = QRinput::estimateBitsModeKanji($this->size);break;
-                case SIQO_QR_MODE_STRUCTURE:    return STRUCTURE_HEADER_BITS;            
+                case SIQO_QR_MODE_STRUCTURE:    return SIQO_QR_STRUCTURE_HEADER_BITS;            
                 default:
                     return 0;
             }
@@ -287,7 +287,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public function __construct($version = 0, $level = SIQO_QR_ECLEVEL_L)
         {
-            if ($version < 0 || $version > QRSPEC_VERSION_MAX || $level > SIQO_QR_ECLEVEL_H) {
+            if ($version < 0 || $version > SIQO_QR_QRSPEC_VERSION_MAX || $level > SIQO_QR_ECLEVEL_H) {
                 throw new Exception('Invalid version no');
                 return NULL;
             }
@@ -305,7 +305,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public function setVersion($version)
         {
-            if($version < 0 || $version > QRSPEC_VERSION_MAX) {
+            if($version < 0 || $version > SIQO_QR_QRSPEC_VERSION_MAX) {
                 throw new Exception('Invalid version no');
                 return -1;
             }
@@ -356,11 +356,11 @@ if ( ! defined( 'ABSPATH' ) ) {
         
         public function insertStructuredAppendHeader($size, $index, $parity)
         {
-            if( $size > MAX_STRUCTURED_SYMBOLS ) {
+            if( $size > SIQO_QR_MAX_STRUCTURED_SYMBOLS ) {
                 throw new Exception('insertStructuredAppendHeader wrong size');
             }
             
-            if( $index <= 0 || $index > MAX_STRUCTURED_SYMBOLS ) {
+            if( $index <= 0 || $index > SIQO_QR_MAX_STRUCTURED_SYMBOLS ) {
                 throw new Exception('insertStructuredAppendHeader wrong index');
             }
 

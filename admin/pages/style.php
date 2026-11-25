@@ -1,7 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 
 $style = SIQO_customized_css();
 ?>

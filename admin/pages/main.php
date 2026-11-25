@@ -1,7 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 
 $brand    = SIQO_Management::get_brand();
 $app_url  = SIQO_Management::page_url();

@@ -8,6 +8,7 @@
  * @package    Studio_Immens_Quick_Order
  */
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this uninstall script.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
