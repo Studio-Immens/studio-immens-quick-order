@@ -7702,7 +7702,12 @@ function siqo_enqueue_ajax_manage_restaurant_scripts() {
 add_action('wp_enqueue_scripts', 'siqo_enqueue_ajax_manage_restaurant_scripts');
 
 function SIQO_load_media_files() {
-    wp_enqueue_media();
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	$id     = $screen ? (string) $screen->id : '';
+	if ( false === strpos( $id, 'si-quick-order' ) && false === strpos( $id, 'siqo' ) && false === strpos( $id, 'product' ) ) {
+		return;
+	}
+	wp_enqueue_media();
 }
 add_action( 'admin_enqueue_scripts', 'SIQO_load_media_files' );
 
