@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin page parameter.
+
 function SIQO_initial_setup(){
 
 }
@@ -323,6 +325,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
         }
         if ( isset( $_POST['PGSett'] ) ) {
             $assoc_id = 'page_settings';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Each key and value is sanitized inside the loop.
             foreach ( $_POST['PGSett'] as $PGSett_K => $PGSett_V ) {
                 $settings = json_decode(SIQO_get_meta( sanitize_text_field(wp_unslash($PGSett_K)) ));
                 $PGSett_V = is_array( $PGSett_V ) ? SIQO_recursive_sanitize_text_field( wp_unslash( $PGSett_V ) ) : sanitize_text_field( wp_unslash( $PGSett_V ) );

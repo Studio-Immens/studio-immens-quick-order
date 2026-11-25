@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only view parameters.
+
 class SIQO_Management {
 
 	const PAGE_SLUG    = 'gestione';
@@ -414,7 +416,7 @@ class SIQO_Management {
 		if ( isset( $module['id'] ) && $module['id'] === $current ) {
 			return true;
 		}
-		$request = empty( $_SERVER['REQUEST_URI'] ) ? '' : wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+		$request = empty( $_SERVER['REQUEST_URI'] ) ? '' : wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
 		if ( ! $request ) {
 			return false;
 		}

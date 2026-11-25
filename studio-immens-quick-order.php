@@ -201,6 +201,27 @@ if ( ! function_exists( 'siqo_json_post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'siqo_posted_array' ) ) {
+	/**
+	 * Read and recursively sanitize an array POST field.
+	 *
+	 * @param string $key POST field name.
+	 * @return array
+	 */
+	function siqo_posted_array( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Caller checks the AJAX nonce before calling this helper.
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return array();
+		}
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Sanitized immediately below.
+		$raw = wp_unslash( $_POST[ $key ] );
+		if ( function_exists( 'SIQO_recursive_sanitize_text_field' ) ) {
+			return (array) SIQO_recursive_sanitize_text_field( $raw );
+		}
+		return (array) map_deep( $raw, 'sanitize_text_field' );
+	}
+}
+
 if ( ! function_exists( 'siqo_str_contains' ) ) {
 	/**
 	 * PHP 7.4-compatible replacement for siqo_str_contains().

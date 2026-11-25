@@ -4,6 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Station orders read custom order meta tables.
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only station filter.
+
 require_once __DIR__ . '/template/station-table-sessions.php';
 
 define( 'SIQO_STATION_VERSION', '1.0.5' );

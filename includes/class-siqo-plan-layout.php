@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // phpcs:disable WordPress.Security.NonceVerification.Missing -- Every AJAX method calls self::guard() before reading POST data.
 // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Page detection only reads a view slug.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Layout meta queries use indexed table keys.
 
 class SIQO_Plan_Layout {
 

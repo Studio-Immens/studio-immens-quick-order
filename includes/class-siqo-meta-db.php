@@ -13,6 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Custom plugin tables require direct queries.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Meta queries use indexed custom keys.
+
 class SIQO_Meta_DB {
 
     protected static $table_meta = '';

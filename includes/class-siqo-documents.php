@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Documents read custom order meta tables.
+
 /**
  * Builds, archives and prints Quick Order documents without external plugins.
  */

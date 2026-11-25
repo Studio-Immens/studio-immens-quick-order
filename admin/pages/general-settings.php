@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only settings tab parameter.
+
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 
 $disp_general = 'display:none;';

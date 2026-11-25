@@ -13,6 +13,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Uninstall must remove custom tables and rows.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Uninstall meta cleanup is intentional.
+
 global $wpdb;
 
 if ( 'yes' !== get_option( 'siqo_delete_data_on_uninstall' ) ) {

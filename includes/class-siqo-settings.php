@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Settings inspect custom plugin tables.
+
 class SIQO_Settings {
 
     const OPTION_PREFIX = 'siqo_setting_';

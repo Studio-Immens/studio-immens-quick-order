@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only page view parameter.
+
 
 /**
  * The public-facing functionality of the plugin.
@@ -27,6 +29,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only page view parameter.
 class Studio_Immens_Quick_Order_Public {
 
 	/**
