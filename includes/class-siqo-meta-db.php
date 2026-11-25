@@ -5,8 +5,8 @@
  *
  * @link       https://studioimmens.com
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,6 +34,11 @@ class SIQO_Meta_DB {
      * Create the siqo_meta table.
      */
     public static function create_meta_table( $version = STUDIO_IMMENS_QUICK_ORDER_META_VERSION ) {
+        $legacy_version = get_option( 'flash_order_meta_table' );
+        if ( false !== $legacy_version ) {
+            update_option( 'siqo_meta_table', $legacy_version );
+            delete_option( 'flash_order_meta_table' );
+        }
         update_option( 'siqo_meta_table', STUDIO_IMMENS_QUICK_ORDER_META_VERSION );
         global $wpdb;
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

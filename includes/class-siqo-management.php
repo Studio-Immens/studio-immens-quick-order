@@ -610,7 +610,8 @@ class SIQO_Management {
 				</form>
 			</div>
 		</section>
-		<?php ob_start(); ?>
+		<?php
+		$siqo_profile_js = <<<'JS'
 		(function () {
 			var form = document.getElementById('siqo-profile-form');
 			if (!form) {
@@ -625,7 +626,7 @@ class SIQO_Management {
 					status.textContent = 'Salvataggio...';
 					status.classList.remove('is-error');
 				}
-				fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+				fetch('__SIQO_AJAX_URL__', {
 					method: 'POST',
 					credentials: 'same-origin',
 					body: body
@@ -653,8 +654,8 @@ class SIQO_Management {
 				});
 			});
 		})();
-		<?php siqo_add_inline_js( ob_get_clean() ); ?>
-		<?php
+JS;
+		siqo_add_inline_js( str_replace( '__SIQO_AJAX_URL__', esc_url( admin_url( 'admin-ajax.php' ) ), $siqo_profile_js ) );
 		return ob_get_clean();
 	}
 
@@ -774,7 +775,7 @@ class SIQO_Management {
 			echo '<p class="siqo-muted">' . esc_html__( 'Apri un tavolo per creare l’ordine o gestire il conto.', 'studio-immens-quick-order' ) . '</p>';
 			echo '</div></header>';
 			if ( function_exists( 'siqo_table_session_render_bar' ) ) {
-				echo siqo_table_session_render_bar( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( siqo_table_session_render_bar( true ), siqo_allowed_html() );
 			}
 			if ( function_exists( 'SIQO_manage_table' ) ) {
 				SIQO_manage_table( true );
@@ -783,11 +784,11 @@ class SIQO_Management {
 		} elseif ( 'stations' === $view ) {
 			echo '<section class="siqo-view siqo-view-stations">';
 			if ( function_exists( 'siqo_station_orders_render' ) ) {
-				echo siqo_station_orders_render( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( siqo_station_orders_render( true ), siqo_allowed_html() );
 			}
 			echo '</section>';
 		} elseif ( 'account' === $view ) {
-			echo self::render_account_panel(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+			echo wp_kses( self::render_account_panel(), siqo_allowed_html() );
 		} else {
 			$class = $panels[ $view ][0];
 			if ( ! self::license_active() ) {
@@ -797,7 +798,7 @@ class SIQO_Management {
 				echo '<a class="siqo-btn siqo-btn-primary" href="' . esc_url( admin_url( 'admin.php?page=si-quick-order_settings&section=license' ) ) . '">' . esc_html__( 'Gestisci licenza', 'studio-immens-quick-order' ) . '</a>';
 				echo '</section>';
 			} elseif ( method_exists( $class, 'render_panel' ) ) {
-				echo $class::render_panel(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( $class::render_panel(), siqo_allowed_html() );
 			}
 		}
 		echo '</main>';

@@ -5,7 +5,7 @@
  *
  * @link       https://studioimmens.com
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
+ * @package    SIQO_Plugin
  */
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this uninstall script.

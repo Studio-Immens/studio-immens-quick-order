@@ -2,7 +2,7 @@
 /**
  * Piani, layout e zone della disposizione.
  *
- * @package Studio_Immens_Quick_Order
+ * @package SIQO_Plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

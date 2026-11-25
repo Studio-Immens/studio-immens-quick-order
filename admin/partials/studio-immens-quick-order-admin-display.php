@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin/partials
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin/partials
  */
 ?>
 

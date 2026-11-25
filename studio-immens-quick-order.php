@@ -8,13 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @link              https://studioimmens.com
  * @since             1.0.0
- * @package           Studio_Immens_Quick_Order
+ * @package           SIQO_Plugin
  *
  * @wordpress-plugin
  * Plugin Name:       Studio Immens Quick Order
  * Plugin URI:        https://github.com/Studio-Immens/studio-immens-quick-order
  * Description:       Manage restaurant orders, tables, kitchen stations, QR menus and table sessions from WooCommerce.
  * Version:           1.2.5
+ * Requires at least: 6.5
+ * Requires PHP:      7.4
  * Author:            Studio Immens
  * Author URI:        https://studioimmens.com
  * License:           GPL-3.0
@@ -98,6 +100,51 @@ if ( ! function_exists( 'siqo_print_inline_style' ) ) {
 	}
 }
 
+if ( ! function_exists( 'siqo_allowed_html' ) ) {
+	/**
+	 * Allowed HTML for internal renderers, including admin form controls.
+	 *
+	 * @return array
+	 */
+	function siqo_allowed_html() {
+		$allowed = wp_kses_allowed_html( 'post' );
+		$common  = array(
+			'class' => true,
+			'id'    => true,
+			'style' => true,
+			'title' => true,
+			'role'  => true,
+			'aria-*' => true,
+			'data-*' => true,
+		);
+		$allowed['form']     = array_merge( $common, array( 'method' => true, 'action' => true, 'enctype' => true, 'novalidate' => true ) );
+		$allowed['input']    = array_merge( $common, array( 'type' => true, 'name' => true, 'value' => true, 'placeholder' => true, 'checked' => true, 'disabled' => true, 'required' => true, 'readonly' => true, 'min' => true, 'max' => true, 'step' => true, 'autocomplete' => true, 'inputmode' => true, 'pattern' => true ) );
+		$allowed['select']   = array_merge( $common, array( 'name' => true, 'disabled' => true, 'required' => true ) );
+		$allowed['option']   = array_merge( $common, array( 'value' => true, 'selected' => true, 'disabled' => true ) );
+		$allowed['textarea'] = array_merge( $common, array( 'name' => true, 'rows' => true, 'cols' => true, 'placeholder' => true, 'required' => true, 'readonly' => true ) );
+		$allowed['label']    = array_merge( $common, array( 'for' => true ) );
+		$allowed['button']   = array_merge( $common, array( 'type' => true, 'name' => true, 'value' => true, 'disabled' => true ) );
+		$allowed['fieldset'] = $common;
+		$allowed['legend']   = $common;
+		$allowed['svg']      = array_merge( $common, array( 'viewbox' => true, 'width' => true, 'height' => true, 'fill' => true, 'stroke' => true, 'xmlns' => true ) );
+		$allowed['path']     = array_merge( $common, array( 'd' => true, 'fill' => true, 'stroke' => true ) );
+		return $allowed;
+	}
+}
+
+if ( ! function_exists( 'siqo_sanitize_css' ) ) {
+	/**
+	 * Remove constructs that must not appear in inline CSS.
+	 *
+	 * @param string $css CSS code.
+	 * @return string
+	 */
+	function siqo_sanitize_css( $css ) {
+		$css = wp_strip_all_tags( (string) $css );
+		return str_ireplace( array( '@import', 'expression(', 'javascript:', '</style', '<style' ), '', $css );
+	}
+}
+
 if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 	/**
 	 * Enqueue a small inline stylesheet through the WordPress style API.
@@ -106,11 +153,12 @@ if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 	 * @param string $handle Style handle.
 	 */
 	function siqo_add_inline_css( $css, $handle = 'siqo-inline' ) {
+		$css = siqo_sanitize_css( $css );
 		if ( '' === trim( (string) $css ) ) {
 			return;
 		}
-		if ( did_action( 'wp_head' ) ) {
-			siqo_print_inline_style( $css );
+		if ( did_action( 'wp_head' ) && function_exists( 'wp_print_inline_style_tag' ) ) {
+			wp_print_inline_style_tag( $css );
 			return;
 		}
 		if ( ! wp_style_is( $handle, 'registered' ) ) {
@@ -130,29 +178,29 @@ if ( ! function_exists( 'siqo_ajax_capability_guard' ) ) {
 		$guards = array(
 			'siqo_flash_list_order_ajax'             => 'manage_woocommerce',
 			'SIQO_flash_tab_order_ajax'              => 'manage_woocommerce',
-			'FO_flash_tab_clear_table'               => 'manage_woocommerce',
-			'FO_flash_tab_clear_all_tables'          => 'manage_woocommerce',
-			'FO_flash_tab_pay_ajax'                  => 'manage_woocommerce',
+			'SIQO_flash_tab_clear_table'               => 'manage_woocommerce',
+			'SIQO_flash_tab_clear_all_tables'          => 'manage_woocommerce',
+			'SIQO_flash_tab_pay_ajax'                  => 'manage_woocommerce',
 			'SIQO_pay_coupon_quote'                  => 'manage_woocommerce',
 			'SIQO_get_order_info_button_tab_string'  => 'manage_woocommerce',
-			'FO_check_for_orders'                    => 'manage_woocommerce',
+			'SIQO_check_for_orders'                    => 'manage_woocommerce',
 			'SIQO_check_for_orders'                  => 'manage_woocommerce',
-			'FO_ajax_change_order_status'            => 'manage_woocommerce',
+			'SIQO_ajax_change_order_status'            => 'manage_woocommerce',
 			'SIQO_ajax_change_order_status'          => 'manage_woocommerce',
 			'SIQO_station_orders'                    => 'manage_woocommerce',
 			'SIQO_station_update_status'             => 'manage_woocommerce',
 			'siqo_order_approve'                     => 'manage_woocommerce',
 			'siqo_order_reject'                      => 'manage_woocommerce',
 			'siqo_table_open'                        => 'manage_tables',
-			'FO_insert_product_ajax'                 => 'manage_options',
-			'FO_insert_macro_cat_ajax'               => 'manage_options',
-			'FO_delete_macro_cat_ajax'               => 'manage_options',
-			'FO_insert_post_ajax'                    => 'manage_options',
-			'FO_update_post_macro_cat_ajax'          => 'manage_options',
-			'FO_remove_post_macro_cat_ajax'          => 'manage_options',
-			'FO_update_post_ajax'                    => 'manage_options',
-			'FO_delete_post_ajax'                    => 'manage_options',
-			'FO_trash_post_ajax'                     => 'manage_options',
+			'SIQO_insert_product_ajax'                 => 'manage_options',
+			'SIQO_insert_macro_cat_ajax'               => 'manage_options',
+			'SIQO_delete_macro_cat_ajax'               => 'manage_options',
+			'SIQO_insert_post_ajax'                    => 'manage_options',
+			'SIQO_update_post_macro_cat_ajax'          => 'manage_options',
+			'SIQO_remove_post_macro_cat_ajax'          => 'manage_options',
+			'SIQO_update_post_ajax'                    => 'manage_options',
+			'SIQO_delete_post_ajax'                    => 'manage_options',
+			'SIQO_trash_post_ajax'                     => 'manage_options',
 			'siqo_delete_QR_images'                  => 'manage_options',
 			'siqo_save_variation_custom_field'       => 'edit_products',
 			'siqo_save_tax_image'                    => 'manage_product_terms',
@@ -174,29 +222,29 @@ if ( ! function_exists( 'siqo_ajax_capability_guard' ) ) {
 	foreach ( array(
 		'siqo_flash_list_order_ajax',
 		'SIQO_flash_tab_order_ajax',
-		'FO_flash_tab_clear_table',
-		'FO_flash_tab_clear_all_tables',
-		'FO_flash_tab_pay_ajax',
+		'SIQO_flash_tab_clear_table',
+		'SIQO_flash_tab_clear_all_tables',
+		'SIQO_flash_tab_pay_ajax',
 		'SIQO_pay_coupon_quote',
 		'SIQO_get_order_info_button_tab_string',
-		'FO_check_for_orders',
 		'SIQO_check_for_orders',
-		'FO_ajax_change_order_status',
+		'SIQO_check_for_orders',
+		'SIQO_ajax_change_order_status',
 		'SIQO_ajax_change_order_status',
 		'SIQO_station_orders',
 		'SIQO_station_update_status',
 		'siqo_order_approve',
 		'siqo_order_reject',
 		'siqo_table_open',
-		'FO_insert_product_ajax',
-		'FO_insert_macro_cat_ajax',
-		'FO_delete_macro_cat_ajax',
-		'FO_insert_post_ajax',
-		'FO_update_post_macro_cat_ajax',
-		'FO_remove_post_macro_cat_ajax',
-		'FO_update_post_ajax',
-		'FO_delete_post_ajax',
-		'FO_trash_post_ajax',
+		'SIQO_insert_product_ajax',
+		'SIQO_insert_macro_cat_ajax',
+		'SIQO_delete_macro_cat_ajax',
+		'SIQO_insert_post_ajax',
+		'SIQO_update_post_macro_cat_ajax',
+		'SIQO_remove_post_macro_cat_ajax',
+		'SIQO_update_post_ajax',
+		'SIQO_delete_post_ajax',
+		'SIQO_trash_post_ajax',
 		'siqo_delete_QR_images',
 		'siqo_save_variation_custom_field',
 		'siqo_save_tax_image',
@@ -226,7 +274,7 @@ if ( ! function_exists( 'siqo_json_post' ) ) {
 			return array_map( 'sanitize_text_field', $raw );
 		}
 		$decoded = json_decode( (string) $raw, true );
-		return is_array( $decoded ) ? $decoded : array();
+		return is_array( $decoded ) ? map_deep( $decoded, 'sanitize_text_field' ) : array();
 	}
 }
 
@@ -302,7 +350,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order.
  */
 function siqo_run_plugin() {
 
-	$plugin = new Studio_Immens_Quick_Order();
+	$plugin = new SIQO_Plugin();
 	$plugin->run();
 
 }

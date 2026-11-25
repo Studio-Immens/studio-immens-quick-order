@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  */
 
 /**
@@ -24,10 +24,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
-class Studio_Immens_Quick_Order_i18n {
+class SIQO_i18n {
 	// WordPress loads plugin translations automatically since 4.6.
 }

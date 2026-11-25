@@ -6,8 +6,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -417,7 +417,7 @@ function SIQO_donate(){
     <div class="SIQO_section">
         <?php
         esc_html_e('Se vuoi sostenerci con una donazione, ','studio-immens-quick-order');
-        echo '<a href="https://studioimmens.com/donate" target="_blank">'.esc_html__(' Visita Questa Pagina ','studio-immens-quick-order').'</a>';
+        echo '<a href="'.esc_url( 'https://docs.studioimmens.com/studio-immens-quick-order/' ).'" target="_blank" rel="noopener">'.esc_html__(' Visita Questa Pagina ','studio-immens-quick-order').'</a>';
         esc_html_e('. Ogni tuo gesto  per noi un prezioso impegno, e siamo lieti di ascoltare le tue proposte e suggerimenti.','studio-immens-quick-order');
         ?>
     </div>
@@ -429,7 +429,7 @@ function SIQO_submit_suggestions(){
     <div class="SIQO_section">
         <?php
         esc_html_e('Se desideri darci un feedback o fare una richiesta, ','studio-immens-quick-order');
-        echo '<a href="https://studioimmens.com/feedback" target="_blank">'.esc_html__(' Clicca QUI ','studio-immens-quick-order').'</a>';
+        echo '<a href="'.esc_url( 'https://github.com/Studio-Immens/studio-immens-quick-order/issues' ).'" target="_blank" rel="noopener">'.esc_html__(' Clicca QUI ','studio-immens-quick-order').'</a>';
         esc_html_e('. Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione.','studio-immens-quick-order');
         ?>
     </div>

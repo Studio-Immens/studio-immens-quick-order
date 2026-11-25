@@ -1,5 +1,5 @@
 <?php
-namespace StudioImmens\QuickOrder\PhpQrCode;
+namespace SIQO\QuickOrder\PhpQrCode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

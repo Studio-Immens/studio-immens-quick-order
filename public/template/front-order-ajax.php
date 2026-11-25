@@ -81,13 +81,13 @@ if ( $table_link_id ) {
 		}
 	}
 	if ( ! $table_id_valid && '0' !== (string) $table_link_id ) {
-		$table_notice = __( 'Il tavolo richiesto non è disponibile. Selezionalo qui sotto.', 'studio-immens-quick-order' );
+		$table_notice = __( 'Il tavolo richiesto non Ã¨ disponibile. Selezionalo qui sotto.', 'studio-immens-quick-order' );
 	}
 }
 
 $table_session_active = ( $table_id_valid && class_exists( 'SIQO_Table_Sessions' ) ) ? SIQO_Table_Sessions::is_active( $table_id_valid ) : false;
 if ( $table_id_valid && ! $table_session_active ) {
-	$table_notice = __( 'Questo tavolo non è ancora attivo. Chiama un operatore per farti aprire il tavolo.', 'studio-immens-quick-order' );
+	$table_notice = __( 'Questo tavolo non Ã¨ ancora attivo. Chiama un operatore per farti aprire il tavolo.', 'studio-immens-quick-order' );
 }
 
 // La chiave va inviata col form solo quando ha risolto proprio il tavolo selezionato.
@@ -100,32 +100,27 @@ if ( $table_arm_mode ) {
 	nocache_headers();
 }
 
-	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
-		<?php ob_start(); ?>
+	if (isset($settings->showHead) && $settings->showHead == 'no' ) {
+		siqo_add_inline_js( <<<'JS'
 			jQuery(window).on('load', function() {
 	        	jQuery('#header, .ct-header, .site-header').css('display','none');
 	        });
-		<?php siqo_add_inline_js( ob_get_clean() ); ?>
-	<?php }
+JS
+		);
+	}
 
-	if (isset($settings->showFoot) && $settings->showFoot == 'no' ) { ?>
-		<?php ob_start(); ?>
+	if (isset($settings->showFoot) && $settings->showFoot == 'no' ) {
+		siqo_add_inline_js( <<<'JS'
 			jQuery(window).on('load', function() {
 	        	jQuery('#footer, .ct-footer, .site-footer').css('display','none');
 	        });
-		<?php siqo_add_inline_js( ob_get_clean() ); ?>
-	<?php }
+JS
+		);
+	}
 
-    if (isset($settings->OverColor) && $settings->OverColor == 'yes' ) { ?>
-        <?php ob_start(); ?>
-        	<?php if (isset($settings->EXTCss) && $settings->EXTCss != '' ){
-        		echo esc_attr($settings->EXTCss);?>{
-	                background-color: <?php echo esc_attr($settings->BGColor);?>!important;
-	                color: <?php echo esc_attr($settings->TextColor);?>!important;
-	            }
-        	<?php } ?>
-        <?php siqo_add_inline_css( ob_get_clean() ); ?>
-    <?php }
+    if (isset($settings->OverColor) && $settings->OverColor == 'yes' && isset($settings->EXTCss) && $settings->EXTCss != '' ) {
+        siqo_add_inline_css( esc_attr( $settings->EXTCss ) . '{background-color:' . esc_attr( $settings->BGColor ) . '!important;color:' . esc_attr( $settings->TextColor ) . '!important;}' );
+    }
 
 ?>
 <div class="FOmniContent">
@@ -148,7 +143,7 @@ if ( $table_arm_mode ) {
 	?>
 
 	<?php if ( $table_arm_panel ) : ?>
-		<?php ob_start(); ?>
+		<?php siqo_add_inline_css( <<<'CSS'
 			.siqo-arm-panel {
 				max-width: 520px;
 				margin: 16px auto;
@@ -212,23 +207,24 @@ if ( $table_arm_mode ) {
 			.siqo-arm-panel .siqo-arm-status.is-error {
 				color: #a6462f;
 			}
-		<?php siqo_add_inline_css( ob_get_clean() ); ?>
+CSS
+		); ?>
 		<div class="siqo-arm-panel" id="siqo-arm-panel"
 			data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 			data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
 			data-table-id="<?php echo esc_attr( $table_id_valid ); ?>"
 			data-table-name="<?php echo esc_attr( $table_name ); ?>">
-			<p class="siqo-arm-eyebrow"><?php esc_html_e( 'Modalità operatore', 'studio-immens-quick-order' ); ?></p>
+			<p class="siqo-arm-eyebrow"><?php esc_html_e( 'ModalitÃ  operatore', 'studio-immens-quick-order' ); ?></p>
 			<h2 class="siqo-arm-title"><?php echo esc_html( $table_name ); ?></h2>
 			<?php if ( $table_session_active ) : ?>
-				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo è già attivo.', 'studio-immens-quick-order' ); ?></p>
+				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo Ã¨ giÃ  attivo.', 'studio-immens-quick-order' ); ?></p>
 			<?php else : ?>
-				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo non è attivo: aprilo per consentire gli ordini.', 'studio-immens-quick-order' ); ?></p>
+				<p class="siqo-arm-note"><?php esc_html_e( 'Questo tavolo non Ã¨ attivo: aprilo per consentire gli ordini.', 'studio-immens-quick-order' ); ?></p>
 				<button type="button" class="siqo-arm-open"><?php esc_html_e( 'Apri questo tavolo', 'studio-immens-quick-order' ); ?></button>
 			<?php endif; ?>
 			<p class="siqo-arm-status" role="status" aria-live="polite"></p>
 		</div>
-		<?php ob_start(); ?>
+		<?php siqo_add_inline_js( <<<'JS'
 			(function () {
 				var panel = document.getElementById('siqo-arm-panel');
 				if (!panel) {
@@ -250,7 +246,7 @@ if ( $table_arm_mode ) {
 
 					button.disabled = true;
 					status.classList.remove('is-error');
-					status.textContent = 'Apertura…';
+					status.textContent = 'Aperturaâ€¦';
 
 					fetch(panel.getAttribute('data-ajax-url'), {
 						method: 'POST',
@@ -289,33 +285,30 @@ if ( $table_arm_mode ) {
 						});
 				});
 			})();
-		<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+		); ?>
 	<?php endif; ?>
 
 	<div style="display:none!important;">
 		<div id="FO_select_variant_alert"><?php esc_html_e( 'Seleziona prima la variante', 'studio-immens-quick-order' );?></div>
-		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non é al momento disponibile', 'studio-immens-quick-order' );?></div>
-		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, é necessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
+		<div id="FO_warehouse_alert"><?php esc_html_e( 'Siamo spiacenti ma il prodotto non Ã© al momento disponibile', 'studio-immens-quick-order' );?></div>
+		<div id="FO_access_alert"><?php esc_html_e( 'Per poter effettuare ordini su questa pagina, Ã© necessario Effettuare l\'accesso!', 'studio-immens-quick-order' );?></div>
 
-		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto é già tra i favoriti', 'studio-immens-quick-order' );?></div>
+		<div id="FO_favourite_alert"><?php esc_html_e( 'Il prodotto Ã© giÃ  tra i favoriti', 'studio-immens-quick-order' );?></div>
 
 		<div id="FO_home_url"><?php echo esc_attr(get_home_url());?></div>
 
 		<div id="FO_woo_currency_sym"><?php echo esc_attr(get_woocommerce_currency_symbol());?></div>
 
-		<?php ob_start(); ?>
-			#eltdf-back-to-top{
-				margin-bottom: 120px!important;
-			}
-		<?php siqo_add_inline_css( ob_get_clean() ); ?>
+		<?php siqo_add_inline_css( '#eltdf-back-to-top{margin-bottom:120px!important;}' ); ?>
 	</div>
 
 	<div class="siqo-customer-shell">
 		<section class="siqo-customer-hero">
 			<div class="siqo-customer-hero-copy">
-				<p class="siqo-eyebrow"><?php echo $table_name ? esc_html( $table_name ) : esc_html__( 'Menù digitale', 'studio-immens-quick-order' ); ?></p>
+				<p class="siqo-eyebrow"><?php echo $table_name ? esc_html( $table_name ) : esc_html__( 'MenÃ¹ digitale', 'studio-immens-quick-order' ); ?></p>
 				<h1><?php esc_html_e( 'Cosa desideri?', 'studio-immens-quick-order' ); ?></h1>
-				<p class="siqo-customer-sub"><?php esc_html_e( 'Sfoglia il menù, aggiungi i piatti e invia l’ordine dal tuo tavolo.', 'studio-immens-quick-order' ); ?></p>
+				<p class="siqo-customer-sub"><?php esc_html_e( 'Sfoglia il menÃ¹, aggiungi i piatti e invia lâ€™ordine dal tuo tavolo.', 'studio-immens-quick-order' ); ?></p>
 			</div>
 			<?php if ( $table_name ) { ?>
 				<span class="siqo-hero-table">
@@ -328,7 +321,7 @@ if ( $table_arm_mode ) {
 		<div class="siqo-customer-toolbar">
 			<label class="siqo-search-field">
 				<span class="dashicons dashicons-search" aria-hidden="true"></span>
-				<input id="siqo-menu-search" type="search" oninput="SIQO_search_for_all(this)" placeholder="<?php esc_attr_e( 'Cerca nel menù…', 'studio-immens-quick-order' ); ?>" autocomplete="off">
+				<input id="siqo-menu-search" type="search" oninput="SIQO_search_for_all(this)" placeholder="<?php esc_attr_e( 'Cerca nel menÃ¹â€¦', 'studio-immens-quick-order' ); ?>" autocomplete="off">
 			</label>
 			<span class="siqo-toolbar-note"><?php echo esc_html( $product_count ); ?> <?php esc_html_e( 'prodotti', 'studio-immens-quick-order' ); ?></span>
 		</div>
@@ -336,7 +329,7 @@ if ( $table_arm_mode ) {
 		<div class="siqo-customer-layout">
 			<aside class="siqo-customer-sidebar">
 				<p class="siqo-sidebar-label"><?php esc_html_e( 'Categorie', 'studio-immens-quick-order' ); ?></p>
-				<nav class="siqo-category-nav" aria-label="<?php esc_attr_e( 'Categorie del menù', 'studio-immens-quick-order' ); ?>">
+				<nav class="siqo-category-nav" aria-label="<?php esc_attr_e( 'Categorie del menÃ¹', 'studio-immens-quick-order' ); ?>">
 					<a class="siqo-cat-link" data-category-link="FO_favourite" data-fav-link href="#FO_favourite" hidden>
 						<span class="siqo-cat-icon dashicons dashicons-heart" aria-hidden="true"></span>
 						<span class="siqo-cat-name"><?php esc_html_e( 'Preferiti', 'studio-immens-quick-order' ); ?></span>
@@ -443,7 +436,7 @@ if ( $table_arm_mode ) {
 					foreach ( $tavoli as $tavolo ) {
 						$is_table_active = in_array( (int) $tavolo->ID, $active_ids, true );
 						?>
-						<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>><?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' — ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?></option>
+						<option value="<?php echo esc_attr( $tavolo->ID ); ?>"<?php selected( $table_id_valid, $tavolo->ID ); ?><?php disabled( ! $is_table_active ); ?>><?php echo esc_html( $tavolo->post_title ); ?><?php echo $is_table_active ? '' : ' â€” ' . esc_html__( 'non attivo', 'studio-immens-quick-order' ); ?></option>
 					<?php } ?>
 					</select>
 				</div>
@@ -455,7 +448,7 @@ if ( $table_arm_mode ) {
 			</div>
 		</div>
 	
-		<?php ob_start(); ?>
+		<?php siqo_add_inline_js( <<<'JS'
 			function SIQO_ajax_form_height(){
 				var formVal = window.innerHeight - jQuery("#order_actions").height() - 70;
 				jQuery("#FO_sum_order").css("height", formVal );
@@ -537,7 +530,8 @@ if ( $table_arm_mode ) {
 				});
 				updateActiveCategory();
 			})();
-		<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+		); ?>
 	</div>
 </div>
 <?php

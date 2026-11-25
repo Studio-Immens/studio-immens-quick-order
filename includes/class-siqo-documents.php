@@ -2,8 +2,8 @@
 /**
  * Internal receipt and proforma document engine.
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -115,8 +115,8 @@ class SIQO_Documents {
 		$table_id = isset( $_POST['table_id'] ) ? absint( $_POST['table_id'] ) : 0;
 		$table    = isset( $_POST['table_name'] ) ? sanitize_text_field( wp_unslash( $_POST['table_name'] ) ) : '';
 		$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_order_ids() validates every ID.
-		$order_ids = self::sanitize_order_ids( isset( $_POST['order_ids'] ) ? wp_unslash( $_POST['order_ids'] ) : array() );
+		$order_ids = isset( $_POST['order_ids'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['order_ids'] ) ) : array();
+		$order_ids = self::sanitize_order_ids( $order_ids );
 
 		if ( $order_id ) {
 			$order_ids[] = $order_id;
@@ -341,11 +341,12 @@ class SIQO_Documents {
 <meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo esc_html( $data['number'] ); ?></title>
-<?php ob_start(); ?>
-	@page { size: <?php echo esc_attr( $paper ); ?>mm auto; margin: 3mm; }
+<?php
+$siqo_doc_css = <<<'CSS'
+	@page { size: __PAPER__mm auto; margin: 3mm; }
 	* { box-sizing: border-box; }
 	body { margin: 0; padding: 0; background: #fff; color: #111; font-family: "Courier New", Courier, monospace; font-size: 11px; line-height: 1.35; }
-	.doc { width: <?php echo esc_attr( $width ); ?>; margin: 0 auto; padding: 2mm 0; }
+	.doc { width: __WIDTH__; margin: 0 auto; padding: 2mm 0; }
 	.head { text-align: center; padding-bottom: 8px; border-bottom: 1px dashed #555; }
 	.logo { display: block; max-width: 60%; max-height: 18mm; margin: 0 auto 6px; object-fit: contain; }
 	.brand { font-size: 16px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
@@ -367,7 +368,9 @@ class SIQO_Documents {
 	.footer { padding-top: 7px; text-align: center; white-space: pre-line; }
 	.note { margin-top: 7px; color: #444; font-size: 9px; text-align: center; }
 	@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-<?php siqo_print_inline_style( ob_get_clean() ); ?>
+CSS;
+wp_print_inline_style_tag( siqo_sanitize_css( str_replace( array( '__PAPER__', '__WIDTH__' ), array( esc_attr( $paper ), esc_attr( $width ) ), $siqo_doc_css ) ) );
+?>
 </head>
 <body>
 <div class="doc">

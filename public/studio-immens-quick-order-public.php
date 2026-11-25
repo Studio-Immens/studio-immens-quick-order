@@ -6,8 +6,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/public
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/public
  * @author     Studio Immens <info@studioimmens.com>
  */
 
@@ -519,29 +519,25 @@ function SIQO_head_needed(){ ?>
 }
 add_action( 'wp_head', 'SIQO_head_needed' );
 
-function siqo_header_style() { ?>
-	<?php ob_start(); ?>
-	:root{
-		<?php
-			$styles = SIQO_get_meta_by_assoc_id('style_css','OBJECT');
-			if ( is_array( $styles ) ) {
-				foreach( $styles as $style ){
-					$key   = $style->meta_key;
-					$value = $style->meta_value;
-					echo esc_attr( $key ) . ': ' . esc_attr( $value ) . '; ';
+function siqo_header_style() {
+	$css    = ':root{';
+	$styles = SIQO_get_meta_by_assoc_id( 'style_css', 'OBJECT' );
+	if ( is_array( $styles ) ) {
+		foreach ( $styles as $style ) {
+			$key   = $style->meta_key;
+			$value = $style->meta_value;
+			$css  .= esc_attr( $key ) . ': ' . esc_attr( $value ) . '; ';
 
-					// Alias storico: il CSS pubblico usa --fo-* mentre le
-					// impostazioni salvano --siqo-*. Teniamo allineate entrambe
-					// le famiglie di variabili.
-					if ( 0 === strpos( $key, '--siqo-' ) ) {
-						echo esc_attr( '--fo-' . substr( $key, 7 ) ) . ': ' . esc_attr( $value ) . '; ';
-					}
-				}
+			// Alias storico: il CSS pubblico usa --fo-* mentre le
+			// impostazioni salvano --siqo-*. Teniamo allineate entrambe
+			// le famiglie di variabili.
+			if ( 0 === strpos( $key, '--siqo-' ) ) {
+				$css .= esc_attr( '--fo-' . substr( $key, 7 ) ) . ': ' . esc_attr( $value ) . '; ';
 			}
-		?>
+		}
 	}
-	<?php siqo_print_inline_style( ob_get_clean() ); ?>
-	<?php
+	$css .= '}';
+	wp_print_inline_style_tag( siqo_sanitize_css( $css ) );
 }
 add_action( 'wp_head', 'siqo_header_style' );
 add_action( 'admin_head', 'siqo_header_style' );
@@ -709,7 +705,7 @@ if ( ! function_exists('SIQO_Catering_cpt') ) {
 			'set_featured_image'    => esc_html__( 'Imposta immagine in evidenza', 'studio-immens-quick-order' ),
 			'remove_featured_image' => esc_html__( 'Rimuovi immagine in evidenza', 'studio-immens-quick-order' ),
 			'use_featured_image'    => esc_html__( 'Usa come immagine in evidenza', 'studio-immens-quick-order' ),
-			'insert_into_item'      => esc_html__( 'Inserisci nell’evento', 'studio-immens-quick-order' ),
+			'insert_into_item'      => esc_html__( 'Inserisci nellÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢evento', 'studio-immens-quick-order' ),
 			'uploaded_to_this_item' => esc_html__( 'Caricato per questo evento', 'studio-immens-quick-order' ),
 			'items_list'            => esc_html__( 'Elenco eventi catering', 'studio-immens-quick-order' ),
 			'items_list_navigation' => esc_html__( 'Navigazione elenco eventi', 'studio-immens-quick-order' ),
@@ -753,7 +749,7 @@ function SIQO_add_data_metabox() {
         'SIQO_show_data_metabox',   // Callback per visualizzare il contenuto della metabox
         'siqo_catering',               // Screen (CPT) dove visualizzare la metabox
         'normal',                 // Contesto della metabox (normal, side, ecc.)
-        'high'                    // Priorità della metabox (high, low)
+        'high'                    // PrioritÃƒÆ’Ã‚Â  della metabox (high, low)
     );
 }
 add_action('add_meta_boxes', 'SIQO_add_data_metabox');
@@ -800,7 +796,7 @@ function SIQO_custom_taxonomy_ingredients() {
 		'view_item'                  => esc_html__( 'Visualizza Ingrediente', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Ingredienti con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Ingredienti', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Ingredienti Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Ingredienti', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -849,7 +845,7 @@ function SIQO_custom_taxonomy_allergens() {
 		'view_item'                  => esc_html__( 'Visualizza Allergene', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Allergeni con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Allergeni', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Allergeni Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Allergeni', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -898,7 +894,7 @@ function SIQO_custom_taxonomy_temperature() {
 		'view_item'                  => esc_html__( 'Visualizza Temperatura', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa le Temperature con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Temperature', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Temperature Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Temperature', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -948,7 +944,7 @@ function SIQO_custom_taxonomy_sticker() {
 		'view_item'                  => esc_html__( 'Visualizza Sticker', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli Sticker con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Sticker', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra i più usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Sticker Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Sticker', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -1002,7 +998,7 @@ function SIQO_custom_taxonomy_macro_categories() {
 		'view_item'                  => esc_html__( 'Visualizza Macro Categoria', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa le Macro Categorie con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o Rimuovi Macro Categoria', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli fra le più usate', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli fra le piÃƒÆ’Ã‚Â¹ usate', 'studio-immens-quick-order' ),
 		'popular_items'              => esc_html__( 'Macro Categorie Popolari', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca Macro Categoria', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessun risultato', 'studio-immens-quick-order' ),
@@ -1113,8 +1109,8 @@ function SIQOP_custom_taxonomy_status() {
 		'view_item'                  => esc_html__( 'Visualizza stato tavolo', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa gli stati con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o rimuovi stati', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli tra i più usati', 'studio-immens-quick-order' ),
-		'popular_items'              => esc_html__( 'Stati più usati', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli tra i piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
+		'popular_items'              => esc_html__( 'Stati piÃƒÆ’Ã‚Â¹ usati', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca stato tavolo', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessuno stato trovato', 'studio-immens-quick-order' ),
 		'no_terms'                   => esc_html__( 'Nessuno stato', 'studio-immens-quick-order' ),
@@ -1156,8 +1152,8 @@ function SIQOP_custom_taxonomy_zone() {
 		'view_item'                  => esc_html__( 'Visualizza zona', 'studio-immens-quick-order' ),
 		'separate_items_with_commas' => esc_html__( 'Separa le zone con la virgola', 'studio-immens-quick-order' ),
 		'add_or_remove_items'        => esc_html__( 'Aggiungi o rimuovi zone', 'studio-immens-quick-order' ),
-		'choose_from_most_used'      => esc_html__( 'Scegli tra le più usate', 'studio-immens-quick-order' ),
-		'popular_items'              => esc_html__( 'Zone più usate', 'studio-immens-quick-order' ),
+		'choose_from_most_used'      => esc_html__( 'Scegli tra le piÃƒÆ’Ã‚Â¹ usate', 'studio-immens-quick-order' ),
+		'popular_items'              => esc_html__( 'Zone piÃƒÆ’Ã‚Â¹ usate', 'studio-immens-quick-order' ),
 		'search_items'               => esc_html__( 'Cerca zona', 'studio-immens-quick-order' ),
 		'not_found'                  => esc_html__( 'Nessuna zona trovata', 'studio-immens-quick-order' ),
 		'no_terms'                   => esc_html__( 'Nessuna zona', 'studio-immens-quick-order' ),
@@ -1349,12 +1345,14 @@ function SIQO_setting_color( $args = array() ){
             <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_restore_prev_value( this, <?php echo "'".esc_attr($args['default'])."'";?> )" title="<?php esc_html_e('Ripristina il valore di default', 'studio-immens-quick-order' );?>"></span>
         </p>
     </div>
-    <?php ob_start(); ?>
+    <?php siqo_add_inline_js( <<<'JS'
+
 	function SIQO_restore_prev_value( target, value ){
 			target.previousElementSibling.value = value;
 			jQuery(target).closest('.SIQOsettingStyle').css('backgroundColor',value);
 		}
-    <?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
     <?php
 }
 
@@ -1689,8 +1687,8 @@ add_action( 'init', 'SIQO_add_image_custom_field_to_tax' );
  *
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 
@@ -1797,7 +1795,7 @@ function SIQO_soft_access_denied(){
 		<div id="SIQOSetting_UserLoggedIn" style="display:none!important;">0</div>
 	<div class="siqo-access-notice" style="width:calc(100% - 60px);margin:20px;padding:10px;">
 		<div class="title">
-			<?php esc_html_e( 'Per poter effettuare ordini su questa pagina, è necessario effettuare l\'accesso.', 'studio-immens-quick-order' ); ?>
+			<?php esc_html_e( 'Per poter effettuare ordini su questa pagina, ÃƒÆ’Ã‚Â¨ necessario effettuare l\'accesso.', 'studio-immens-quick-order' ); ?>
 			<a href="<?php echo esc_url(get_permalink( get_option('woocommerce_myaccount_page_id') )); ?>"><?php esc_html_e( ' Clicca qui per Accedere ', 'studio-immens-quick-order' ); ?> </a>
 		</div>
 	</div>
@@ -1862,7 +1860,7 @@ function SIQO_create_post_QR_code() {
 
 	// Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
+		\SIQO\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 	// Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'post_' . $post_id .'('.$size.').png' );
@@ -1898,7 +1896,7 @@ function SIQO_create_post_QR_code_shortcode( $atts ) {
 	$filename = $qr_dir . 'post_' . $post_id .'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
+		\SIQO\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 // Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'post_' . $post_id .'('.$size.').png' );
@@ -1925,7 +1923,7 @@ function SIQO_table_qr_shortcode( $atts ) {
 	$filename = $qr_dir . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png';
 	$scale    = max( 1, min( 10, (int) round( $size / 20 ) ) );
 	if ( ! file_exists( $filename ) ) {
-		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', $scale, 2 );
+		\SIQO\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', $scale, 2 );
 	}
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png' );
 	return '<img src="' . esc_url( $qr_url ) . '" width="' . absint( $size ) . '" height="' . absint( $size ) . '" alt="' . esc_attr( get_the_title( $table_id ) ) . '">';
@@ -1952,7 +1950,7 @@ function SIQO_create_any_QR_code( $atts ) {
 	$filename = $qr_dir.'any-'.$name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
+		\SIQO\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 // Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'any-'.$name.'('.$size.').png' );
@@ -1980,7 +1978,7 @@ function SIQO_create_any_QR_code_ajax() {
 	$filename = $qr_dir.'any-'.$qr_name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
+		\SIQO\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 	$qr_url = SIQO_get_qr_url() . 'any-'.$qr_name.'('.$size.').png';
 
@@ -2037,14 +2035,16 @@ function SIQO_hover_message( $message = '', $args = array() ){
 	}
 	do_action( 'SIQO_hover_message' );
 	?>
-	<?php ob_start(); ?>
+	<?php siqo_add_inline_js( <<<'JS'
+
 		jQuery(document).ready(function($) {
 		    "use strict";
 		    jQuery('.hoverMessage').appendTo('body');
 		    jQuery('.hoverMessage').show();
 		    jQuery('.hoverMessage').css('opacity','0.95');
 		});
-	<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 </div>
 <?php
 }
@@ -2174,12 +2174,17 @@ function SIQO_customized_css(){
  * This function create flash order meta table, called 'siqo_meta' in the database.
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_create_meta_table( $version = STUDIO_IMMENS_QUICK_ORDER_META_VERSION ){
-	update_option( 'flash_order_meta_table', STUDIO_IMMENS_QUICK_ORDER_META_VERSION );
+	$legacy_version = get_option( 'flash_order_meta_table' );
+	if ( false !== $legacy_version ) {
+		update_option( 'siqo_meta_table', $legacy_version );
+		delete_option( 'flash_order_meta_table' );
+	}
+	update_option( 'siqo_meta_table', STUDIO_IMMENS_QUICK_ORDER_META_VERSION );
     global $wpdb;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $table_name = $wpdb->prefix . "siqo_meta";  //get the database table prefix to create my new table
@@ -2198,16 +2203,16 @@ function SIQO_create_meta_table( $version = STUDIO_IMMENS_QUICK_ORDER_META_VERSI
 
     dbDelta( $sql );
 
-  $meta_table = get_option( 'flash_order_meta_table' );
+  $meta_table = get_option( 'siqo_meta_table' );
   if ( $meta_table != $version ) {
-    update_option( 'flash_order_meta_table', $version );
+    update_option( 'siqo_meta_table', $version );
   }
 }
 /**
  * This function retrieve flash order meta_value or entire row from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_get_meta( $meta_key, $type = 'var' ){
@@ -2231,8 +2236,8 @@ function SIQO_get_meta( $meta_key, $type = 'var' ){
 /**
  * This function retrieve flash order meta_value or entire results from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_get_meta_by_assoc_id( $assoc_id, $type = 'var' ){
@@ -2254,8 +2259,8 @@ function SIQO_get_meta_by_assoc_id( $assoc_id, $type = 'var' ){
 /**
  * This function retrieve flash order meta_value or entire results from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_get_meta_by_assoc_tb( $assoc_tb, $type = 'var' ){
@@ -2271,8 +2276,8 @@ function SIQO_get_meta_by_assoc_tb( $assoc_tb, $type = 'var' ){
 /**
  * This function retrieve flash order meta_value or entire row from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_get_meta_by_id( $id, $type = 'var' ){
@@ -2288,8 +2293,8 @@ function SIQO_get_meta_by_id( $id, $type = 'var' ){
 /**
  * This function insert meta row in the table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_insert_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
@@ -2301,8 +2306,8 @@ function SIQO_insert_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb =
 /**
  * This function update meta row in the table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_update_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
@@ -2322,8 +2327,8 @@ function SIQO_update_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb =
 /**
  * This function delete meta row from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_delete_meta( $meta_key ){
@@ -2337,8 +2342,8 @@ function SIQO_delete_meta( $meta_key ){
 /**
  * This function delete meta row from table 'siqo_meta'
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 function SIQO_delete_meta_by_id( $id ){
@@ -2377,8 +2382,8 @@ function SIQO_get_all_tables_by_status_last( $status = 0, $type = 'OBJECT' ){
  * This function create flash order table, called 'siqo_tables' in the database.
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 // SIQOP_create_table(STUDIO_IMMENS_QUICK_ORDER_TABLE_VERSION);
@@ -2844,7 +2849,7 @@ $fo_gallery = array();
 
 
 		<div class="foProdCardHead">
-			<?php echo $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_Prod_Card(this)', 'class'=>'SIQO_prod_img_menu' )); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce image markup. ?>
+			<?php echo wp_kses( $product->get_image(array( 'auto', 'auto' ), array( 'foprod'=>'foprod', 'onclick'=>'SIQO_Advanced_Prod_Card(this)', 'class'=>'SIQO_prod_img_menu' )), siqo_allowed_html() ); ?>
 			<div class="foname target_search" onclick="SIQO_Advanced_Prod_Card(this)"><?php echo esc_attr($product->get_name());?></div>
 			<?php
 				// SIQO_get_product_temperature_options($product);
@@ -3024,25 +3029,25 @@ function SIQO_Advanced_Prod_Card(){
 			if ( !empty( $product_cat ) ) {
 			?><span class="fo_adv_tax AC_tax_cat"><strong><?php esc_html_e('Categorie:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $product_cat ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( SIQO_get_tax_cloud( $product_cat ), siqo_allowed_html() );
 			}
 			$product_tag = get_terms(array('taxonomy'=>'product_tag','hide_empty'=>false,));
 			if ( !empty( $product_tag ) ) {
 				?><span class="fo_adv_tax AC_tax_tag"><strong><?php esc_html_e('Tag:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $product_tag ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( SIQO_get_tax_cloud( $product_tag ), siqo_allowed_html() );
 			}
 			$Ingredienti = get_terms(array('taxonomy'=>'siqo_ingredients','hide_empty'=>false,));
 			if ( !empty( $Ingredienti ) ) {
 				?><span class="fo_adv_tax AC_tax_ing"><strong><?php esc_html_e('Ingredienti:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $Ingredienti ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( SIQO_get_tax_cloud( $Ingredienti ), siqo_allowed_html() );
 			}
 			$Allergeni = get_terms(array('taxonomy'=>'siqo_allergens','hide_empty'=>false,));
 			if ( !empty( $Allergeni ) ) {
 				?><span class="fo_adv_tax AC_tax_allerg"><strong><?php esc_html_e('Allergeni:','studio-immens-quick-order');?></strong></span>
 			<?php
-				echo SIQO_get_tax_cloud( $Allergeni ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
+				echo wp_kses( SIQO_get_tax_cloud( $Allergeni ), siqo_allowed_html() );
 			}
 		?>
 		</div>
@@ -3394,12 +3399,14 @@ function SIQO_submit_order_ajax() {
 		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
 	} else{
 		// $_POST['user_id'] = '';
+		$_POST = SIQO_recursive_sanitize_text_field( wp_unslash( $_POST ) );
 		$_POST['created_via'] = 'menu_ajax';
 		$_POST['customer_id'] = get_current_user_id();
 		$_POST['user_id'] = get_current_user_id();
 	}
 
 
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- $_POST is recursively sanitized immediately above.
 	SIQO_flash_tab_order_ajax( $_POST, false, true );
 
 	/*
@@ -3499,7 +3506,6 @@ do_action( 'siqo_submit_order_ajax', $order_id );
     wp_send_json(array(
     	// 'response' 	=> $response,
     	// 'time_exec' => $time,
-		'post' => $_POST,
 		// 'loop_array' => $loop_array
 	));
 	die();
@@ -3679,7 +3685,6 @@ do_action( 'SIQO_flash_list_order_ajax', $order_id );
     wp_send_json(array(
     	// 'response' 	=> $response,
     	// 'time_exec' => $time,
-		'post' => $_POST,
 		// 'loop_array' => $loop_array
 	));
 	die();
@@ -3759,7 +3764,8 @@ function SIQO_flash_list_order(){
 			<?php } ?>
 
 			</div>
-			<?php ob_start(); ?>
+			<?php siqo_add_inline_js( <<<'JS'
+
 				function SIQO_list_order_height(){
 					var formVal = jQuery("#FO_list_height").height();
 					jQuery(".FO_order_list").css("top", formVal );
@@ -3776,7 +3782,8 @@ function SIQO_flash_list_order(){
 					// 	jQuery(".FO_order_list").hide();
 					// }
 				});
-			<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 
 
 			<div class="FO_table_input" style="border:1px solid #ffffff6b;">
@@ -3921,7 +3928,7 @@ function SIQO_flash_tab_order_ajax( $poste = '', $clear = false, $verified = fal
 		global $wpdb;
 		$last_table = $wpdb->get_row( $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}siqo_tables WHERE table_id = %s ORDER BY last_update DESC, id DESC LIMIT 1", $requested_table_id ) );
 		if ( $last_table && (int) $last_table->status === 10 ) {
-			wp_send_json_error( array( 'message' => __( 'Il tavolo risulta già chiuso.', 'studio-immens-quick-order' ) ), 409 );
+			wp_send_json_error( array( 'message' => __( 'Il tavolo risulta giÃƒÆ’Ã‚Â  chiuso.', 'studio-immens-quick-order' ) ), 409 );
 		}
 	}
 
@@ -4313,7 +4320,7 @@ if ( ! $verified && $order->get_items()!=null) {
 		);
 		if ( 0 === $siqo_transitioned ) {
 			$order->update_meta_data( '_siqo_approval', 'rejected' );
-			$order->update_status( 'cancelled', __( 'Sessione del tavolo non più attiva.', 'studio-immens-quick-order' ) );
+			$order->update_status( 'cancelled', __( 'Sessione del tavolo non piÃƒÆ’Ã‚Â¹ attiva.', 'studio-immens-quick-order' ) );
 			$order->save();
 			SIQO_Table_Sessions::release_order( (int) $siqo_session->id );
 			wp_send_json_error( array( 'message' => __( 'Tavolo non attivo. Chiama un operatore.', 'studio-immens-quick-order' ) ), 403 );
@@ -4341,7 +4348,7 @@ if ( ! $verified && $order->get_items()!=null) {
 				continue;
 			}
 			/* translators: %d: order ID. */
-			$siqo_previous_order->add_order_note( sprintf( __( 'Unito all’ordine #%d.', 'studio-immens-quick-order' ), $order_id ) );
+			$siqo_previous_order->add_order_note( sprintf( __( 'Unito allÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ordine #%d.', 'studio-immens-quick-order' ), $order_id ) );
 			$siqo_previous_order->set_status( 'cancelled' );
 			$siqo_previous_order->save();
 		}
@@ -4473,13 +4480,11 @@ function SIQO_flash_tab_clear_table( $poste = '' ){
 	}
 	if (!SIQOcheck($poste) && !is_array($poste) ) {
 	    wp_send_json(array(
-			'post' => $_POST,
 			'table_id' => $table_id,
 		));
 		die();
 	}
 }
-add_action('wp_ajax_FO_flash_tab_clear_table', 'SIQO_flash_tab_clear_table');
 
 function SIQO_flash_tab_clear_all_tables(){
 	if ( !isset($_POST['_siqononce_flash_tab_order']) || !wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['_siqononce_flash_tab_order'])), 'SIQO_flash_tab_order' ) ) {
@@ -4508,7 +4513,6 @@ function SIQO_flash_tab_clear_all_tables(){
 	die();
 
 }
-add_action('wp_ajax_FO_flash_tab_clear_all_tables', 'SIQO_flash_tab_clear_all_tables');
 
 
 
@@ -4547,12 +4551,10 @@ function SIQO_flash_tab_pay_ajax(){
 	SIQO_flash_tab_order_ajax( $_POST, true, true );
 
 	wp_send_json(array(
-		'post' => $_POST,
 		'table_id' => $table_id,
 	));
 	die();
 }
-add_action('wp_ajax_FO_flash_tab_pay_ajax', 'SIQO_flash_tab_pay_ajax');
 
 function SIQO_pay_coupon_quote() {
 	check_ajax_referer( 'siqo_ajax_view_orders_vars', 'nonce' );
@@ -4906,12 +4908,14 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 							<b>Totale:</b>
 							<strong> - </strong>
 						</div>
-						<?php ob_start(); ?>
+						<?php siqo_add_inline_js( <<<'JS'
+
 							jQuery(window).on('load', function() {
 								SIQO_calc_totals();
 								SIQO_reorder_story();
 							});
-						<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 					</div>
 				</div>
 	<!-- PRODOTTI: -->
@@ -4971,15 +4975,17 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 	<!-- VARIANTI: -->
 			<div class="FO_flash_tab_column fo_tab_col_2" style="">
 				<strong class="fo_col_2_name" style=""><?php esc_html_e('VARIANTI:','studio-immens-quick-order'); ?></strong>
-				<div class="FO_flash_tab_qty" style="display:none;"> Quantità 
+				<div class="FO_flash_tab_qty" style="display:none;"> QuantitÃƒÆ’Ã‚Â Ãƒâ€šÃ‚Â 
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(-1)}">-</div>
 						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="siqo_tab_parse_qty(this);">
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(+1)}">+</div>
-					<?php ob_start(); ?>
+					<?php siqo_add_inline_js( <<<'JS'
+
 						jQuery('.fo_target_qty_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_qty(jQuery('.fo_target_qty_prod'));
 						});
-					<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 				</div>
 				<?php
 				$temperature_terms = SIQO_get_temperature_terms();
@@ -5054,21 +5060,25 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 				<div class="FO_flash_tab_note" style="display:none;">
 					<strong style="flex-basis:100%;"><?php esc_html_e('Note','studio-immens-quick-order');?></strong>
 					<textarea class="fo_target_note_prod" name="note" onchange="siqo_tab_parse_note(this);" placeholder="<?php esc_html_e('Note del prodotto...','studio-immens-quick-order');?>"></textarea>
-					<?php ob_start(); ?>
+					<?php siqo_add_inline_js( <<<'JS'
+
 						jQuery('.fo_target_note_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_note(jQuery('.fo_target_note_prod'));
 						});
-					<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 				</div>
 
 				<div class="FO_flash_tab_item_note" style="display:none;">
 					<strong style="flex-basis:100%;"><?php esc_html_e('Modifiche','studio-immens-quick-order');?></strong>
 					<textarea class="fo_target_item_note_prod" oninput="siqo_tab_parse_item_note(this);" onchange="siqo_tab_parse_item_note(this);" placeholder="<?php esc_html_e('Modifiche del prodotto...','studio-immens-quick-order');?>"></textarea>
-					<?php ob_start(); ?>
+					<?php siqo_add_inline_js( <<<'JS'
+
 						jQuery('.fo_target_item_note_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_item_note(jQuery('.fo_target_item_note_prod'));
 						});
-					<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 				</div>
 			</div>
 <!-- COL 3: -->
@@ -5122,11 +5132,13 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 
 				<div class="fo_tab_calc_display">
 					<span class="fo_tab_price" fo_status_modify="false" fo_actual_prod="" fo_actual_index="" fo_modificable="" onchange="siqo_tab_parse_price(this)"></span>
-					<?php ob_start(); ?>
+					<?php siqo_add_inline_js( <<<'JS'
+
 						jQuery('.fo_tab_price').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_price(jQuery('.fo_tab_price'));
 						});
-					<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 					<!-- <div class="fo_tab_calc_keyboard_key fo_tab_add_to_order" onclick="siqo_tab_add_product_to_order()">
 						<strong>AGGIUNGI</strong>
 					</div> -->
@@ -5229,7 +5241,7 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 <div class="fo_button_fix fo_variant_show_button" style="bottom:220px!important;" role="button" tabindex="0" aria-label="<?php esc_attr_e('Apri varianti','studio-immens-quick-order'); ?>" onclick="SIQO_tab_show_variation_button()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_show_variation_button();}">
 <span class="dashicons dashicons-table-col-after" aria-hidden="true"></span>
 </div>
-<div class="fo_button_fix fo_pay_show_keyboard_button" style="" role="button" tabindex="0" aria-label="<?php esc_attr_e('Apri tastierino quantità','studio-immens-quick-order'); ?>" onclick="SIQO_tab_show_keyboard_button()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_show_keyboard_button();}">
+<div class="fo_button_fix fo_pay_show_keyboard_button" style="" role="button" tabindex="0" aria-label="<?php esc_attr_e('Apri tastierino quantitÃƒÆ’Ã‚Â ','studio-immens-quick-order'); ?>" onclick="SIQO_tab_show_keyboard_button()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();SIQO_tab_show_keyboard_button();}">
 <span class="dashicons dashicons-editor-table" aria-hidden="true"></span>
 </div>
 
@@ -5249,11 +5261,7 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 
 	</div>
 	<div class="Advanced_Card_background fo_tab_show" style="display:none;"></div>
-	<?php ob_start(); ?>
-		#eltdf-back-to-top{
-			visibility: hidden!important;
-		}
-	<?php siqo_print_inline_style( ob_get_clean() ); ?>
+	<?php siqo_add_inline_css( '#eltdf-back-to-top{visibility:hidden!important;}' ); ?>
 
 	<?php
 }
@@ -5505,10 +5513,10 @@ function SIQO_pay_this_order_tab(){
 					<span class="fo_pay_optional" data-siqo-pay-discount-count><?php echo esc_html( count( $siqo_pay_coupons ) ); ?></span>
 				</div>
 
-				<p class="fo_pay_hint"><?php esc_html_e( 'Aggiungi uno o più coupon. Se selezioni un cliente, vedrai anche gli sconti associati al suo indirizzo email.', 'studio-immens-quick-order' ); ?></p>
+				<p class="fo_pay_hint"><?php esc_html_e( 'Aggiungi uno o piÃƒÆ’Ã‚Â¹ coupon. Se selezioni un cliente, vedrai anche gli sconti associati al suo indirizzo email.', 'studio-immens-quick-order' ); ?></p>
 
 				<div class="siqo-pay-coupon-search">
-					<input type="search" data-siqo-pay-coupon-search placeholder="<?php esc_attr_e( 'Cerca un coupon…', 'studio-immens-quick-order' ); ?>" aria-label="<?php esc_attr_e( 'Cerca un coupon', 'studio-immens-quick-order' ); ?>">
+					<input type="search" data-siqo-pay-coupon-search placeholder="<?php esc_attr_e( 'Cerca un couponÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦', 'studio-immens-quick-order' ); ?>" aria-label="<?php esc_attr_e( 'Cerca un coupon', 'studio-immens-quick-order' ); ?>">
 				</div>
 
 				<div class="siqo-pay-applied" data-siqo-pay-applied hidden>
@@ -5523,7 +5531,7 @@ function SIQO_pay_this_order_tab(){
 					</div>
 					<div class="siqo-pay-coupon-list">
 						<?php foreach ( $siqo_customer_coupons as $siqo_pay_coupon ) : ?>
-							<?php echo SIQO_pay_coupon_button_html( $siqo_pay_coupon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php echo wp_kses( SIQO_pay_coupon_button_html( $siqo_pay_coupon ), siqo_allowed_html() ); ?>
 						<?php endforeach; ?>
 					</div>
 					<p class="siqo-pay-coupon-empty" data-siqo-pay-coupon-customer-empty hidden><?php esc_html_e( 'Nessuno sconto associato a questo cliente.', 'studio-immens-quick-order' ); ?></p>
@@ -5536,7 +5544,7 @@ function SIQO_pay_this_order_tab(){
 					</div>
 					<div class="siqo-pay-coupon-list">
 						<?php foreach ( $siqo_general_coupons as $siqo_pay_coupon ) : ?>
-							<?php echo SIQO_pay_coupon_button_html( $siqo_pay_coupon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php echo wp_kses( SIQO_pay_coupon_button_html( $siqo_pay_coupon ), siqo_allowed_html() ); ?>
 						<?php endforeach; ?>
 					</div>
 					<p class="siqo-pay-coupon-empty" data-siqo-pay-coupon-empty <?php echo empty( $siqo_general_coupons ) ? '' : 'hidden'; ?>><?php esc_html_e( 'Nessun coupon disponibile.', 'studio-immens-quick-order' ); ?></p>
@@ -5674,6 +5682,7 @@ function SIQO_insert_product_ajax(){
 	$exerpt = (isset($_POST['exerpt'])) ? sanitize_text_field(wp_unslash( $_POST['exerpt'])) : '';
 
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload is validated by wp_check_filetype_and_ext() and media_handle_upload().
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload is validated by SIQO_load_images_from_front().
 	$image = ( isset( $_FILES['image'] ) && is_array( $_FILES['image'] ) ) ? $_FILES['image'] : array();
 
 	$product = new WC_Product_Simple();
@@ -5730,7 +5739,6 @@ function SIQO_insert_product_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_insert_product_ajax', 'SIQO_insert_product_ajax');
 
 
 function SIQO_load_images_from_front( $in_file ){
@@ -5759,6 +5767,11 @@ function SIQO_load_images_from_front( $in_file ){
 		return $response;
 	}
 
+	$file_check = wp_check_filetype_and_ext( $in_file['tmp_name'], $in_file['name'] );
+	if ( empty( $file_check['type'] ) || ! in_array( $file_check['type'], array( 'image/jpeg', 'image/png', 'image/webp' ), true ) ) {
+		return $response;
+	}
+
 	if ( ! function_exists( 'wp_handle_upload' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 	}
@@ -5778,7 +5791,7 @@ function SIQO_load_images_from_front( $in_file ){
 	);
 	$attach_id = wp_insert_attachment( $attachment, $movefile['file'], 0 );
 	if ( is_wp_error( $attach_id ) || ! $attach_id ) {
-		$response['message'] = __( 'Impossibile creare l’allegato.', 'studio-immens-quick-order' );
+		$response['message'] = __( 'Impossibile creare lÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢allegato.', 'studio-immens-quick-order' );
 		return $response;
 	}
 
@@ -5819,7 +5832,6 @@ function SIQO_insert_macro_cat_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_insert_macro_cat_ajax', 'SIQO_insert_macro_cat_ajax');
 
 function SIQO_delete_macro_cat_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
@@ -5838,7 +5850,6 @@ function SIQO_delete_macro_cat_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_delete_macro_cat_ajax', 'SIQO_delete_macro_cat_ajax');
 
 
 
@@ -5885,7 +5896,6 @@ function SIQO_insert_post_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_insert_post_ajax', 'SIQO_insert_post_ajax');
 
 
 function SIQO_update_post_macro_cat_ajax( $_poste = '' ){
@@ -5910,7 +5920,6 @@ function SIQO_update_post_macro_cat_ajax( $_poste = '' ){
 	));
 	die();
 }
-add_action('wp_ajax_FO_update_post_macro_cat_ajax', 'SIQO_update_post_macro_cat_ajax');
 
 
 function SIQO_remove_post_macro_cat_ajax( $_poste = '' ){
@@ -5935,7 +5944,6 @@ function SIQO_remove_post_macro_cat_ajax( $_poste = '' ){
 	));
 	die();
 }
-add_action('wp_ajax_FO_remove_post_macro_cat_ajax', 'SIQO_remove_post_macro_cat_ajax');
 
 
 
@@ -5974,7 +5982,6 @@ function SIQO_update_post_ajax( $_poste = '' ){
 	));
 	die();
 }
-add_action('wp_ajax_FO_update_post_ajax', 'SIQO_update_post_ajax');
 
 function SIQO_delete_post_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
@@ -5994,7 +6001,6 @@ function SIQO_delete_post_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_delete_post_ajax', 'SIQO_delete_post_ajax');
 
 function SIQO_trash_post_ajax(){
 	if ( !isset($_POST['_siqononce_insert_post_ajax_nonce']) || !wp_verify_nonce( sanitize_text_field(wp_unslash( $_POST['_siqononce_insert_post_ajax_nonce'])), 'SIQO_insert_post_ajax_nonce' ) ) {
@@ -6014,7 +6020,6 @@ function SIQO_trash_post_ajax(){
 	));
 	die();
 }
-add_action('wp_ajax_FO_trash_post_ajax', 'SIQO_trash_post_ajax');
 
 
 
@@ -6155,7 +6160,8 @@ function SIQO_quick_edit_fields( $column_name, $post_type ) {
 		}
 	}
 	?>
-	<?php ob_start(); ?>
+	<?php siqo_add_inline_js( <<<'JS'
+
 		jQuery( function( $ ){
 			const wp_inline_edit_function = inlineEditPost.edit;
 			// we overwrite the it with our own
@@ -6178,7 +6184,8 @@ function SIQO_quick_edit_fields( $column_name, $post_type ) {
 				$(':input[name="slang_title"]', edit_row ).val( slang_title );
 			}
 		});
-	<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 	<?php
 }
 // add_action( 'manage_product_posts_custom_column', 'SIQO_show_custom_field_quick_edit_data', 9999, 2 );
@@ -6249,11 +6256,7 @@ $ajax_refresh_table_seconds = ( intval( SIQO_get_meta('ajax_refresh_table_second
 
 	</div>
 
-	<?php ob_start(); ?>
-	    .foTimeOutAnim {
-	        animation: foerrcol 2s alternate infinite!important;
-	    }
-	<?php siqo_print_inline_style( ob_get_clean() ); ?>
+	<?php siqo_add_inline_css( '.foTimeOutAnim{animation:foerrcol 2s alternate infinite!important;}' ); ?>
 
 <?php
 }
@@ -7423,7 +7426,8 @@ function SIQO_add_pickup_delivery_section(){
 	        </div>
         </div>
     </div>
-	<?php ob_start(); ?>
+	<?php siqo_add_inline_js( <<<'JS'
+
 	jQuery(function($){
 		function siqo_toggle_delivery(){
 			var pickup = $('#fo_order_type_pickup').is(':checked');
@@ -7433,7 +7437,8 @@ function SIQO_add_pickup_delivery_section(){
 		$(document).on('change', 'input[name="delivery_type"]', siqo_toggle_delivery);
 		siqo_toggle_delivery();
 	});
-	<?php siqo_add_inline_js( ob_get_clean() ); ?>
+JS
+); ?>
 	<?php
 }
 
@@ -7625,7 +7630,6 @@ function SIQO_check_for_orders() {
 	// wp_send_json_error();
 	die();
 }
-add_action('wp_ajax_FO_check_for_orders', 'SIQO_check_for_orders');
 add_action('wp_ajax_SIQO_check_for_orders', 'SIQO_check_for_orders');
 
 
@@ -7661,7 +7665,6 @@ function SIQO_ajax_change_order_status( $poste = '' ){
 		die();
 	}
 }
-add_action('wp_ajax_FO_ajax_change_order_status', 'SIQO_ajax_change_order_status');
 add_action('wp_ajax_SIQO_ajax_change_order_status', 'SIQO_ajax_change_order_status');
 
 

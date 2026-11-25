@@ -389,14 +389,14 @@ function siqo_station_orders_render( $embedded = false ) {
 			</div>
 		</header>
 
-		<?php echo siqo_table_session_render_bar( true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
+		<?php echo wp_kses( siqo_table_session_render_bar( true ), siqo_allowed_html() ); ?>
 
 		<nav class="siqo-station-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Filtra per punto di preparazione', 'studio-immens-quick-order' ); ?>">
-			<?php echo siqo_station_render_tabs( $station, $counts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
+			<?php echo wp_kses( siqo_station_render_tabs( $station, $counts ), siqo_allowed_html() ); ?>
 		</nav>
 
 		<div id="siqo-station-list" class="siqo-station-list" aria-live="polite" aria-busy="false">
-			<?php echo siqo_station_render_list( $data, $station ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?>
+			<?php echo wp_kses( siqo_station_render_list( $data, $station ), siqo_allowed_html() ); ?>
 		</div>
 	</div>
 	<?php
@@ -904,7 +904,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				<?php if ( $time ) : ?>
 					<time><?php echo esc_html( $time ); ?></time>
 				<?php endif; ?>
-				<?php echo siqo_render_author_badge( $order ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php echo wp_kses( siqo_render_author_badge( $order ), siqo_allowed_html() ); ?>
 			</div>
 			<?php if ( $is_filter ) : ?>
 				<span class="siqo-station-badge siqo-station-badge--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( siqo_station_status_label( $status ) ); ?></span>
@@ -969,7 +969,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 		<footer class="siqo-station-order-foot">
 			<span class="siqo-station-total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
 			<?php if ( $action ) : ?>
-				<div class="siqo-station-actions"><?php echo $action; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output. ?></div>
+				<div class="siqo-station-actions"><?php echo wp_kses( $action, siqo_allowed_html() ); ?></div>
 			<?php endif; ?>
 		</footer>
 	</article>

@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  */
 
 /**
@@ -20,11 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
-class Studio_Immens_Quick_Order_Admin {
+class SIQO_Admin {
 
 	/**
 	 * The ID of this plugin.

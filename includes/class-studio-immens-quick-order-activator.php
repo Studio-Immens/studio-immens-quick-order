@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  */
 
 /**
@@ -20,8 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 class SIQO_Activator {
