@@ -1,4 +1,6 @@
 <?php
+namespace StudioImmens\QuickOrder\PhpQrCode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -147,15 +149,15 @@ if ( ! defined( 'ABSPATH' ) ) {
             $b = 0;
             $bitMask = array();
             
-            $fileName = QR_CACHE_DIR.'mask_'.$maskNo.DIRECTORY_SEPARATOR.'mask_'.$width.'_'.$maskNo.'.dat';
+            $fileName = SIQO_QR_CACHE_DIR.'mask_'.$maskNo.DIRECTORY_SEPARATOR.'mask_'.$width.'_'.$maskNo.'.dat';
 
-            if (QR_CACHEABLE) {
+            if (SIQO_QR_CACHEABLE) {
                 if (file_exists($fileName)) {
                     $bitMask = self::unserial(file_get_contents($fileName));//phpcs:ignore
                 } else {
                     $bitMask = $this->generateMaskNo($maskNo, $width, $s, $d);
-                    if (!file_exists(QR_CACHE_DIR.'mask_'.$maskNo))
-                        mkdir(QR_CACHE_DIR.'mask_'.$maskNo);//phpcs:ignore
+                    if (!file_exists(SIQO_QR_CACHE_DIR.'mask_'.$maskNo))
+                        mkdir(SIQO_QR_CACHE_DIR.'mask_'.$maskNo);//phpcs:ignore
                     file_put_contents($fileName, self::serial($bitMask));//phpcs:ignore
                 }
             } else {
@@ -294,9 +296,9 @@ if ( ! defined( 'ABSPATH' ) ) {
             
             $checked_masks = array(0,1,2,3,4,5,6,7);
             
-            if (QR_FIND_FROM_RANDOM !== false) {
+            if (SIQO_QR_FIND_FROM_RANDOM !== false) {
             
-                $howManuOut = 8-(QR_FIND_FROM_RANDOM % 9);
+                $howManuOut = 8-(SIQO_QR_FIND_FROM_RANDOM % 9);
                 for ($i = 0; $i <  $howManuOut; $i++) {
                     $remPos = wp_rand (0, count($checked_masks)-1);
                     unset($checked_masks[$remPos]);

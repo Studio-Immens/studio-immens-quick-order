@@ -136,10 +136,7 @@ class Studio_Immens_Quick_Order {
 	 * @access   private
 	 */
 	private function set_locale() {
-
-		$plugin_i18n = new Studio_Immens_Quick_Order_i18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		// WordPress loads plugin translations automatically since 4.6.
 	}
 
 	/**

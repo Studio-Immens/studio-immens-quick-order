@@ -325,7 +325,7 @@ function siqo_station_orders_render( $embedded = false ) {
 		'siqo-double-bell.mp3'  => __( 'Doppia campanella', 'studio-immens-quick-order' ),
 		'siqo-low-alert.mp3'    => __( 'Avviso basso', 'studio-immens-quick-order' ),
 	);
-	$audio_base   = plugins_url( 'includes/audio/', dirname( __DIR__ ) );
+	$audio_base   = plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE );
 	$saved_audio  = basename( (string) SIQO_get_meta( 'siqo_notify_audio' ) );
 	$default_sound = isset( $sounds[ $saved_audio ] ) ? $saved_audio : 'siqo-chime-soft.mp3';
 

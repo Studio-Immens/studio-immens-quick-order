@@ -49,7 +49,7 @@ class SIQO_Plan_Layout {
 		wp_enqueue_media();
 		wp_enqueue_script(
 			'siqo-plan-editor',
-			plugins_url( 'public/js/siqo-plan-editor.js', dirname( __FILE__ ) ),
+			plugins_url( 'public/js/siqo-plan-editor.js', SIQO_PLUGIN_FILE ),
 			array(),
 			STUDIO_IMMENS_QUICK_ORDER_VERSION,
 			true

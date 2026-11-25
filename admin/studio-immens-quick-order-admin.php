@@ -21,7 +21,7 @@ function SIQO_menu_page(){
     $menu_slug = 'si-quick-order';
     $position = (SIQO_get_meta( 'siqo_menu_order') != '')?SIQO_get_meta( 'siqo_menu_order') : '15';
 
-    $link = plugins_url( 'includes/img/logo-20.webp', dirname(__FILE__) );
+    $link = plugins_url( 'includes/img/logo-20.webp', SIQO_PLUGIN_FILE );
 
    add_menu_page( 'Quick Order', esc_html__( 'Quick Order', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page', $link, $position );
    add_submenu_page( $menu_slug, esc_html__( 'Dashboard', 'studio-immens-quick-order' ), esc_html__( 'Dashboard', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page' );
@@ -77,10 +77,9 @@ function SIQO_head_menu_page(){
     ?>
     <div id="SIQOadminContent">
     <h1 style="margin:30px 0px;display:flex;">
-        <img src="<?php echo esc_url('https://studioimmens.com/wp-content/uploads/2023/10/cropped-logo-512-transparent-bg.png');?>" width="50" height="50" alt="light logo">
+        <img src="<?php echo esc_url( plugins_url( 'includes/img/logo.webp', SIQO_PLUGIN_FILE ) ); ?>" width="50" height="50" alt="">
         Quick Order
-        <img src="<?php echo esc_url('https://studioimmens.com/wp-content/uploads/2024/09/logo-512.png');?>" width="50" height="50" alt="light logo">
-        <a class="SIQO_abutton" href="https://studioimmens.com/quick-order/" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"><?php esc_html_e( 'GUIDA', 'studio-immens-quick-order' );?></a>
+        <a class="SIQO_abutton" href="https://docs.studioimmens.com/studio-immens-quick-order/" target="_blank" rel="noopener" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"><?php esc_html_e( 'GUIDA', 'studio-immens-quick-order' );?></a>
     </h1>
     <?php
 }
@@ -202,23 +201,20 @@ function SIQO_general_setting( $setting = array() ){
                 $saved_audio_file = in_array( 'siqo-chime-soft.mp3', $options, true )
                     ? 'siqo-chime-soft.mp3'
                     : ( ! empty( $options ) ? $options[0] : 'siqo-chime-soft.mp3' );
-                $audio = plugins_url( 'includes/audio/', dirname(__FILE__, 2) ) . $saved_audio_file;
+                $audio = plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE ) . $saved_audio_file;
             }
             ?>
             <select name="setting[<?php echo esc_attr($name); ?>]" onchange="addSrcToAudio(this.value);" <?php echo esc_attr($other);?>>
                 <option value=""><?php esc_html_e('Seleziona l\'audio...', 'studio-immens-quick-order'); ?></option>
                 <?php foreach ( $options as $option ) { ?>
-                    <option value="<?php echo esc_url( plugins_url( 'includes/audio/', dirname(__FILE__, 2) ) . $option );?>" <?php selected( $saved_audio_file, $option ); ?>><?php echo esc_html( isset( $audio_labels[ $option ] ) ? $audio_labels[ $option ] : $option );?></option>
+                    <option value="<?php echo esc_url( plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE ) . $option );?>" <?php selected( $saved_audio_file, $option ); ?>><?php echo esc_html( isset( $audio_labels[ $option ] ) ? $audio_labels[ $option ] : $option );?></option>
                 <?php } ?>
             </select>
             <audio id="SIQOadminAudio" controls autoplay>
               <source  src="<?php echo esc_attr($audio);?>" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-            <script>
-              var audio = document.getElementById("SIQOadminAudio");
-              audio.volume = 0.1;
-            </script>
+            <?php wp_print_inline_script_tag( 'var audio = document.getElementById("SIQOadminAudio"); if (audio) { audio.volume = 0.1; }' ); ?>
         <?php } elseif($type == 'textarea'){ ?>
            <textarea type="<?php echo esc_attr($type);?>" name="setting[<?php echo esc_attr($name);?>]" <?php echo esc_attr($other);?>><?php echo esc_attr($data_default);?></textarea>
         <?php } elseif ($type != 'select') { ?>

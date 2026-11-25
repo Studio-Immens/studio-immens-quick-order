@@ -101,30 +101,30 @@ if ( $table_arm_mode ) {
 }
 
 	if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
-		<script type="text/javascript">
+		<?php ob_start(); ?>
 			jQuery(window).on('load', function() {
 	        	jQuery('#header, .ct-header, .site-header').css('display','none');
 	        });
-		</script>
+		<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	<?php }
 
 	if (isset($settings->showFoot) && $settings->showFoot == 'no' ) { ?>
-		<script type="text/javascript">
+		<?php ob_start(); ?>
 			jQuery(window).on('load', function() {
 	        	jQuery('#footer, .ct-footer, .site-footer').css('display','none');
 	        });
-		</script>
+		<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	<?php }
 
     if (isset($settings->OverColor) && $settings->OverColor == 'yes' ) { ?>
-        <style type="text/css">
+        <?php ob_start(); ?>
         	<?php if (isset($settings->EXTCss) && $settings->EXTCss != '' ){
         		echo esc_attr($settings->EXTCss);?>{
 	                background-color: <?php echo esc_attr($settings->BGColor);?>!important;
 	                color: <?php echo esc_attr($settings->TextColor);?>!important;
 	            }
         	<?php } ?>
-        </style>
+        <?php siqo_add_inline_css( ob_get_clean() ); ?>
     <?php }
 
 ?>
@@ -148,7 +148,7 @@ if ( $table_arm_mode ) {
 	?>
 
 	<?php if ( $table_arm_panel ) : ?>
-		<style type="text/css">
+		<?php ob_start(); ?>
 			.siqo-arm-panel {
 				max-width: 520px;
 				margin: 16px auto;
@@ -212,7 +212,7 @@ if ( $table_arm_mode ) {
 			.siqo-arm-panel .siqo-arm-status.is-error {
 				color: #a6462f;
 			}
-		</style>
+		<?php siqo_add_inline_css( ob_get_clean() ); ?>
 		<div class="siqo-arm-panel" id="siqo-arm-panel"
 			data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 			data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
@@ -228,7 +228,7 @@ if ( $table_arm_mode ) {
 			<?php endif; ?>
 			<p class="siqo-arm-status" role="status" aria-live="polite"></p>
 		</div>
-		<script type="text/javascript">
+		<?php ob_start(); ?>
 			(function () {
 				var panel = document.getElementById('siqo-arm-panel');
 				if (!panel) {
@@ -289,7 +289,7 @@ if ( $table_arm_mode ) {
 						});
 				});
 			})();
-		</script>
+		<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	<?php endif; ?>
 
 	<div style="display:none!important;">
@@ -303,11 +303,11 @@ if ( $table_arm_mode ) {
 
 		<div id="FO_woo_currency_sym"><?php echo esc_attr(get_woocommerce_currency_symbol());?></div>
 
-		<style type="text/css">
+		<?php ob_start(); ?>
 			#eltdf-back-to-top{
 				margin-bottom: 120px!important;
 			}
-		</style>
+		<?php siqo_add_inline_css( ob_get_clean() ); ?>
 	</div>
 
 	<div class="siqo-customer-shell">
@@ -455,7 +455,7 @@ if ( $table_arm_mode ) {
 			</div>
 		</div>
 	
-		<script type="text/javascript">
+		<?php ob_start(); ?>
 			function SIQO_ajax_form_height(){
 				var formVal = window.innerHeight - jQuery("#order_actions").height() - 70;
 				jQuery("#FO_sum_order").css("height", formVal );
@@ -537,7 +537,7 @@ if ( $table_arm_mode ) {
 				});
 				updateActiveCategory();
 			})();
-		</script>
+		<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	</div>
 </div>
 <?php

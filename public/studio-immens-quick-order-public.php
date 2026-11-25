@@ -72,7 +72,7 @@ function SIQO_create_all_necessary_settings(){
 	$settings = array(
 		'siqo_show_admin_bar_all' => 'no',
 		'siqo_pickup_delivery_checkout' => 'yes',
-		'siqo_notify_audio' => esc_url( plugins_url( 'includes/audio/siqo-chime-soft.mp3', dirname(__FILE__) ) ),
+		'siqo_notify_audio' => esc_url( plugins_url( 'includes/audio/siqo-chime-soft.mp3', SIQO_PLUGIN_FILE ) ),
 		'siqo_default_grid_view' => 'no',
 		'siqo_order_summary' => 'side_page',
 		'siqo_front_name' => 'TAVOLO',
@@ -215,7 +215,14 @@ function SIQO_redirect_legacy_customer_slug() {
 
 	$target = get_permalink( $page );
 	if ( ! empty( $_GET ) ) {
-		$target = add_query_arg( wp_unslash( $_GET ), $target );
+		$query_args = array();
+		foreach ( $_GET as $key => $value ) {
+			if ( is_array( $value ) ) {
+				continue;
+			}
+			$query_args[ sanitize_key( wp_unslash( $key ) ) ] = sanitize_text_field( wp_unslash( $value ) );
+		}
+		$target = add_query_arg( $query_args, $target );
 	}
 
 	wp_safe_redirect( $target, 301 );
@@ -509,7 +516,7 @@ function SIQO_head_needed(){ ?>
 add_action( 'wp_head', 'SIQO_head_needed' );
 
 function siqo_header_style() { ?>
-	<style type="text/css" id=fo-root>
+	<?php ob_start(); ?>
 	:root{
 		<?php
 			$styles = SIQO_get_meta_by_assoc_id('style_css','OBJECT');
@@ -529,7 +536,7 @@ function siqo_header_style() { ?>
 			}
 		?>
 	}
-	</style>
+	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
 	<?php
 }
 add_action( 'wp_head', 'siqo_header_style' );
@@ -1338,12 +1345,12 @@ function SIQO_setting_color( $args = array() ){
             <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_restore_prev_value( this, <?php echo "'".esc_attr($args['default'])."'";?> )" title="<?php esc_html_e('Ripristina il valore di default', 'studio-immens-quick-order' );?>"></span>
         </p>
     </div>
-    <script type="text/javascript">
+    <?php ob_start(); ?>
 	function SIQO_restore_prev_value( target, value ){
 			target.previousElementSibling.value = value;
 			jQuery(target).closest('.SIQOsettingStyle').css('backgroundColor',value);
 		}
-    </script>
+    <?php siqo_add_inline_js( ob_get_clean() ); ?>
     <?php
 }
 
@@ -1851,15 +1858,15 @@ function SIQO_create_post_QR_code() {
 
 	// Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
+		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 	// Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'post_' . $post_id .'('.$size.').png' );
 
 	$return = '<div class="siqo_QR_pages">';
 	$return .= '<strong style="width:100%;">'.esc_html__('Link per Questa Pagina:' , 'studio-immens-quick-order').'</strong>';
-	$return .= '<strong style="margin:20px;">'.get_home_url().'?p='.$post_id.'</strong>';
-	$return .= '<img src="'.esc_attr($qr_url).'" height="'.esc_attr($size).'" width="'.esc_attr($size).'">';
+	$return .= '<strong style="margin:20px;">'.esc_html( get_home_url() ).'?p='.absint( $post_id ).'</strong>';
+	$return .= '<img src="'.esc_url($qr_url).'" height="'.esc_attr($size).'" width="'.esc_attr($size).'" alt="">';
 	$return .= '</div>';
 	return $return;
 }
@@ -1887,11 +1894,11 @@ function SIQO_create_post_QR_code_shortcode( $atts ) {
 	$filename = $qr_dir . 'post_' . $post_id .'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
+		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 // Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'post_' . $post_id .'('.$size.').png' );
-	return '<img src="'.$qr_url.'" height="'.$size.'" width="'.$size.'">';
+	return '<img src="'.esc_url( $qr_url ).'" height="'.absint( $size ).'" width="'.absint( $size ).'" alt="">';
 }
 add_shortcode( 'siqo_qr_code', 'SIQO_create_post_QR_code_shortcode' );
 
@@ -1914,10 +1921,10 @@ function SIQO_table_qr_shortcode( $atts ) {
 	$filename = $qr_dir . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png';
 	$scale    = max( 1, min( 10, (int) round( $size / 20 ) ) );
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $url, $filename, 'L', $scale, 2 );
+		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $url, $filename, 'L', $scale, 2 );
 	}
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'table_' . $table_id . '_' . $size . '_' . $hash . '.png' );
-	return '<img src="' . esc_attr( $qr_url ) . '" width="' . $size . '" height="' . $size . '" alt="' . esc_attr( get_the_title( $table_id ) ) . '">';
+	return '<img src="' . esc_url( $qr_url ) . '" width="' . absint( $size ) . '" height="' . absint( $size ) . '" alt="' . esc_attr( get_the_title( $table_id ) ) . '">';
 }
 
 function SIQO_create_any_QR_code( $atts ) {
@@ -1941,11 +1948,11 @@ function SIQO_create_any_QR_code( $atts ) {
 	$filename = $qr_dir.'any-'.$name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
+		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 // Return the image tag.
 	$qr_url = esc_url_raw( SIQO_get_qr_url() . 'any-'.$name.'('.$size.').png' );
-	return '<img src="'.$qr_url.'" height="'.$size.'" width="'.$size.'">';
+	return '<img src="'.esc_url( $qr_url ).'" height="'.absint( $size ).'" width="'.absint( $size ).'" alt="">';
 }
 add_shortcode( 'siqo_qr_code_content', 'SIQO_create_any_QR_code' );
 
@@ -1969,7 +1976,7 @@ function SIQO_create_any_QR_code_ajax() {
 	$filename = $qr_dir.'any-'.$qr_name.'('.$size.').png';
 // Check if the file exists.
 	if ( ! file_exists( $filename ) ) {
-		QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
+		\StudioImmens\QuickOrder\PhpQrCode\QRcode::png( $content, $filename, 'L', 10, 2 ); // Create the QR code.
 	}
 	$qr_url = SIQO_get_qr_url() . 'any-'.$qr_name.'('.$size.').png';
 
@@ -2026,14 +2033,14 @@ function SIQO_hover_message( $message = '', $args = array() ){
 	}
 	do_action( 'SIQO_hover_message' );
 	?>
-	<script type="text/javascript">
+	<?php ob_start(); ?>
 		jQuery(document).ready(function($) {
 		    "use strict";
 		    jQuery('.hoverMessage').appendTo('body');
 		    jQuery('.hoverMessage').show();
 		    jQuery('.hoverMessage').css('opacity','0.95');
 		});
-	</script>
+	<?php siqo_add_inline_js( ob_get_clean() ); ?>
 </div>
 <?php
 }
@@ -2183,7 +2190,7 @@ function SIQO_create_meta_table( $version = STUDIO_IMMENS_QUICK_ORDER_META_VERSI
       KEY meta_key (meta_key),
       KEY assoc_id (assoc_id),
       KEY assoc_tb (assoc_tb)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+    ) " . $wpdb->get_charset_collate() . ";";
 
     dbDelta( $sql );
 
@@ -2670,7 +2677,7 @@ function SIQO_product_to_table( $product, $cat_slug ){
 					?>
 				<!-- </a> -->
 				<div class="fowarehouse">
-					<img color="<?php echo esc_attr($ware_color);?>" src="<?php echo esc_url( plugins_url( 'includes/img/sphere4.webp', dirname(__FILE__) ) )?>"/>
+					<img color="<?php echo esc_attr($ware_color);?>" src="<?php echo esc_url( plugins_url( 'includes/img/sphere4.webp', SIQO_PLUGIN_FILE ) )?>"/>
 					<p><?php echo esc_attr($ware_text);?></p>
 				</div>
 			</td>
@@ -2897,36 +2904,38 @@ $fo_gallery = array();
 <div class="fosticker">
 	<?php foreach ($sticker as $key => $value) { ?>
 		<?php if ( $value == 'fo-vegan' ) { ?>
-			<div>
-				<img width="50"height="50"src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/vegan.webp');?>">
+			<div class="siqo-sticker-icon" title="<?php esc_attr_e( 'Vegan', 'studio-immens-quick-order' ); ?>">
+				<span class="dashicons dashicons-carrot" aria-hidden="true"></span>
 			</div>
 		<?php } ?>
 		<?php if ( $value == 'fo-veget' ) { ?>
-			<div>
-				<img width="50"height="50"src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/veget.webp');?>">
+			<div class="siqo-sticker-icon" title="<?php esc_attr_e( 'Vegetarian', 'studio-immens-quick-order' ); ?>">
+				<span class="dashicons dashicons-leaf" aria-hidden="true"></span>
 			</div>
 		<?php } ?>
 		<?php if ( $value == 'fo-bio' ) { ?>
-			<div>
-				<img width="50"height="50"src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/bio.webp');?>">
+			<div class="siqo-sticker-icon" title="<?php esc_attr_e( 'Organic', 'studio-immens-quick-order' ); ?>">
+				<span class="dashicons dashicons-heart" aria-hidden="true"></span>
 			</div>
 		<?php } ?>
 		<?php if ( $value == 'fo-spicy' ) { ?>
-			<div>
-				<img width="50"height="50"src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/spicy.webp');?>">
+			<div class="siqo-sticker-icon" title="<?php esc_attr_e( 'Spicy', 'studio-immens-quick-order' ); ?>">
+				<span class="dashicons dashicons-warning" aria-hidden="true"></span>
 			</div>
 		<?php } ?>
 
 		<?php if ( $value!='fo-vegan' && $value!='fo-veget' && $value!='fo-bio' && $value!='fo-spicy' ) {
 			if ( !is_object($value) ) { continue; }
 			$sticker_img = get_term_meta($value->term_id, 'taxonomy_image');
-			if (!isset($sticker_img[0])) {
-				$sticker_img[0] = 'https://studioimmens.com/wp-content/uploads/2024/09/sphere.webp'; $stick_disp = '';
-			} else{ $stick_disp = 'none'; }
+			$stick_disp  = ( ! empty( $sticker_img[0] ) ) ? 'none' : '';
 			?>
 			<div>
 				<p style="display:<?php echo esc_attr($stick_disp);?>" onclick="jQuery(this).toggle()" title="<?php echo esc_attr($value->description);?>"><?php echo esc_attr($value->name);?></p>
-				<img width="50"height="50"src="<?php echo esc_attr($sticker_img[0]);?>" onclick="jQuery(this).prev().toggle()"><?php  ?>
+				<?php if ( ! empty( $sticker_img[0] ) ) : ?>
+					<img width="50" height="50" src="<?php echo esc_url( $sticker_img[0] ); ?>" alt="<?php echo esc_attr( $value->name ); ?>" onclick="jQuery(this).prev().toggle()">
+				<?php else : ?>
+					<span class="siqo-sticker-icon dashicons dashicons-tag" aria-hidden="true" title="<?php echo esc_attr( $value->name ); ?>"></span>
+				<?php endif; ?>
 			</div>
 		<?php } ?>
 	<?php } ?>
@@ -2934,7 +2943,7 @@ $fo_gallery = array();
 <!-- clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%); -->
 
 			<div class="fowarehouse">
-				<img color="<?php echo esc_attr($ware_color);?>" src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/sphere4.webp');?>"/>
+				<span class="siqo-warehouse-icon dashicons dashicons-location" style="color:<?php echo esc_attr($ware_color);?>;" aria-hidden="true"></span>
 				<p><?php echo esc_attr($ware_text);?></p>
 			</div>
 
@@ -2988,7 +2997,7 @@ function SIQO_Advanced_Prod_Card(){
 	</div>
 	<div class="Advanced_Card_header">
 		<div class="fowarehouse fixware" foware="" style="display:contents;">
-			<img color="" style="padding:0;" src="<?php echo wp_kses_post('https://studioimmens.com/wp-content/uploads/2024/09/sphere4.webp');?>"/><?php  ?>
+			<span class="siqo-warehouse-icon dashicons dashicons-location" aria-hidden="true"></span><?php  ?>
 		</div>
 		<p class="AC_ID" style="width:80px;"></p>
 		<p class="AC_Name" style="max-width:calc(100% - 250px);"></p>
@@ -3102,7 +3111,7 @@ function SIQO_get_product_temperature_options( $product ){
 		if ( $Temperature != null ) {
 	?>
 		<div class="fothermo foboxclick">
-			<img color="" width="50" height="50" class="FOthermometer" src="<?php echo esc_url( plugins_url( 'includes/img/thermometer2.webp', dirname(__FILE__) ) )?>" onclick="jQuery(this).parent().parent().find('.fotemp_card').slideToggle();"/><?php  ?>
+			<img color="" width="50" height="50" class="FOthermometer" src="<?php echo esc_url( plugins_url( 'includes/img/thermometer2.webp', SIQO_PLUGIN_FILE ) )?>" onclick="jQuery(this).parent().parent().find('.fotemp_card').slideToggle();"/><?php  ?>
 				<img class="fotax_image_temp" width="30" height="30" src="" onclick="jQuery(this).parent().parent().find('.fotemp_card').slideToggle();" style="display:none;"><?php  ?>
 		</div>
 
@@ -3746,7 +3755,7 @@ function SIQO_flash_list_order(){
 			<?php } ?>
 
 			</div>
-			<script type="text/javascript">
+			<?php ob_start(); ?>
 				function SIQO_list_order_height(){
 					var formVal = jQuery("#FO_list_height").height();
 					jQuery(".FO_order_list").css("top", formVal );
@@ -3763,7 +3772,7 @@ function SIQO_flash_list_order(){
 					// 	jQuery(".FO_order_list").hide();
 					// }
 				});
-			</script>
+			<?php siqo_add_inline_js( ob_get_clean() ); ?>
 
 
 			<div class="FO_table_input" style="border:1px solid #ffffff6b;">
@@ -4899,12 +4908,12 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 							<b>Totale:</b>
 							<strong> - </strong>
 						</div>
-						<script type="text/javascript">
+						<?php ob_start(); ?>
 							jQuery(window).on('load', function() {
 								SIQO_calc_totals();
 								SIQO_reorder_story();
 							});
-						</script>
+						<?php siqo_add_inline_js( ob_get_clean() ); ?>
 					</div>
 				</div>
 	<!-- PRODOTTI: -->
@@ -4968,11 +4977,11 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(-1)}">-</div>
 						<input class="fo_target_qty_prod" type="number" name="qty" step="1" value="1" fo_modificable="" onchange="siqo_tab_parse_qty(this);">
 					<div class="spinner-button-big" onclick="if (jQuery('.fo_target_qty_prod').attr('fo_modificable') == 'true' ){siqo_keyboard_qty_value(+1)}">+</div>
-					<script type="text/javascript">
+					<?php ob_start(); ?>
 						jQuery('.fo_target_qty_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_qty(jQuery('.fo_target_qty_prod'));
 						});
-					</script>
+					<?php siqo_add_inline_js( ob_get_clean() ); ?>
 				</div>
 				<?php
 				$temperature_terms = SIQO_get_temperature_terms();
@@ -5047,21 +5056,21 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 				<div class="FO_flash_tab_note" style="display:none;">
 					<strong style="flex-basis:100%;"><?php esc_html_e('Note','studio-immens-quick-order');?></strong>
 					<textarea class="fo_target_note_prod" name="note" onchange="siqo_tab_parse_note(this);" placeholder="<?php esc_html_e('Note del prodotto...','studio-immens-quick-order');?>"></textarea>
-					<script type="text/javascript">
+					<?php ob_start(); ?>
 						jQuery('.fo_target_note_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_note(jQuery('.fo_target_note_prod'));
 						});
-					</script>
+					<?php siqo_add_inline_js( ob_get_clean() ); ?>
 				</div>
 
 				<div class="FO_flash_tab_item_note" style="display:none;">
 					<strong style="flex-basis:100%;"><?php esc_html_e('Modifiche','studio-immens-quick-order');?></strong>
 					<textarea class="fo_target_item_note_prod" oninput="siqo_tab_parse_item_note(this);" onchange="siqo_tab_parse_item_note(this);" placeholder="<?php esc_html_e('Modifiche del prodotto...','studio-immens-quick-order');?>"></textarea>
-					<script type="text/javascript">
+					<?php ob_start(); ?>
 						jQuery('.fo_target_item_note_prod').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_item_note(jQuery('.fo_target_item_note_prod'));
 						});
-					</script>
+					<?php siqo_add_inline_js( ob_get_clean() ); ?>
 				</div>
 			</div>
 <!-- COL 3: -->
@@ -5115,11 +5124,11 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 
 				<div class="fo_tab_calc_display">
 					<span class="fo_tab_price" fo_status_modify="false" fo_actual_prod="" fo_actual_index="" fo_modificable="" onchange="siqo_tab_parse_price(this)"></span>
-					<script type="text/javascript">
+					<?php ob_start(); ?>
 						jQuery('.fo_tab_price').on('DOMSubtreeModified', function(){
 						  siqo_tab_parse_price(jQuery('.fo_tab_price'));
 						});
-					</script>
+					<?php siqo_add_inline_js( ob_get_clean() ); ?>
 					<!-- <div class="fo_tab_calc_keyboard_key fo_tab_add_to_order" onclick="siqo_tab_add_product_to_order()">
 						<strong>AGGIUNGI</strong>
 					</div> -->
@@ -5242,11 +5251,11 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 
 	</div>
 	<div class="Advanced_Card_background fo_tab_show" style="display:none;"></div>
-	<style type="text/css">
+	<?php ob_start(); ?>
 		#eltdf-back-to-top{
 			visibility: hidden!important;
 		}
-	</style>
+	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
 
 	<?php
 }
@@ -5454,7 +5463,7 @@ function SIQO_pay_this_order_tab(){
 							$u_phone = ( SIQOcheck( get_user_meta( $u_id, 'billing_phone', true ) ) ) ? get_user_meta( $u_id, 'billing_phone', true ) : ' - ';
 
 							$u_since = ( SIQOcheck( $value->user_registered) ) ? $value->user_registered : '';
-							$u_aurl = ( SIQOcheck( get_avatar( $u_id, 50 ) ) ) ? get_avatar( $u_id, 50, $default = '', $alt = '', $args = array( 'class' => 'FO_pay_customer_img' ) ) : '';
+							$u_aurl = '';
 
 						?>
 						<div class="FO_customer_target_search FO_list_prod_summ" style="display:none;" onclick="SIQO_pay_customer_list(this);" fo_u_id="<?php echo esc_attr($u_id);?>" fo_u_name="<?php echo esc_attr($u_name);?>" fo_u_mail="<?php echo esc_attr($u_mail);?>" fo_u_phone="<?php echo esc_attr($u_phone);?>" fo_u_since="<?php echo esc_attr($u_since);?>" fo_u_aurl="<?php echo esc_attr($u_aurl);?>">
@@ -6147,7 +6156,7 @@ function SIQO_quick_edit_fields( $column_name, $post_type ) {
 		}
 	}
 	?>
-	<script type="text/javascript">
+	<?php ob_start(); ?>
 		jQuery( function( $ ){
 			const wp_inline_edit_function = inlineEditPost.edit;
 			// we overwrite the it with our own
@@ -6170,7 +6179,7 @@ function SIQO_quick_edit_fields( $column_name, $post_type ) {
 				$(':input[name="slang_title"]', edit_row ).val( slang_title );
 			}
 		});
-	</script>
+	<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	<?php
 }
 // add_action( 'manage_product_posts_custom_column', 'SIQO_show_custom_field_quick_edit_data', 9999, 2 );
@@ -6241,11 +6250,11 @@ $ajax_refresh_table_seconds = ( intval( SIQO_get_meta('ajax_refresh_table_second
 
 	</div>
 
-	<style type="text/css">
+	<?php ob_start(); ?>
 	    .foTimeOutAnim {
 	        animation: foerrcol 2s alternate infinite!important;
 	    }
-	</style>
+	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
 
 <?php
 }
@@ -7415,7 +7424,7 @@ function SIQO_add_pickup_delivery_section(){
 	        </div>
         </div>
     </div>
-	<script>
+	<?php ob_start(); ?>
 	jQuery(function($){
 		function siqo_toggle_delivery(){
 			var pickup = $('#fo_order_type_pickup').is(':checked');
@@ -7425,7 +7434,7 @@ function SIQO_add_pickup_delivery_section(){
 		$(document).on('change', 'input[name="delivery_type"]', siqo_toggle_delivery);
 		siqo_toggle_delivery();
 	});
-	</script>
+	<?php siqo_add_inline_js( ob_get_clean() ); ?>
 	<?php
 }
 

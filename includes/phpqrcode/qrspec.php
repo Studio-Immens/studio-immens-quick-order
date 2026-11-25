@@ -1,4 +1,6 @@
 <?php
+namespace StudioImmens\QuickOrder\PhpQrCode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -138,7 +140,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function lengthIndicator($mode, $version)
         {
-            if ($mode == QR_MODE_STRUCTURE)
+            if ($mode == SIQO_QR_MODE_STRUCTURE)
                 return 0;
                 
             if ($version <= 9) {
@@ -155,7 +157,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function maximumWords($mode, $version)
         {
-            if($mode == QR_MODE_STRUCTURE) 
+            if($mode == SIQO_QR_MODE_STRUCTURE) 
                 return 3;
                 
             if($version <= 9) {
@@ -169,7 +171,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             $bits = self::$lengthTableBits[$mode][$l];
             $words = (1 << $bits) - 1;
             
-            if($mode == QR_MODE_KANJI) {
+            if($mode == SIQO_QR_MODE_KANJI) {
                 $words *= 2; // the number of bytes is required
             }
 
@@ -489,60 +491,6 @@ if ( ! defined( 'ABSPATH' ) ) {
         }
 
         //----------------------------------------------------------------------
-        public static function debug($frame, $binary_mode = false)
-        {
-            if ($binary_mode) {
-            
-                    foreach ($frame as &$frameLine) {
-                        $frameLine = join('<span class="m">&nbsp;&nbsp;</span>', explode('0', $frameLine));
-                        $frameLine = join('&#9608;&#9608;', explode('1', $frameLine));
-                    }
-                    
-                    ?>
-                <style>
-                    .m { background-color: white; }
-                </style>
-                <?php
-                    echo '<pre><tt><br/ ><br/ ><br/ >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo join("<br/ >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", esc_attr($frame));
-                    echo '</tt></pre><br/ ><br/ ><br/ ><br/ ><br/ ><br/ >';
-            
-            } else {
-            
-                foreach ($frame as &$frameLine) {
-                    $frameLine = join('<span class="m">&nbsp;</span>',  explode("\xc0", $frameLine));
-                    $frameLine = join('<span class="m">&#9618;</span>', explode("\xc1", $frameLine));
-                    $frameLine = join('<span class="p">&nbsp;</span>',  explode("\xa0", $frameLine));
-                    $frameLine = join('<span class="p">&#9618;</span>', explode("\xa1", $frameLine));
-                    $frameLine = join('<span class="s">&#9671;</span>', explode("\x84", $frameLine)); //format 0
-                    $frameLine = join('<span class="s">&#9670;</span>', explode("\x85", $frameLine)); //format 1
-                    $frameLine = join('<span class="x">&#9762;</span>', explode("\x81", $frameLine)); //special bit
-                    $frameLine = join('<span class="c">&nbsp;</span>',  explode("\x90", $frameLine)); //clock 0
-                    $frameLine = join('<span class="c">&#9719;</span>', explode("\x91", $frameLine)); //clock 1
-                    $frameLine = join('<span class="f">&nbsp;</span>',  explode("\x88", $frameLine)); //version
-                    $frameLine = join('<span class="f">&#9618;</span>', explode("\x89", $frameLine)); //version
-                    $frameLine = join('&#9830;', explode("\x01", $frameLine));
-                    $frameLine = join('&#8901;', explode("\0", $frameLine));
-                }
-                
-                ?>
-                <style>
-                    .p { background-color: yellow; }
-                    .m { background-color: #00FF00; }
-                    .s { background-color: #FF0000; }
-                    .c { background-color: aqua; }
-                    .x { background-color: pink; }
-                    .f { background-color: gold; }
-                </style>
-                <?php
-                echo "<pre><tt>";
-                echo join("<br/ >", esc_attr($frame));
-                echo "</tt></pre>";
-            
-            }
-        }
-
-        //----------------------------------------------------------------------
         public static function serial($frame)
         {
             return gzcompress(join("\n", $frame), 9);
@@ -562,9 +510,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             if(!isset(self::$frames[$version])) {
                 
-                $fileName = QR_CACHE_DIR.'frame_'.$version.'.dat';
+                $fileName = SIQO_QR_CACHE_DIR.'frame_'.$version.'.dat';
                 
-                if (QR_CACHEABLE) {
+                if (SIQO_QR_CACHEABLE) {
                     if (file_exists($fileName)) {
                         self::$frames[$version] = self::unserial(file_get_contents($fileName));//phpcs:ignore
                     } else {

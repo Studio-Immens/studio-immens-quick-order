@@ -1,4 +1,6 @@
 <?php
+namespace StudioImmens\QuickOrder\PhpQrCode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-    define('QR_IMAGE', true);
+    define('SIQO_QR_IMAGE', true);
 
     class QRimage {
     

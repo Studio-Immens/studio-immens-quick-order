@@ -1,4 +1,6 @@
 <?php
+namespace StudioImmens\QuickOrder\PhpQrCode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -68,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 
                 $val = 0x1;
                 $bs->appendNum(4, $val);
-                $bs->appendNum(QRspec::lengthIndicator(QR_MODE_NUM, $version), $this->size);
+                $bs->appendNum(QRspec::lengthIndicator(SIQO_QR_MODE_NUM, $version), $this->size);
 
                 for($i=0; $i<$words; $i++) {
                     $val  = (ord($this->data[$i*3  ]) - ord('0')) * 100;
@@ -102,7 +104,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $bs = new QRbitstream();
                 
                 $bs->appendNum(4, 0x02);
-                $bs->appendNum(QRspec::lengthIndicator(QR_MODE_AN, $version), $this->size);
+                $bs->appendNum(QRspec::lengthIndicator(SIQO_QR_MODE_AN, $version), $this->size);
 
                 for($i=0; $i<$words; $i++) {
                     $val  = (int)QRinput::lookAnTable(ord($this->data[$i*2  ])) * 45;
@@ -131,7 +133,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $bs = new QRbitstream();
 
                 $bs->appendNum(4, 0x4);
-                $bs->appendNum(QRspec::lengthIndicator(QR_MODE_8, $version), $this->size);
+                $bs->appendNum(QRspec::lengthIndicator(SIQO_QR_MODE_8, $version), $this->size);
 
                 for($i=0; $i<$this->size; $i++) {
                     $bs->appendNum(8, ord($this->data[$i]));
@@ -153,7 +155,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $bs = new QRbitrtream();
                 
                 $bs->appendNum(4, 0x8);
-                $bs->appendNum(QRspec::lengthIndicator(QR_MODE_KANJI, $version), (int)($this->size / 2));
+                $bs->appendNum(QRspec::lengthIndicator(SIQO_QR_MODE_KANJI, $version), (int)($this->size / 2));
 
                 for($i=0; $i<$this->size; $i+=2) {
                     $val = (ord($this->data[$i]) << 8) | ord($this->data[$i+1]);
@@ -205,11 +207,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $version = 1;
 
             switch($this->mode) {
-                case QR_MODE_NUM:        $bits = QRinput::estimateBitsModeNum($this->size);    break;
-                case QR_MODE_AN:        $bits = QRinput::estimateBitsModeAn($this->size);    break;
-                case QR_MODE_8:            $bits = QRinput::estimateBitsMode8($this->size);    break;
-                case QR_MODE_KANJI:        $bits = QRinput::estimateBitsModeKanji($this->size);break;
-                case QR_MODE_STRUCTURE:    return STRUCTURE_HEADER_BITS;            
+                case SIQO_QR_MODE_NUM:        $bits = QRinput::estimateBitsModeNum($this->size);    break;
+                case SIQO_QR_MODE_AN:        $bits = QRinput::estimateBitsModeAn($this->size);    break;
+                case SIQO_QR_MODE_8:            $bits = QRinput::estimateBitsMode8($this->size);    break;
+                case SIQO_QR_MODE_KANJI:        $bits = QRinput::estimateBitsModeKanji($this->size);break;
+                case SIQO_QR_MODE_STRUCTURE:    return STRUCTURE_HEADER_BITS;            
                 default:
                     return 0;
             }
@@ -251,11 +253,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                     $ret = 0;
                     
                     switch($this->mode) {
-                        case QR_MODE_NUM:        $ret = $this->encodeModeNum($version);    break;
-                        case QR_MODE_AN:        $ret = $this->encodeModeAn($version);    break;
-                        case QR_MODE_8:            $ret = $this->encodeMode8($version);    break;
-                        case QR_MODE_KANJI:        $ret = $this->encodeModeKanji($version);break;
-                        case QR_MODE_STRUCTURE:    $ret = $this->encodeModeStructure();    break;
+                        case SIQO_QR_MODE_NUM:        $ret = $this->encodeModeNum($version);    break;
+                        case SIQO_QR_MODE_AN:        $ret = $this->encodeModeAn($version);    break;
+                        case SIQO_QR_MODE_8:            $ret = $this->encodeMode8($version);    break;
+                        case SIQO_QR_MODE_KANJI:        $ret = $this->encodeModeKanji($version);break;
+                        case SIQO_QR_MODE_STRUCTURE:    $ret = $this->encodeModeStructure();    break;
                         
                         default:
                             break;
@@ -283,9 +285,9 @@ if ( ! defined( 'ABSPATH' ) ) {
         private $level;
         
         //----------------------------------------------------------------------
-        public function __construct($version = 0, $level = QR_ECLEVEL_L)
+        public function __construct($version = 0, $level = SIQO_QR_ECLEVEL_L)
         {
-            if ($version < 0 || $version > QRSPEC_VERSION_MAX || $level > QR_ECLEVEL_H) {
+            if ($version < 0 || $version > QRSPEC_VERSION_MAX || $level > SIQO_QR_ECLEVEL_H) {
                 throw new Exception('Invalid version no');
                 return NULL;
             }
@@ -322,7 +324,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public function setErrorCorrectionLevel($level)
         {
-            if($level > QR_ECLEVEL_H) {
+            if($level > SIQO_QR_ECLEVEL_H) {
                 throw new Exception('Invalid ECLEVEL');
                 return -1;
             }
@@ -365,7 +367,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             $buf = array($size, $index, $parity);
             
             try {
-                $entry = new QRinputItem(QR_MODE_STRUCTURE, 3, buf);
+                $entry = new QRinputItem(SIQO_QR_MODE_STRUCTURE, 3, buf);
                 array_unshift($this->items, $entry);
                 return 0;
             } catch (Exception $e) {
@@ -379,7 +381,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             $parity = 0;
             
             foreach($this->items as $item) {
-                if($item->mode != QR_MODE_STRUCTURE) {
+                if($item->mode != SIQO_QR_MODE_STRUCTURE) {
                     for($i=$item->size-1; $i>=0; $i--) {
                         $parity ^= $item->data[$i];
                     }
@@ -504,11 +506,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                 return false;
 
             switch($mode) {
-                case QR_MODE_NUM:       return self::checkModeNum($size, $data);   break;
-                case QR_MODE_AN:        return self::checkModeAn($size, $data);    break;
-                case QR_MODE_KANJI:     return self::checkModeKanji($size, $data); break;
-                case QR_MODE_8:         return true; break;
-                case QR_MODE_STRUCTURE: return true; break;
+                case SIQO_QR_MODE_NUM:       return self::checkModeNum($size, $data);   break;
+                case SIQO_QR_MODE_AN:        return self::checkModeAn($size, $data);    break;
+                case SIQO_QR_MODE_KANJI:     return self::checkModeKanji($size, $data); break;
+                case SIQO_QR_MODE_8:         return true; break;
+                case SIQO_QR_MODE_STRUCTURE: return true; break;
                 
                 default:
                     break;
@@ -552,7 +554,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         {
             $payload = $bits - 4 - QRspec::lengthIndicator($mode, $version);
             switch($mode) {
-                case QR_MODE_NUM:
+                case SIQO_QR_MODE_NUM:
                     $chunks = (int)($payload / 10);
                     $remain = $payload - $chunks * 10;
                     $size = $chunks * 3;
@@ -562,20 +564,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                         $size += 1;
                     }
                     break;
-                case QR_MODE_AN:
+                case SIQO_QR_MODE_AN:
                     $chunks = (int)($payload / 11);
                     $remain = $payload - $chunks * 11;
                     $size = $chunks * 2;
                     if($remain >= 6) 
                         $size++;
                     break;
-                case QR_MODE_8:
+                case SIQO_QR_MODE_8:
                     $size = (int)($payload / 8);
                     break;
-                case QR_MODE_KANJI:
+                case SIQO_QR_MODE_KANJI:
                     $size = (int)(($payload / 13) * 2);
                     break;
-                case QR_MODE_STRUCTURE:
+                case SIQO_QR_MODE_STRUCTURE:
                     $size = (int)($payload / 8);
                     break;
                 default:

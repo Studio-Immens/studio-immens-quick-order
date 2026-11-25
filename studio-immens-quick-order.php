@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @wordpress-plugin
  * Plugin Name:       Studio Immens Quick Order
- * Plugin URI:        https://studioimmens.com/quick-order
- * Description:       Studio Immens Quick Order is the ultimate solution for streamlining restaurant order management on your WooCommerce-powered website. With this powerful plugin, you can supercharge your restaurant's online ordering process.
- * Version:           1.2.4
+ * Plugin URI:        https://github.com/Studio-Immens/studio-immens-quick-order
+ * Description:       Manage restaurant orders, tables, kitchen stations, QR menus and table sessions from WooCommerce.
+ * Version:           1.2.5
  * Author:            Studio Immens
  * Author URI:        https://studioimmens.com
  * License:           GPL-3.0
@@ -34,16 +34,146 @@ if ( ! defined( 'WPINC' ) ) {
 add_filter( 'wp_consent_api_registered_' . plugin_basename( __FILE__ ), '__return_true' );
 
 /**
+ * Main plugin file.
+ */
+define( 'SIQO_PLUGIN_FILE', __FILE__ );
+
+/**
  * Currently plugin version.
  * Start at version 1.0.0
  */
-define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.2.4' );
+define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.2.5' );
 
 /**
  * Currently database version for siqo_meta table.
  * Start at version 1.0.0
  */
 define( 'STUDIO_IMMENS_QUICK_ORDER_META_VERSION', '1.0.0' );
+
+if ( ! function_exists( 'siqo_add_inline_js' ) ) {
+	/**
+	 * Enqueue a small inline script through the WordPress script API.
+	 *
+	 * @param string $js     JavaScript code.
+	 * @param string $handle Script handle.
+	 */
+	function siqo_add_inline_js( $js, $handle = 'siqo-inline' ) {
+		if ( '' === trim( (string) $js ) ) {
+			return;
+		}
+		if ( ! wp_script_is( $handle, 'registered' ) ) {
+			wp_register_script( $handle, false, array(), STUDIO_IMMENS_QUICK_ORDER_VERSION, true );
+		}
+		wp_enqueue_script( $handle );
+		wp_add_inline_script( $handle, $js, 'after' );
+	}
+}
+
+if ( ! function_exists( 'siqo_add_inline_css' ) ) {
+	/**
+	 * Enqueue a small inline stylesheet through the WordPress style API.
+	 *
+	 * @param string $css    CSS code.
+	 * @param string $handle Style handle.
+	 */
+	function siqo_add_inline_css( $css, $handle = 'siqo-inline' ) {
+		if ( '' === trim( (string) $css ) ) {
+			return;
+		}
+		if ( ! wp_style_is( $handle, 'registered' ) ) {
+			wp_register_style( $handle, false, array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		}
+		wp_enqueue_style( $handle );
+		wp_add_inline_style( $handle, $css );
+	}
+}
+
+if ( ! function_exists( 'siqo_ajax_capability_guard' ) ) {
+	/**
+	 * Enforce capabilities for privileged AJAX endpoints before their handlers run.
+	 */
+	function siqo_ajax_capability_guard() {
+		$action = preg_replace( '/^wp_ajax_(?:nopriv_)?/', '', (string) current_action() );
+		$guards = array(
+			'siqo_flash_list_order_ajax'             => 'manage_woocommerce',
+			'SIQO_flash_tab_order_ajax'              => 'manage_woocommerce',
+			'FO_flash_tab_clear_table'               => 'manage_woocommerce',
+			'FO_flash_tab_clear_all_tables'          => 'manage_woocommerce',
+			'FO_flash_tab_pay_ajax'                  => 'manage_woocommerce',
+			'SIQO_pay_coupon_quote'                  => 'manage_woocommerce',
+			'SIQO_get_order_info_button_tab_string'  => 'manage_woocommerce',
+			'FO_check_for_orders'                    => 'manage_woocommerce',
+			'SIQO_check_for_orders'                  => 'manage_woocommerce',
+			'FO_ajax_change_order_status'            => 'manage_woocommerce',
+			'SIQO_ajax_change_order_status'          => 'manage_woocommerce',
+			'SIQO_station_orders'                    => 'manage_woocommerce',
+			'SIQO_station_update_status'             => 'manage_woocommerce',
+			'siqo_order_approve'                     => 'manage_woocommerce',
+			'siqo_order_reject'                      => 'manage_woocommerce',
+			'siqo_table_open'                        => 'manage_tables',
+			'FO_insert_product_ajax'                 => 'manage_options',
+			'FO_insert_macro_cat_ajax'               => 'manage_options',
+			'FO_delete_macro_cat_ajax'               => 'manage_options',
+			'FO_insert_post_ajax'                    => 'manage_options',
+			'FO_update_post_macro_cat_ajax'          => 'manage_options',
+			'FO_remove_post_macro_cat_ajax'          => 'manage_options',
+			'FO_update_post_ajax'                    => 'manage_options',
+			'FO_delete_post_ajax'                    => 'manage_options',
+			'FO_trash_post_ajax'                     => 'manage_options',
+			'siqo_delete_QR_images'                  => 'manage_options',
+			'siqo_save_variation_custom_field'       => 'edit_products',
+			'siqo_save_tax_image'                    => 'manage_product_terms',
+			'siqo_save_post_extra_field'             => 'edit_posts',
+			'siqo_save_pickup_delivery'              => 'edit_shop_orders',
+		);
+		if ( ! isset( $guards[ $action ] ) ) {
+			return;
+		}
+		$capability = $guards[ $action ];
+		$allowed    = current_user_can( $capability );
+		if ( ! $allowed && 'manage_tables' === $capability && class_exists( 'SIQO_Management' ) ) {
+			$allowed = SIQO_Management::can( $capability );
+		}
+		if ( ! $allowed ) {
+			wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+		}
+	}
+	foreach ( array(
+		'siqo_flash_list_order_ajax',
+		'SIQO_flash_tab_order_ajax',
+		'FO_flash_tab_clear_table',
+		'FO_flash_tab_clear_all_tables',
+		'FO_flash_tab_pay_ajax',
+		'SIQO_pay_coupon_quote',
+		'SIQO_get_order_info_button_tab_string',
+		'FO_check_for_orders',
+		'SIQO_check_for_orders',
+		'FO_ajax_change_order_status',
+		'SIQO_ajax_change_order_status',
+		'SIQO_station_orders',
+		'SIQO_station_update_status',
+		'siqo_order_approve',
+		'siqo_order_reject',
+		'siqo_table_open',
+		'FO_insert_product_ajax',
+		'FO_insert_macro_cat_ajax',
+		'FO_delete_macro_cat_ajax',
+		'FO_insert_post_ajax',
+		'FO_update_post_macro_cat_ajax',
+		'FO_remove_post_macro_cat_ajax',
+		'FO_update_post_ajax',
+		'FO_delete_post_ajax',
+		'FO_trash_post_ajax',
+		'siqo_delete_QR_images',
+		'siqo_save_variation_custom_field',
+		'siqo_save_tax_image',
+		'siqo_save_post_extra_field',
+		'siqo_save_pickup_delivery',
+	) as $siqo_guarded_action ) {
+		add_action( 'wp_ajax_' . $siqo_guarded_action, 'siqo_ajax_capability_guard', 0 );
+		add_action( 'wp_ajax_nopriv_' . $siqo_guarded_action, 'siqo_ajax_capability_guard', 0 );
+	}
+}
 
 if ( ! function_exists( 'siqo_str_contains' ) ) {
 	/**
@@ -62,7 +192,7 @@ if ( ! function_exists( 'siqo_str_contains' ) ) {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-studio-immens-quick-order-activator.php
  */
-function activate_studio_immens_quick_order() {
+function siqo_activate_plugin() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order-activator.php';
 	Studio_Immens_Quick_Order_Activator::activate();
 }
@@ -71,13 +201,13 @@ function activate_studio_immens_quick_order() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-studio-immens-quick-order-deactivator.php
  */
-function deactivate_studio_immens_quick_order() {
+function siqo_deactivate_plugin() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order-deactivator.php';
 	Studio_Immens_Quick_Order_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_studio_immens_quick_order' );
-register_deactivation_hook( __FILE__, 'deactivate_studio_immens_quick_order' );
+register_activation_hook( __FILE__, 'siqo_activate_plugin' );
+register_deactivation_hook( __FILE__, 'siqo_deactivate_plugin' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -94,13 +224,13 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-studio-immens-quick-order.
  *
  * @since    1.0.0
  */
-function run_studio_immens_quick_order() {
+function siqo_run_plugin() {
 
 	$plugin = new Studio_Immens_Quick_Order();
 	$plugin->run();
 
 }
-run_studio_immens_quick_order();
+siqo_run_plugin();
 
 // === LINK RAPIDI NELLA PAGINA PLUGIN ===
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {

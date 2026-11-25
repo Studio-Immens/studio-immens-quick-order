@@ -45,36 +45,21 @@ function SIQO_manage_table( $embedded = false ){
             echo SIQO_create_post_QR_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe renderer output.
         }
 
-        if (isset($settings->showHead) && $settings->showHead == 'no' ) { ?>
-            <script type="text/javascript">
-                jQuery(window).on('load', function() {
-                    jQuery('header').not('.siqo-app-header').css('display','none');
-                });
-            </script>
-        <?php }
+        if (isset($settings->showHead) && $settings->showHead == 'no' ) {
+            siqo_add_inline_js( "jQuery(window).on('load', function() { jQuery('header').not('.siqo-app-header').css('display','none'); });" );
+        }
 
-        if (isset($settings->showFoot) && $settings->showFoot == 'no' ) { ?>
-            <script type="text/javascript">
-                jQuery(window).on('load', function() {
-                    jQuery('footer').not('.siqo-story-foot').css('display','none');
-                });
-            </script>
-        <?php }
+        if (isset($settings->showFoot) && $settings->showFoot == 'no' ) {
+            siqo_add_inline_js( "jQuery(window).on('load', function() { jQuery('footer').not('.siqo-story-foot').css('display','none'); });" );
+        }
 
-        if (isset($settings->OverColor) && $settings->OverColor == 'yes' ) { ?>
-            <style type="text/css">
-                <?php if (isset($settings->EXTCss) && $settings->EXTCss != '' ){
-                    echo esc_attr($settings->EXTCss);?>{
-                        background-color: <?php echo esc_attr($settings->BGColor);?>!important;
-                        color: <?php echo esc_attr($settings->TextColor);?>!important;
-                    }
-                <?php } ?>
-            </style>
-        <?php }
+        if (isset($settings->OverColor) && $settings->OverColor == 'yes' && isset($settings->EXTCss) && $settings->EXTCss != '' ) {
+            siqo_add_inline_css( esc_attr( $settings->EXTCss ) . '{background-color:' . esc_attr( $settings->BGColor ) . '!important;color:' . esc_attr( $settings->TextColor ) . '!important;}' );
+        }
     }
 ?>
 <div id="SIQO_Front_Content" class="<?php echo $embedded ? 'siqo-embed' : ''; ?>">
-    <script type="text/javascript">document.documentElement.classList.add('siqo-operator-mode');</script>
+    <?php wp_print_inline_script_tag( "document.documentElement.classList.add('siqo-operator-mode');" ); ?>
     <?php if ( ! $embedded ) : ?>
         <?php $siqo_brand = SIQO_Management::get_brand(); ?>
         <header class="siqo-app-header">
@@ -236,12 +221,7 @@ function SIQO_manage_table( $embedded = false ){
 
     <?php if ( ! $embedded && function_exists( 'FOP_tab_Catering_section' ) ) { FOP_tab_Catering_section(); } ?>
 
-    <script type="text/javascript">
-        // console.log(window);
-        jQuery(window).on('load', function() {
-            jQuery(".FOloadingCardPublicMain").fadeOut(200);
-        });
-    </script>
+    <?php siqo_add_inline_js( "jQuery(window).on('load', function() { jQuery('.FOloadingCardPublicMain').fadeOut(200); });" ); ?>
 
     <?php if ( ! empty( $tavoli ) ) : ?>
         <?php
@@ -253,7 +233,7 @@ function SIQO_manage_table( $embedded = false ){
             'zones'  => SIQO_Plan_Layout::zones(),
         );
         ?>
-        <script type="application/json" id="siqo-plan-data"><?php echo wp_json_encode( $siqo_plan_data ); ?></script>
+        <?php wp_print_inline_script_tag( wp_json_encode( $siqo_plan_data ), array( 'id' => 'siqo-plan-data', 'type' => 'application/json' ) ); ?>
     <?php endif; ?>
 
 </div>

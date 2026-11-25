@@ -1,4 +1,6 @@
 <?php
+namespace StudioImmens\QuickOrder\PhpQrCode;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -87,8 +89,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$mask = new QRmask();
             for ($a=1; $a <= QRSPEC_VERSION_MAX; $a++) {
                 $frame = QRspec::newFrame($a);
-                if (QR_IMAGE) {
-                    $fileName = QR_CACHE_DIR.'frame_'.$a.'.png';
+                if (SIQO_QR_IMAGE) {
+                    $fileName = SIQO_QR_CACHE_DIR.'frame_'.$a.'.png';
                     QRimage::png(self::binarize($frame), $fileName, 1, 0);
                 }
 				
@@ -104,12 +106,12 @@ if ( ! defined( 'ABSPATH' ) ) {
         //----------------------------------------------------------------------
         public static function log($outfile, $err)
         {
-            if (QR_LOG_DIR !== false) {
+            if (SIQO_QR_LOG_DIR !== false) {
                 if ($err != '') {
                     if ($outfile !== false) {
-                        file_put_contents(QR_LOG_DIR.basename($outfile).'-errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
+                        file_put_contents(SIQO_QR_LOG_DIR.basename($outfile).'-errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
                     } else {
-                        file_put_contents(QR_LOG_DIR.'errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
+                        file_put_contents(SIQO_QR_LOG_DIR.'errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
                     }
                 }    
             }

@@ -1,16 +1,15 @@
 === Studio Immens Quick Order ===
 Contributors: innovazioneweb
 Tags: restaurant, food ordering, woocommerce, table management, qr code
-Donate link: https://studioimmens.com/donate
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
 
-Streamline your restaurant's online ordering with WooCommerce. Product menus, table management, QR codes, and real-time order monitoring.
+Restaurant ordering for WooCommerce: product menus, table management, QR codes, and real-time order monitoring.
 
 == Description ==
 
@@ -30,7 +29,7 @@ Studio Immens Quick Order transforms your WooCommerce store into a complete rest
 * **Checkout Integration** - Pickup/delivery date and time selection at checkout
 * **Customizable CSS** - 38 CSS variables for colors, borders, shadows, and animations via admin style page
 * **Multiple Ordering Modes** - Card-based grid or compact list view
-* **Translation Ready** - .pot file included, Italian and English translations bundled
+* **Translation Ready** - Includes a .pot template; translations are managed through translate.wordpress.org
 
 = How It Works =
 
@@ -83,7 +82,11 @@ Yes. Use the Quick Order > Style page to customize 38 CSS variables including co
 
 = Is the plugin translated? =
 
-Yes. English and Italian translations are included. The plugin is translation-ready with a .pot file.
+Yes. The plugin is translation-ready with a .pot file. Community translations are managed through translate.wordpress.org.
+
+== External services ==
+
+This plugin does not connect to external services. QR codes are generated locally, audio files are bundled with the plugin, and no user data is sent to Studio Immens or third parties.
 
 == Credits ==
 
@@ -99,6 +102,10 @@ Yes. English and Italian translations are included. The plugin is translation-re
 5. Style customization page with CSS variable controls
 
 == Changelog ==
+
+= 1.2.5 =
+* WordPress.org review fixes: removed comparative marketing language, fixed invalid links, scoped admin assets, replaced inline scripts/styles with WordPress APIs, added AJAX capability guards, hardened QR/audio paths, removed bundled translations from the directory package, and removed external image/avatar dependencies.
+* Fixed activation when WooCommerce is not active and improved database table creation.
 
 = 1.2.4 =
 * WordPress.org review readiness: PHP 7.4 compatibility, SIQO global prefixes, safer QR storage, translation loading, access guards and packaging cleanup.

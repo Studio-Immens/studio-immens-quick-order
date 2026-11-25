@@ -46,7 +46,7 @@ class SIQO_Meta_DB {
             KEY meta_key (meta_key),
             KEY assoc_id (assoc_id),
             KEY assoc_tb (assoc_tb)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        ) " . $wpdb->get_charset_collate() . ";";
 
         dbDelta( $sql );
 

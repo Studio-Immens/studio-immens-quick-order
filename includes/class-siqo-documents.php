@@ -338,7 +338,7 @@ class SIQO_Documents {
 <meta charset="<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo esc_html( $data['number'] ); ?></title>
-<style>
+<?php ob_start(); ?>
 	@page { size: <?php echo esc_attr( $paper ); ?>mm auto; margin: 3mm; }
 	* { box-sizing: border-box; }
 	body { margin: 0; padding: 0; background: #fff; color: #111; font-family: "Courier New", Courier, monospace; font-size: 11px; line-height: 1.35; }
@@ -364,7 +364,7 @@ class SIQO_Documents {
 	.footer { padding-top: 7px; text-align: center; white-space: pre-line; }
 	.note { margin-top: 7px; color: #444; font-size: 9px; text-align: center; }
 	@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-</style>
+<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
 </head>
 <body>
 <div class="doc">
@@ -749,21 +749,16 @@ if ( ! function_exists( 'siqo_render_author_badge' ) ) {
 		if ( 'operator' === $source && $user_id ) {
 			$user   = get_userdata( $user_id );
 			$name   = $user ? $user->display_name : __( 'Operatore', 'studio-immens-quick-order' );
-			$avatar = get_avatar_url( $user_id, array( 'size' => 56 ) );
 			/* translators: %s: operator display name. */
 			$label  = sprintf( __( 'Operatore: %s', 'studio-immens-quick-order' ), $name );
 		} else {
-			$avatar = '';
 			$label  = $table
 				/* translators: %s: table name. */
 				? sprintf( __( 'Cliente — %s', 'studio-immens-quick-order' ), $table )
 				: __( 'Cliente', 'studio-immens-quick-order' );
 		}
 
-		$html = '<span class="siqo-author' . ( $avatar ? ' has-avatar' : '' ) . '">';
-		if ( $avatar ) {
-			$html .= '<img src="' . esc_url( $avatar ) . '" alt="" width="28" height="28">';
-		}
+		$html = '<span class="siqo-author">';
 		$html .= '<span class="siqo-author-name">' . esc_html( $label ) . '</span>';
 		$html .= '</span>';
 

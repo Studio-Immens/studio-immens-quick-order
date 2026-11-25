@@ -170,7 +170,7 @@ class SIQO_Management {
 		}
 		$logo = get_option( 'siqo_restaurant_logo_url', '' );
 		if ( ! $logo ) {
-			$logo = plugins_url( 'includes/img/logo.webp', dirname( __FILE__ ) );
+			$logo = plugins_url( 'includes/img/logo.webp', SIQO_PLUGIN_FILE );
 		}
 		$primary = sanitize_hex_color( (string) get_option( 'siqo_brand_primary', '#a6462f' ) );
 		$accent  = sanitize_hex_color( (string) get_option( 'siqo_brand_accent', '#c98a00' ) );
@@ -225,7 +225,7 @@ class SIQO_Management {
 		}
 
 		wp_enqueue_style( 'dashicons' );
-		wp_enqueue_style( 'siqo-management', plugins_url( 'public/css/siqo-management.css', dirname( __FILE__ ) ), array( 'dashicons' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		wp_enqueue_style( 'siqo-management', plugins_url( 'public/css/siqo-management.css', SIQO_PLUGIN_FILE ), array( 'dashicons' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		wp_add_inline_style( 'siqo-management', self::get_brand_css() );
 
 		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'stations' === sanitize_key( wp_unslash( $_GET['view'] ) ) && function_exists( 'siqo_station_enqueue_assets' ) ) {
@@ -235,7 +235,7 @@ class SIQO_Management {
 		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'tables' === sanitize_key( wp_unslash( $_GET['view'] ) ) ) {
 			wp_enqueue_script(
 				'siqo-table-sessions',
-				plugins_url( 'public/js/siqo-table-sessions.js', dirname( __FILE__ ) ),
+				plugins_url( 'public/js/siqo-table-sessions.js', SIQO_PLUGIN_FILE ),
 				array(),
 				STUDIO_IMMENS_QUICK_ORDER_VERSION,
 				true
@@ -243,11 +243,11 @@ class SIQO_Management {
 		}
 
 		if ( $is_customer ) {
-			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', dirname( __FILE__ ) ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', SIQO_PLUGIN_FILE ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		}
 
 		if ( $is_app ) {
-			wp_enqueue_script( 'siqo-management', plugins_url( 'public/js/siqo-management.js', dirname( __FILE__ ) ), array( 'jquery' ), STUDIO_IMMENS_QUICK_ORDER_VERSION, true );
+			wp_enqueue_script( 'siqo-management', plugins_url( 'public/js/siqo-management.js', SIQO_PLUGIN_FILE ), array( 'jquery' ), STUDIO_IMMENS_QUICK_ORDER_VERSION, true );
 			wp_localize_script(
 				'siqo-management',
 				'SIQO_MANAGEMENT',
@@ -263,7 +263,7 @@ class SIQO_Management {
 		if ( false === strpos( (string) $hook, 'si-quick-order_settings' ) && false === strpos( (string) $hook, 'si-quick-order_legacy' ) && 'toplevel_page_si-quick-order' !== $hook ) {
 			return;
 		}
-		wp_enqueue_style( 'siqo-management-admin', plugins_url( 'admin/css/siqo-management-admin.css', dirname( __FILE__ ) ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		wp_enqueue_style( 'siqo-management-admin', plugins_url( 'admin/css/siqo-management-admin.css', SIQO_PLUGIN_FILE ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 	}
 
 	public static function admin_menu() {
@@ -516,15 +516,10 @@ class SIQO_Management {
 					$current_user = wp_get_current_user();
 					if ( $current_user->exists() ) :
 						$account_label = $current_user->display_name ? $current_user->display_name : $current_user->user_login;
-						$avatar_url    = get_avatar_url( $current_user->ID, array( 'size' => 48 ) );
 						?>
 						<?php /* translators: %s: account display name. */ ?>
 						<a class="siqo-bar-action siqo-account-action" href="<?php echo esc_url( self::page_url( array( 'view' => 'account' ) ) ); ?>" title="<?php echo esc_attr( sprintf( __( 'Account di %s', 'studio-immens-quick-order' ), $account_label ) ); ?>">
-							<?php if ( $avatar_url ) : ?>
-								<img class="siqo-account-avatar" src="<?php echo esc_url( $avatar_url ); ?>" alt="" width="24" height="24" loading="lazy">
-							<?php else : ?>
-								<span class="dashicons dashicons-admin-users" aria-hidden="true"></span>
-							<?php endif; ?>
+							<span class="dashicons dashicons-admin-users" aria-hidden="true"></span>
 							<span class="siqo-account-name"><?php echo esc_html( $account_label ); ?></span>
 						</a>
 					<?php endif; ?>
@@ -561,7 +556,6 @@ class SIQO_Management {
 		if ( ! $user->exists() ) {
 			return '';
 		}
-		$avatar = get_avatar_url( $user->ID, array( 'size' => 96 ) );
 		$roles  = array(
 			'manager'    => __( 'Manager', 'studio-immens-quick-order' ),
 			'supervisor' => __( 'Supervisor', 'studio-immens-quick-order' ),
@@ -584,11 +578,7 @@ class SIQO_Management {
 
 			<div class="siqo-panel siqo-account-panel">
 				<div class="siqo-account-head">
-					<?php if ( $avatar ) : ?>
-						<img class="siqo-account-avatar-lg" src="<?php echo esc_url( $avatar ); ?>" alt="" width="72" height="72" loading="lazy">
-					<?php else : ?>
-						<span class="siqo-account-avatar-lg siqo-account-avatar-fallback"><span class="dashicons dashicons-admin-users" aria-hidden="true"></span></span>
-					<?php endif; ?>
+					<span class="siqo-account-avatar-lg siqo-account-avatar-fallback"><span class="dashicons dashicons-admin-users" aria-hidden="true"></span></span>
 					<div>
 						<strong><?php echo esc_html( $user->display_name ? $user->display_name : $user->user_login ); ?></strong>
 						<span class="siqo-account-role"><?php echo esc_html( $role ); ?></span>
@@ -618,7 +608,7 @@ class SIQO_Management {
 				</form>
 			</div>
 		</section>
-		<script type="text/javascript">
+		<?php ob_start(); ?>
 		(function () {
 			var form = document.getElementById('siqo-profile-form');
 			if (!form) {
@@ -661,7 +651,7 @@ class SIQO_Management {
 				});
 			});
 		})();
-		</script>
+		<?php siqo_add_inline_js( ob_get_clean() ); ?>
 		<?php
 		return ob_get_clean();
 	}
