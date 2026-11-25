@@ -187,10 +187,11 @@ if ( ! function_exists( 'siqo_json_post' ) ) {
 	 * @return array
 	 */
 	function siqo_json_post( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Caller checks the AJAX nonce before calling this helper.
 		if ( ! isset( $_POST[ $key ] ) ) {
 			return array();
 		}
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON is decoded and each field is sanitized by the caller.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- JSON is decoded and each field is sanitized by the caller.
 		$raw = wp_unslash( $_POST[ $key ] );
 		if ( is_array( $raw ) ) {
 			return array_map( 'sanitize_text_field', $raw );
