@@ -80,6 +80,10 @@ if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 		if ( '' === trim( (string) $css ) ) {
 			return;
 		}
+		if ( did_action( 'wp_head' ) && function_exists( 'wp_print_inline_style_tag' ) ) {
+			wp_print_inline_style_tag( $css );
+			return;
+		}
 		if ( ! wp_style_is( $handle, 'registered' ) ) {
 			wp_register_style( $handle, false, array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		}

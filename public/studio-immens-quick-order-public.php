@@ -4883,7 +4883,7 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 							<?php esc_html_e('Preconto','studio-immens-quick-order');?>
 						</div>
 
-					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+					<?php if ( in_array( 'flash_order_pro/flash_order_pro.php', (array) get_option( 'active_plugins', array() ), true ) ) {
 					?>
 						<div class="fo_button_thin fo_tab_order_info" onclick="fop_show_order_info_tab()" style="color:lightblue;">
 							<span class="dashicons dashicons-welcome-widgets-menus"></span>
