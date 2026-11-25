@@ -367,7 +367,7 @@ class SIQO_Documents {
 	.footer { padding-top: 7px; text-align: center; white-space: pre-line; }
 	.note { margin-top: 7px; color: #444; font-size: 9px; text-align: center; }
 	@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
+<?php siqo_print_inline_style( ob_get_clean() ); ?>
 </head>
 <body>
 <div class="doc">

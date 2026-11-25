@@ -106,6 +106,7 @@ This plugin does not connect to external services. QR codes are generated locall
 = 1.2.5 =
 * WordPress.org review fixes: removed comparative marketing language, fixed invalid links, scoped admin assets, replaced inline scripts/styles with WordPress APIs, added AJAX capability guards, hardened QR/audio paths, removed bundled translations from the directory package, and removed external image/avatar dependencies.
 * Fixed activation when WooCommerce is not active and improved database table creation.
+* Fixed a fatal error in the printed receipts and admin panels: replaced the undefined `wp_print_inline_style_tag()` with the plugin's own `siqo_print_inline_style()` helper, which escapes the closing `</style>` sequence.
 
 = 1.2.4 =
 * WordPress.org review readiness: PHP 7.4 compatibility, SIQO global prefixes, safer QR storage, translation loading, access guards and packaging cleanup.

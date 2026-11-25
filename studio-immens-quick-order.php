@@ -69,6 +69,35 @@ if ( ! function_exists( 'siqo_add_inline_js' ) ) {
 	}
 }
 
+if ( ! function_exists( 'siqo_print_inline_style' ) ) {
+	/**
+	 * Print an inline `<style>` element.
+	 *
+	 * WordPress ships wp_print_inline_script_tag() but has no equivalent for
+	 * styles, so calling wp_print_inline_style_tag() is an undefined function.
+	 * Some templates render a full HTML document (printed receipts, admin
+	 * panels) where wp_add_inline_style() would be too late to be printed, so
+	 * the stylesheet has to be emitted in place.
+	 *
+	 * @param string $css CSS code.
+	 */
+	function siqo_print_inline_style( $css ) {
+		$css = (string) $css;
+
+		if ( '' === trim( $css ) ) {
+			return;
+		}
+
+		// Inside a <style> element only "</style" can leave the element: an HTML
+		// parser treats everything else as CSS text, so neutralizing that
+		// sequence is enough (and CSS is printed raw, exactly like core does
+		// with wp_add_inline_style()).
+		$css = preg_replace( '#</\s*style#i', '/style', $css );
+
+		printf( '<style>%s</style>' . "\n", $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS must not be HTML-escaped.
+	}
+}
+
 if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 	/**
 	 * Enqueue a small inline stylesheet through the WordPress style API.
@@ -80,8 +109,8 @@ if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 		if ( '' === trim( (string) $css ) ) {
 			return;
 		}
-		if ( did_action( 'wp_head' ) && function_exists( 'wp_print_inline_style_tag' ) ) {
-			wp_print_inline_style_tag( $css );
+		if ( did_action( 'wp_head' ) ) {
+			siqo_print_inline_style( $css );
 			return;
 		}
 		if ( ! wp_style_is( $handle, 'registered' ) ) {

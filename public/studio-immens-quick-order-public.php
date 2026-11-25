@@ -540,7 +540,7 @@ function siqo_header_style() { ?>
 			}
 		?>
 	}
-	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
+	<?php siqo_print_inline_style( ob_get_clean() ); ?>
 	<?php
 }
 add_action( 'wp_head', 'siqo_header_style' );
@@ -5253,7 +5253,7 @@ function SIQO_flash_tab_order( $tavoli = array() ){
 		#eltdf-back-to-top{
 			visibility: hidden!important;
 		}
-	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
+	<?php siqo_print_inline_style( ob_get_clean() ); ?>
 
 	<?php
 }
@@ -6253,7 +6253,7 @@ $ajax_refresh_table_seconds = ( intval( SIQO_get_meta('ajax_refresh_table_second
 	    .foTimeOutAnim {
 	        animation: foerrcol 2s alternate infinite!important;
 	    }
-	<?php wp_print_inline_style_tag( ob_get_clean() ); ?>
+	<?php siqo_print_inline_style( ob_get_clean() ); ?>
 
 <?php
 }
