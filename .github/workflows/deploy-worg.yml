@@ -13,6 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get plugin version
+        run: |
+          VERSION=$(grep -i "Version:" studio-immens-quick-order.php | head -n 1 | sed -E 's/.*Version:[[:space:]]*([0-9\.]+).*/\1/i')
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Deploying version $VERSION"
+
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
