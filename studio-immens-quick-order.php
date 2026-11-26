@@ -145,6 +145,31 @@ if ( ! function_exists( 'siqo_sanitize_css' ) ) {
 	}
 }
 
+if ( ! function_exists( 'siqo_print_inline_style_tag' ) ) {
+	/**
+	 * Print inline CSS with a compatibility fallback for older WordPress cores.
+	 *
+	 * @param string $css CSS code.
+	 */
+	function siqo_print_inline_style_tag( $css ) {
+		$css = siqo_sanitize_css( $css );
+		if ( '' === trim( (string) $css ) ) {
+			return;
+		}
+		if ( function_exists( 'wp_print_inline_style_tag' ) ) {
+			wp_print_inline_style_tag( $css );
+			return;
+		}
+		$handle = 'siqo-inline-style';
+		if ( ! wp_style_is( $handle, 'registered' ) ) {
+			wp_register_style( $handle, false, array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		}
+		wp_enqueue_style( $handle );
+		wp_add_inline_style( $handle, $css );
+		wp_print_styles( $handle );
+	}
+}
+
 if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 	/**
 	 * Enqueue a small inline stylesheet through the WordPress style API.
@@ -157,8 +182,8 @@ if ( ! function_exists( 'siqo_add_inline_css' ) ) {
 		if ( '' === trim( (string) $css ) ) {
 			return;
 		}
-		if ( did_action( 'wp_head' ) && function_exists( 'wp_print_inline_style_tag' ) ) {
-			wp_print_inline_style_tag( $css );
+		if ( did_action( 'wp_head' ) ) {
+			siqo_print_inline_style_tag( $css );
 			return;
 		}
 		if ( ! wp_style_is( $handle, 'registered' ) ) {

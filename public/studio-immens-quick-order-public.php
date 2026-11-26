@@ -537,7 +537,7 @@ function siqo_header_style() {
 		}
 	}
 	$css .= '}';
-	wp_print_inline_style_tag( siqo_sanitize_css( $css ) );
+	siqo_print_inline_style_tag( $css );
 }
 add_action( 'wp_head', 'siqo_header_style' );
 add_action( 'admin_head', 'siqo_header_style' );

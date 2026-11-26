@@ -369,7 +369,7 @@ $siqo_doc_css = <<<'CSS'
 	.note { margin-top: 7px; color: #444; font-size: 9px; text-align: center; }
 	@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
 CSS;
-wp_print_inline_style_tag( siqo_sanitize_css( str_replace( array( '__PAPER__', '__WIDTH__' ), array( esc_attr( $paper ), esc_attr( $width ) ), $siqo_doc_css ) ) );
+siqo_print_inline_style_tag( str_replace( array( '__PAPER__', '__WIDTH__' ), array( esc_attr( $paper ), esc_attr( $width ) ), $siqo_doc_css ) );
 ?>
 </head>
 <body>
