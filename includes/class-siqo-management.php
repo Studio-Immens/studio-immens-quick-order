@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only view parameters.
+
 class SIQO_Management {
 
 	const PAGE_SLUG    = 'gestione';
@@ -14,6 +16,7 @@ class SIQO_Management {
 		add_shortcode( 'SIQO_management_dashboard', array( __CLASS__, 'render_dashboard' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'admin_init', array( __CLASS__, 'handle_settings_save' ) );
 		add_action( 'admin_init', array( __CLASS__, 'redirect_legacy_pages' ) );
 		add_action( 'admin_post_siqo_create_pages', array( __CLASS__, 'handle_create_pages' ) );
@@ -169,7 +172,7 @@ class SIQO_Management {
 		}
 		$logo = get_option( 'siqo_restaurant_logo_url', '' );
 		if ( ! $logo ) {
-			$logo = plugins_url( 'includes/img/logo.webp', dirname( __FILE__ ) );
+			$logo = plugins_url( 'includes/img/logo.webp', SIQO_PLUGIN_FILE );
 		}
 		$primary = sanitize_hex_color( (string) get_option( 'siqo_brand_primary', '#a6462f' ) );
 		$accent  = sanitize_hex_color( (string) get_option( 'siqo_brand_accent', '#c98a00' ) );
@@ -224,19 +227,29 @@ class SIQO_Management {
 		}
 
 		wp_enqueue_style( 'dashicons' );
-		wp_enqueue_style( 'siqo-management', plugins_url( 'public/css/siqo-management.css', dirname( __FILE__ ) ), array( 'dashicons' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		wp_enqueue_style( 'siqo-management', plugins_url( 'public/css/siqo-management.css', SIQO_PLUGIN_FILE ), array( 'dashicons' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		wp_add_inline_style( 'siqo-management', self::get_brand_css() );
 
 		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'stations' === sanitize_key( wp_unslash( $_GET['view'] ) ) && function_exists( 'siqo_station_enqueue_assets' ) ) {
 			siqo_station_enqueue_assets();
 		}
 
+		if ( is_page( self::PAGE_SLUG ) && isset( $_GET['view'] ) && 'tables' === sanitize_key( wp_unslash( $_GET['view'] ) ) ) {
+			wp_enqueue_script(
+				'siqo-table-sessions',
+				plugins_url( 'public/js/siqo-table-sessions.js', SIQO_PLUGIN_FILE ),
+				array(),
+				STUDIO_IMMENS_QUICK_ORDER_VERSION,
+				true
+			);
+		}
+
 		if ( $is_customer ) {
-			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', dirname( __FILE__ ) ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+			wp_enqueue_style( 'siqo-customer', plugins_url( 'public/css/siqo-customer.css', SIQO_PLUGIN_FILE ), array( 'siqo-management' ), STUDIO_IMMENS_QUICK_ORDER_VERSION );
 		}
 
 		if ( $is_app ) {
-			wp_enqueue_script( 'siqo-management', plugins_url( 'public/js/siqo-management.js', dirname( __FILE__ ) ), array( 'jquery' ), STUDIO_IMMENS_QUICK_ORDER_VERSION, true );
+			wp_enqueue_script( 'siqo-management', plugins_url( 'public/js/siqo-management.js', SIQO_PLUGIN_FILE ), array( 'jquery' ), STUDIO_IMMENS_QUICK_ORDER_VERSION, true );
 			wp_localize_script(
 				'siqo-management',
 				'SIQO_MANAGEMENT',
@@ -252,7 +265,32 @@ class SIQO_Management {
 		if ( false === strpos( (string) $hook, 'si-quick-order_settings' ) && false === strpos( (string) $hook, 'si-quick-order_legacy' ) && 'toplevel_page_si-quick-order' !== $hook ) {
 			return;
 		}
-		wp_enqueue_style( 'siqo-management-admin', plugins_url( 'admin/css/siqo-management-admin.css', dirname( __FILE__ ) ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+		wp_enqueue_style( 'siqo-management-admin', plugins_url( 'admin/css/siqo-management-admin.css', SIQO_PLUGIN_FILE ), array(), STUDIO_IMMENS_QUICK_ORDER_VERSION );
+	}
+
+	public static function admin_menu() {
+		if ( ! class_exists( 'SIQO_Back_Office' ) || ! SIQO_Back_Office::can_access() ) {
+			return;
+		}
+		$capability = current_user_can( 'manage_options' ) ? 'manage_options' : 'siqo_manage_suppliers';
+		add_menu_page(
+			__( 'Back Office', 'studio-immens-quick-order' ),
+			__( 'Back Office', 'studio-immens-quick-order' ),
+			$capability,
+			'siqo-back-office',
+			array( __CLASS__, 'redirect_back_office' ),
+			'dashicons-businessman',
+			58
+		);
+	}
+
+	public static function redirect_back_office() {
+		if ( class_exists( 'SIQO_Back_Office' ) ) {
+			wp_safe_redirect( SIQO_Back_Office::url() );
+			exit;
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=si-quick-order' ) );
+		exit;
 	}
 
 	public static function default_modules( $modules ) {
@@ -378,7 +416,7 @@ class SIQO_Management {
 		if ( isset( $module['id'] ) && $module['id'] === $current ) {
 			return true;
 		}
-		$request = empty( $_SERVER['REQUEST_URI'] ) ? '' : wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+		$request = empty( $_SERVER['REQUEST_URI'] ) ? '' : wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
 		if ( ! $request ) {
 			return false;
 		}
@@ -480,14 +518,10 @@ class SIQO_Management {
 					$current_user = wp_get_current_user();
 					if ( $current_user->exists() ) :
 						$account_label = $current_user->display_name ? $current_user->display_name : $current_user->user_login;
-						$avatar_url    = get_avatar_url( $current_user->ID, array( 'size' => 48 ) );
 						?>
+						<?php /* translators: %s: account display name. */ ?>
 						<a class="siqo-bar-action siqo-account-action" href="<?php echo esc_url( self::page_url( array( 'view' => 'account' ) ) ); ?>" title="<?php echo esc_attr( sprintf( __( 'Account di %s', 'studio-immens-quick-order' ), $account_label ) ); ?>">
-							<?php if ( $avatar_url ) : ?>
-								<img class="siqo-account-avatar" src="<?php echo esc_url( $avatar_url ); ?>" alt="" width="24" height="24" loading="lazy">
-							<?php else : ?>
-								<span class="dashicons dashicons-admin-users" aria-hidden="true"></span>
-							<?php endif; ?>
+							<span class="dashicons dashicons-admin-users" aria-hidden="true"></span>
 							<span class="siqo-account-name"><?php echo esc_html( $account_label ); ?></span>
 						</a>
 					<?php endif; ?>
@@ -524,7 +558,6 @@ class SIQO_Management {
 		if ( ! $user->exists() ) {
 			return '';
 		}
-		$avatar = get_avatar_url( $user->ID, array( 'size' => 96 ) );
 		$roles  = array(
 			'manager'    => __( 'Manager', 'studio-immens-quick-order' ),
 			'supervisor' => __( 'Supervisor', 'studio-immens-quick-order' ),
@@ -547,11 +580,7 @@ class SIQO_Management {
 
 			<div class="siqo-panel siqo-account-panel">
 				<div class="siqo-account-head">
-					<?php if ( $avatar ) : ?>
-						<img class="siqo-account-avatar-lg" src="<?php echo esc_url( $avatar ); ?>" alt="" width="72" height="72" loading="lazy">
-					<?php else : ?>
-						<span class="siqo-account-avatar-lg siqo-account-avatar-fallback"><span class="dashicons dashicons-admin-users" aria-hidden="true"></span></span>
-					<?php endif; ?>
+					<span class="siqo-account-avatar-lg siqo-account-avatar-fallback"><span class="dashicons dashicons-admin-users" aria-hidden="true"></span></span>
 					<div>
 						<strong><?php echo esc_html( $user->display_name ? $user->display_name : $user->user_login ); ?></strong>
 						<span class="siqo-account-role"><?php echo esc_html( $role ); ?></span>
@@ -581,7 +610,8 @@ class SIQO_Management {
 				</form>
 			</div>
 		</section>
-		<script type="text/javascript">
+		<?php
+		$siqo_profile_js = <<<'JS'
 		(function () {
 			var form = document.getElementById('siqo-profile-form');
 			if (!form) {
@@ -596,7 +626,7 @@ class SIQO_Management {
 					status.textContent = 'Salvataggio...';
 					status.classList.remove('is-error');
 				}
-				fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+				fetch('__SIQO_AJAX_URL__', {
 					method: 'POST',
 					credentials: 'same-origin',
 					body: body
@@ -624,8 +654,8 @@ class SIQO_Management {
 				});
 			});
 		})();
-		</script>
-		<?php
+JS;
+		siqo_add_inline_js( str_replace( '__SIQO_AJAX_URL__', esc_url( admin_url( 'admin-ajax.php' ) ), $siqo_profile_js ) );
 		return ob_get_clean();
 	}
 
@@ -641,9 +671,11 @@ class SIQO_Management {
 		$email        = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 		$first_name   = isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
 		$last_name    = isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Passwords must preserve special characters; wp_unslash() is applied.
 		$password     = isset( $_POST['user_pass'] ) ? (string) wp_unslash( $_POST['user_pass'] ) : '';
 		$confirm      = isset( $_POST['user_pass_confirm'] ) ? (string) wp_unslash( $_POST['user_pass_confirm'] ) : '';
 		$current_pass = isset( $_POST['user_pass_current'] ) ? (string) wp_unslash( $_POST['user_pass_current'] ) : '';
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( '' === $display_name ) {
 			wp_send_json_error( array( 'message' => 'Il nome visualizzato è obbligatorio.' ), 400 );
@@ -742,6 +774,9 @@ class SIQO_Management {
 			echo '<h1>' . esc_html__( 'Gestione tavoli', 'studio-immens-quick-order' ) . '</h1>';
 			echo '<p class="siqo-muted">' . esc_html__( 'Apri un tavolo per creare l’ordine o gestire il conto.', 'studio-immens-quick-order' ) . '</p>';
 			echo '</div></header>';
+			if ( function_exists( 'siqo_table_session_render_bar' ) ) {
+				echo wp_kses( siqo_table_session_render_bar( true ), siqo_allowed_html() );
+			}
 			if ( function_exists( 'SIQO_manage_table' ) ) {
 				SIQO_manage_table( true );
 			}
@@ -749,11 +784,11 @@ class SIQO_Management {
 		} elseif ( 'stations' === $view ) {
 			echo '<section class="siqo-view siqo-view-stations">';
 			if ( function_exists( 'siqo_station_orders_render' ) ) {
-				echo siqo_station_orders_render( true );
+				echo wp_kses( siqo_station_orders_render( true ), siqo_allowed_html() );
 			}
 			echo '</section>';
 		} elseif ( 'account' === $view ) {
-			echo self::render_account_panel();
+			echo wp_kses( self::render_account_panel(), siqo_allowed_html() );
 		} else {
 			$class = $panels[ $view ][0];
 			if ( ! self::license_active() ) {
@@ -763,7 +798,7 @@ class SIQO_Management {
 				echo '<a class="siqo-btn siqo-btn-primary" href="' . esc_url( admin_url( 'admin.php?page=si-quick-order_settings&section=license' ) ) . '">' . esc_html__( 'Gestisci licenza', 'studio-immens-quick-order' ) . '</a>';
 				echo '</section>';
 			} elseif ( method_exists( $class, 'render_panel' ) ) {
-				echo $class::render_panel();
+				echo wp_kses( $class::render_panel(), siqo_allowed_html() );
 			}
 		}
 		echo '</main>';
@@ -885,8 +920,7 @@ class SIQO_Management {
 			wp_send_json_error( array( 'message' => 'Accesso negato.' ), 403 );
 		}
 
-		$raw    = isset( $_POST['layout'] ) ? wp_unslash( $_POST['layout'] ) : '';
-		$layout = json_decode( $raw, true );
+		$layout = siqo_json_post( 'layout' );
 		if ( ! is_array( $layout ) ) {
 			wp_send_json_error( array( 'message' => 'Disposizione non valida.' ), 400 );
 		}
@@ -967,8 +1001,8 @@ class SIQO_Management {
 			wp_die( esc_html__( 'Accesso negato.', 'studio-immens-quick-order' ) );
 		}
 		check_admin_referer( 'siqo_create_pages' );
-		if ( class_exists( 'Studio_Immens_Quick_Order_Activator' ) ) {
-			Studio_Immens_Quick_Order_Activator::activate();
+		if ( class_exists( 'SIQO_Activator' ) ) {
+			SIQO_Activator::activate();
 		}
 		self::ensure_page();
 		wp_safe_redirect( add_query_arg( 'siqo_saved', '1', admin_url( 'admin.php?page=si-quick-order_settings&section=pages' ) ) );

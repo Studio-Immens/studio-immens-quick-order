@@ -3,11 +3,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
+
 $brand    = SIQO_Management::get_brand();
 $app_url  = SIQO_Management::page_url();
 $settings = admin_url( 'admin.php?page=si-quick-order_settings' );
-$tables   = get_page_by_path( 'manage-tables' );
-$stations = get_page_by_path( 'ordini-reparti' );
 $catering = get_page_by_path( 'catering' );
 
 $tables_count   = (int) wp_count_posts( 'siqo_tables' )->publish;
@@ -24,26 +24,38 @@ $cards = array(
 	),
 	array(
 		'title' => __( 'Tavoli', 'studio-immens-quick-order' ),
+		/* translators: %d: number of published tables. */
 		'text'  => sprintf( __( '%d tavoli pubblicati.', 'studio-immens-quick-order' ), $tables_count ),
-		'url'   => $tables ? get_permalink( $tables ) : admin_url( 'edit.php?post_type=siqo_tables' ),
+		'url'   => SIQO_Management::page_url( array( 'view' => 'tables' ) ),
 		'cta'   => __( 'Apri tavoli', 'studio-immens-quick-order' ),
 		'icon'  => 'grid-view',
 	),
 	array(
 		'title' => __( 'Reparti', 'studio-immens-quick-order' ),
 		'text'  => __( 'Ordini per cucina, bar e punti di preparazione.', 'studio-immens-quick-order' ),
-		'url'   => $stations ? get_permalink( $stations ) : admin_url( 'admin.php?page=si-quick-order' ),
+		'url'   => SIQO_Management::page_url( array( 'view' => 'stations' ) ),
 		'cta'   => __( 'Apri reparti', 'studio-immens-quick-order' ),
 		'icon'  => 'food',
 	),
 	array(
 		'title' => __( 'Catering', 'studio-immens-quick-order' ),
+		/* translators: %d: number of published events. */
 		'text'  => sprintf( __( '%d eventi pubblicati.', 'studio-immens-quick-order' ), $catering_count ),
 		'url'   => SIQO_Management::page_url( array( 'view' => 'catering' ) ),
 		'cta'   => __( 'Gestisci catering', 'studio-immens-quick-order' ),
 		'icon'  => 'calendar-alt',
 	),
 );
+
+if ( class_exists( 'SIQO_Back_Office' ) && SIQO_Back_Office::can_access() ) {
+	$cards[] = array(
+		'title' => __( 'Back Office', 'studio-immens-quick-order' ),
+		'text'  => __( 'Agenda, fornitori, acquisti e scadenze burocratiche.', 'studio-immens-quick-order' ),
+		'url'   => SIQO_Back_Office::url(),
+		'cta'   => __( 'Apri back office', 'studio-immens-quick-order' ),
+		'icon'  => 'businessman',
+	);
+}
 ?>
 <div class="wrap siqo-admin-dashboard">
 	<header class="siqo-admin-hero">

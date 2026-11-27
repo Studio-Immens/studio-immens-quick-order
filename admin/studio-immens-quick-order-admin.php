@@ -6,12 +6,14 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin page parameter.
 
 function SIQO_initial_setup(){
 
@@ -21,7 +23,7 @@ function SIQO_menu_page(){
     $menu_slug = 'si-quick-order';
     $position = (SIQO_get_meta( 'siqo_menu_order') != '')?SIQO_get_meta( 'siqo_menu_order') : '15';
 
-    $link = plugins_url( 'includes/img/logo-20.webp', dirname(__FILE__) );
+    $link = plugins_url( 'includes/img/logo-20.webp', SIQO_PLUGIN_FILE );
 
    add_menu_page( 'Quick Order', esc_html__( 'Quick Order', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page', $link, $position );
    add_submenu_page( $menu_slug, esc_html__( 'Dashboard', 'studio-immens-quick-order' ), esc_html__( 'Dashboard', 'studio-immens-quick-order' ), 'manage_options', $menu_slug, 'SIQO_main_menu_page' );
@@ -77,10 +79,9 @@ function SIQO_head_menu_page(){
     ?>
     <div id="SIQOadminContent">
     <h1 style="margin:30px 0px;display:flex;">
-        <img src="<?php echo esc_url('https://studioimmens.com/wp-content/uploads/2023/10/cropped-logo-512-transparent-bg.png');?>" width="50" height="50" alt="light logo">
+        <img src="<?php echo esc_url( plugins_url( 'includes/img/logo.webp', SIQO_PLUGIN_FILE ) ); ?>" width="50" height="50" alt="">
         Quick Order
-        <img src="<?php echo esc_url('https://studioimmens.com/wp-content/uploads/2024/09/logo-512.png');?>" width="50" height="50" alt="light logo">
-        <a class="SIQO_abutton" href="https://studioimmens.com/quick-order/" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"><?php esc_html_e( 'GUIDA', 'studio-immens-quick-order' );?></a>
+        <a class="SIQO_abutton" href="https://docs.studioimmens.com/studio-immens-quick-order/" target="_blank" rel="noopener" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"><?php esc_html_e( 'GUIDA', 'studio-immens-quick-order' );?></a>
     </h1>
     <?php
 }
@@ -110,13 +111,10 @@ function SIQO_nav_menu_page(){
     </nav>
     <?php
 }
-function SIQO_foot_menu_page( $debug = false ){
+function SIQO_foot_menu_page(){
     ?>
     </div>
     <?php
-    if ( $debug ) {
-        SIQO_debug( $_POST );
-    }
 }
 function SIQO_main_menu_page(){
 include( plugin_dir_path( __FILE__ ) . 'pages/main.php');
@@ -143,7 +141,7 @@ function SIQO_style_setting( $setting, $style, $type ){
     <div class="SIQOsettingStyle" id="<?php echo 'setting'. esc_attr($setting); ?>"style="background-color:<?php echo esc_attr($background_color); ?>" onclick="document.getElementById(<?php echo'`'.esc_attr($setting).'`';?>).click();">
         <p title="<?php echo esc_attr($setting); ?>"> <?php echo esc_attr($setting); ?>
             <input id="<?php echo esc_attr($setting); ?>" type="<?php echo esc_attr($type); ?>" name="css[<?php echo esc_attr($setting); ?>]" value="<?php echo esc_attr($style[$setting]); ?>" oninput="document.getElementById(<?php echo'`setting'.esc_attr($setting).'`';?>).style.backgroundColor = this.value;">
-            <span class="dashicons dashicons-image-rotate pointer" onclick="FO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($style[$setting])."'";?> )"></span>
+            <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($style[$setting])."'";?> )"></span>
         </p>
     </div>
     <?php
@@ -163,7 +161,7 @@ function SIQO_new_style_setting( $setting, $args = array() ){
     <div class="SIQOsettingStyle" id="<?php echo 'setting'.esc_attr($setting); ?>"style="background-color:<?php echo esc_attr($background_color); ?>" onclick="document.getElementById(<?php echo'`'.esc_attr($setting).'`';?>).click();">
         <p title="<?php echo esc_attr($setting); ?>"> <?php echo esc_attr($setting); ?>
             <input id="<?php echo esc_attr($setting); ?>" type="<?php echo esc_attr($args['type']); ?>" name="css[<?php echo esc_attr($setting); ?>]" value="<?php echo esc_attr($set_val); ?>" oninput="document.getElementById(<?php echo'`setting'.esc_attr($setting).'`';?>).style.backgroundColor = this.value;">
-            <span class="dashicons dashicons-image-rotate pointer" onclick="FO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default_css[$setting])."'";?> )" title="<?php esc_html_e('Ripristina il valore di default', 'studio-immens-quick-order' );?>"></span>
+            <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default_css[$setting])."'";?> )" title="<?php esc_html_e('Ripristina il valore di default', 'studio-immens-quick-order' );?>"></span>
         </p>
     </div>
     <?php
@@ -192,24 +190,33 @@ function SIQO_general_setting( $setting = array() ){
         <p class="SIQOtextSettings"><?php echo esc_attr($text);?></p>
         <?php if($type == 'audio'){
             $audio = ( SIQO_get_meta('siqo_notify_audio') ) ? SIQO_get_meta('siqo_notify_audio') : '';
-            $options = array_diff(scandir(plugin_dir_path(__DIR__).'includes/audio/'),array('..', '.'));
+            $audio_dir = plugin_dir_path(__DIR__).'includes/audio/';
+            $options = array_values( array_diff( scandir( $audio_dir ), array( '..', '.' ) ) );
+            $audio_labels = array(
+                'siqo-chime-soft.mp3'   => __( 'Campanella soft', 'studio-immens-quick-order' ),
+                'siqo-chime-bright.mp3' => __( 'Campanella bright', 'studio-immens-quick-order' ),
+                'siqo-double-bell.mp3'  => __( 'Doppia campanella', 'studio-immens-quick-order' ),
+                'siqo-low-alert.mp3'    => __( 'Avviso basso', 'studio-immens-quick-order' ),
+            );
+            $saved_audio_file = basename( (string) $audio );
+            if ( ! $saved_audio_file || ! in_array( $saved_audio_file, $options, true ) ) {
+                $saved_audio_file = in_array( 'siqo-chime-soft.mp3', $options, true )
+                    ? 'siqo-chime-soft.mp3'
+                    : ( ! empty( $options ) ? $options[0] : 'siqo-chime-soft.mp3' );
+                $audio = plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE ) . $saved_audio_file;
+            }
             ?>
-            <select name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default); ?>" onchange="addSrcToAudio(this.value);" <?php echo esc_attr($other);?>>
-                <option selected disabled hidden><?php esc_html_e('Seleziona l\'audio...', 'studio-immens-quick-order'); ?></option>
-                <?php if ( count($options) ) { ?>
-                    <?php foreach ($options as $option) { ?>
-                        <option value="<?php echo esc_url( plugins_url( 'includes/audio/', dirname(__FILE__, 2) ) ) . esc_attr($option);?>"><?php echo esc_attr($option);?></option>
-                    <?php } ?>
+            <select name="setting[<?php echo esc_attr($name); ?>]" onchange="addSrcToAudio(this.value);" <?php echo esc_attr($other);?>>
+                <option value=""><?php esc_html_e('Seleziona l\'audio...', 'studio-immens-quick-order'); ?></option>
+                <?php foreach ( $options as $option ) { ?>
+                    <option value="<?php echo esc_url( plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE ) . $option );?>" <?php selected( $saved_audio_file, $option ); ?>><?php echo esc_html( isset( $audio_labels[ $option ] ) ? $audio_labels[ $option ] : $option );?></option>
                 <?php } ?>
             </select>
             <audio id="SIQOadminAudio" controls autoplay>
               <source  src="<?php echo esc_attr($audio);?>" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-            <script>
-              var audio = document.getElementById("SIQOadminAudio");
-              audio.volume = 0.1;
-            </script>
+            <?php wp_print_inline_script_tag( 'var audio = document.getElementById("SIQOadminAudio"); if (audio) { audio.volume = 0.1; }' ); ?>
         <?php } elseif($type == 'textarea'){ ?>
            <textarea type="<?php echo esc_attr($type);?>" name="setting[<?php echo esc_attr($name);?>]" <?php echo esc_attr($other);?>><?php echo esc_attr($data_default);?></textarea>
         <?php } elseif ($type != 'select') { ?>
@@ -225,7 +232,7 @@ function SIQO_general_setting( $setting = array() ){
             </select>
         <?php } ?>
         <?php if ( $default != '' ) { ?>
-            <span class="dashicons dashicons-image-rotate pointer" onclick="FO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default)."'";?> )"></span>
+            <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default)."'";?> )"></span>
         <?php } ?>
     </div>
 
@@ -262,7 +269,7 @@ function SIQO_conditional_setting( $setting = array() ){
         <?php if ($type == 'radio') { ?>
             <input type="<?php echo esc_attr($type); ?>" name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default);?>" <?php echo esc_attr($other);?>>
         <?php } elseif ($type == 'select'){ ?>
-            <select name="setting[<?php echo esc_attr($name);?>]" value="<?php echo esc_attr($data_default);?>" onchange="FO_condition_setting(this);" siqo_bool="<?php echo esc_attr($bool);?>" target_bool="<?php echo esc_attr($target_bool);?>" <?php echo esc_attr($other);?>>
+            <select name="setting[<?php echo esc_attr($name);?>]" value="<?php echo esc_attr($data_default);?>" onchange="SIQO_condition_setting(this);" siqo_bool="<?php echo esc_attr($bool);?>" target_bool="<?php echo esc_attr($target_bool);?>" <?php echo esc_attr($other);?>>
                 <option selected disabled hidden><?php echo esc_attr($data_default);?></option>
                 <?php if ( count($options) ) { ?>
                     <?php foreach ($options as $option) { ?>
@@ -272,7 +279,7 @@ function SIQO_conditional_setting( $setting = array() ){
             </select>
         <?php } else{ } ?>
         <?php if ( $default != '' ) { ?>
-            <span class="dashicons dashicons-image-rotate pointer" onclick="FO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default)."'";?> )"></span>
+            <span class="dashicons dashicons-image-rotate pointer" onclick="SIQO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default)."'";?> )"></span>
         <?php } ?>
     </div>
 
@@ -280,7 +287,7 @@ function SIQO_conditional_setting( $setting = array() ){
 }
 
 function SIQO_set_local_network( $setting = array() ){
-    $net_info = FO_get_connection_info();
+    $net_info = SIQO_get_connection_info();
 
     $name = ( isset($setting['name']) ) ? $setting['name'] : '';
 
@@ -310,6 +317,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
             return;
         }
         if ( isset( $_POST[$args] ) ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Recursive sanitizer is applied immediately.
             $sany_args = SIQO_recursive_sanitize_text_field(wp_unslash($_POST[$args]));
             foreach ($sany_args as $key => $value) {
                 SIQO_update_meta( sanitize_text_field(wp_unslash($key)), sanitize_text_field(wp_unslash($value)), $assoc_id );
@@ -317,6 +325,7 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
         }
         if ( isset( $_POST['PGSett'] ) ) {
             $assoc_id = 'page_settings';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Each key and value is sanitized inside the loop.
             foreach ( $_POST['PGSett'] as $PGSett_K => $PGSett_V ) {
                 $settings = json_decode(SIQO_get_meta( sanitize_text_field(wp_unslash($PGSett_K)) ));
                 $PGSett_V = is_array( $PGSett_V ) ? SIQO_recursive_sanitize_text_field( wp_unslash( $PGSett_V ) ) : sanitize_text_field( wp_unslash( $PGSett_V ) );
@@ -340,14 +349,10 @@ function SIQO_save_settings( $args, $assoc_id = '', $debug = false ){
                 SIQO_update_meta( sanitize_text_field(wp_unslash($PGSett_K)), wp_json_encode($fin_sett), $assoc_id );
             }
         }
-        if ($debug) {
-            SIQO_debug($_POST);
-        } else{
-            if (isset($_SERVER['REQUEST_URI'])) {
-                $req_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
-                wp_safe_redirect( $req_uri );
-                exit;
-            }
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $req_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
+            wp_safe_redirect( $req_uri );
+            exit;
         }
     }
 }
@@ -386,13 +391,13 @@ function SIQO_manage_pages( $setting = array() ){
                     echo '<p class="SIQOtextSettings">'.esc_html__('l\'ID della pagina ', 'studio-immens-quick-order').esc_attr($value->meta_value).'</p>';
                     echo '<p class="SIQOtextSettings">'.esc_html__('la versione della pagina ', 'studio-immens-quick-order').esc_attr(SIQO_get_meta('page_version_'.substr($value->meta_key, 8))).'</p>';
                 ?>
-                <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="FO_toggle_pages_rapid_impost(<?php echo '`'.esc_attr($value->meta_value).'`'?>)">
+                <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="SIQO_admin_toggle_pages_rapid_impost(<?php echo '`'.esc_attr($value->meta_value).'`'?>)">
                     <?php esc_html_e('IMPOSTAZIONI', 'studio-immens-quick-order');?>
                 </div>
 
                 <?php SIQO_get_pages_impost($value->meta_value);?>
 
-                <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="FO_delete_page(<?php echo "'".esc_attr( substr($value->meta_key, 8) )."'"; ?>);">
+                <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="SIQO_delete_page(<?php echo "'".esc_attr( substr($value->meta_key, 8) )."'"; ?>);">
                     <?php esc_html_e('ELIMINA pagina', 'studio-immens-quick-order');?>
                 </div>
                 <a class="SIQObutton" style="height:20px;cursor:pointer;text-decoration:none;" href="<?php echo esc_attr(get_home_url()).'?p='.esc_attr($value->meta_value);?>">
@@ -400,7 +405,7 @@ function SIQO_manage_pages( $setting = array() ){
                 </a>
             </div>
        <?php } ?>
-        <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="FO_create_refresh_pages();" title="<?php esc_html_e( 'Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state create, le Crea.', 'studio-immens-quick-order' );?>">
+        <div class="SIQObutton" style="height:20px;cursor:pointer;" onclick="SIQO_create_refresh_pages();" title="<?php esc_html_e( 'Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state create, le Crea.', 'studio-immens-quick-order' );?>">
              <?php esc_html_e('CREA o AGGIORNA pagine', 'studio-immens-quick-order');?>
         </div>
     </div>
@@ -412,7 +417,7 @@ function SIQO_donate(){
     <div class="SIQO_section">
         <?php
         esc_html_e('Se vuoi sostenerci con una donazione, ','studio-immens-quick-order');
-        echo '<a href="https://studioimmens.com/donate" target="_blank">'.esc_html__(' Visita Questa Pagina ','studio-immens-quick-order').'</a>';
+        echo '<a href="'.esc_url( 'https://docs.studioimmens.com/studio-immens-quick-order/' ).'" target="_blank" rel="noopener">'.esc_html__(' Visita Questa Pagina ','studio-immens-quick-order').'</a>';
         esc_html_e('. Ogni tuo gesto  per noi un prezioso impegno, e siamo lieti di ascoltare le tue proposte e suggerimenti.','studio-immens-quick-order');
         ?>
     </div>
@@ -424,7 +429,7 @@ function SIQO_submit_suggestions(){
     <div class="SIQO_section">
         <?php
         esc_html_e('Se desideri darci un feedback o fare una richiesta, ','studio-immens-quick-order');
-        echo '<a href="https://studioimmens.com/feedback" target="_blank">'.esc_html__(' Clicca QUI ','studio-immens-quick-order').'</a>';
+        echo '<a href="'.esc_url( 'https://github.com/Studio-Immens/studio-immens-quick-order/issues' ).'" target="_blank" rel="noopener">'.esc_html__(' Clicca QUI ','studio-immens-quick-order').'</a>';
         esc_html_e('. Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione.','studio-immens-quick-order');
         ?>
     </div>
@@ -514,24 +519,21 @@ function SIQO_manage_QR_codes(){
                     <span id="SIQO_fill_content_QR" style="display:none;"><?php esc_html_e( 'Per poter creare il QRcode, devi inserire il contenuto nel campo content!', 'studio-immens-quick-order' ); ?></span>
                     <input type="text" class="SIQOtextSettings" name="NEW_QR_size" placeholder="size (default 150)">
                     <input type="text" class="SIQOtextSettings" name="NEW_QR_content" placeholder="content*" style="width:calc(80% - 40px);">
-                    <button class="SIQObutton" onclick="fo_create_QR(jQuery(this).parent());">
+                    <button class="SIQObutton" onclick="SIQO_create_QR(jQuery(this).parent());">
                         <?php esc_html_e('CREA','studio-immens-quick-order');?>
                     </button>
                 </div>
 
-                <input type="text" class="SIQOtextSettings" target="SIQO_search_target" onkeyup="fo_search_for_file(this)" onkeydown="fo_search_for_file(this)" style="max-width:100%;flex-basis:100%;text-align:left;margin:15px;" placeholder="<?php esc_html_e(' Cerca QR ... ','studio-immens-quick-order' );?>">
+                <input type="text" class="SIQOtextSettings" target="SIQO_search_target" onkeyup="SIQO_search_for_file(this)" onkeydown="SIQO_search_for_file(this)" style="max-width:100%;flex-basis:100%;text-align:left;margin:15px;" placeholder="<?php esc_html_e(' Cerca QR ... ','studio-immens-quick-order' );?>">
             <?php
-                $QR_dir = plugin_dir_path( dirname( __FILE__ ) ) . 'includes/phpqrcode/QRgenerate/';
-                if ( ! is_dir( $QR_dir ) ) {
-                    wp_mkdir_p( $QR_dir );
-                }
+                $QR_dir = SIQO_get_qr_dir();
                 $QR_img = is_dir( $QR_dir ) ? (array) scandir( $QR_dir ) : array();
                 foreach ($QR_img as $key => $value) {
                     if ($value != '.' && $value != '..') {
-                        $QR_url = esc_url_raw( plugin_dir_url( dirname(__FILE__) ) . 'includes/phpqrcode/QRgenerate/' . $value);
+                        $QR_url = esc_url_raw( SIQO_get_qr_url() . $value );
                         $size = substr($value,strpos($value,'(')+1, -5);
                         $size = ($size >= '450' )?'450':$size;
-                        $RealName = (!str_contains($value,'any-')) ? esc_attr($value): str_replace('any-', '', $value);
+                        $RealName = (!siqo_str_contains($value,'any-')) ? esc_attr($value): str_replace('any-', '', $value);
                         ?>
                             <div target="<?php echo esc_attr($RealName);?>" class="SIQOsettingEl SIQOtextSettings SIQO_search_target">
                                 <img src="<?php echo esc_attr($QR_url);?>" width="<?php echo esc_attr($size);?>" height="<?php echo esc_attr($size);?>">
@@ -541,7 +543,7 @@ function SIQO_manage_QR_codes(){
                                     <a class="SIQO_link" href="<?php echo esc_attr($QR_url);?>" download="<?php echo esc_attr($RealName);?>">
                                         <?php esc_html_e('Scarica Immagine','studio-immens-quick-order');?>
                                     </a>
-                                    <a class="SIQO_link_del" del_path="<?php echo esc_attr(plugin_dir_path(dirname(__FILE__))).'includes/phpqrcode/QRgenerate/'.esc_attr($value);?>" onclick="FO_delete_QR_images(this);">
+                                    <a class="SIQO_link_del" del_path="<?php echo esc_attr( SIQO_get_qr_dir() . $value );?>" onclick="SIQO_delete_QR_images(this);">
                                         <?php esc_html_e('Elimina Immagine','studio-immens-quick-order');?>
                                     </a>
                                 </strong>

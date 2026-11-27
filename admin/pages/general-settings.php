@@ -1,7 +1,11 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only settings tab parameter.
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 
 $disp_general = 'display:none;';
 
@@ -24,7 +28,7 @@ wp_enqueue_style( 'studio-immens-quick-order-settings-css', plugins_url( 'public
 
 <nav>
     <?php do_action('siqo_settings_navigation_start') ?>
-    <button onclick="FO_settings_navigations( jQuery('#general') );">Generali</button>
+    <button onclick="SIQO_settings_navigations( jQuery('#general') );">Generali</button>
 
     <?php do_action('siqo_settings_navigation_end') ?>
 </nav>

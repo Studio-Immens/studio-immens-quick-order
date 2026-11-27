@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 /**
  * The admin-specific functionality of the plugin.
@@ -6,8 +10,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  */
 
 /**
@@ -16,11 +20,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/admin
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/admin
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
-class Studio_Immens_Quick_Order_Admin {
+class SIQO_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -59,6 +63,9 @@ class Studio_Immens_Quick_Order_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
+		if ( ! $this->is_plugin_screen() ) {
+			return;
+		}
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/studio-immens-quick-order-admin.css', array(), $this->version, 'all' );
 	}
@@ -69,7 +76,19 @@ class Studio_Immens_Quick_Order_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
+		if ( ! $this->is_plugin_screen() ) {
+			return;
+		}
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/studio-immens-quick-order-admin.js', array( 'jquery' ), $this->version, array('in_footer' => true, 'strategy'  => 'async') );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/studio-immens-quick-order-admin.js', array( 'jquery' ), $this->version, array( 'in_footer' => true ) );
+	}
+
+	private function is_plugin_screen() {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen ) {
+			return false;
+		}
+		$id = (string) $screen->id;
+		return false !== strpos( $id, 'si-quick-order' ) || false !== strpos( $id, 'siqo' );
 	}
 }

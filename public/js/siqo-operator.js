@@ -673,11 +673,11 @@
             closeSheets();
         });
 
-        wrapGlobal('fo_tab_show_keyboard_button', null, function () {
+        wrapGlobal('SIQO_tab_show_keyboard_button', null, function () {
             window.setTimeout(syncSheets, 0);
         });
 
-        wrapGlobal('fo_tab_show_variation_button', null, function () {
+        wrapGlobal('SIQO_tab_show_variation_button', null, function () {
             window.setTimeout(syncSheets, 0);
         });
 

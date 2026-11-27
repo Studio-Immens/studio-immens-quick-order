@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *
@@ -81,10 +87,10 @@
 			QRtools::markTime('before_build_cache');
 			
 			$mask = new QRmask();
-            for ($a=1; $a <= QRSPEC_VERSION_MAX; $a++) {
+            for ($a=1; $a <= SIQO_QR_QRSPEC_VERSION_MAX; $a++) {
                 $frame = QRspec::newFrame($a);
-                if (QR_IMAGE) {
-                    $fileName = QR_CACHE_DIR.'frame_'.$a.'.png';
+                if (SIQO_QR_IMAGE) {
+                    $fileName = SIQO_QR_CACHE_DIR.'frame_'.$a.'.png';
                     QRimage::png(self::binarize($frame), $fileName, 1, 0);
                 }
 				
@@ -100,12 +106,12 @@
         //----------------------------------------------------------------------
         public static function log($outfile, $err)
         {
-            if (QR_LOG_DIR !== false) {
+            if (SIQO_QR_LOG_DIR !== false) {
                 if ($err != '') {
                     if ($outfile !== false) {
-                        file_put_contents(QR_LOG_DIR.basename($outfile).'-errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
+                        file_put_contents(SIQO_QR_LOG_DIR.basename($outfile).'-errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
                     } else {
-                        file_put_contents(QR_LOG_DIR.'errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
+                        file_put_contents(SIQO_QR_LOG_DIR.'errors.txt', gmdate('Y-m-d H:i:s').': '.$err, FILE_APPEND);//phpcs:ignore
                     }
                 }    
             }
@@ -128,10 +134,10 @@
             list($usec, $sec) = explode(" ", microtime());
             $time = ((float)$usec + (float)$sec);
             
-            if (!isset($GLOBALS['qr_time_bench']))
-                $GLOBALS['qr_time_bench'] = array();
+            if (!isset($GLOBALS['siqo_qr_time_bench']))
+                $GLOBALS['siqo_qr_time_bench'] = array();
             
-            $GLOBALS['qr_time_bench'][$markerId] = $time;
+            $GLOBALS['siqo_qr_time_bench'][$markerId] = $time;
         }
         
         //----------------------------------------------------------------------
@@ -147,7 +153,7 @@
                     <thead><tr style="border-bottom:1px solid silver"><td colspan="2" style="text-align:center">BENCHMARK</td></tr></thead>
                     <tbody>';
 
-            foreach($GLOBALS['qr_time_bench'] as $markerId=>$thisTime) {
+            foreach($GLOBALS['siqo_qr_time_bench'] as $markerId=>$thisTime) {
                 if ($p > 0) {
                     echo '<tr><th style="text-align:right">till '.esc_attr($markerId).': </th><td>'.number_format($thisTime-$lastTime, 6).'s</td></tr>';
                 } else {

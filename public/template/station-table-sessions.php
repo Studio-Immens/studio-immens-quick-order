@@ -83,6 +83,7 @@ function siqo_table_session_ajax() {
 			'table_id'   => $table_id,
 			'active'     => true,
 			'expires_at' => $session->expires_at,
+			/* translators: %s: session expiry time. */
 			'label'      => sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), wp_date( 'H:i', strtotime( $session->expires_at . ' UTC' ) ) ),
 		)
 	);
@@ -90,10 +91,8 @@ function siqo_table_session_ajax() {
 add_action( 'wp_ajax_siqo_table_open', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_table_close', 'siqo_table_session_ajax' );
 add_action( 'wp_ajax_siqo_tables_close_all', 'siqo_table_session_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_table_open', 'siqo_table_session_ajax' );
-add_action( 'wp_ajax_nopriv_siqo_table_close', 'siqo_table_session_ajax' );
 
-function siqo_table_session_render_bar() {
+function siqo_table_session_render_bar( $compact = false ) {
 	if ( ! class_exists( 'SIQO_Management' ) || ! SIQO_Management::can( 'manage_tables' ) ) {
 		return '';
 	}
@@ -118,7 +117,7 @@ function siqo_table_session_render_bar() {
 
 	ob_start();
 	?>
-	<div class="siqo-table-session-bar"
+	<div class="siqo-table-session-bar<?php echo $compact ? ' is-compact' : ''; ?>"
 		data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 		data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_table_session' ) ); ?>"
 		data-label-open="<?php esc_attr_e( 'Apri', 'studio-immens-quick-order' ); ?>"
@@ -147,6 +146,7 @@ function siqo_table_session_render_bar() {
 					$siqo_expires  = $siqo_active && isset( $expiries[ $siqo_table_id ] ) ? (string) $expiries[ $siqo_table_id ] : '';
 					$siqo_label    = $siqo_active
 						? ( $siqo_expires
+							/* translators: %s: session expiry time. */
 							? sprintf( __( 'Attivo fino alle %s', 'studio-immens-quick-order' ), wp_date( 'H:i', strtotime( $siqo_expires . ' UTC' ) ) )
 							: __( 'Attivo', 'studio-immens-quick-order' ) )
 						: __( 'Non attivo', 'studio-immens-quick-order' );

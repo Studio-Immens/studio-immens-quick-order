@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 /**
  * Register all actions and filters for the plugin
@@ -6,8 +10,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  */
 
 /**
@@ -17,11 +21,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
-class Studio_Immens_Quick_Order_Loader {
+class SIQO_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

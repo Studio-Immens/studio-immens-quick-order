@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *
@@ -22,7 +28,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-    define('QR_IMAGE', true);
+    define('SIQO_QR_IMAGE', true);
 
     class QRimage {
     

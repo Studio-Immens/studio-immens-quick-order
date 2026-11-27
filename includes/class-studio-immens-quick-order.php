@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 /**
  * The file that defines the core plugin class
@@ -9,8 +13,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  */
 
 /**
@@ -23,14 +27,14 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class Studio_Immens_Quick_Order {
+class SIQO_Plugin {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -38,7 +42,7 @@ class Studio_Immens_Quick_Order {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Studio_Immens_Quick_Order_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      SIQO_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -92,10 +96,10 @@ class Studio_Immens_Quick_Order {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Studio_Immens_Quick_Order_Loader. Orchestrates the hooks of the plugin.
-	 * - Studio_Immens_Quick_Order_i18n. Defines internationalization functionality.
-	 * - Studio_Immens_Quick_Order_Admin. Defines all hooks for the admin area.
-	 * - Studio_Immens_Quick_Order_Public. Defines all hooks for the public side of the site.
+	 * - SIQO_Loader. Orchestrates the hooks of the plugin.
+	 * - SIQO_i18n. Defines internationalization functionality.
+	 * - SIQO_Admin. Defines all hooks for the admin area.
+	 * - SIQO_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -119,23 +123,20 @@ class Studio_Immens_Quick_Order {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-studio-immens-quick-order-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/studio-immens-quick-order-public.php';
 
-		$this->loader = new Studio_Immens_Quick_Order_Loader();
+		$this->loader = new SIQO_Loader();
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Studio_Immens_Quick_Order_i18n class in order to set the domain and to register the hook
+	 * Uses the SIQO_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function set_locale() {
-
-		$plugin_i18n = new Studio_Immens_Quick_Order_i18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		// WordPress loads plugin translations automatically since 4.6.
 	}
 
 	/**
@@ -147,7 +148,7 @@ class Studio_Immens_Quick_Order {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Studio_Immens_Quick_Order_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new SIQO_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -162,7 +163,7 @@ class Studio_Immens_Quick_Order {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Studio_Immens_Quick_Order_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new SIQO_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -192,7 +193,7 @@ class Studio_Immens_Quick_Order {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Studio_Immens_Quick_Order_Loader    Orchestrates the hooks of the plugin.
+	 * @return    SIQO_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

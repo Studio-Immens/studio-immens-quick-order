@@ -1,4 +1,10 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only page view parameter.
+
 
 /**
  * The public-facing functionality of the plugin.
@@ -6,8 +12,8 @@
  * @link       https://studioimmens.com
  * @since      1.0.0
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/public
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/public
  */
 
 /**
@@ -16,14 +22,16 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/public
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/public
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class Studio_Immens_Quick_Order_Public {
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only page view parameter.
+class SIQO_Public {
 
 	/**
 	 * The ID of this plugin.

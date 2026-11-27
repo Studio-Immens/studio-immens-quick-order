@@ -1,0 +1,3686 @@
+# Copyright (C) 2026 Studio Immens
+# This file is distributed under the GPL-3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Studio Immens Quick Order 1.2.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/studio-immens-quick-order\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-23T15:48:06+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: studio-immens-quick-order\n"
+
+#. Plugin Name of the plugin
+#: studio-immens-quick-order.php
+msgid "Studio Immens Quick Order"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: studio-immens-quick-order.php
+msgid "https://studioimmens.com/quick-order"
+msgstr ""
+
+#. Description of the plugin
+#: studio-immens-quick-order.php
+msgid "Studio Immens Quick Order is the ultimate solution for streamlining restaurant order management on your WooCommerce-powered website. With this powerful plugin, you can supercharge your restaurant's online ordering process."
+msgstr ""
+
+#. Author of the plugin
+#: studio-immens-quick-order.php
+msgid "Studio Immens"
+msgstr ""
+
+#. Author URI of the plugin
+#: studio-immens-quick-order.php
+msgid "https://studioimmens.com"
+msgstr ""
+
+#: admin/pages/general-settings.php:34
+#: admin/pages/general-settings.php:342
+#: admin/pages/style.php:10
+#: admin/pages/style.php:92
+#: public/studio-immens-quick-order-public.php:1309
+msgid "SALVA"
+msgstr ""
+
+#: admin/pages/general-settings.php:37
+msgid "Impostazioni Globali"
+msgstr ""
+
+#: admin/pages/general-settings.php:54
+msgid "posizione del menu admin"
+msgstr ""
+
+#: admin/pages/general-settings.php:55
+msgid "inserisci la posizione del pannello menu nel backend"
+msgstr ""
+
+#: admin/pages/general-settings.php:61
+#: admin/pages/general-settings.php:62
+msgid "Scegli se mostrare la barra admin"
+msgstr ""
+
+#: admin/pages/general-settings.php:69
+msgid "visualizza la sezione per scegliere la modalità di consegna ( ritiro o consegna ), la data e l'ora, nella pagina (checkout)"
+msgstr ""
+
+#: admin/pages/general-settings.php:70
+msgid "visualizza la sezione per scegliere la modalità di consegna (ritiro o consegna), la data e l'ora, nella pagina (checkout)"
+msgstr ""
+
+#: admin/pages/general-settings.php:77
+msgid "abilita l'inserimento ordini dalla pagina del menu ( flash-order-ajax )"
+msgstr ""
+
+#: admin/pages/general-settings.php:78
+msgid "i clienti potranno inserire gli ordini direttamente dalla pagina del menu"
+msgstr ""
+
+#: admin/pages/general-settings.php:84
+msgid "Pagina gestione ordini (manage-orders)"
+msgstr ""
+
+#: admin/pages/general-settings.php:92
+msgid "impostazioni generali"
+msgstr ""
+
+#: admin/pages/general-settings.php:100
+msgid "inserisci il numero massimo di ordini da visualizzare nella pagina (manage-order)"
+msgstr ""
+
+#: admin/pages/general-settings.php:101
+msgid "imposta a \"-1\" per visualizzare tutti gli ordini"
+msgstr ""
+
+#: admin/pages/general-settings.php:108
+msgid "inserisci fino a quante ore prima verranno visualizzati gli ordini nella pagina \"manage-order\""
+msgstr ""
+
+#: admin/pages/general-settings.php:109
+msgid "imposta il numero di ore"
+msgstr ""
+
+#: admin/pages/general-settings.php:117
+msgid "inserisci ogni quanti millisecondi si aggiornano gli ordini nella pagina (manage-order)"
+msgstr ""
+
+#: admin/pages/general-settings.php:118
+msgid "il valore minimo è 500, cioè 0,5 secondi ( 1000 millisecondi = 1 secondo )"
+msgstr ""
+
+#: admin/pages/general-settings.php:123
+msgid "Visualizza sezioni della tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:131
+msgid "id"
+msgstr ""
+
+#: admin/pages/general-settings.php:132
+msgid "visualizza l'id dell'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:138
+msgid "nome"
+msgstr ""
+
+#: admin/pages/general-settings.php:139
+msgid "visualizza il nome di chi ha effettuato l'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:145
+#: public/template/front-order-ajax.php:333
+msgid "prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:146
+msgid "visualizza i prodotti dell'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:152
+msgid "info"
+msgstr ""
+
+#: admin/pages/general-settings.php:153
+msgid "visualizza le info dell'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:159
+msgid "stato"
+msgstr ""
+
+#: admin/pages/general-settings.php:160
+msgid "visualizza lo stato dell'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:166
+msgid "azioni"
+msgstr ""
+
+#: admin/pages/general-settings.php:167
+msgid "visualizza le azioni possibili per l'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:173
+msgid "totale"
+msgstr ""
+
+#: admin/pages/general-settings.php:174
+msgid "visualizza il totale dell'ordine nella tabella"
+msgstr ""
+
+#: admin/pages/general-settings.php:181
+msgid "Avanzate"
+msgstr ""
+
+#: admin/pages/general-settings.php:192
+#: admin/pages/general-settings.php:193
+msgid "inserisci lo shortcode per effettuare il login dalla finestra pop up. (pagina flash-orders-ajax)"
+msgstr ""
+
+#: admin/pages/general-settings.php:198
+msgid "Tassonomie"
+msgstr ""
+
+#: admin/pages/general-settings.php:206
+#: admin/pages/general-settings.php:270
+msgid "INGREDIENTI"
+msgstr ""
+
+#: admin/pages/general-settings.php:207
+msgid "utilizza la tassonomia per gli ingredienti dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:208
+msgid "mostrerà una nuova tassonomia per selezionare facilmente gli ingredienti di cui composto un piatto, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:214
+msgid "VISUALIZZA INGREDIENTI"
+msgstr ""
+
+#: admin/pages/general-settings.php:215
+msgid "visualizza la tassonomia ingredienti nella pagina del prodotto"
+msgstr ""
+
+#: admin/pages/general-settings.php:216
+msgid "mostrerà la tassonomia degli ingredienti di cui composto un piatto, nella pagina prodotto di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:223
+#: admin/pages/general-settings.php:278
+msgid "ALLERGENI"
+msgstr ""
+
+#: admin/pages/general-settings.php:224
+msgid "utilizza la tassonomia per gli allergeni dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:225
+msgid "mostrerà una nuova tassonomia per selezionare facilmente gli allergeni di un piatto, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:231
+msgid "VISUALIZZA ALLERGENI"
+msgstr ""
+
+#: admin/pages/general-settings.php:232
+msgid "visualizza la tassonomia allergeni nella pagina del prodotto"
+msgstr ""
+
+#: admin/pages/general-settings.php:233
+msgid "mostrerà la tassonomia degli allergeni di un piatto, nella pagina prodotto di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:240
+#: admin/pages/general-settings.php:286
+msgid "TEMPERATURE"
+msgstr ""
+
+#: admin/pages/general-settings.php:241
+msgid "utilizza la tassonomia per le temperature"
+msgstr ""
+
+#: admin/pages/general-settings.php:242
+msgid "mostrerà una nuova tassonomia per selezionare facilmente le temperature di consegna che possono essere associate ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:248
+#: admin/pages/general-settings.php:294
+msgid "STICKER"
+msgstr ""
+
+#: admin/pages/general-settings.php:249
+msgid "utilizza la tassonomia per gli sticker"
+msgstr ""
+
+#: admin/pages/general-settings.php:250
+msgid "mostrerà una nuova tassonomia per selezionare facilmente gli sticker che possono essere associati ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:256
+msgid "MACRO CATEGORIE"
+msgstr ""
+
+#: admin/pages/general-settings.php:257
+msgid "utilizza la tassonomia per le macro categorie"
+msgstr ""
+
+#: admin/pages/general-settings.php:258
+msgid "mostrerà una nuova tassonomia per selezionare facilmente le macro categorie che possono essere associate ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:262
+msgid "Immagini delle Tassonomie"
+msgstr ""
+
+#: admin/pages/general-settings.php:271
+msgid "aggiungi un'immagine alla tassonomia per gli ingredienti dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:272
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli ingredienti, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:279
+msgid "aggiungi un'immagine alla tassonomia per gli allergeni dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:280
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli allergeni, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:287
+msgid "aggiungi un'immagine alla tassonomia per le temperature dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:288
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle temperature, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:295
+msgid "aggiungi un'immagine alla tassonomia per gli sticker dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:296
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia degli sticker, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:302
+msgid "MACRO CATEGORIES"
+msgstr ""
+
+#: admin/pages/general-settings.php:303
+msgid "aggiungi un'immagine alla tassonomia per le macro categorie dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:304
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle macro categorie, associate ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:310
+msgid "TAG PRODOTTI"
+msgstr ""
+
+#: admin/pages/general-settings.php:311
+msgid "aggiungi un'immagine alla tassonomia per i tag dei prodotti"
+msgstr ""
+
+#: admin/pages/general-settings.php:312
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai prodotti di woocommerce"
+msgstr ""
+
+#: admin/pages/general-settings.php:319
+msgid "TAG POST"
+msgstr ""
+
+#: admin/pages/general-settings.php:320
+msgid "aggiungi un'immagine alla tassonomia per i tag dei post"
+msgstr ""
+
+#: admin/pages/general-settings.php:321
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia dei tag, associata ai post di wordpress"
+msgstr ""
+
+#: admin/pages/general-settings.php:328
+msgid "CATEGORIE POST"
+msgstr ""
+
+#: admin/pages/general-settings.php:329
+msgid "aggiungi un'immagine alla tassonomia per le categorie dei post"
+msgstr ""
+
+#: admin/pages/general-settings.php:330
+msgid "mostrerà un nuovo meta box per selezionare facilmente l' immagine da associare alla tassonomia delle categorie, associate ai post di wordpress"
+msgstr ""
+
+#: admin/pages/main.php:17
+msgid "Gestione sala"
+msgstr ""
+
+#: admin/pages/main.php:18
+msgid "Dashboard operativa, comande e stato del servizio."
+msgstr ""
+
+#: admin/pages/main.php:20
+#: admin/pages/main.php:63
+#: admin/pages/management-settings.php:35
+msgid "Apri gestione"
+msgstr ""
+
+#: admin/pages/main.php:24
+#: admin/studio-immens-quick-order-admin.php:57
+#: includes/class-siqo-management.php:304
+#: public/studio-immens-quick-order-public.php:1034
+#: public/studio-immens-quick-order-public.php:1036
+#: public/template/management-dashboard.php:106
+#: public/template/station-table-sessions.php:127
+msgid "Tavoli"
+msgstr ""
+
+#: admin/pages/main.php:25
+#, php-format
+msgid "%d tavoli pubblicati."
+msgstr ""
+
+#: admin/pages/main.php:27
+msgid "Apri tavoli"
+msgstr ""
+
+#: admin/pages/main.php:31
+#: includes/class-siqo-management.php:312
+msgid "Reparti"
+msgstr ""
+
+#: admin/pages/main.php:32
+msgid "Ordini per cucina, bar e punti di preparazione."
+msgstr ""
+
+#: admin/pages/main.php:34
+msgid "Apri reparti"
+msgstr ""
+
+#: admin/pages/main.php:38
+#: admin/pages/main.php:101
+#: admin/studio-immens-quick-order-admin.php:60
+msgid "Catering"
+msgstr ""
+
+#: admin/pages/main.php:39
+#, php-format
+msgid "%d eventi pubblicati."
+msgstr ""
+
+#: admin/pages/main.php:41
+msgid "Gestisci catering"
+msgstr ""
+
+#: admin/pages/main.php:48
+#: includes/class-siqo-management.php:275
+#: includes/class-siqo-management.php:276
+msgid "Back Office"
+msgstr ""
+
+#: admin/pages/main.php:49
+msgid "Agenda, fornitori, acquisti e scadenze burocratiche."
+msgstr ""
+
+#: admin/pages/main.php:51
+msgid "Apri back office"
+msgstr ""
+
+#: admin/pages/main.php:60
+#: admin/pages/management-settings.php:31
+#: admin/studio-immens-quick-order-admin.php:26
+#: admin/studio-immens-quick-order-admin.php:101
+msgid "Quick Order"
+msgstr ""
+
+#: admin/pages/main.php:61
+msgid "Il centro di controllo per sala, cucina, tavoli e catering."
+msgstr ""
+
+#: admin/pages/main.php:79
+msgid "Configurazione"
+msgstr ""
+
+#: admin/pages/main.php:80
+msgid "Brand, pagine, catalogo, stampanti, personale e licenza in un unico pannello."
+msgstr ""
+
+#: admin/pages/main.php:82
+msgid "Apri impostazioni"
+msgstr ""
+
+#: admin/pages/main.php:84
+msgid "Magazzino"
+msgstr ""
+
+#: admin/pages/main.php:87
+msgid "Regole di stampa"
+msgstr ""
+
+#: admin/pages/main.php:90
+#: admin/studio-immens-quick-order-admin.php:108
+msgid "Licenza Pro"
+msgstr ""
+
+#: admin/pages/main.php:96
+msgid "Stato sistema"
+msgstr ""
+
+#: admin/pages/main.php:98
+msgid "WooCommerce"
+msgstr ""
+
+#: admin/pages/main.php:98
+#: public/template/station-table-sessions.php:149
+msgid "Attivo"
+msgstr ""
+
+#: admin/pages/main.php:98
+#: public/template/station-table-sessions.php:70
+#: public/template/station-table-sessions.php:150
+msgid "Non attivo"
+msgstr ""
+
+#: admin/pages/main.php:99
+msgid "Quick Order Pro"
+msgstr ""
+
+#: admin/pages/main.php:99
+msgid "Installato"
+msgstr ""
+
+#: admin/pages/main.php:99
+msgid "Non installato"
+msgstr ""
+
+#: admin/pages/main.php:100
+msgid "Licenza"
+msgstr ""
+
+#: admin/pages/main.php:100
+msgid "Attiva"
+msgstr ""
+
+#: admin/pages/main.php:100
+msgid "Non attiva"
+msgstr ""
+
+#: admin/pages/main.php:101
+#: public/studio-immens-quick-order-public.php:2669
+#: public/studio-immens-quick-order-public.php:2679
+#: public/studio-immens-quick-order-public.php:2767
+msgid "Disponibile"
+msgstr ""
+
+#: admin/pages/main.php:101
+msgid "Non disponibile"
+msgstr ""
+
+#: admin/pages/management-settings.php:26
+msgid "Impostazioni salvate."
+msgstr ""
+
+#: admin/pages/management-settings.php:32
+#: admin/studio-immens-quick-order-admin.php:28
+#: admin/studio-immens-quick-order-admin.php:103
+msgid "Impostazioni"
+msgstr ""
+
+#: admin/pages/management-settings.php:33
+msgid "Un unico posto per ristorante, sala, magazzino, stampanti e personale."
+msgstr ""
+
+#: admin/pages/management-settings.php:38
+msgid "Sezioni impostazioni"
+msgstr ""
+
+#: admin/pages/management-settings.php:52
+msgid "Anteprima brand"
+msgstr ""
+
+#: admin/pages/management-settings.php:63
+msgid "Identità del ristorante"
+msgstr ""
+
+#: admin/pages/management-settings.php:64
+#: includes/class-siqo-management.php:601
+msgid "Nome visualizzato"
+msgstr ""
+
+#: admin/pages/management-settings.php:67
+msgid "URL logo"
+msgstr ""
+
+#: admin/pages/management-settings.php:70
+msgid "Mostra credito Quick Order"
+msgstr ""
+
+#: admin/pages/management-settings.php:72
+msgid "Sì, discreto"
+msgstr ""
+
+#: admin/pages/management-settings.php:73
+msgid "No, solo brand ristorante"
+msgstr ""
+
+#: admin/pages/management-settings.php:78
+msgid "Colori"
+msgstr ""
+
+#: admin/pages/management-settings.php:79
+msgid "Colore principale"
+msgstr ""
+
+#: admin/pages/management-settings.php:82
+msgid "Colore accento"
+msgstr ""
+
+#: admin/pages/management-settings.php:85
+msgid "Tema predefinito"
+msgstr ""
+
+#: admin/pages/management-settings.php:87
+msgid "Automatico per contesto"
+msgstr ""
+
+#: admin/pages/management-settings.php:88
+msgid "Chiaro"
+msgstr ""
+
+#: admin/pages/management-settings.php:89
+msgid "Scuro"
+msgstr ""
+
+#: admin/pages/management-settings.php:94
+msgid "Scontrini"
+msgstr ""
+
+#: admin/pages/management-settings.php:95
+msgid "Intestazione"
+msgstr ""
+
+#: admin/pages/management-settings.php:98
+msgid "Piè di pagina"
+msgstr ""
+
+#: admin/pages/management-settings.php:102
+msgid "Salva brand"
+msgstr ""
+
+#: admin/pages/management-settings.php:107
+msgid "Pagine applicative"
+msgstr ""
+
+#: admin/pages/management-settings.php:108
+msgid "Queste pagine contengono gli shortcode del plugin. Puoi ricrearle senza perdere il contenuto esistente."
+msgstr ""
+
+#: admin/pages/management-settings.php:110
+msgid "Pagina"
+msgstr ""
+
+#: admin/pages/management-settings.php:110
+msgid "Slug"
+msgstr ""
+
+#: admin/pages/management-settings.php:110
+#: public/template/management-dashboard.php:75
+msgid "Stato"
+msgstr ""
+
+#: admin/pages/management-settings.php:125
+msgid "Presente"
+msgstr ""
+
+#: admin/pages/management-settings.php:125
+msgid "Mancante"
+msgstr ""
+
+#: admin/pages/management-settings.php:133
+msgid "Crea o ripara pagine"
+msgstr ""
+
+#: admin/pages/management-settings.php:137
+msgid "Ruoli e accessi"
+msgstr ""
+
+#: admin/pages/management-settings.php:138
+msgid "La gerarchia è worker, supervisor e manager. L’amministratore WordPress ha sempre accesso completo."
+msgstr ""
+
+#: admin/pages/management-settings.php:148
+msgid "Catalogo WooCommerce"
+msgstr ""
+
+#: admin/pages/management-settings.php:149
+msgid "Prodotti, categorie, varianti e prezzi restano gestiti da WooCommerce. Quick Order usa il catalogo senza duplicarlo."
+msgstr ""
+
+#: admin/pages/management-settings.php:150
+msgid "Apri prodotti"
+msgstr ""
+
+#: admin/pages/management-settings.php:151
+msgid "Apri categorie"
+msgstr ""
+
+#: admin/pages/management-settings.php:154
+msgid "Reparti di preparazione"
+msgstr ""
+
+#: admin/pages/management-settings.php:155
+msgid "I reparti sono le stazioni che ricevono le comande: cucina, bar, pizzeria e altre postazioni."
+msgstr ""
+
+#: admin/pages/management-settings.php:156
+msgid "Gestisci reparti"
+msgstr ""
+
+#: admin/pages/management-settings.php:161
+msgid "Magazzino e ricette"
+msgstr ""
+
+#: admin/pages/management-settings.php:162
+msgid "Lo stock prodotto resta in WooCommerce. Quick Order Pro aggiunge ingredienti, ricette, lotti, fornitori e inventario."
+msgstr ""
+
+#: admin/pages/management-settings.php:163
+#: admin/pages/management-settings.php:176
+#: admin/pages/management-settings.php:189
+#: admin/pages/management-settings.php:252
+#: admin/pages/management-settings.php:260
+msgid "Stato modulo:"
+msgstr ""
+
+#: admin/pages/management-settings.php:163
+#: admin/pages/management-settings.php:176
+#: admin/pages/management-settings.php:252
+#: admin/pages/management-settings.php:260
+#: admin/pages/management-settings.php:269
+msgid "installato"
+msgstr ""
+
+#: admin/pages/management-settings.php:163
+#: admin/pages/management-settings.php:176
+#: admin/pages/management-settings.php:252
+#: admin/pages/management-settings.php:260
+#: admin/pages/management-settings.php:269
+msgid "non installato"
+msgstr ""
+
+#: admin/pages/management-settings.php:164
+msgid "Apri magazzino"
+msgstr ""
+
+#: admin/pages/management-settings.php:167
+msgid "Riconciliazione scorte"
+msgstr ""
+
+#: admin/pages/management-settings.php:168
+msgid "Il plugin non duplica lo stock prodotto: legge la giacenza WooCommerce e registra solo i movimenti ingrediente."
+msgstr ""
+
+#: admin/pages/management-settings.php:169
+msgid "Report stock WooCommerce"
+msgstr ""
+
+#: admin/pages/management-settings.php:174
+msgid "Stampanti e coda"
+msgstr ""
+
+#: admin/pages/management-settings.php:175
+msgid "Configura stampanti di rete ESC/POS, stampa browser o PrintNode. Ogni stampante può essere associata a un reparto."
+msgstr ""
+
+#: admin/pages/management-settings.php:177
+msgid "Apri stampanti"
+msgstr ""
+
+#: admin/pages/management-settings.php:180
+msgid "Regole di stampa esistenti"
+msgstr ""
+
+#: admin/pages/management-settings.php:181
+msgid "Le regole Pro per zona, categoria e tipo ordine sono gestite nella pagina dedicata."
+msgstr ""
+
+#: admin/pages/management-settings.php:182
+msgid "Apri regole"
+msgstr ""
+
+#: admin/pages/management-settings.php:187
+msgid "Comande e ricevute"
+msgstr ""
+
+#: admin/pages/management-settings.php:188
+msgid "Quick Order stampa comande di reparto e ricevute non fiscali. Non gestisce scontrini fiscali, RT o IVA."
+msgstr ""
+
+#: admin/pages/management-settings.php:189
+msgid "integrato"
+msgstr ""
+
+#: admin/pages/management-settings.php:190
+msgid "Preconto e ricevuta usano il motore interno: non serve WooPrint né ReceiptJet."
+msgstr ""
+
+#: admin/pages/management-settings.php:193
+msgid "Formato documento"
+msgstr ""
+
+#: admin/pages/management-settings.php:208
+msgid "Larghezza carta"
+msgstr ""
+
+#: admin/pages/management-settings.php:210
+msgid "80 mm"
+msgstr ""
+
+#: admin/pages/management-settings.php:211
+msgid "58 mm"
+msgstr ""
+
+#: admin/pages/management-settings.php:214
+msgid "Logo in testata"
+msgstr ""
+
+#: admin/pages/management-settings.php:216
+msgid "Sì"
+msgstr ""
+
+#: admin/pages/management-settings.php:217
+#: admin/pages/management-settings.php:222
+#: public/studio-immens-quick-order-public.php:1279
+msgid "No"
+msgstr ""
+
+#: admin/pages/management-settings.php:220
+msgid "Stampa automatica conto pagato"
+msgstr ""
+
+#: admin/pages/management-settings.php:223
+msgid "Sì, con licenza Pro"
+msgstr ""
+
+#: admin/pages/management-settings.php:226
+msgid "Stampante predefinita"
+msgstr ""
+
+#: admin/pages/management-settings.php:229
+msgid "Nessuna"
+msgstr ""
+
+#: admin/pages/management-settings.php:238
+msgid "La stampa automatica richiede Quick Order Pro con licenza attiva. La stampa browser resta sempre disponibile."
+msgstr ""
+
+#: admin/pages/management-settings.php:239
+msgid "Salva impostazioni ricevute"
+msgstr ""
+
+#: admin/pages/management-settings.php:243
+msgid "Testo ricevuta"
+msgstr ""
+
+#: admin/pages/management-settings.php:244
+msgid "Intestazione e piè di pagina si modificano nella sezione Ristorante e brand."
+msgstr ""
+
+#: admin/pages/management-settings.php:245
+msgid "Modifica testo"
+msgstr ""
+
+#: admin/pages/management-settings.php:250
+msgid "Prenotazioni interne"
+msgstr ""
+
+#: admin/pages/management-settings.php:251
+msgid "Gestisci prenotazioni, assegnazione tavoli e stati. Il booking pubblico resta fuori da Quick Order."
+msgstr ""
+
+#: admin/pages/management-settings.php:253
+msgid "Apri prenotazioni"
+msgstr ""
+
+#: admin/pages/management-settings.php:258
+msgid "Personale e turni"
+msgstr ""
+
+#: admin/pages/management-settings.php:259
+msgid "Timbrature semplici, turno aperto e storico. Nessuna elaborazione payroll."
+msgstr ""
+
+#: admin/pages/management-settings.php:261
+msgid "Apri personale"
+msgstr ""
+
+#: admin/pages/management-settings.php:266
+msgid "Compatibilità"
+msgstr ""
+
+#: admin/pages/management-settings.php:268
+msgid "WooCommerce:"
+msgstr ""
+
+#: admin/pages/management-settings.php:268
+msgid "attivo"
+msgstr ""
+
+#: admin/pages/management-settings.php:268
+#: public/template/front-order-ajax.php:446
+msgid "non attivo"
+msgstr ""
+
+#: admin/pages/management-settings.php:269
+msgid "Quick Order Pro:"
+msgstr ""
+
+#: admin/pages/management-settings.php:270
+msgid "Licenza:"
+msgstr ""
+
+#: admin/pages/management-settings.php:270
+msgid "attiva"
+msgstr ""
+
+#: admin/pages/management-settings.php:270
+msgid "non attiva"
+msgstr ""
+
+#: admin/pages/management-settings.php:274
+msgid "Disinstallazione"
+msgstr ""
+
+#: admin/pages/management-settings.php:279
+msgid "Elimina dati, pagine e tabelle alla disinstallazione"
+msgstr ""
+
+#: admin/pages/management-settings.php:280
+msgid "Disattivato per impostazione predefinita. Le opzioni restano intatte durante gli aggiornamenti."
+msgstr ""
+
+#: admin/pages/management-settings.php:281
+msgid "Salva preferenza"
+msgstr ""
+
+#: admin/pages/management-settings.php:287
+msgid "Licenza Quick Order Pro"
+msgstr ""
+
+#: admin/pages/management-settings.php:288
+msgid "Le funzioni Pro richiedono una licenza attiva. I moduli installati ma non licenziati restano visibili solo ai manager."
+msgstr ""
+
+#: admin/pages/management-settings.php:289
+msgid "Licenza attiva"
+msgstr ""
+
+#: admin/pages/management-settings.php:289
+msgid "Licenza non attiva"
+msgstr ""
+
+#: admin/pages/management-settings.php:291
+#: includes/class-siqo-management.php:802
+msgid "Gestisci licenza"
+msgstr ""
+
+#: admin/pages/management-settings.php:293
+msgid "Installa Quick Order Pro per attivare la licenza e i moduli avanzati."
+msgstr ""
+
+#: admin/pages/style.php:14
+msgid "Colori principali"
+msgstr ""
+
+#: admin/pages/style.php:27
+msgid "Colori di Background principali"
+msgstr ""
+
+#: admin/pages/style.php:39
+msgid "Colori dei testi e effetti"
+msgstr ""
+
+#: admin/pages/style.php:49
+msgid "Tempi delle animazioni"
+msgstr ""
+
+#: admin/pages/style.php:57
+msgid "Colori degli status degli ordini di woocommerce"
+msgstr ""
+
+#: admin/pages/style.php:71
+msgid "Colori della gestione tavoli"
+msgstr ""
+
+#: admin/pages/style.php:84
+msgid "Colori degli status del timer"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:27
+#: includes/class-siqo-management.php:297
+#: studio-immens-quick-order.php:108
+msgid "Dashboard"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:29
+msgid "Impostazioni legacy"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:30
+#: admin/studio-immens-quick-order-admin.php:105
+msgid "Stile"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:83
+msgid "GUIDA"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:163
+#: public/studio-immens-quick-order-public.php:1338
+msgid "Ripristina il valore di default"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:185
+#: admin/studio-immens-quick-order-admin.php:266
+msgid "nome dell'impostazione nel database: ( "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:195
+#: public/station-orders.php:322
+msgid "Campanella soft"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:196
+#: public/station-orders.php:323
+msgid "Campanella bright"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:197
+#: public/station-orders.php:324
+msgid "Doppia campanella"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:198
+#: public/station-orders.php:325
+msgid "Avviso basso"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:209
+msgid "Seleziona l'audio..."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:309
+msgid "Impostazioni di rete"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:376
+msgid "Gestione Pagine del Plugin"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:390
+msgid "Ultima modifica della pagina: "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:391
+msgid "l'ID della pagina "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:392
+msgid "la versione della pagina "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:395
+msgid "IMPOSTAZIONI"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:401
+msgid "ELIMINA pagina"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:404
+msgid "VISITA pagina"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:408
+msgid "Aggiorna tutte le pagine necessarie al plugin, e se non sono ancora state create, le Crea."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:409
+msgid "CREA o AGGIORNA pagine"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:419
+msgid "Se vuoi sostenerci con una donazione, "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:420
+msgid " Visita Questa Pagina "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:421
+msgid ". Ogni tuo gesto  per noi un prezioso impegno, e siamo lieti di ascoltare le tue proposte e suggerimenti."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:431
+msgid "Se desideri darci un feedback o fare una richiesta, "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:432
+msgid " Clicca QUI "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:433
+msgid ". Siamo sempre pronti ad ascoltare le tue opinioni e suggerimenti, impegnandoci al massimo per soddisfare ogni tua richiesta con attenzione e dedizione."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:445
+msgid " Statistiche in Flash: "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:460
+msgid " Gestore QR codes: "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:465
+msgid " Shortcodes disponibili: "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:475
+msgid "Questo shortcode va utilizzato direttamente sulla pagina di cui vuoi visualizzare il QRcode."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:480
+#: admin/studio-immens-quick-order-admin.php:502
+msgid "I parametri disponibili sono:"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:481
+#: admin/studio-immens-quick-order-admin.php:503
+msgid "(default: 150)"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:486
+#: admin/studio-immens-quick-order-admin.php:509
+msgid "Esempio di utilizzo:"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:497
+msgid "Questo shortcode va utilizzato sulla pagina su cui vuoi visualizzare il QRcode, ma il contenuto del QRcode  definito dal parametro content."
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:504
+msgid "(default: home url)"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:510
+msgid "La frase o il link che volete utilizzare per il QR"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:518
+msgid "Crea un nuovo shortcode:"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:519
+msgid "Per poter creare il QRcode, devi inserire il contenuto nel campo content!"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:523
+msgid "CREA"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:527
+msgid " Cerca QR ... "
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:544
+msgid "Scarica Immagine"
+msgstr ""
+
+#: admin/studio-immens-quick-order-admin.php:547
+msgid "Elimina Immagine"
+msgstr ""
+
+#: includes/class-siqo-documents.php:104
+#: includes/class-siqo-management.php:1006
+#: includes/class-siqo-management.php:1042
+#: includes/class-siqo-plan-layout.php:294
+#: public/station-orders.php:413
+#: public/station-orders.php:440
+#: public/station-orders.php:503
+#: public/studio-immens-quick-order-public.php:142
+#: public/studio-immens-quick-order-public.php:313
+#: public/studio-immens-quick-order-public.php:1957
+#: public/studio-immens-quick-order-public.php:1991
+#: public/studio-immens-quick-order-public.php:3508
+#: public/studio-immens-quick-order-public.php:3883
+#: public/studio-immens-quick-order-public.php:4441
+#: public/studio-immens-quick-order-public.php:4473
+#: public/studio-immens-quick-order-public.php:4505
+#: public/studio-immens-quick-order-public.php:4549
+#: public/studio-immens-quick-order-public.php:5632
+#: public/studio-immens-quick-order-public.php:7267
+#: public/studio-immens-quick-order-public.php:7553
+#: public/studio-immens-quick-order-public.php:7627
+#: public/template/station-table-sessions.php:10
+msgid "Accesso negato."
+msgstr ""
+
+#: includes/class-siqo-documents.php:108
+msgid "WooCommerce non è attivo."
+msgstr ""
+
+#: includes/class-siqo-documents.php:129
+msgid "Nessun ordine disponibile per questo documento."
+msgstr ""
+
+#: includes/class-siqo-documents.php:234
+msgid "Nessun ordine valido trovato."
+msgstr ""
+
+#: includes/class-siqo-documents.php:326
+#: includes/class-siqo-documents.php:439
+msgid "Grazie e a presto."
+msgstr ""
+
+#: includes/class-siqo-documents.php:328
+#: includes/class-siqo-documents.php:441
+msgid "PRECONTO"
+msgstr ""
+
+#: includes/class-siqo-documents.php:328
+#: includes/class-siqo-documents.php:441
+msgid "RICEVUTA"
+msgstr ""
+
+#: includes/class-siqo-documents.php:330
+msgid "Documento non fiscale. Il conto può variare."
+msgstr ""
+
+#: includes/class-siqo-documents.php:331
+msgid "Documento non fiscale. Non sostituisce scontrino o fattura."
+msgstr ""
+
+#: includes/class-siqo-documents.php:381
+#: includes/class-siqo-documents.php:454
+msgid "Documento"
+msgstr ""
+
+#: includes/class-siqo-documents.php:388
+#: includes/class-siqo-documents.php:461
+msgid "Data"
+msgstr ""
+
+#: includes/class-siqo-documents.php:389
+#: includes/class-siqo-documents.php:463
+#: public/studio-immens-quick-order-public.php:1035
+#: public/studio-immens-quick-order-public.php:1037
+#: public/studio-immens-quick-order-public.php:1063
+#: public/studio-immens-quick-order-public.php:3280
+#: public/studio-immens-quick-order-public.php:6867
+#: public/template/management-dashboard.php:74
+msgid "Tavolo"
+msgstr ""
+
+#: includes/class-siqo-documents.php:390
+#: includes/class-siqo-documents.php:749
+msgid "Operatore"
+msgstr ""
+
+#: includes/class-siqo-documents.php:391
+msgid "Ordini"
+msgstr ""
+
+#: includes/class-siqo-documents.php:407
+#: includes/class-siqo-documents.php:482
+msgid "Subtotale"
+msgstr ""
+
+#: includes/class-siqo-documents.php:409
+#: includes/class-siqo-documents.php:484
+#: public/studio-immens-quick-order-public.php:5492
+msgid "Sconti"
+msgstr ""
+
+#: includes/class-siqo-documents.php:415
+#: includes/class-siqo-documents.php:490
+msgid "Spedizione"
+msgstr ""
+
+#: includes/class-siqo-documents.php:417
+msgid "TOTALE"
+msgstr ""
+
+#: includes/class-siqo-documents.php:496
+msgid "Documento non fiscale. Il conto puo variare."
+msgstr ""
+
+#: includes/class-siqo-documents.php:496
+msgid "Documento non fiscale."
+msgstr ""
+
+#: includes/class-siqo-documents.php:751
+#, php-format
+msgid "Operatore: %s"
+msgstr ""
+
+#: includes/class-siqo-documents.php:755
+#, php-format
+msgid "Cliente — %s"
+msgstr ""
+
+#: includes/class-siqo-documents.php:756
+#: public/studio-immens-quick-order-public.php:5419
+msgid "Cliente"
+msgstr ""
+
+#: includes/class-siqo-management.php:342
+#: includes/class-siqo-management.php:777
+#: public/template/management-dashboard.php:105
+msgid "Sala"
+msgstr ""
+
+#: includes/class-siqo-management.php:347
+msgid "Catalogo"
+msgstr ""
+
+#: includes/class-siqo-management.php:352
+#: public/template/management-dashboard.php:134
+msgid "Squadra"
+msgstr ""
+
+#: includes/class-siqo-management.php:357
+msgid "Sistema"
+msgstr ""
+
+#: includes/class-siqo-management.php:389
+#: includes/class-siqo-management.php:404
+msgid "Altro"
+msgstr ""
+
+#: includes/class-siqo-management.php:465
+msgid "Navigazione gestionale"
+msgstr ""
+
+#: includes/class-siqo-management.php:511
+#: public/template/front-order-ajax.php:410
+#: public/template/management-dashboard.php:73
+msgid "Ordine"
+msgstr ""
+
+#: includes/class-siqo-management.php:521
+#, php-format
+msgid "Account di %s"
+msgstr ""
+
+#: includes/class-siqo-management.php:532
+msgid "Schermo intero"
+msgstr ""
+
+#: includes/class-siqo-management.php:565
+msgid "Manager"
+msgstr ""
+
+#: includes/class-siqo-management.php:566
+msgid "Supervisor"
+msgstr ""
+
+#: includes/class-siqo-management.php:567
+msgid "Worker"
+msgstr ""
+
+#: includes/class-siqo-management.php:568
+msgid "Nessun ruolo Quick Order"
+msgstr ""
+
+#: includes/class-siqo-management.php:578
+msgid "Profilo"
+msgstr ""
+
+#: includes/class-siqo-management.php:579
+msgid "Il tuo account"
+msgstr ""
+
+#: includes/class-siqo-management.php:580
+msgid "Aggiorna i tuoi dati di accesso e il nome mostrato in sala."
+msgstr ""
+
+#: includes/class-siqo-management.php:602
+msgid "Email"
+msgstr ""
+
+#: includes/class-siqo-management.php:605
+msgid "Nome"
+msgstr ""
+
+#: includes/class-siqo-management.php:606
+msgid "Cognome"
+msgstr ""
+
+#: includes/class-siqo-management.php:609
+msgid "Nuova password"
+msgstr ""
+
+#: includes/class-siqo-management.php:609
+msgid "Lascia vuoto per non modificare"
+msgstr ""
+
+#: includes/class-siqo-management.php:610
+msgid "Conferma password"
+msgstr ""
+
+#: includes/class-siqo-management.php:613
+msgid "Password attuale"
+msgstr ""
+
+#: includes/class-siqo-management.php:613
+msgid "Richiesta solo per cambiare email o password"
+msgstr ""
+
+#: includes/class-siqo-management.php:615
+msgid "Salva profilo"
+msgstr ""
+
+#: includes/class-siqo-management.php:726
+msgid "Non hai i permessi per accedere alla gestione."
+msgstr ""
+
+#: includes/class-siqo-management.php:754
+#: includes/class-siqo-management.php:758
+msgid "Modulo non disponibile."
+msgstr ""
+
+#: includes/class-siqo-management.php:761
+msgid "Licenza Quick Order Pro non attiva."
+msgstr ""
+
+#: includes/class-siqo-management.php:778
+#: public/template/manage-tables.php:89
+msgid "Gestione tavoli"
+msgstr ""
+
+#: includes/class-siqo-management.php:779
+msgid "Apri un tavolo per creare l’ordine o gestire il conto."
+msgstr ""
+
+#: includes/class-siqo-management.php:800
+msgid "Licenza Quick Order Pro non attiva"
+msgstr ""
+
+#: includes/class-siqo-management.php:801
+msgid "Attiva la licenza per usare questo modulo. I dati esistenti restano intatti."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:72
+#: public/template/manage-tables.php:141
+msgid "Piani"
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:73
+msgid "Piano"
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:208
+msgid "Piano terra"
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:313
+msgid "Dati disposizione non validi."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:323
+#: includes/class-siqo-plan-layout.php:478
+#: includes/class-siqo-plan-layout.php:505
+#: includes/class-siqo-plan-layout.php:565
+msgid "Piano inesistente."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:329
+msgid "Troppi elementi in una sola richiesta."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:337
+#: includes/class-siqo-table-sessions.php:176
+#: public/studio-immens-quick-order-public.php:3888
+#: public/studio-immens-quick-order-public.php:4448
+#: public/studio-immens-quick-order-public.php:4509
+#: public/template/station-table-sessions.php:61
+msgid "Tavolo non valido."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:342
+msgid "Tavolo inesistente."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:375
+msgid "Zona non valida."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:380
+#: includes/class-siqo-plan-layout.php:601
+#: includes/class-siqo-plan-layout.php:656
+#: includes/class-siqo-plan-layout.php:667
+msgid "Zona inesistente."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:452
+#: includes/class-siqo-plan-layout.php:483
+msgid "Nome piano non valido."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:455
+#: includes/class-siqo-plan-layout.php:487
+msgid "Esiste già un piano con questo nome."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:520
+msgid "Il piano contiene tavoli."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:527
+msgid "Piano di destinazione inesistente."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:556
+msgid "Eliminazione non riuscita."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:569
+#: includes/class-siqo-plan-layout.php:606
+msgid "Nome zona non valido."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:572
+#: includes/class-siqo-plan-layout.php:610
+msgid "Esiste già una zona con questo nome."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:635
+msgid "Allegato non valido."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:670
+msgid "Nessun file ricevuto."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:674
+msgid "Immagine troppo grande (max 2 MB)."
+msgstr ""
+
+#: includes/class-siqo-plan-layout.php:678
+msgid "Formato immagine non supportato."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:208
+msgid "Impossibile aprire il tavolo."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:242
+#: includes/class-siqo-table-sessions.php:253
+#: public/studio-immens-quick-order-public.php:4305
+msgid "Tavolo non attivo. Chiama un operatore."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:245
+msgid "Sessione del tavolo scaduta. Chiama un operatore."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:248
+msgid "Ordine in attesa di conferma. Attendi un operatore prima di ordinare di nuovo."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:257
+msgid "Troppi ordini per questo tavolo. Chiama un operatore."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:261
+#: public/studio-immens-quick-order-public.php:4360
+msgid "Limite importo raggiunto per questo tavolo. Chiama un operatore."
+msgstr ""
+
+#: includes/class-siqo-table-sessions.php:263
+msgid "Attendi qualche secondo prima di inviare un altro ordine."
+msgstr ""
+
+#: public/station-orders.php:65
+msgid "Approvato automaticamente al pagamento."
+msgstr ""
+
+#: public/station-orders.php:113
+msgid "Ordine annullato fuori dalla postazione."
+msgstr ""
+
+#: public/station-orders.php:191
+#: public/station-orders.php:193
+#: public/station-orders.php:346
+msgid "Punti di preparazione"
+msgstr ""
+
+#: public/station-orders.php:192
+msgid "Punto di preparazione"
+msgstr ""
+
+#: public/station-orders.php:194
+msgid "Tutti i punti"
+msgstr ""
+
+#: public/station-orders.php:195
+msgid "Modifica punto"
+msgstr ""
+
+#: public/station-orders.php:196
+msgid "Visualizza punto"
+msgstr ""
+
+#: public/station-orders.php:197
+msgid "Aggiorna punto"
+msgstr ""
+
+#: public/station-orders.php:198
+msgid "Aggiungi punto"
+msgstr ""
+
+#: public/station-orders.php:199
+msgid "Nuovo punto"
+msgstr ""
+
+#: public/station-orders.php:200
+msgid "Cerca punti"
+msgstr ""
+
+#: public/station-orders.php:201
+msgid "Nessun punto trovato"
+msgstr ""
+
+#: public/station-orders.php:202
+msgid "Nessun punto nel cestino"
+msgstr ""
+
+#: public/station-orders.php:203
+msgid "Torna ai punti"
+msgstr ""
+
+#: public/station-orders.php:204
+msgid "Separa i punti con la virgola"
+msgstr ""
+
+#: public/station-orders.php:205
+msgid "Aggiungi o rimuovi punti"
+msgstr ""
+
+#: public/station-orders.php:206
+msgid "Scegli tra i punti più usati"
+msgstr ""
+
+#: public/station-orders.php:238
+#: public/station-orders.php:347
+msgid "Ordini Reparti"
+msgstr ""
+
+#: public/station-orders.php:307
+msgid "Non hai i permessi per visualizzare gli ordini dei reparti."
+msgstr ""
+
+#: public/station-orders.php:348
+msgid "Ordini delle ultime 8 ore, aggiornati automaticamente."
+msgstr ""
+
+#: public/station-orders.php:354
+msgid "Audio"
+msgstr ""
+
+#: public/station-orders.php:356
+msgid "Impostazioni audio"
+msgstr ""
+
+#: public/station-orders.php:358
+msgid "Suono notifiche"
+msgstr ""
+
+#: public/station-orders.php:360
+msgid "Abilita o disabilita il suono delle notifiche"
+msgstr ""
+
+#: public/station-orders.php:365
+msgid "Scegli il suono"
+msgstr ""
+
+#. translators: %s: sound name.
+#: public/station-orders.php:372
+#, php-format
+msgid "Prova %s"
+msgstr ""
+
+#: public/station-orders.php:383
+#: public/template/management-dashboard.php:32
+msgid "Aggiorna"
+msgstr ""
+
+#: public/station-orders.php:390
+msgid "Filtra per punto di preparazione"
+msgstr ""
+
+#: public/station-orders.php:409
+#: public/station-orders.php:436
+msgid "Sessione scaduta. Ricarica la pagina."
+msgstr ""
+
+#: public/station-orders.php:418
+msgid "Punto di preparazione non valido."
+msgstr ""
+
+#: public/station-orders.php:448
+#: public/station-orders.php:495
+#: public/station-orders.php:499
+#: public/station-orders.php:510
+#: public/studio-immens-quick-order-public.php:145
+#: public/studio-immens-quick-order-public.php:316
+#: public/studio-immens-quick-order-public.php:1954
+#: public/studio-immens-quick-order-public.php:1988
+#: public/studio-immens-quick-order-public.php:3381
+#: public/studio-immens-quick-order-public.php:3505
+#: public/studio-immens-quick-order-public.php:3873
+#: public/studio-immens-quick-order-public.php:4438
+#: public/studio-immens-quick-order-public.php:4470
+#: public/studio-immens-quick-order-public.php:4502
+#: public/studio-immens-quick-order-public.php:5648
+#: public/studio-immens-quick-order-public.php:5787
+#: public/studio-immens-quick-order-public.php:5815
+#: public/studio-immens-quick-order-public.php:5838
+#: public/studio-immens-quick-order-public.php:5882
+#: public/studio-immens-quick-order-public.php:5907
+#: public/studio-immens-quick-order-public.php:5934
+#: public/studio-immens-quick-order-public.php:5970
+#: public/studio-immens-quick-order-public.php:5990
+#: public/studio-immens-quick-order-public.php:7259
+#: public/studio-immens-quick-order-public.php:7550
+#: public/studio-immens-quick-order-public.php:7624
+#: public/template/station-table-sessions.php:6
+#: public/template/station-table-sessions.php:30
+#: public/template/station-table-sessions.php:37
+msgid "Richiesta non valida."
+msgstr ""
+
+#: public/station-orders.php:452
+msgid "Stato non valido."
+msgstr ""
+
+#: public/station-orders.php:457
+#: public/station-orders.php:515
+#: public/studio-immens-quick-order-public.php:7272
+msgid "Ordine non trovato."
+msgstr ""
+
+#: public/station-orders.php:461
+msgid "Questo ordine non contiene prodotti del punto selezionato."
+msgstr ""
+
+#: public/station-orders.php:520
+#: public/station-orders.php:529
+#: public/station-orders.php:537
+msgid "Ordine già gestito."
+msgstr ""
+
+#: public/station-orders.php:545
+msgid "Ordine confermato dall'operatore."
+msgstr ""
+
+#: public/station-orders.php:569
+msgid "Ordine rifiutato dall'operatore."
+msgstr ""
+
+#: public/station-orders.php:779
+msgid "Tutti"
+msgstr ""
+
+#: public/station-orders.php:794
+msgid "Senza punto"
+msgstr ""
+
+#: public/station-orders.php:828
+msgid "Nessun ordine"
+msgstr ""
+
+#: public/station-orders.php:828
+msgid "Non ci sono ordini da preparare per questo punto."
+msgstr ""
+
+#: public/station-orders.php:881
+#: public/station-orders.php:988
+msgid "In preparazione"
+msgstr ""
+
+#: public/station-orders.php:883
+#: public/station-orders.php:990
+msgid "Pronto"
+msgstr ""
+
+#: public/station-orders.php:885
+msgid "Riapri"
+msgstr ""
+
+#: public/station-orders.php:925
+#, php-format
+msgid "Modifiche: %s"
+msgstr ""
+
+#: public/station-orders.php:952
+msgid "Da confermare"
+msgstr ""
+
+#: public/station-orders.php:956
+msgid "Conferma"
+msgstr ""
+
+#: public/station-orders.php:957
+msgid "Rifiuta"
+msgstr ""
+
+#: public/station-orders.php:993
+msgid "In attesa"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:58
+msgid "Studio Immens Quick Order requires WooCommerce to be installed and active."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:397
+msgid "Aggiungi il ruolo worker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:402
+msgid "Aggiungi il ruolo (worker) all'utente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:409
+msgid "Aggiungi il ruolo supervisor"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:414
+msgid "Aggiungi il ruolo (supervisor) all'utente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:421
+msgid "Aggiungi il ruolo manager"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:426
+msgid "Aggiungi il ruolo (manager) all'utente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:467
+msgid "visualizza i risultati in griglia"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:468
+msgid "Grid View"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:584
+msgid "Pagine Speciali:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:679
+#: public/studio-immens-quick-order-public.php:681
+#: public/studio-immens-quick-order-public.php:682
+#: public/studio-immens-quick-order-public.php:708
+msgid "Eventi e Catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:680
+msgid "Evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:683
+msgid "Archivio catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:684
+msgid "Attributi evento"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:685
+msgid "Evento principale:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:686
+msgid "Tutti gli eventi"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:687
+msgid "Aggiungi evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:688
+#: public/studio-immens-quick-order-public.php:1043
+msgid "Aggiungi nuovo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:689
+msgid "Nuovo evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:690
+msgid "Modifica evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:691
+msgid "Aggiorna evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:692
+msgid "Visualizza evento catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:693
+msgid "Visualizza eventi catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:694
+msgid "Cerca eventi catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:695
+msgid "Nessun evento trovato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:696
+msgid "Nessun evento nel cestino"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:697
+#: public/studio-immens-quick-order-public.php:1052
+msgid "Immagine in evidenza"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:698
+#: public/studio-immens-quick-order-public.php:1053
+msgid "Imposta immagine in evidenza"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:699
+#: public/studio-immens-quick-order-public.php:1054
+msgid "Rimuovi immagine in evidenza"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:700
+#: public/studio-immens-quick-order-public.php:1055
+msgid "Usa come immagine in evidenza"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:701
+msgid "Inserisci nell’evento"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:702
+msgid "Caricato per questo evento"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:703
+msgid "Elenco eventi catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:704
+msgid "Navigazione elenco eventi"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:705
+msgid "Filtra eventi catering"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:709
+msgid "Eventi catering, banchetti e ordinazioni speciali."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:741
+msgid "Data di Consegna: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:752
+msgid " Data di Consegna: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:779
+msgid "siqo_ingredients"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:780
+#: public/studio-immens-quick-order-public.php:781
+msgid "Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:782
+msgid "Tutti gli Ingredienti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:783
+msgid "Genitore dell'Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:784
+msgid "Genitore dell'Ingrediente:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:785
+msgid "Nuovo Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:786
+msgid "Aggiungi Nuovo Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:787
+msgid "Edita Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:788
+msgid "Aggiorna Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:789
+msgid "Visualizza Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:790
+msgid "Separa gli Ingredienti con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:791
+msgid "Aggiungi o Rimuovi Ingredienti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:792
+#: public/studio-immens-quick-order-public.php:841
+#: public/studio-immens-quick-order-public.php:890
+#: public/studio-immens-quick-order-public.php:940
+msgid "Scegli fra i più usati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:793
+msgid "Ingredienti Popolari"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:794
+msgid "Cerca Ingredienti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:795
+#: public/studio-immens-quick-order-public.php:844
+#: public/studio-immens-quick-order-public.php:893
+#: public/studio-immens-quick-order-public.php:943
+#: public/studio-immens-quick-order-public.php:997
+msgid "Nessun risultato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:796
+msgid "Nessun Ingrediente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:797
+msgid "lista ingredienti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:798
+msgid "navigazione lista ingredienti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:828
+msgid "siqo_allergens"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:829
+#: public/studio-immens-quick-order-public.php:830
+msgid "Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:831
+msgid "Tutti gli Allergeni"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:832
+msgid "Genitore dell'Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:833
+msgid "Genitore dell'Allergene:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:834
+msgid "Nuovo Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:835
+msgid "Aggiungi Nuovo Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:836
+msgid "Edita Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:837
+msgid "Aggiorna Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:838
+msgid "Visualizza Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:839
+msgid "Separa gli Allergeni con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:840
+msgid "Aggiungi o Rimuovi Allergeni"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:842
+msgid "Allergeni Popolari"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:843
+msgid "Cerca Allergeni"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:845
+msgid "Nessun Allergene"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:846
+msgid "lista Allergeni"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:847
+msgid "navigazione lista Allergeni"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:877
+#: public/studio-immens-quick-order-public.php:5030
+msgid "siqo_temperatures"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:878
+#: public/studio-immens-quick-order-public.php:879
+msgid "Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:880
+msgid "Tutte le Temperature"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:881
+msgid "Genitore della Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:882
+msgid "Genitore della Temperatura:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:883
+msgid "Nuova Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:884
+msgid "Aggiungi Nuova Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:885
+msgid "Edita Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:886
+msgid "Aggiorna Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:887
+msgid "Visualizza Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:888
+msgid "Separa le Temperature con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:889
+msgid "Aggiungi o Rimuovi Temperature"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:891
+msgid "Temperature Popolari"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:892
+msgid "Cerca Temperature"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:894
+msgid "Nessuna Temperatura"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:895
+msgid "lista Temperature"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:896
+msgid "navigazione lista Temperature"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:927
+#: public/studio-immens-quick-order-public.php:928
+#: public/studio-immens-quick-order-public.php:929
+msgid "siqo_stickers"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:930
+msgid "Tutti gli Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:931
+msgid "Genitore dello Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:932
+msgid "Genitore dello Sticker:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:933
+msgid "Nuovo Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:934
+msgid "Aggiungi Nuovo Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:935
+msgid "Edita Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:936
+msgid "Aggiorna Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:937
+msgid "Visualizza Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:938
+msgid "Separa gli Sticker con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:939
+msgid "Aggiungi o Rimuovi Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:941
+msgid "Sticker Popolari"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:942
+msgid "Cerca Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:944
+msgid "Nessuno Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:945
+msgid "lista Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:946
+msgid "navigazione lista Sticker"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:981
+#: public/studio-immens-quick-order-public.php:983
+msgid "Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:982
+msgid "Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:984
+msgid "Tutte le Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:985
+msgid "Genitore delle Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:986
+msgid "Genitore della Macro Categoria:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:987
+msgid "Nuova Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:988
+msgid "Aggiungi Nuova Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:989
+msgid "Edita Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:990
+msgid "Aggiorna Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:991
+msgid "Visualizza Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:992
+msgid "Separa le Macro Categorie con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:993
+msgid "Aggiungi o Rimuovi Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:994
+msgid "Scegli fra le più usate"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:995
+msgid "Macro Categorie Popolari"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:996
+msgid "Cerca Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:998
+msgid "Nessuna Macro Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:999
+msgid "lista Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1000
+msgid "navigazione lista Macro Categorie"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1038
+msgid "Archivio tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1039
+msgid "Attributi tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1040
+msgid "Tavolo principale:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1041
+msgid "Tutti i tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1042
+msgid "Aggiungi nuovo tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1044
+msgid "Nuovo tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1045
+msgid "Modifica tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1046
+msgid "Aggiorna tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1047
+msgid "Visualizza tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1048
+msgid "Visualizza tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1049
+msgid "Cerca tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1050
+msgid "Nessun tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1051
+msgid "Nessun tavolo nel cestino"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1056
+msgid "Inserisci nel tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1057
+msgid "Caricato per questo tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1058
+msgid "Elenco tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1059
+msgid "Navigazione elenco tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1060
+msgid "Filtra tavoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1064
+msgid "Tavoli e zone del ristorante: bancone, cortile, gazebo e altre postazioni."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1092
+#: public/studio-immens-quick-order-public.php:1094
+msgid "Stati tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1093
+msgid "Stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1095
+msgid "Tutti gli stati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1096
+msgid "Stato principale"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1097
+msgid "Stato principale:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1098
+msgid "Nuovo stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1099
+msgid "Aggiungi stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1100
+msgid "Modifica stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1101
+msgid "Aggiorna stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1102
+msgid "Visualizza stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1103
+msgid "Separa gli stati con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1104
+msgid "Aggiungi o rimuovi stati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1105
+msgid "Scegli tra i più usati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1106
+msgid "Stati più usati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1107
+msgid "Cerca stato tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1108
+msgid "Nessuno stato trovato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1109
+msgid "Nessuno stato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1110
+msgid "Elenco stati tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1111
+msgid "Navigazione elenco stati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1135
+#: public/studio-immens-quick-order-public.php:1137
+msgid "Zone"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1136
+msgid "Zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1138
+msgid "Tutte le zone"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1139
+msgid "Zona principale"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1140
+msgid "Zona principale:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1141
+msgid "Nuova zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1142
+msgid "Aggiungi zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1143
+msgid "Modifica zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1144
+msgid "Aggiorna zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1145
+msgid "Visualizza zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1146
+msgid "Separa le zone con la virgola"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1147
+msgid "Aggiungi o rimuovi zone"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1148
+msgid "Scegli tra le più usate"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1149
+msgid "Zone più usate"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1150
+msgid "Cerca zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1151
+msgid "Nessuna zona trovata"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1152
+msgid "Nessuna zona"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1153
+msgid "Elenco zone"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1154
+msgid "Navigazione elenco zone"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1199
+#: public/studio-immens-quick-order-public.php:2685
+#: public/studio-immens-quick-order-public.php:2996
+#: public/studio-immens-quick-order-public.php:3110
+#: public/studio-immens-quick-order-public.php:4707
+#: public/studio-immens-quick-order-public.php:4725
+#: public/studio-immens-quick-order-public.php:6512
+#: public/studio-immens-quick-order-public.php:6622
+#: public/studio-immens-quick-order-public.php:6774
+#: public/studio-immens-quick-order-public.php:6841
+#: public/studio-immens-quick-order-public.php:7099
+#: public/studio-immens-quick-order-public.php:7187
+#: public/studio-immens-quick-order-public.php:7242
+#: public/studio-immens-quick-order-public.php:7281
+#: public/template/front-order-ajax.php:404
+msgid "CHIUDI"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1210
+msgid "id pagina: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1215
+msgid "status della pagina: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1226
+msgid "Mostra o Nascondi header al caricamento della pagina"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1230
+#: public/studio-immens-quick-order-public.php:1244
+#: public/studio-immens-quick-order-public.php:1258
+msgid "Mostra"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1234
+#: public/studio-immens-quick-order-public.php:1248
+#: public/studio-immens-quick-order-public.php:1262
+msgid "Nascondi"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1240
+msgid "Mostra o Nascondi footer al caricamento della pagina"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1254
+msgid "Mostra o Nascondi QR code della pagina in testa"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1271
+msgid "Modifica i colori globali della pagina"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1275
+msgid "Si"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1283
+msgid "Estendi l'influenza ad altri selettori css"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1291
+msgid "Colore Sfondo "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1299
+msgid "Colore Testo "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1575
+#: public/studio-immens-quick-order-public.php:1588
+msgid "Image"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1576
+#: public/studio-immens-quick-order-public.php:1590
+msgid "Carica Immagine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1611
+msgid "Immagine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1775
+msgid "NON Hai il permesso per accedere a questa pagina!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1776
+#: public/studio-immens-quick-order-public.php:1790
+msgid " Clicca qui per Accedere "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1789
+msgid "Per poter effettuare ordini su questa pagina, è necessario effettuare l'accesso."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:1860
+msgid "Link per Questa Pagina:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2669
+#: public/studio-immens-quick-order-public.php:2767
+msgid "Non Disponibile"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2682
+#: public/studio-immens-quick-order-public.php:5046
+msgid "Note del prodotto..."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2683
+msgid "MODIFICA INGREDIENTI"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2696
+msgid "Cerca ingredienti da aggiungere..."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2719
+msgid "AGGIUNGI"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2741
+msgid "Categoria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2850
+msgid "Seleziona la variante: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:2885
+msgid " - Seleziona - "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3000
+msgid "Nessuna immagine di galleria"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3012
+msgid "Categorie:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3018
+msgid "Tag:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3024
+msgid "Ingredienti:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3030
+msgid "Allergeni:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3112
+msgid "Che temperatura gradisci? "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3115
+msgid "-scegli-"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3512
+msgid "TAVOLO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3611
+#: public/studio-immens-quick-order-public.php:4261
+msgid "Ordine senza articoli validi."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3717
+msgid "Cerca prodotto..."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3771
+#: public/studio-immens-quick-order-public.php:3779
+msgid "Prodotto Generico"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3803
+msgid "Seleziona Tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3809
+msgid "oppure impostalo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3815
+msgid "- zona -"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3827
+msgid "prezzo / sconto"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3897
+msgid "Seleziona un tavolo attivo prima di ordinare."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3903
+msgid "Tavolo non valido: scansiona il QR del tavolo."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:3911
+msgid "Il tavolo risulta già chiuso."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4258
+msgid "Impossibile chiudere il tavolo: ordine senza articoli o con totale zero."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4276
+msgid "Impossibile creare l'ordine. Riprova."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4302
+msgid "Sessione del tavolo non più attiva."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4329
+#, php-format
+msgid "Unito all’ordine #%d."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4359
+msgid "Annullato: superato il limite importo della sessione tavolo."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4545
+msgid "Operazione non consentita."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4557
+msgid "Nessun articolo da calcolare."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4597
+msgid "Nessun articolo valido da calcolare."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4746
+msgid "STORICO:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4751
+msgid "STORY"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4871
+#: public/studio-immens-quick-order-public.php:5587
+msgid "Preconto"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4878
+#: public/studio-immens-quick-order-public.php:6357
+#: public/studio-immens-quick-order-public.php:7278
+msgid "INFO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4888
+msgid "RIEPILOGO:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4893
+msgid "TUTTO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4909
+msgid "PRODOTTI"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:4963
+msgid "VARIANTI:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5045
+msgid "Note"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5055
+msgid "Modifiche"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5056
+msgid "Modifiche del prodotto..."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5087
+msgid "Sconto"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5204
+msgid "Chiudi il tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5205
+msgid "TAVOLO: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5209
+msgid "LIBERA TAVOLO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5212
+msgid "PAGA TAVOLO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5217
+#: public/template/front-order-ajax.php:452
+msgid "AVVIA ORDINE"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5219
+msgid "Apri varianti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5222
+msgid "Apri tastierino quantità"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5308
+msgid "Spedizione gratuita"
+msgstr ""
+
+#. translators: %s: coupon code
+#: public/studio-immens-quick-order-public.php:5344
+#, php-format
+msgid "Applica il coupon %s"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5365
+msgid "Aggiungi"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5391
+msgid "Pagamento tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5392
+msgid "Chiudi il conto"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5393
+msgid "Controlla gli articoli, associa un cliente se serve e completa il pagamento."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5397
+#: public/template/front-order-ajax.php:403
+#: public/template/station-table-sessions.php:123
+#: public/template/station-table-sessions.php:158
+msgid "Chiudi"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5404
+msgid "Conto"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5405
+msgid "Articoli ordinati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5407
+msgid "Numero articoli"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5418
+msgid "Anagrafica"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5421
+msgid "Opzionale"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5424
+msgid "Puoi collegare un cliente esistente oppure inserire i dati del nuovo cliente."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5426
+msgid "Cliente esistente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5431
+msgid "Nuovo cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5432
+msgid "Nome cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5433
+msgid "Email cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5434
+msgid "Telefono cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5435
+msgid "Aggiungi cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5439
+msgid "Cerca un cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5440
+msgid "Cerca cliente..."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5480
+msgid "NUOVO!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5493
+msgid "Coupon e sconti"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5498
+msgid "Aggiungi uno o più coupon. Se selezioni un cliente, vedrai anche gli sconti associati al suo indirizzo email."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5501
+msgid "Cerca un coupon…"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5501
+msgid "Cerca un coupon"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5505
+msgid "Applicati"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5511
+msgid "Sconti del cliente"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5519
+msgid "Nessuno sconto associato a questo cliente."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5524
+msgid "Coupon disponibili"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5532
+msgid "Nessun coupon disponibile."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5577
+msgid "Totale da pagare"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5591
+msgid "Paga tavolo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5728
+msgid "File non valido."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5747
+msgid "File troppo grande."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5758
+msgid "Caricamento non riuscito."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5770
+msgid "Impossibile creare l’allegato."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5853
+msgid "Tipo di contenuto non consentito."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:5943
+#: public/studio-immens-quick-order-public.php:5976
+#: public/studio-immens-quick-order-public.php:5996
+msgid "Contenuto non consentito."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6039
+msgid "In Lavorazione"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6041
+msgid "Completato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6043
+msgid "Cancellato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6045
+msgid "Consegnato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6047
+msgid "In Attesa"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6083
+#: public/studio-immens-quick-order-public.php:6124
+#: public/studio-immens-quick-order-public.php:6125
+msgid "Nome breve"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6084
+#: public/studio-immens-quick-order-public.php:6137
+#: public/studio-immens-quick-order-public.php:6138
+msgid "Nome slang"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6204
+msgid "Sicuro di voler procedere con l'Ordinazione?"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6205
+msgid "Sicuro di voler LIBERARE il tavolo?"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6206
+msgid "Sicuro di voler LIBERARE tutti i tavoli?"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6207
+#: public/template/manage-tables.php:196
+#: public/template/management-dashboard.php:124
+msgid "Libero"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6208
+msgid "Attesa"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6209
+#: public/template/manage-tables.php:198
+msgid "Occupato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6211
+msgid "Vuoi creare un nuovo tavolo chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6212
+msgid "Inserisci prima il nome del tavolo."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6213
+msgid "Vuoi ELIMINARE il tavolo chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6214
+msgid "seleziona prima il tavolo da eliminare."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6216
+msgid "Vuoi creare un nuovo evento chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6217
+msgid "Vuoi aggiornare l'evento chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6218
+msgid "Completa prima i campi obbligatori contrassegnati da: * ."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6219
+msgid "Vuoi ELIMINARE in modo definitivo questo evento, chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6221
+msgid "Inserisci prima il Nome del Cliente!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6222
+msgid "Inserisci almeno la mail o il numero di telefono del Cliente!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6224
+msgid "Sei sicuro di voler cambiare la categoria di questo prodotto?"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6227
+msgid "Vuoi creare una nuova macro categoria chiamata: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6228
+msgid "Inserisci prima il nome della categoria."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6229
+msgid "Vuoi ELIMINARE la categoria chiamata: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6230
+msgid "seleziona prima la categoria da eliminare."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6233
+msgid "inserisci prima tutti i campi richiesti e contrassegnati da *"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6234
+msgid "Confermi di voler creare il Prodotto chiamato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6236
+msgid "Seleziona prima il Prodotto da ELIMINARE"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6237
+msgid "Sei sicuro di voler ELIMINARE il prodotto chiamato:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6360
+#: public/studio-immens-quick-order-public.php:7285
+#: public/template/front-order-ajax.php:394
+msgid "ORDINE"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6363
+msgid "FATTURAZIONE"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6371
+msgid "SPEDIZIONE"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6379
+msgid "CONTATTO"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6388
+msgid "Stampa scontrino"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6523
+#: public/studio-immens-quick-order-public.php:6542
+#: public/studio-immens-quick-order-public.php:6664
+#: public/studio-immens-quick-order-public.php:6689
+#: public/studio-immens-quick-order-public.php:6784
+#: public/studio-immens-quick-order-public.php:6803
+#: public/studio-immens-quick-order-public.php:7109
+#: public/studio-immens-quick-order-public.php:7125
+#: public/studio-immens-quick-order-public.php:7197
+#: public/studio-immens-quick-order-public.php:7213
+msgid "gli ingredienti:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6538
+#: public/studio-immens-quick-order-public.php:6685
+#: public/studio-immens-quick-order-public.php:6799
+#: public/studio-immens-quick-order-public.php:7121
+#: public/studio-immens-quick-order-public.php:7209
+msgid "il prodotto non ha nessun ingrediente associato ad esso"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6553
+#: public/studio-immens-quick-order-public.php:6709
+#: public/studio-immens-quick-order-public.php:6814
+#: public/studio-immens-quick-order-public.php:7136
+#: public/studio-immens-quick-order-public.php:7224
+msgid "Note prodotto:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6635
+msgid "le varianti:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6650
+msgid "Temperatura:"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6832
+#: public/studio-immens-quick-order-public.php:6847
+msgid "Special"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6871
+msgid "Ritiro"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6873
+msgid "Consegna"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6878
+#: public/studio-immens-quick-order-public.php:7289
+msgid "Tipo di ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6898
+#: public/studio-immens-quick-order-public.php:6915
+#: public/studio-immens-quick-order-public.php:7245
+#: public/studio-immens-quick-order-public.php:7247
+#: public/studio-immens-quick-order-public.php:7248
+#: public/studio-immens-quick-order-public.php:7249
+msgid "cambia lo status dell'ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6922
+msgid "Stampa"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6957
+msgid "nuovo"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6959
+#: public/studio-immens-quick-order-public.php:7245
+msgid "in lavorazione"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6961
+#: public/studio-immens-quick-order-public.php:7247
+msgid "cancellato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6963
+#: public/studio-immens-quick-order-public.php:7248
+msgid "rimborsato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:6965
+#: public/studio-immens-quick-order-public.php:7249
+msgid "completato"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7245
+#: public/studio-immens-quick-order-public.php:7247
+#: public/studio-immens-quick-order-public.php:7248
+#: public/studio-immens-quick-order-public.php:7249
+msgid "Sei sicuro di voler cambiare lo status dell'ordine?`"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7293
+msgid "[DATE]"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7295
+msgid "data di creazione dell'ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7296
+msgid "creato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7299
+msgid "data dell'ultima modifica dell'ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7300
+msgid "ultima modifica: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7303
+msgid "data della fatturazione dell'ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7304
+msgid "fatturazione: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7307
+msgid "data del completamento dell'ordine"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7308
+msgid "completato: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7313
+msgid "[FATTURAZIONE]"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7322
+msgid "[SPEDIZIONE]"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7334
+msgid "[INFO]"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7335
+msgid "creato da - "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7338
+msgid "indirizzo ip - "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7339
+msgid "user agent - "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7344
+msgid "[ALTRO]"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7345
+msgid "note dell'ordine: - "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7384
+#: public/studio-immens-quick-order-public.php:7433
+msgid "Ritiro in Sede"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7387
+msgid "Consegna a domicilio"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7395
+msgid "Data di consegna"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7403
+msgid "Cercheremo di rispettare questo orario con il massimo dell'impegno, tuttavia l'orario effettivo potrebbe non corrispondere."
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7405
+msgid "Ora di consegna"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7432
+msgid "Consegna a Domicilio"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7437
+msgid "Tipo Ordine: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7439
+msgid "Data: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7439
+msgid "Ora: "
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7451
+msgid "Seleziona una data!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7454
+msgid "Seleziona un'orario!"
+msgstr ""
+
+#: public/studio-immens-quick-order-public.php:7636
+msgid "Dati ordine non validi."
+msgstr ""
+
+#: public/template/front-order-ajax.php:84
+msgid "Il tavolo richiesto non è disponibile. Selezionalo qui sotto."
+msgstr ""
+
+#: public/template/front-order-ajax.php:90
+msgid "Questo tavolo non è ancora attivo. Chiama un operatore per farti aprire il tavolo."
+msgstr ""
+
+#: public/template/front-order-ajax.php:135
+msgid "Esci"
+msgstr ""
+
+#: public/template/front-order-ajax.php:135
+msgid "Accedi"
+msgstr ""
+
+#: public/template/front-order-ajax.php:138
+msgid "Account"
+msgstr ""
+
+#: public/template/front-order-ajax.php:221
+msgid "Modalità operatore"
+msgstr ""
+
+#: public/template/front-order-ajax.php:224
+msgid "Questo tavolo è già attivo."
+msgstr ""
+
+#: public/template/front-order-ajax.php:226
+msgid "Questo tavolo non è attivo: aprilo per consentire gli ordini."
+msgstr ""
+
+#: public/template/front-order-ajax.php:227
+msgid "Apri questo tavolo"
+msgstr ""
+
+#: public/template/front-order-ajax.php:296
+msgid "Seleziona prima la variante"
+msgstr ""
+
+#: public/template/front-order-ajax.php:297
+msgid "Siamo spiacenti ma il prodotto non é al momento disponibile"
+msgstr ""
+
+#: public/template/front-order-ajax.php:298
+msgid "Per poter effettuare ordini su questa pagina, é necessario Effettuare l'accesso!"
+msgstr ""
+
+#: public/template/front-order-ajax.php:300
+msgid "Il prodotto é già tra i favoriti"
+msgstr ""
+
+#: public/template/front-order-ajax.php:316
+msgid "Menù digitale"
+msgstr ""
+
+#: public/template/front-order-ajax.php:317
+msgid "Cosa desideri?"
+msgstr ""
+
+#: public/template/front-order-ajax.php:318
+msgid "Sfoglia il menù, aggiungi i piatti e invia l’ordine dal tuo tavolo."
+msgstr ""
+
+#: public/template/front-order-ajax.php:331
+msgid "Cerca nel menù…"
+msgstr ""
+
+#: public/template/front-order-ajax.php:338
+msgid "Categorie"
+msgstr ""
+
+#: public/template/front-order-ajax.php:339
+msgid "Categorie del menù"
+msgstr ""
+
+#: public/template/front-order-ajax.php:342
+#: public/template/front-order-ajax.php:375
+msgid "Preferiti"
+msgstr ""
+
+#: public/template/front-order-ajax.php:364
+msgid "Tocca un piatto per ingredienti e varianti."
+msgstr ""
+
+#: public/template/front-order-ajax.php:374
+msgid "La tua selezione"
+msgstr ""
+
+#: public/template/front-order-ajax.php:384
+msgid "Nessun piatto trovato. Prova con un altro termine."
+msgstr ""
+
+#: public/template/front-order-ajax.php:411
+msgid "Il tuo ordine"
+msgstr ""
+
+#: public/template/front-order-ajax.php:431
+msgid "Varianti Prodotti"
+msgstr ""
+
+#: public/template/front-order-ajax.php:440
+msgid "Seleziona il Tavolo"
+msgstr ""
+
+#: public/template/manage-tables.php:127
+msgid "Vista tavoli"
+msgstr ""
+
+#: public/template/manage-tables.php:128
+msgid "Griglia"
+msgstr ""
+
+#: public/template/manage-tables.php:129
+msgid "Disposizione"
+msgstr ""
+
+#: public/template/manage-tables.php:131
+msgid "Modifica disposizione"
+msgstr ""
+
+#: public/template/manage-tables.php:132
+msgid "Gestisci"
+msgstr ""
+
+#: public/template/manage-tables.php:133
+msgid "Zoom"
+msgstr ""
+
+#: public/template/manage-tables.php:134
+msgid "Riduci zoom"
+msgstr ""
+
+#: public/template/manage-tables.php:136
+msgid "Aumenta zoom"
+msgstr ""
+
+#: public/template/manage-tables.php:137
+msgid "Adatta"
+msgstr ""
+
+#: public/template/manage-tables.php:139
+msgid "Ricarica disposizione"
+msgstr ""
+
+#: public/template/manage-tables.php:142
+msgid "Modifica da computer o tablet"
+msgstr ""
+
+#: public/template/manage-tables.php:144
+msgid "Disposizione tavoli"
+msgstr ""
+
+#: public/template/manage-tables.php:151
+msgid "Proprietà elemento"
+msgstr ""
+
+#: public/template/manage-tables.php:200
+msgid "Da incassare"
+msgstr ""
+
+#: public/template/manage-tables.php:230
+msgid "Ora e data dell'ultima modifica"
+msgstr ""
+
+#: public/template/management-dashboard.php:25
+msgid "Centro di controllo"
+msgstr ""
+
+#: public/template/management-dashboard.php:27
+msgid "Sala, cucina, magazzino e personale in un unico punto. I dati si aggiornano mentre lavori."
+msgstr ""
+
+#: public/template/management-dashboard.php:36
+msgid "Apri tavolo"
+msgstr ""
+
+#: public/template/management-dashboard.php:41
+msgid "Statistiche di servizio"
+msgstr ""
+
+#: public/template/management-dashboard.php:56
+msgid "Apri modulo"
+msgstr ""
+
+#: public/template/management-dashboard.php:64
+msgid "Servizio"
+msgstr ""
+
+#: public/template/management-dashboard.php:65
+msgid "Ultimi ordini"
+msgstr ""
+
+#: public/template/management-dashboard.php:67
+msgid "Aggiornamento live"
+msgstr ""
+
+#: public/template/management-dashboard.php:76
+msgid "Voci"
+msgstr ""
+
+#: public/template/management-dashboard.php:77
+msgid "Totale"
+msgstr ""
+
+#: public/template/management-dashboard.php:78
+msgid "Ora"
+msgstr ""
+
+#: public/template/management-dashboard.php:83
+msgid "Nessun ordine recente."
+msgstr ""
+
+#: public/template/management-dashboard.php:108
+msgid "Vedi tutti"
+msgstr ""
+
+#: public/template/management-dashboard.php:115
+#: public/template/station-table-sessions.php:138
+msgid "Nessun tavolo configurato."
+msgstr ""
+
+#: public/template/management-dashboard.php:124
+msgid "Aperto"
+msgstr ""
+
+#: public/template/management-dashboard.php:135
+msgid "Operatività"
+msgstr ""
+
+#: public/template/management-dashboard.php:139
+msgid "Ordini reparti separati per cucina, bar e pizzeria"
+msgstr ""
+
+#: public/template/management-dashboard.php:140
+msgid "Magazzino ingredienti con ricette e lotti"
+msgstr ""
+
+#: public/template/management-dashboard.php:141
+msgid "Prenotazioni, turni e statistiche nella stessa barra"
+msgstr ""
+
+#: public/template/station-table-sessions.php:14
+msgid "Gestione tavoli non disponibile."
+msgstr ""
+
+#. translators: %d: number of closed tables.
+#: public/template/station-table-sessions.php:46
+#, php-format
+msgid "%d tavolo chiuso."
+msgid_plural "%d tavoli chiusi."
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/template/station-table-sessions.php:50
+msgid "Nessun tavolo attivo da chiudere."
+msgstr ""
+
+#: public/template/station-table-sessions.php:86
+#: public/template/station-table-sessions.php:148
+#, php-format
+msgid "Attivo fino alle %s"
+msgstr ""
+
+#: public/template/station-table-sessions.php:122
+#: public/template/station-table-sessions.php:158
+msgid "Apri"
+msgstr ""
+
+#: public/template/station-table-sessions.php:124
+msgid "Chiudere tutti i tavoli attivi?"
+msgstr ""
+
+#: public/template/station-table-sessions.php:128
+msgid "Apri un tavolo per permettere agli ospiti di ordinare dal menù."
+msgstr ""
+
+#: public/template/station-table-sessions.php:132
+msgid "Chiudi tutti"
+msgstr ""
+
+#: studio-immens-quick-order.php:111
+msgid "Settings"
+msgstr ""
+
+#: studio-immens-quick-order.php:118
+msgid "Documentazione"
+msgstr ""

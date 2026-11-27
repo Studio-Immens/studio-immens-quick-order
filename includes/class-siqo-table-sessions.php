@@ -1,6 +1,9 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Custom plugin tables require direct queries.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Meta queries use indexed custom keys.
+
 class SIQO_Table_Sessions {
 
 	const DB_VERSION   = '1.0.0';
@@ -137,7 +140,7 @@ class SIQO_Table_Sessions {
 	public static function get( $session_id ) {
 		global $wpdb;
 		$table = self::table_name();
-		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", absint( $session_id ) ) );
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %i WHERE id = %d", $table, absint( $session_id ) ) );
 	}
 
 	public static function get_active_for_table( $table_id ) {
@@ -145,7 +148,8 @@ class SIQO_Table_Sessions {
 		$table = self::table_name();
 		return $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE table_id = %d AND status IN ('open','awaiting_approval') ORDER BY id DESC LIMIT 1",
+				"SELECT * FROM %i WHERE table_id = %d AND status IN ('open','awaiting_approval') ORDER BY id DESC LIMIT 1",
+				$table,
 				absint( $table_id )
 			)
 		);
@@ -163,7 +167,8 @@ class SIQO_Table_Sessions {
 		global $wpdb;
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT table_id FROM " . self::table_name() . " WHERE status IN ('open','awaiting_approval') AND expires_at > %s",
+				"SELECT DISTINCT table_id FROM %i WHERE status IN ('open','awaiting_approval') AND expires_at > %s",
+				self::table_name(),
 				self::now()
 			)
 		);
@@ -217,7 +222,8 @@ class SIQO_Table_Sessions {
 		$status  = in_array( $status, $allowed, true ) ? $status : 'closed';
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET status = %s, closed_at = %s WHERE table_id = %d AND status IN ('open','awaiting_approval')",
+				"UPDATE %i SET status = %s, closed_at = %s WHERE table_id = %d AND status IN ('open','awaiting_approval')",
+				$table,
 				$status,
 				self::now(),
 				absint( $table_id )
@@ -230,7 +236,8 @@ class SIQO_Table_Sessions {
 		$table = self::table_name();
 		return (int) $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET status = 'closed', closed_at = %s WHERE status IN ('open','awaiting_approval')",
+				"UPDATE %i SET status = 'closed', closed_at = %s WHERE status IN ('open','awaiting_approval')",
+				$table,
 				self::now()
 			)
 		);
@@ -269,7 +276,8 @@ class SIQO_Table_Sessions {
 		global $wpdb;
 		$affected = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET orders_count = IF(orders_count > 0, orders_count - 1, 0), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d",
+				"UPDATE %i SET orders_count = IF(orders_count > 0, orders_count - 1, 0), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d",
+				self::table_name(),
 				(float) $total,
 				absint( $session_id )
 			)
@@ -290,12 +298,13 @@ class SIQO_Table_Sessions {
 		$threshold  = gmdate( 'Y-m-d H:i:s', time() - $interval );
 		$affected   = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
+				"UPDATE %i SET orders_count = orders_count + 1, last_order_at = %s, session_total = session_total + %f
 				 WHERE id = %d AND status = 'open'
 				 AND expires_at > %s
 				 AND orders_count < %d
 				 AND (last_order_at IS NULL OR last_order_at < %s)
 				 AND session_total + %f <= %f",
+				$table,
 				self::now(),
 				(float) $total,
 				absint( $session_id ),
@@ -318,10 +327,11 @@ class SIQO_Table_Sessions {
 		$max_total = (float) apply_filters( 'siqo_order_max_total', self::MAX_TOTAL, $session );
 		$affected  = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . self::table_name() . " SET session_total = session_total + %f
+				"UPDATE %i SET session_total = session_total + %f
 				 WHERE id = %d AND session_total + %f <= %f
 				 AND status IN ('open','awaiting_approval')
 				 AND expires_at > %s",
+				self::table_name(),
 				(float) $total,
 				absint( $session_id ),
 				(float) $total,
@@ -337,7 +347,8 @@ class SIQO_Table_Sessions {
 		$table = self::table_name();
 		return (int) $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET status = 'expired', closed_at = %s WHERE status IN ('open','awaiting_approval') AND expires_at < %s",
+				"UPDATE %i SET status = 'expired', closed_at = %s WHERE status IN ('open','awaiting_approval') AND expires_at < %s",
+				$table,
 				self::now(),
 				self::now()
 			)

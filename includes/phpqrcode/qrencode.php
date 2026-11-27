@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *
@@ -162,10 +168,10 @@
         //----------------------------------------------------------------------
         public function encodeMask(QRinput $input, $mask)
         {
-            if($input->getVersion() < 0 || $input->getVersion() > QRSPEC_VERSION_MAX) {
+            if($input->getVersion() < 0 || $input->getVersion() > SIQO_QR_QRSPEC_VERSION_MAX) {
                 throw new Exception('wrong version');
             }
-            if($input->getErrorCorrectionLevel() > QR_ECLEVEL_H) {
+            if($input->getErrorCorrectionLevel() > SIQO_QR_ECLEVEL_H) {
                 throw new Exception('wrong level');
             }
 
@@ -212,10 +218,10 @@
             $maskObj = new QRmask();
             if($mask < 0) {
             
-                if (QR_FIND_BEST_MASK) {
+                if (SIQO_QR_FIND_BEST_MASK) {
                     $masked = $maskObj->mask($width, $frame, $input->getErrorCorrectionLevel());
                 } else {
-                    $masked = $maskObj->makeMask($width, $frame, (intval(QR_DEFAULT_MASK) % 8), $input->getErrorCorrectionLevel());
+                    $masked = $maskObj->makeMask($width, $frame, (intval(SIQO_QR_DEFAULT_MASK) % 8), $input->getErrorCorrectionLevel());
                 }
             } else {
                 $masked = $maskObj->makeMask($width, $frame, $mask, $input->getErrorCorrectionLevel());
@@ -251,7 +257,7 @@
             $input = new QRinput($version, $level);
             if($input == NULL) return NULL;
 
-            $ret = $input->append($input, QR_MODE_8, strlen($string), str_split($string));
+            $ret = $input->append($input, SIQO_QR_MODE_8, strlen($string), str_split($string));
             if($ret < 0) {
                 unset($input);
                 return NULL;
@@ -263,7 +269,7 @@
         public function encodeString($string, $version, $level, $hint, $casesensitive)
         {
 
-            if($hint != QR_MODE_8 && $hint != QR_MODE_KANJI) {
+            if($hint != SIQO_QR_MODE_8 && $hint != SIQO_QR_MODE_KANJI) {
                 throw new Exception('bad hint');
                 return NULL;
             }
@@ -280,21 +286,21 @@
         }
         
         //----------------------------------------------------------------------
-        public static function png($text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4, $saveandprint=false) 
+        public static function png($text, $outfile = false, $level = SIQO_QR_ECLEVEL_L, $size = 3, $margin = 4, $saveandprint=false) 
         {
             $enc = QRencode::factory($level, $size, $margin);
             return $enc->encodePNG($text, $outfile, $saveandprint=false);
         }
 
         //----------------------------------------------------------------------
-        public static function text($text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4) 
+        public static function text($text, $outfile = false, $level = SIQO_QR_ECLEVEL_L, $size = 3, $margin = 4) 
         {
             $enc = QRencode::factory($level, $size, $margin);
             return $enc->encode($text, $outfile);
         }
 
         //----------------------------------------------------------------------
-        public static function raw($text, $outfile = false, $level = QR_ECLEVEL_L, $size = 3, $margin = 4) 
+        public static function raw($text, $outfile = false, $level = SIQO_QR_ECLEVEL_L, $size = 3, $margin = 4) 
         {
             $enc = QRencode::factory($level, $size, $margin);
             return $enc->encodeRAW($text, $outfile);
@@ -404,11 +410,11 @@
         
         public $structured = 0; // not supported yet
         
-        public $level = QR_ECLEVEL_L;
-        public $hint = QR_MODE_8;
+        public $level = SIQO_QR_ECLEVEL_L;
+        public $hint = SIQO_QR_MODE_8;
         
         //----------------------------------------------------------------------
-        public static function factory($level = QR_ECLEVEL_L, $size = 3, $margin = 4)
+        public static function factory($level = SIQO_QR_ECLEVEL_L, $size = 3, $margin = 4)
         {
             $enc = new QRencode();
             $enc->size = $size;
@@ -423,19 +429,19 @@
                     break;
                 case 'l':
                 case 'L':
-                        $enc->level = QR_ECLEVEL_L;
+                        $enc->level = SIQO_QR_ECLEVEL_L;
                     break;
                 case 'm':
                 case 'M':
-                        $enc->level = QR_ECLEVEL_M;
+                        $enc->level = SIQO_QR_ECLEVEL_M;
                     break;
                 case 'q':
                 case 'Q':
-                        $enc->level = QR_ECLEVEL_Q;
+                        $enc->level = SIQO_QR_ECLEVEL_Q;
                     break;
                 case 'h':
                 case 'H':
-                        $enc->level = QR_ECLEVEL_H;
+                        $enc->level = SIQO_QR_ECLEVEL_H;
                     break;
             }
             
@@ -489,7 +495,7 @@
                 if ($err != '')
                     QRtools::log($outfile, $err);
                 
-                $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
+                $maxSize = (int)(SIQO_QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
                 
                 QRimage::png($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,$saveandprint);
             

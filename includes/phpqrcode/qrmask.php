@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *
@@ -25,10 +31,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-	define('N1', 3);
-	define('N2', 3);
-	define('N3', 40);
-	define('N4', 10);
+	define('SIQO_QR_N1', 3);
+	define('SIQO_QR_N2', 3);
+	define('SIQO_QR_N3', 40);
+	define('SIQO_QR_N4', 10);
 
 	class QRmask {
 	
@@ -37,7 +43,7 @@
 		//----------------------------------------------------------------------
 		public function __construct() 
         {
-            $this->runLength = array_fill(0, QRSPEC_WIDTH_MAX + 1, 0);
+            $this->runLength = array_fill(0, SIQO_QR_QRSPEC_WIDTH_MAX + 1, 0);
         }
         
         //----------------------------------------------------------------------
@@ -143,15 +149,15 @@
             $b = 0;
             $bitMask = array();
             
-            $fileName = QR_CACHE_DIR.'mask_'.$maskNo.DIRECTORY_SEPARATOR.'mask_'.$width.'_'.$maskNo.'.dat';
+            $fileName = SIQO_QR_CACHE_DIR.'mask_'.$maskNo.DIRECTORY_SEPARATOR.'mask_'.$width.'_'.$maskNo.'.dat';
 
-            if (QR_CACHEABLE) {
+            if (SIQO_QR_CACHEABLE) {
                 if (file_exists($fileName)) {
                     $bitMask = self::unserial(file_get_contents($fileName));//phpcs:ignore
                 } else {
                     $bitMask = $this->generateMaskNo($maskNo, $width, $s, $d);
-                    if (!file_exists(QR_CACHE_DIR.'mask_'.$maskNo))
-                        mkdir(QR_CACHE_DIR.'mask_'.$maskNo);//phpcs:ignore
+                    if (!file_exists(SIQO_QR_CACHE_DIR.'mask_'.$maskNo))
+                        mkdir(SIQO_QR_CACHE_DIR.'mask_'.$maskNo);//phpcs:ignore
                     file_put_contents($fileName, self::serial($bitMask));//phpcs:ignore
                 }
             } else {
@@ -193,7 +199,7 @@
             for($i=0; $i<$length; $i++) {
                 
                 if($this->runLength[$i] >= 5) {
-                    $demerit += (N1 + ($this->runLength[$i] - 5));
+                    $demerit += (SIQO_QR_N1 + ($this->runLength[$i] - 5));
                 }
                 if($i & 1) {
                     if(($i >= 3) && ($i < ($length-2)) && ($this->runLength[$i] % 3 == 0)) {
@@ -203,9 +209,9 @@
                            ($this->runLength[$i+1] == $fact) &&
                            ($this->runLength[$i+2] == $fact)) {
                             if(($this->runLength[$i-3] < 0) || ($this->runLength[$i-3] >= (4 * $fact))) {
-                                $demerit += N3;
+                                $demerit += SIQO_QR_N3;
                             } else if((($i+3) >= $length) || ($this->runLength[$i+3] >= (4 * $fact))) {
-                                $demerit += N3;
+                                $demerit += SIQO_QR_N3;
                             }
                         }
                     }
@@ -235,7 +241,7 @@
                         $w22 = ord($frameY[$x]) | ord($frameY[$x-1]) | ord($frameYM[$x]) | ord($frameYM[$x-1]);
                         
                         if(($b22 | ($w22 ^ 1))&1) {                                                                     
-                            $demerit += N2;
+                            $demerit += SIQO_QR_N2;
                         }
                     }
                     if(($x == 0) && (ord($frameY[$x]) & 1)) {
@@ -290,9 +296,9 @@
             
             $checked_masks = array(0,1,2,3,4,5,6,7);
             
-            if (QR_FIND_FROM_RANDOM !== false) {
+            if (SIQO_QR_FIND_FROM_RANDOM !== false) {
             
-                $howManuOut = 8-(QR_FIND_FROM_RANDOM % 9);
+                $howManuOut = 8-(SIQO_QR_FIND_FROM_RANDOM % 9);
                 for ($i = 0; $i <  $howManuOut; $i++) {
                     $remPos = wp_rand (0, count($checked_masks)-1);
                     unset($checked_masks[$remPos]);
@@ -311,7 +317,7 @@
                 $blacks  = $this->makeMaskNo($i, $width, $frame, $mask);
                 $blacks += $this->writeFormatInformation($width, $mask, $i, $level);
                 $blacks  = (int)(100 * $blacks / ($width * $width));
-                $demerit = (int)((int)(abs($blacks - 50) / 5) * N4);
+                $demerit = (int)((int)(abs($blacks - 50) / 5) * SIQO_QR_N4);
                 $demerit += $this->evaluateSymbol($width, $mask);
                 
                 if($demerit < $minDemerit) {

@@ -2,12 +2,16 @@
 /**
  * Piani, layout e zone della disposizione.
  *
- * @package Studio_Immens_Quick_Order
+ * @package SIQO_Plugin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// phpcs:disable WordPress.Security.NonceVerification.Missing -- Every AJAX method calls self::guard() before reading POST data.
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Page detection only reads a view slug.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Layout meta queries use indexed table keys.
 
 class SIQO_Plan_Layout {
 
@@ -32,6 +36,12 @@ class SIQO_Plan_Layout {
 		if ( is_page( 'manage-tables' ) ) {
 			return true;
 		}
+		if ( is_page( 'gestione' ) ) {
+			$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'dashboard';
+			if ( 'tables' === $view ) {
+				return true;
+			}
+		}
 		$post = get_post();
 		return $post && false !== strpos( (string) $post->post_content, 'SIQO_manage_tables_section' );
 	}
@@ -43,7 +53,7 @@ class SIQO_Plan_Layout {
 		wp_enqueue_media();
 		wp_enqueue_script(
 			'siqo-plan-editor',
-			plugins_url( 'public/js/siqo-plan-editor.js', dirname( __FILE__ ) ),
+			plugins_url( 'public/js/siqo-plan-editor.js', SIQO_PLUGIN_FILE ),
 			array(),
 			STUDIO_IMMENS_QUICK_ORDER_VERSION,
 			true
@@ -292,15 +302,13 @@ class SIQO_Plan_Layout {
 	public static function ajax_save_layout() {
 		self::guard();
 
-		$raw = isset( $_POST['layout'] ) ? wp_unslash( $_POST['layout'] ) : '';
-		if ( '' !== $raw ) {
-			$data = json_decode( (string) $raw, true );
-		} else {
+		$data = siqo_json_post( 'layout' );
+		if ( empty( $data ) ) {
 			$data = array(
-				'floor_id' => isset( $_POST['floor_id'] ) ? absint( $_POST['floor_id'] ) : 0,
-				'canvas'   => isset( $_POST['canvas'] ) ? json_decode( wp_unslash( $_POST['canvas'] ), true ) : array(),
-				'tables'   => isset( $_POST['tables'] ) ? json_decode( wp_unslash( $_POST['tables'] ), true ) : array(),
-				'zones'    => isset( $_POST['zones'] ) ? json_decode( wp_unslash( $_POST['zones'] ), true ) : array(),
+				'floor_id' => isset( $_POST['floor_id'] ) ? absint( wp_unslash( $_POST['floor_id'] ) ) : 0,
+				'canvas'   => siqo_json_post( 'canvas' ),
+				'tables'   => siqo_json_post( 'tables' ),
+				'zones'    => siqo_json_post( 'zones' ),
 			);
 		}
 		if ( ! is_array( $data ) ) {
@@ -663,6 +671,7 @@ class SIQO_Plan_Layout {
 		if ( empty( $_FILES['file'] ) || ! isset( $_FILES['file']['tmp_name'] ) ) {
 			wp_send_json_error( array( 'message' => __( 'Nessun file ricevuto.', 'studio-immens-quick-order' ) ), 400 );
 		}
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload is validated by wp_check_filetype_and_ext() and media_handle_upload().
 		$file = $_FILES['file'];
 		if ( ! empty( $file['size'] ) && (int) $file['size'] > 2 * 1024 * 1024 ) {
 			wp_send_json_error( array( 'message' => __( 'Immagine troppo grande (max 2 MB).', 'studio-immens-quick-order' ) ), 400 );

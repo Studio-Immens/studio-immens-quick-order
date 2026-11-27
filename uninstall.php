@@ -5,12 +5,16 @@
  *
  * @link       https://studioimmens.com
  * @since      1.0.0
- * @package    Studio_Immens_Quick_Order
+ * @package    SIQO_Plugin
  */
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this uninstall script.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Uninstall must remove custom tables and rows.
+// phpcs:disable WordPress.DB.SlowDBQuery -- Uninstall meta cleanup is intentional.
 
 global $wpdb;
 

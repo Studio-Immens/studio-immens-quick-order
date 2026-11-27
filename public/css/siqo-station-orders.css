@@ -758,3 +758,226 @@
 
 #siqo-station-orders .siqo-author { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: inherit; opacity: .85; }
 #siqo-station-orders .siqo-author img { border-radius: 50%; display: block; }
+
+#siqo-station-orders .siqo-station-head-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#siqo-station-orders .siqo-station-sound {
+    position: relative;
+}
+
+#siqo-station-orders .siqo-station-sound-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 15px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 999px;
+    background: var(--siqo-station-paper);
+    color: var(--siqo-station-espresso);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-sound-button:hover,
+#siqo-station-orders .siqo-station-sound-button[aria-expanded="true"] {
+    border-color: var(--siqo-station-terracotta);
+    background: #fff7ef;
+}
+
+#siqo-station-orders .siqo-station-sound-button:active {
+    transform: translateY(1px);
+}
+
+#siqo-station-orders .siqo-station-sound-button .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+#siqo-station-orders .siqo-station-sound-button .dashicons-controls-volumeoff {
+    color: var(--siqo-station-muted);
+}
+
+#siqo-station-orders .siqo-station-sound-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 30;
+    width: 268px;
+    padding: 14px;
+    border: 1px solid var(--siqo-station-sand);
+    border-radius: 16px;
+    background: var(--siqo-station-paper);
+    box-shadow: 0 18px 40px rgba(36, 29, 25, 0.16);
+}
+
+#siqo-station-orders .siqo-station-sound-panel[hidden] {
+    display: none;
+}
+
+#siqo-station-orders .siqo-station-sound-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(228, 215, 199, 0.75);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#siqo-station-orders .siqo-station-switch {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 24px;
+    cursor: pointer;
+}
+
+#siqo-station-orders .siqo-station-switch input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#siqo-station-orders .siqo-station-switch-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--siqo-station-sand);
+    transition: background 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-switch-track::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(36, 29, 25, 0.25);
+    transition: transform 150ms ease;
+}
+
+#siqo-station-orders .siqo-station-switch input:checked + .siqo-station-switch-track {
+    background: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-switch input:checked + .siqo-station-switch-track::after {
+    transform: translateX(16px);
+}
+
+#siqo-station-orders .siqo-station-switch input:focus-visible + .siqo-station-switch-track,
+#siqo-station-orders .siqo-station-sound-button:focus-visible,
+#siqo-station-orders .siqo-station-sound-preview:focus-visible {
+    outline: 2px solid var(--siqo-station-terracotta);
+    outline-offset: 2px;
+}
+
+#siqo-station-orders .siqo-station-sound-list {
+    display: grid;
+    gap: 4px;
+    margin: 12px 0 0;
+    padding: 0;
+    border: 0;
+}
+
+#siqo-station-orders .siqo-station-sound-list legend {
+    margin-bottom: 6px;
+    color: var(--siqo-station-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#siqo-station-orders .siqo-station-sound-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 4px 4px 8px;
+    border-radius: 10px;
+}
+
+#siqo-station-orders .siqo-station-sound-option:hover {
+    background: #fbf5ed;
+}
+
+#siqo-station-orders .siqo-station-sound-option label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    color: var(--siqo-station-espresso);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#siqo-station-orders .siqo-station-sound-option input {
+    margin: 0;
+    accent-color: var(--siqo-station-terracotta);
+}
+
+#siqo-station-orders .siqo-station-sound-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--siqo-station-muted);
+    cursor: pointer;
+}
+
+#siqo-station-orders .siqo-station-sound-preview:hover {
+    border-color: var(--siqo-station-sand);
+    background: #fff;
+    color: var(--siqo-station-espresso);
+}
+
+#siqo-station-orders .siqo-station-sound-preview .dashicons {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (max-width: 767px) {
+    #siqo-station-orders .siqo-station-head-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #siqo-station-orders .siqo-station-sound-panel {
+        left: 0;
+        right: auto;
+        width: min(280px, calc(100vw - 40px));
+    }
+}
+#siqo-station-orders .siqo-station-sound-button.is-muted {
+    color: var(--siqo-station-muted);
+}

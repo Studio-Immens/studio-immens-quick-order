@@ -4,9 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Station orders read custom order meta tables.
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only station filter.
+
 require_once __DIR__ . '/template/station-table-sessions.php';
 
-define( 'SIQO_STATION_VERSION', '1.0.4' );
+define( 'SIQO_STATION_VERSION', '1.0.5' );
 define( 'SIQO_STATION_TAXONOMY', 'siqo_preparation_points' );
 define( 'SIQO_STATION_META_KEY', '_siqo_station_status' );
 define( 'SIQO_STATION_PAGE_SLUG', 'ordini-reparti' );
@@ -121,7 +124,8 @@ function siqo_station_release_cancelled_order( $order_id, $order = null ) {
 	global $wpdb;
 	$wpdb->query(
 		$wpdb->prepare(
-			"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+			"UPDATE %i SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+			SIQO_Table_Sessions::table_name(),
 			$session_id
 		)
 	);
@@ -130,7 +134,7 @@ function siqo_station_release_cancelled_order( $order_id, $order = null ) {
 /**
  * Close the table session behind a paid order.
  *
- * The table payment flow (FO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
+ * The table payment flow (SIQO_flash_tab_pay_ajax -> SIQO_flash_tab_order_ajax with
  * $clear = true) fires `siqo_table_paid`; gateways that mark an order as paid fire
  * `woocommerce_payment_complete`. Both carry the order's `_siqo_session_id`, so the
  * session is the source of truth and closing it twice is a no-op. When the meta is
@@ -318,6 +322,16 @@ function siqo_station_orders_render( $embedded = false ) {
 	$data   = siqo_station_get_orders_data();
 	$counts = siqo_station_get_counts( $data );
 
+	$sounds = array(
+		'siqo-chime-soft.mp3'   => __( 'Campanella soft', 'studio-immens-quick-order' ),
+		'siqo-chime-bright.mp3' => __( 'Campanella bright', 'studio-immens-quick-order' ),
+		'siqo-double-bell.mp3'  => __( 'Doppia campanella', 'studio-immens-quick-order' ),
+		'siqo-low-alert.mp3'    => __( 'Avviso basso', 'studio-immens-quick-order' ),
+	);
+	$audio_base   = plugins_url( 'includes/audio/', SIQO_PLUGIN_FILE );
+	$saved_audio  = basename( (string) SIQO_get_meta( 'siqo_notify_audio' ) );
+	$default_sound = isset( $sounds[ $saved_audio ] ) ? $saved_audio : 'siqo-chime-soft.mp3';
+
 	ob_start();
 	if ( ! $embedded ) {
 		echo '<div id="siqo-app" class="siqo-app siqo-app-staff siqo-station-app" data-theme="dark">';
@@ -329,6 +343,7 @@ function siqo_station_orders_render( $embedded = false ) {
 		data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 		data-nonce="<?php echo esc_attr( wp_create_nonce( 'siqo_station_orders' ) ); ?>"
 		data-active-station="<?php echo esc_attr( $station ); ?>"
+		data-total-orders="<?php echo esc_attr( isset( $counts['__all'] ) ? $counts['__all'] : 0 ); ?>"
 		data-poll-interval="30000">
 		<header class="siqo-station-head">
 			<div>
@@ -336,20 +351,52 @@ function siqo_station_orders_render( $embedded = false ) {
 				<h1 class="siqo-station-title"><?php esc_html_e( 'Ordini Reparti', 'studio-immens-quick-order' ); ?></h1>
 				<p class="siqo-station-subtitle"><?php esc_html_e( 'Ordini delle ultime 8 ore, aggiornati automaticamente.', 'studio-immens-quick-order' ); ?></p>
 			</div>
-			<button type="button" class="siqo-station-refresh" data-station-refresh>
-				<span class="dashicons dashicons-update" aria-hidden="true"></span>
-				<?php esc_html_e( 'Aggiorna', 'studio-immens-quick-order' ); ?>
-			</button>
+			<div class="siqo-station-head-actions">
+				<div class="siqo-station-sound" data-station-sound>
+					<button type="button" class="siqo-station-sound-button" data-station-sound-toggle aria-expanded="false" aria-controls="siqo-station-sound-panel">
+						<span class="dashicons dashicons-controls-volumeon" aria-hidden="true" data-station-sound-icon></span>
+						<span><?php esc_html_e( 'Audio', 'studio-immens-quick-order' ); ?></span>
+					</button>
+					<div class="siqo-station-sound-panel" id="siqo-station-sound-panel" data-station-sound-panel role="dialog" aria-label="<?php esc_attr_e( 'Impostazioni audio', 'studio-immens-quick-order' ); ?>" hidden>
+						<div class="siqo-station-sound-row">
+							<span><?php esc_html_e( 'Suono notifiche', 'studio-immens-quick-order' ); ?></span>
+							<label class="siqo-station-switch">
+								<input type="checkbox" data-station-sound-enabled checked aria-label="<?php esc_attr_e( 'Abilita o disabilita il suono delle notifiche', 'studio-immens-quick-order' ); ?>">
+								<span class="siqo-station-switch-track" aria-hidden="true"></span>
+							</label>
+						</div>
+						<fieldset class="siqo-station-sound-list">
+							<legend><?php esc_html_e( 'Scegli il suono', 'studio-immens-quick-order' ); ?></legend>
+							<?php foreach ( $sounds as $sound_file => $sound_label ) : ?>
+								<div class="siqo-station-sound-option">
+									<label>
+										<input type="radio" name="siqo_station_sound" value="<?php echo esc_attr( $sound_file ); ?>" data-station-sound-choice data-sound-url="<?php echo esc_url( $audio_base . $sound_file ); ?>" <?php checked( $sound_file, $default_sound ); ?>>
+										<span><?php echo esc_html( $sound_label ); ?></span>
+									</label>
+									<button type="button" class="siqo-station-sound-preview" data-station-sound-preview="<?php echo esc_url( $audio_base . $sound_file ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: sound name. */ __( 'Prova %s', 'studio-immens-quick-order' ), $sound_label ) ); ?>">
+										<span class="dashicons dashicons-controls-play" aria-hidden="true"></span>
+									</button>
+								</div>
+							<?php endforeach; ?>
+						</fieldset>
+					</div>
+					<audio data-station-sound-audio preload="auto"></audio>
+				</div>
+				<button type="button" class="siqo-station-refresh" data-station-refresh>
+					<span class="dashicons dashicons-update" aria-hidden="true"></span>
+					<?php esc_html_e( 'Aggiorna', 'studio-immens-quick-order' ); ?>
+				</button>
+			</div>
 		</header>
 
-		<?php echo siqo_table_session_render_bar(); ?>
+		<?php echo wp_kses( siqo_table_session_render_bar( true ), siqo_allowed_html() ); ?>
 
 		<nav class="siqo-station-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Filtra per punto di preparazione', 'studio-immens-quick-order' ); ?>">
-			<?php echo siqo_station_render_tabs( $station, $counts ); ?>
+			<?php echo wp_kses( siqo_station_render_tabs( $station, $counts ), siqo_allowed_html() ); ?>
 		</nav>
 
 		<div id="siqo-station-list" class="siqo-station-list" aria-live="polite" aria-busy="false">
-			<?php echo siqo_station_render_list( $data, $station ); ?>
+			<?php echo wp_kses( siqo_station_render_list( $data, $station ), siqo_allowed_html() ); ?>
 		</div>
 	</div>
 	<?php
@@ -503,15 +550,13 @@ function siqo_order_approval_ajax() {
 		$order->save();
 
 		if ( $session ) {
-			$reopened = $wpdb->query(
+			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					"UPDATE %i SET status = 'open' WHERE id = %d AND status = 'awaiting_approval'",
+					SIQO_Table_Sessions::table_name(),
 					$session_id
 				)
 			);
-			if ( ! $reopened ) {
-				error_log( sprintf( 'SIQO: approvazione ordine %d, sessione %d non in awaiting_approval (nessuna riga aggiornata).', $order_id, $session_id ) );
-			}
 		}
 
 		do_action( 'siqo_order_approved', $order_id );
@@ -532,7 +577,8 @@ function siqo_order_approval_ajax() {
 	if ( $session ) {
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE " . SIQO_Table_Sessions::table_name() . " SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				"UPDATE %i SET status = 'open', orders_count = IF( orders_count > 0, orders_count - 1, 0 ), session_total = GREATEST( 0, session_total - %f ) WHERE id = %d AND status = 'awaiting_approval'",
+				SIQO_Table_Sessions::table_name(),
 				(float) $order->get_total(),
 				$session_id
 			)
@@ -858,7 +904,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 				<?php if ( $time ) : ?>
 					<time><?php echo esc_html( $time ); ?></time>
 				<?php endif; ?>
-				<?php echo siqo_render_author_badge( $order ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php echo wp_kses( siqo_render_author_badge( $order ), siqo_allowed_html() ); ?>
 			</div>
 			<?php if ( $is_filter ) : ?>
 				<span class="siqo-station-badge siqo-station-badge--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( siqo_station_status_label( $status ) ); ?></span>
@@ -882,6 +928,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 					$detail_parts[] = $item['details']['note'];
 				}
 				if ( ! empty( $item['details']['modification'] ) ) {
+					/* translators: %s: order modification details. */
 					$detail_parts[] = sprintf( __( 'Modifiche: %s', 'studio-immens-quick-order' ), $item['details']['modification'] );
 				}
 				?>
@@ -922,7 +969,7 @@ function siqo_station_render_order_card( $order, $items, $station ) {
 		<footer class="siqo-station-order-foot">
 			<span class="siqo-station-total"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></span>
 			<?php if ( $action ) : ?>
-				<div class="siqo-station-actions"><?php echo $action; ?></div>
+				<div class="siqo-station-actions"><?php echo wp_kses( $action, siqo_allowed_html() ); ?></div>
 			<?php endif; ?>
 		</footer>
 	</article>

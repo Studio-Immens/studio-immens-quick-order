@@ -2,6 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Variables are local to this included template.
 $brand = SIQO_Management::get_brand();
 $cards = array(
 	array( 'key' => 'revenue_today', 'label' => 'Incasso di oggi', 'value' => function_exists( 'wc_price' ) ? wp_strip_all_tags( wc_price( $stats['revenue_today'] ) ) : number_format_i18n( $stats['revenue_today'], 2 ), 'tone' => 'brand', 'icon' => 'money-alt' ),

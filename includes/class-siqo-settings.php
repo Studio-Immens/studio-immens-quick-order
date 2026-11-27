@@ -5,13 +5,15 @@
  *
  * @link       https://studioimmens.com
  * @since      1.1.0
- * @package    Studio_Immens_Quick_Order
- * @subpackage Studio_Immens_Quick_Order/includes
+ * @package    SIQO_Plugin
+ * @subpackage SIQO_Plugin/includes
  * @author     Mauro Arnone - Studio Immens <info@studioimmens.com>
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Settings inspect custom plugin tables.
 
 class SIQO_Settings {
 

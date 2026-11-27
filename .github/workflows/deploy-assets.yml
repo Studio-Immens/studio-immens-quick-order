@@ -1,0 +1,32 @@
+name: Update WordPress.org assets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion rsync
+
+      - name: Publish readme and assets
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          set -e
+          svn checkout https://plugins.svn.wordpress.org/studio-immens-quick-order svn \
+            --username "$SVN_USERNAME" --password "$SVN_PASSWORD" \
+            --no-auth-cache --non-interactive
+          cp readme.txt svn/trunk/readme.txt
+          rsync -rc --delete .wordpress-org/ svn/assets/
+          cd svn
+          svn add --force assets trunk/readme.txt
+          svn propset svn:mime-type image/png assets/*.png || true
+          svn commit -m "Update plugin assets and readme" \
+            --username "$SVN_USERNAME" --password "$SVN_PASSWORD" \
+            --no-auth-cache --non-interactive

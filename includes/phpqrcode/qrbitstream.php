@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *

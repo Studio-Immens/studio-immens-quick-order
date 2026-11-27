@@ -1,4 +1,10 @@
 <?php
+namespace SIQO\QuickOrder\PhpQrCode;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * PHP QR Code encoder
  *
@@ -31,13 +37,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
  
-    define('QRSPEC_VERSION_MAX', 40);
-    define('QRSPEC_WIDTH_MAX',   177);
+    define('SIQO_QR_QRSPEC_VERSION_MAX', 40);
+    define('SIQO_QR_QRSPEC_WIDTH_MAX',   177);
 
-    define('QRCAP_WIDTH',        0);
-    define('QRCAP_WORDS',        1);
-    define('QRCAP_REMINDER',     2);
-    define('QRCAP_EC',           3);
+    define('SIQO_QR_QRCAP_WIDTH',        0);
+    define('SIQO_QR_QRCAP_WORDS',        1);
+    define('SIQO_QR_QRCAP_REMINDER',     2);
+    define('SIQO_QR_QRCAP_EC',           3);
 
     class QRspec {
     
@@ -88,33 +94,33 @@
         //----------------------------------------------------------------------
         public static function getDataLength($version, $level)
         {
-            return self::$capacity[$version][QRCAP_WORDS] - self::$capacity[$version][QRCAP_EC][$level];
+            return self::$capacity[$version][SIQO_QR_QRCAP_WORDS] - self::$capacity[$version][SIQO_QR_QRCAP_EC][$level];
         }
         
         //----------------------------------------------------------------------
         public static function getECCLength($version, $level)
         {
-            return self::$capacity[$version][QRCAP_EC][$level];
+            return self::$capacity[$version][SIQO_QR_QRCAP_EC][$level];
         }
         
         //----------------------------------------------------------------------
         public static function getWidth($version)
         {
-            return self::$capacity[$version][QRCAP_WIDTH];
+            return self::$capacity[$version][SIQO_QR_QRCAP_WIDTH];
         }
         
         //----------------------------------------------------------------------
         public static function getRemainder($version)
         {
-            return self::$capacity[$version][QRCAP_REMINDER];
+            return self::$capacity[$version][SIQO_QR_QRCAP_REMINDER];
         }
         
         //----------------------------------------------------------------------
         public static function getMinimumVersion($size, $level)
         {
 
-            for($i=1; $i<= QRSPEC_VERSION_MAX; $i++) {
-                $words  = self::$capacity[$i][QRCAP_WORDS] - self::$capacity[$i][QRCAP_EC][$level];
+            for($i=1; $i<= SIQO_QR_QRSPEC_VERSION_MAX; $i++) {
+                $words  = self::$capacity[$i][SIQO_QR_QRCAP_WORDS] - self::$capacity[$i][SIQO_QR_QRCAP_EC][$level];
                 if($words >= $size) 
                     return $i;
             }
@@ -134,7 +140,7 @@
         //----------------------------------------------------------------------
         public static function lengthIndicator($mode, $version)
         {
-            if ($mode == QR_MODE_STRUCTURE)
+            if ($mode == SIQO_QR_MODE_STRUCTURE)
                 return 0;
                 
             if ($version <= 9) {
@@ -151,7 +157,7 @@
         //----------------------------------------------------------------------
         public static function maximumWords($mode, $version)
         {
-            if($mode == QR_MODE_STRUCTURE) 
+            if($mode == SIQO_QR_MODE_STRUCTURE) 
                 return 3;
                 
             if($version <= 9) {
@@ -165,7 +171,7 @@
             $bits = self::$lengthTableBits[$mode][$l];
             $words = (1 << $bits) - 1;
             
-            if($mode == QR_MODE_KANJI) {
+            if($mode == SIQO_QR_MODE_KANJI) {
                 $words *= 2; // the number of bytes is required
             }
 
@@ -338,7 +344,7 @@
 		// Version information pattern (BCH coded).
         // See Table 1 in Appendix D (pp.68) of JIS X0510:2004.
         
-		// size: [QRSPEC_VERSION_MAX - 6]
+		// size: [SIQO_QR_QRSPEC_VERSION_MAX - 6]
 		
         public static $versionPattern = array(
             0x07c94, 0x085bc, 0x09a99, 0x0a4d3, 0x0bbf6, 0x0c762, 0x0d847, 0x0e60d,
@@ -351,7 +357,7 @@
         //----------------------------------------------------------------------
         public static function getVersionPattern($version)
         {
-            if($version < 7 || $version > QRSPEC_VERSION_MAX)
+            if($version < 7 || $version > SIQO_QR_QRSPEC_VERSION_MAX)
                 return 0;
 
             return self::$versionPattern[$version -7];
@@ -409,7 +415,7 @@
         //----------------------------------------------------------------------
         public static function createFrame($version)
         {
-            $width = self::$capacity[$version][QRCAP_WIDTH];
+            $width = self::$capacity[$version][SIQO_QR_QRCAP_WIDTH];
             $frameLine = str_repeat ("\0", $width);
             $frame = array_fill(0, $width, $frameLine);
 
@@ -485,60 +491,6 @@
         }
 
         //----------------------------------------------------------------------
-        public static function debug($frame, $binary_mode = false)
-        {
-            if ($binary_mode) {
-            
-                    foreach ($frame as &$frameLine) {
-                        $frameLine = join('<span class="m">&nbsp;&nbsp;</span>', explode('0', $frameLine));
-                        $frameLine = join('&#9608;&#9608;', explode('1', $frameLine));
-                    }
-                    
-                    ?>
-                <style>
-                    .m { background-color: white; }
-                </style>
-                <?php
-                    echo '<pre><tt><br/ ><br/ ><br/ >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo join("<br/ >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", esc_attr($frame));
-                    echo '</tt></pre><br/ ><br/ ><br/ ><br/ ><br/ ><br/ >';
-            
-            } else {
-            
-                foreach ($frame as &$frameLine) {
-                    $frameLine = join('<span class="m">&nbsp;</span>',  explode("\xc0", $frameLine));
-                    $frameLine = join('<span class="m">&#9618;</span>', explode("\xc1", $frameLine));
-                    $frameLine = join('<span class="p">&nbsp;</span>',  explode("\xa0", $frameLine));
-                    $frameLine = join('<span class="p">&#9618;</span>', explode("\xa1", $frameLine));
-                    $frameLine = join('<span class="s">&#9671;</span>', explode("\x84", $frameLine)); //format 0
-                    $frameLine = join('<span class="s">&#9670;</span>', explode("\x85", $frameLine)); //format 1
-                    $frameLine = join('<span class="x">&#9762;</span>', explode("\x81", $frameLine)); //special bit
-                    $frameLine = join('<span class="c">&nbsp;</span>',  explode("\x90", $frameLine)); //clock 0
-                    $frameLine = join('<span class="c">&#9719;</span>', explode("\x91", $frameLine)); //clock 1
-                    $frameLine = join('<span class="f">&nbsp;</span>',  explode("\x88", $frameLine)); //version
-                    $frameLine = join('<span class="f">&#9618;</span>', explode("\x89", $frameLine)); //version
-                    $frameLine = join('&#9830;', explode("\x01", $frameLine));
-                    $frameLine = join('&#8901;', explode("\0", $frameLine));
-                }
-                
-                ?>
-                <style>
-                    .p { background-color: yellow; }
-                    .m { background-color: #00FF00; }
-                    .s { background-color: #FF0000; }
-                    .c { background-color: aqua; }
-                    .x { background-color: pink; }
-                    .f { background-color: gold; }
-                </style>
-                <?php
-                echo "<pre><tt>";
-                echo join("<br/ >", esc_attr($frame));
-                echo "</tt></pre>";
-            
-            }
-        }
-
-        //----------------------------------------------------------------------
         public static function serial($frame)
         {
             return gzcompress(join("\n", $frame), 9);
@@ -553,14 +505,14 @@
         //----------------------------------------------------------------------
         public static function newFrame($version)
         {
-            if($version < 1 || $version > QRSPEC_VERSION_MAX) 
+            if($version < 1 || $version > SIQO_QR_QRSPEC_VERSION_MAX) 
                 return null;
 
             if(!isset(self::$frames[$version])) {
                 
-                $fileName = QR_CACHE_DIR.'frame_'.$version.'.dat';
+                $fileName = SIQO_QR_CACHE_DIR.'frame_'.$version.'.dat';
                 
-                if (QR_CACHEABLE) {
+                if (SIQO_QR_CACHEABLE) {
                     if (file_exists($fileName)) {
                         self::$frames[$version] = self::unserial(file_get_contents($fileName));//phpcs:ignore
                     } else {

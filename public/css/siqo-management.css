@@ -1518,3 +1518,197 @@ body.siqo-customer-mode .entry-content {
 	min-width: 0 !important;
 	min-height: 0 !important;
 }
+/* Compact table session bar shared by Gestione tavoli and Ordini reparti */
+.siqo-view-tables .siqo-table-session-bar.is-compact,
+#siqo-station-orders .siqo-table-session-bar.is-compact {
+	margin: 0 0 14px;
+	padding: 9px 11px;
+	border: 1px solid var(--siqo-line, #e5d9cc);
+	border-radius: 14px;
+	background: var(--siqo-surface, #fffdf9);
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-head,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-head {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin: 0 0 7px;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-head-text,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-head-text {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	gap: 8px;
+	min-width: 0;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-title,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-title {
+	margin: 0;
+	color: var(--siqo-ink, #1c1714);
+	font-size: 13px;
+	font-weight: 800;
+	line-height: 1.2;
+	letter-spacing: -0.01em;
+	white-space: nowrap;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-help,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-help {
+	display: none;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-close-all,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-close-all {
+	flex: 0 0 auto;
+	min-height: 32px;
+	padding: 0 12px;
+	border: 1px solid var(--siqo-line, #e5d9cc);
+	border-radius: 999px;
+	background: var(--siqo-soft, #f4eee6);
+	color: var(--siqo-ink, #1c1714);
+	font: inherit;
+	font-size: 12px;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-close-all:disabled,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-close-all:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-grid,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-grid {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 7px;
+	margin: 0;
+	padding: 0 0 2px;
+	list-style: none;
+	overflow-x: auto;
+	overscroll-behavior-inline: contain;
+	scrollbar-width: thin;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	min-height: 42px;
+	padding: 5px 6px 5px 10px;
+	border: 1px solid var(--siqo-line, #e5d9cc);
+	border-radius: 11px;
+	background: #fff;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip.is-active,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip.is-active {
+	border-color: var(--siqo-ok, #277a3e);
+	background: #f1f8f3;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip-body,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip-body {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip-name,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip-name {
+	color: var(--siqo-ink, #1c1714);
+	font-size: 13px;
+	font-weight: 800;
+	line-height: 1.15;
+	white-space: nowrap;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip-status,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip-status {
+	color: var(--siqo-muted, #75685e);
+	font-size: 9px;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-chip.is-active .siqo-table-chip-status,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-chip.is-active .siqo-table-chip-status {
+	color: var(--siqo-ok, #277a3e);
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-toggle,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-toggle {
+	flex: 0 0 auto;
+	min-width: 62px;
+	min-height: 32px;
+	padding: 0 11px;
+	border: 1px solid var(--siqo-brand, #a6462f);
+	border-radius: 999px;
+	background: var(--siqo-brand, #a6462f);
+	color: #fff;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-toggle.is-close,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-toggle.is-close {
+	border-color: var(--siqo-line, #e5d9cc);
+	background: var(--siqo-soft, #f4eee6);
+	color: var(--siqo-ink, #1c1714);
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-toggle:disabled,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-toggle:disabled {
+	opacity: 0.55;
+	cursor: default;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-status,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-status {
+	min-height: 0;
+	margin: 5px 0 0;
+	color: var(--siqo-ok, #277a3e);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-status:empty,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-status:empty {
+	display: none;
+}
+
+.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-session-status.is-error,
+#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-session-status.is-error {
+	color: var(--siqo-danger, #a33127);
+}
+
+@media (max-width: 480px) {
+	.siqo-view-tables .siqo-table-session-bar.is-compact,
+	#siqo-station-orders .siqo-table-session-bar.is-compact {
+		padding: 8px;
+		border-radius: 12px;
+	}
+
+	.siqo-view-tables .siqo-table-session-bar.is-compact .siqo-table-toggle,
+	#siqo-station-orders .siqo-table-session-bar.is-compact .siqo-table-toggle {
+		min-height: 34px;
+		padding: 0 12px;
+	}
+}

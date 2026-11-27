@@ -8,3 +8,10 @@ vendor
 .DS_Store
 Thumbs.db
 *.log
+.superpowers
+docs
+includes/phpqrcode/cache
+includes/phpqrcode/tools
+includes/phpqrcode/bindings
+README.md
+.wordpress-org
