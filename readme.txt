@@ -95,11 +95,8 @@ This plugin does not connect to external services. QR codes are generated locall
 
 == Screenshots ==
 
-1. Customer menu ordering interface with product cards
-2. Table management grid with color-coded status
-3. Product customization popup with ingredients and variants
-4. Settings page with taxonomy configuration
-5. Style customization page with CSS variable controls
+1. Customer menu ordering interface with categories and product cards.
+2. Product catalog with WooCommerce images, prices and quick add-to-order controls.
 
 == Changelog ==
 

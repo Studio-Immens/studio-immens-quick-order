@@ -3,3 +3,4 @@
 .github export-ignore
 .git export-ignore
 .distignore export-ignore
+/.wordpress-org export-ignore
