@@ -140,13 +140,23 @@ function SIQO_clear_meta_database( $meta_key ){
 // add_action('plugins_loaded', 'SIQO_create_all_necessary_pages');
 // SIQO_create_all_necessary_pages();
 function SIQO_create_all_necessary_pages(){
-	// Controlli SEMPRE eseguiti, non solo nel ramo AJAX: prima bastava omettere
-	// "from=ajax" perché qualsiasi utente loggato riscrivesse le pagine del plugin.
-	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
-	}
-	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'SIQO_manage_pages' ) ) {
-		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	// Due contesti legittimi:
+	//  - attivazione del plugin (SIQO_Activator, eseguito da WordPress)
+	//  - chiamata AJAX dal pannello (richiede manage_options + nonce)
+	// Il controllo non deve scattare durante l'attivazione, altrimenti il plugin
+	// non si attiva più.
+	$is_ajax_request = function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : ( defined( 'DOING_AJAX' ) && DOING_AJAX );
+
+	if ( $is_ajax_request ) {
+		// Controlli SEMPRE eseguiti sulle richieste AJAX, non solo con from=ajax:
+		// prima bastava omettere il parametro perché qualsiasi utente loggato
+		// riscrivesse le pagine del plugin.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
+		}
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'SIQO_manage_pages' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+		}
 	}
 	$is_ajax = isset( $_POST['from'] ) && sanitize_text_field( wp_unslash( $_POST['from'] ) ) === 'ajax';
 	$response = array();
