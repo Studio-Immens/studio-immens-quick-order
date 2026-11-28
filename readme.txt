@@ -4,7 +4,7 @@ Tags: restaurant, food ordering, woocommerce, table management, qr code
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Requires Plugins: woocommerce
@@ -99,6 +99,11 @@ This plugin does not connect to external services. QR codes are generated locall
 2. Product catalog with WooCommerce images, prices and quick add-to-order controls.
 
 == Changelog ==
+
+= 1.2.6 =
+* SECURITY: fixed a broken sanitizer on the public order form. SIQO_recursive_sanitize_text_field() recursed into a function name without the SIQO_ prefix and never reassigned the sanitized value, so nested input triggered a fatal error and every public order failed with HTTP 500.
+* SECURITY: the order discount is now clamped to the order subtotal. The sconto field is part of the public customer form and was previously accepted as an arbitrary amount, allowing a negative order total.
+* SECURITY: SIQO_create_all_necessary_pages now requires manage_options and a valid nonce regardless of the "from" parameter. Previously an authenticated user could rewrite the plugin pages by omitting from=ajax.
 
 = 1.2.5 =
 * WordPress.org review fixes: removed comparative marketing language, fixed invalid links, scoped admin assets, replaced inline scripts/styles with WordPress APIs, added AJAX capability guards, hardened QR/audio paths, removed bundled translations from the directory package, and removed external image/avatar dependencies.

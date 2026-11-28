@@ -140,15 +140,15 @@ function SIQO_clear_meta_database( $meta_key ){
 // add_action('plugins_loaded', 'SIQO_create_all_necessary_pages');
 // SIQO_create_all_necessary_pages();
 function SIQO_create_all_necessary_pages(){
-	$is_ajax = isset( $_POST['from'] ) && sanitize_text_field( wp_unslash( $_POST['from'] ) ) === 'ajax';
-	if ( $is_ajax ) {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
-		}
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'SIQO_manage_pages' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
-		}
+	// Controlli SEMPRE eseguiti, non solo nel ramo AJAX: prima bastava omettere
+	// "from=ajax" perché qualsiasi utente loggato riscrivesse le pagine del plugin.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Accesso negato.', 'studio-immens-quick-order' ) ), 403 );
 	}
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'SIQO_manage_pages' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Richiesta non valida.', 'studio-immens-quick-order' ) ), 403 );
+	}
+	$is_ajax = isset( $_POST['from'] ) && sanitize_text_field( wp_unslash( $_POST['from'] ) ) === 'ajax';
 	$response = array();
 	// SIQO_create_page( 'flash-orders','<!-- wp:shortcode -->[FO_front_order_section]<!-- /wp:shortcode -->', '1.0.1' );
 	// $response['flash-orders'] = '1.0.1';
@@ -308,12 +308,19 @@ function SIQO_create_page( $page_name, $content = '', $version = '1.0.0' ){
  * @return mixed
  */
 function SIQO_recursive_sanitize_text_field($array) {
+    if ( ! is_array( $array ) ) {
+        return sanitize_text_field( (string) $array );
+    }
     foreach ( $array as $key => $value ) {
         if ( is_array( $value ) ) {
-            $value = recursive_sanitize_text_field($value);
+            // Ricorsione sul prefisso corretto: la vecchia chiamata senza SIQO_
+            // puntava a una funzione inesistente e mandava in fatal il form ordini.
+            $array[ $key ] = SIQO_recursive_sanitize_text_field( $value );
         }
         else {
-            $value = sanitize_text_field( $value );
+            // Riassegnazione necessaria: prima il valore sanitizzato finiva in una
+            // variabile locale e l'array tornava invariato (no-op).
+            $array[ $key ] = sanitize_text_field( (string) $value );
         }
     }
     return $array;
@@ -3603,9 +3610,18 @@ $order->update_meta_data( 'foserialmap', sanitize_text_field( wp_json_encode( si
 				$info_string['searched'] = sanitize_text_field(wp_unslash( array_values( $item['searched'] )[0] ));
 			}
 			if (isset($item['sconto'])) {
-				$order->update_meta_data( '{'.substr($pos,1).'}sconto-', sanitize_text_field(wp_unslash( array_values( $item['sconto'] )[0] )) );
-				$info_string[sanitize_text_field(key($item['sconto']))] = sanitize_text_field(wp_unslash(array_values($item['sconto'])[0]));
-				$total_fee = floatval($total_fee) + floatval( sanitize_text_field(wp_unslash(array_values($item['sconto'])[0])) );
+				// Lo sconto arriva dal form pubblico: va limitato al valore dei prodotti
+				// dell'ordine, altrimenti il cliente può inviare un importo arbitrario
+				// e rendere il totale negativo (frode economica).
+				$siqo_sconto_raw = floatval( sanitize_text_field( wp_unslash( array_values( $item['sconto'] )[0] ) ) );
+				if ( $siqo_sconto_raw < 0 ) {
+					$siqo_sconto_raw = 0;
+				}
+				$siqo_order_cap = (float) $order->get_subtotal();
+				$siqo_sconto     = min( $siqo_sconto_raw, max( 0, $siqo_order_cap ) );
+				$order->update_meta_data( '{'.substr($pos,1).'}sconto-', wc_format_decimal( $siqo_sconto ) );
+				$info_string[sanitize_text_field(key($item['sconto']))] = wc_format_decimal( $siqo_sconto );
+				$total_fee = floatval($total_fee) + $siqo_sconto;
 			}
 
 			if (isset($item['prod_generic'])) {
@@ -4164,9 +4180,16 @@ if (isset($_POST['foserialmap'])) {
 				$info_string['searched'] = sanitize_text_field( array_values( $item['searched'] )[0] );
 			}
 			if ( ! $verified && isset($item['sconto']) ) {
-				$order->update_meta_data( '{'.substr($pos,1).'}sconto-', sanitize_text_field( array_values( $item['sconto'] )[0] ) );
-				$info_string[sanitize_text_field(key($item['sconto']))] = sanitize_text_field(array_values($item['sconto'])[0]);
-				$total_fee = floatval($total_fee) + floatval( sanitize_text_field(array_values($item['sconto'])[0]) );
+				// Stesso limite del percorso cliente: nessuno sconto oltre il subtotale.
+				$siqo_sconto_raw = floatval( sanitize_text_field( array_values( $item['sconto'] )[0] ) );
+				if ( $siqo_sconto_raw < 0 ) {
+					$siqo_sconto_raw = 0;
+				}
+				$siqo_order_cap = (float) $order->get_subtotal();
+				$siqo_sconto     = min( $siqo_sconto_raw, max( 0, $siqo_order_cap ) );
+				$order->update_meta_data( '{'.substr($pos,1).'}sconto-', wc_format_decimal( $siqo_sconto ) );
+				$info_string[sanitize_text_field(key($item['sconto']))] = wc_format_decimal( $siqo_sconto );
+				$total_fee = floatval($total_fee) + $siqo_sconto;
 			}
 
 			if ( ! $verified && isset($item['prod_generic']) ) {

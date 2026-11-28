@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name:       Studio Immens Quick Order
  * Plugin URI:        https://github.com/Studio-Immens/studio-immens-quick-order
  * Description:       Manage restaurant orders, tables, kitchen stations, QR menus and table sessions from WooCommerce.
- * Version:           1.2.5
+ * Version:           1.2.6
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Studio Immens
@@ -44,7 +44,7 @@ define( 'SIQO_PLUGIN_FILE', __FILE__ );
  * Currently plugin version.
  * Start at version 1.0.0
  */
-define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.2.5' );
+define( 'STUDIO_IMMENS_QUICK_ORDER_VERSION', '1.2.6' );
 
 /**
  * Currently database version for siqo_meta table.
